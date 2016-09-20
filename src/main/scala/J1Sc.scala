@@ -3,8 +3,8 @@
  * Committer: <COMMITTERNAME>
  *
  * Create Date:    Tue Sep 20 15:07:10 CEST 2016 
- * Module Name:    XXXX - 
- * Project Name:   XXXX - YYYY
+ * Module Name:    J1Sc - Toplevel
+ * Project Name:   J1Sc - A simple J1 implementation
  *
  * Hash: <COMMITHASH>
  * Date: <AUTHORDATE>
