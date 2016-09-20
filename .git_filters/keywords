@@ -1,0 +1,320 @@
+#!/usr/bin/perl
+
+# Program:     <FILE>
+# Author:      <AUTHORNAME>
+# Date:        <COMMITTERDATE>
+# Ident:       <COMMITHASH>
+# Branch:      <BRANCH>
+# 
+# <CHANGELOG:--reverse --grep '^tags.*relevant':-1:%an : %ai : %s>
+
+use strict;
+use warnings;
+
+use File::Basename;
+use Getopt::Long;
+
+###
+# global config hash
+my $config = {
+
+    KEYWORDS  => {
+
+        COMMITHASH                 => "%H", 
+        COMMITHASHABBREVIATED      => "%h", 
+        TREEHASH                   => "%T", 
+        TREEHASHABBREVIATED        => "%t", 
+        PARENTHASHES               => "%P", 
+        PARENTHASHESABBREVIATED    => "%p", 
+        AUTHORNAME                 => "%an", 
+        AUTHORNAMEMAILCAP          => "%aN", 
+        AUTHOREMAIL                => "%ae", 
+        AUTHOREMAILMAILCAP         => "%aE", 
+        AUTHORDATE                 => "%ad", 
+        AUTHORDATERFC2822          => "%aD", 
+        AUTHORDATERELATIVE         => "%ar", 
+        AUTHORDATEUNIX             => "%at", 
+        AUTHORDATEISO8601          => "%ai", 
+        COMMITTERNAME              => "%cn", 
+        COMMITTERNAMEMAILCAP       => "%cN", 
+        COMMITTERDATE              => "%cd", 
+        COMMITTERDATERFC2822       => "%cD", 
+        COMMITTERDATERELATIVE      => "%cr", 
+        COMMITTERDATEUNIX          => "%ct", 
+        COMMITTERDATEISO8601       => "%ci", 
+        REFNAMES                   => "%d", 
+        ENCODING                   => "%e", 
+        SUBJECT                    => "%s", 
+        SUBJECTSANITIZED           => "%f", 
+        REFLOGSELECTOR             => "%gD", 
+        REFLOGSELECTORSHORT        => "%gd", 
+        REFLOGIDENTITYNAME         => "%gn", 
+        REFLOGIDENTITYNAMEMAILCAP  => "%gN", 
+        REFLOGIDENTITYEMAIL        => "%ge", 
+        REFLOGIDENTITYEMAILMAILCAP => "%gE", 
+        REFLOGSUBJECTS             => "%gs", 
+    },
+};
+
+###
+# dump a short usage info to stdout.
+sub usage {
+
+    print "usage: " . basename($0) . " -m <MODE> -f <FILE>\n";      # SkIp
+    print "--mode,-m <MODE>   either \"smudge\" or \"clean\".\n";   # SkIp
+    print "--file,-f <FILE>   the file that should be filtered.\n"; # SkIp
+
+    exit 2;
+}
+
+###
+# parse the commandline.
+sub parse_commandline {
+
+    my $arg_mode = undef;
+    my $arg_file = undef;
+
+    my $ret = GetOptions(
+        "mode|m=s" => \$arg_mode,
+        "file|f=s" => \$arg_file,
+    );
+
+    usage() if ( not $ret );
+
+    if ( not defined($arg_mode) ) {
+
+        print "error: parameter --mode is mandatory.\n";
+        usage();
+    }
+
+    if ( not defined($arg_file) ) {
+
+        print "error: parameter --file is mandatory.\n";
+        usage();
+    }
+
+    if ( not $arg_mode =~ /(smudge|clean)/i ) {
+
+        print "error: --mode must be either \"smudge\" or \"clean\"";
+        usage();
+    }
+
+    $config->{mode} = $arg_mode;
+    $config->{file} = $arg_file;
+}
+
+###
+# return metadata for $_path
+#
+# $_keywords - the keywords hash # SkIp
+# $_path     - the path the metadata should be gathered for
+# <- {
+#        <KEYWORD> => <VALUE>,
+#        ...
+#    }
+sub meta {
+
+    my $_keywords = shift; # SkIp
+    my $_path     = shift;
+
+    my $meta= {};
+
+    my $format = "";
+    while ( my ( $k, $v ) = each( %{ $_keywords } ) ) { # SkIp
+
+        $format .= "$k=$v%n";
+    }
+
+    my $branch =  `git branch | awk '/\\*/ {print \$2}'`;
+    chomp( $branch );
+
+    $meta->{BRANCH} = $branch;
+
+    my $log = `git log -g -n 1 --pretty="$format" "$branch" -- "$_path" 2>/dev/null`;
+    return if ( not $log );
+
+    foreach my $entry ( split( /\n/, $log ) ) {
+
+        
+        my ( $k, $v ) = ( $1, $2 ) if ( $entry =~ /\s*([^=][^=]*)=(.*)/ );
+
+        chomp( $k ) if ( defined ( $k ) );
+        chomp( $v ) if ( defined ( $v ) );
+        
+        $v =~ s/^(\s|\()*(.*)(\s|\))$/$2/ if ( defined ( $v ) ); 
+
+        $meta->{$k} = $v if ( $v and not $v =~ $_keywords->{$k} ); # SkIp
+    }
+
+    $meta->{FILE} = basename( $_path );
+
+    return $meta;
+}
+
+###
+# return the git history encapsulated line by line with $_delim1
+# and $_delim2.
+#
+# $_path   - the path the history should be gathered for
+# $_max    - maximum number of log entries to return
+# $_format - changelog format
+# $_prefix - the left delimter string
+# <- the history string
+sub history {
+
+    my $_path   = shift;
+    my $_args   = shift;
+    my $_max    = shift;
+    my $_format = shift;
+    my $_prefix = shift;
+
+    my $log;
+
+    $log = `git log $_args -n $_max --pretty="$_format" -- "$_path"`;
+    $log = "Changelog:$_args:$_max:$_format\n\n$log";  # SkIp
+    $log =~ s/^/$_prefix/mg;
+    chomp( $log );
+
+    return $log;
+}
+
+###
+# substitute all keys in $_meta with the matching values
+# from the same in $_str
+# 
+# $_meta - the metadata returned by meta()
+# $_str  - the string to be substitued
+# <- the substituted string
+sub subst {
+
+    my $_meta = shift;
+    my $_str  = shift;
+
+    while ( my ( $key, $val ) = each( %$_meta ) ) {
+
+        $_str =~ s/<\Q$key\E>/$val/;
+    }
+
+    return $_str;
+}
+
+###
+# smudge $_path
+#
+# $_keywords - the keywords hash # SkIp
+# $_path - the file that should be smudged
+# $_curr - the cleaned string (current commit)
+# <- the smudged string
+sub smudge {
+
+    my $_keywords = shift; # SkIp
+    my $_path     = shift;
+    my $_curr     = shift;
+
+    my $meta = meta( $_keywords, $_path ); # SkIp
+
+    my @curr = split( /\n/, "$_curr", -1 );
+
+    for ( my $idx = 0; $idx < scalar( @curr ); $idx++ ) {
+
+        next if ( $curr[$idx] =~ /SkIp/ );
+
+        if ( $curr[$idx] =~ /(.*)<CHANGELOG:([^:]*):([^:]*):([^>]*)>/ ) { # SkIp
+
+            $curr[$idx] = history( $_path, $2, $3, $4, $1 );
+        } else {
+
+            $curr[$idx] = subst( $meta, $curr[$idx] );
+        }
+    }
+
+    return join ( "\n", @curr );
+}
+
+###
+# clean $_path
+#
+# $_keywords - the keywords hash # SkIp
+# $_path     - the file that should be cleaned
+# $_prev     - the cleaned string (previous commit)
+# $_curr     - the uncleaned string (current commit)
+# <- the cleaned string
+sub clean {
+
+    my $_keywords = shift; # SkIp
+    my $_path     = shift;
+    my $_prev     = shift;
+    my $_curr     = shift;
+
+    my $meta = meta( $_keywords, $_path ); # SkIp
+
+    my @curr = split( /\n/, "$_curr", -1 );
+    my @prev = split( /\n/, "$_prev", -1 );
+
+    my %smudged;
+    for ( my $idx = 0; $idx < scalar( @prev ); $idx++ ) {
+
+        my $smudged = subst( $meta, $prev[$idx] );
+
+        $smudged{$smudged} = $prev[$idx];
+    }
+
+    my $prefix = "";
+    my $skip   = 0;
+
+    for ( my $idx = 0; $idx < scalar( @curr ); $idx++ ) {
+
+        next if ( $curr[$idx] =~ /SkIp/ );
+
+        $skip = 0 if ( not $curr[$idx] =~ /^$prefix/ );
+        if ( $skip ) {
+
+            splice( @curr, $idx--, 1 ) if ( $skip );
+            next;
+        }
+
+        if ( $curr[$idx] =~ /(.*)Changelog:([^:]*):([^:]*):(.*)/ ) { # SkIp
+
+            $prefix = $1;
+            $skip   = 1;
+
+            $curr[$idx] = "$prefix<CHANGELOG:$2:$3:$4>"; # SkIp
+        } else {
+
+            $curr[$idx] = $smudged{$curr[$idx]} if ( defined( $smudged{$curr[$idx]} ) );
+        }
+    }
+
+    return join ( "\n", @curr );
+}
+
+###
+# main()
+sub main {
+
+    parse_commandline();
+
+    my $curr = undef;
+    if (not -t STDIN) {
+    
+        $curr = join( "", <STDIN> );
+    } else {
+
+        open ( FILE, $config->{file} ) or die( "Couldn't open file: $!" ); 
+        $curr = join( "", <FILE> ); # SkIp
+        close FILE;
+    }
+
+    if ( $config->{mode} =~ /smudge/i ) {
+
+        print smudge( $config->{KEYWORDS}, $config->{file}, $curr ); 
+    } else {
+
+        my $prev = `git cat-file blob HEAD:$config->{file} 2>&1`;
+
+        print clean( $config->{KEYWORDS}, $config->{file}, $prev, $curr ); 
+    }
+}
+
+main();
+
