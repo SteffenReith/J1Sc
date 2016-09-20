@@ -12,4 +12,31 @@
 import spinal.core._
 import spinal.lib._
 
+class J1Sc (wordSize : Int = 32) extents Component {
 
+  // I/O ports
+  val io = new Bundle {
+
+  }.setName("")
+
+}
+
+object J1Sc {
+
+  // Make the reset synchron
+  val globalClockConfig = ClockDomainConfig (
+    clockEdge        = RISING,
+    resetKind        = SYNC,
+    resetActiveLevel = HIGH
+  )
+
+  def main(args: Array[String]) {
+
+    // Generate HDL files
+    SpinalConfig(genVhdlPkg = false,
+                 defaultConfigForClockDomains = globalClockConfig).generateVhdl(new J1Sc)
+    SpinalVerilog(new J1Sc)
+
+  }
+
+}
