@@ -12,12 +12,43 @@
 import spinal.core._
 import spinal.lib._
 
-class J1Sc (wordSize : Int = 32) extents Component {
+class J1Sc (wordSize     : Int = 32,
+            stackDepth   : Int = 256,
+            addrWidth    : Int = 12,
+            startAddress : Int = 0 ) extents Component {
 
   // I/O ports
   val io = new Bundle {
 
+    // Address of next instruction
+    val instrAdr = out (UInt(adrWidth bits))
+
+    // Next instruction
+    val inst = in (Bits(wordSize bits))
+
   }.setName("")
+
+  // Data stack pointer (init to first entry)
+  val dStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(0)  
+
+  // Return stack pointer (init to first entry)
+  val rStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(0)
+
+  // Top of stack (do not init, hence undefined value after startup)
+  val tos = Reg(Bits(wordSize bits))
+
+  // Programm counter (PC)
+  val pc = Reg(UInt(addrWidth bits)) init(startAddress);
+
+  // ALU block
+  switch(inst(inst.high downto inst.high - 7)) {
+
+    // Literal
+    is(M"1-------") {tos = inst(inst.high - 1 downto 0).resize(wordSize)}
+
+    default {tos = (default -> false)}
+
+  }
 
 }
 
