@@ -6,8 +6,8 @@
  * Module Name:    J1Sc - Toplevel
  * Project Name:   J1Sc - A simple J1 implementation
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: bc807384d0d2b794942f61aab9c8f504ae031538
+ * Date: Wed Sep 21 00:06:08 2016 +0200
  */
 import spinal.core._
 import spinal.lib._
@@ -15,16 +15,16 @@ import spinal.lib._
 class J1Sc (wordSize     : Int = 32,
             stackDepth   : Int = 256,
             addrWidth    : Int = 12,
-            startAddress : Int = 0 ) extents Component {
+            startAddress : Int = 0 ) extends Component {
 
   // I/O ports
   val io = new Bundle {
 
     // Address of next instruction
-    val instrAdr = out (UInt(adrWidth bits))
+    //val instrAdr = out (UInt(addrWidth bits))
 
     // Next instruction
-    val inst = in (Bits(wordSize bits))
+    val instr = in (Bits(wordSize bits))
 
   }.setName("")
 
@@ -40,13 +40,16 @@ class J1Sc (wordSize     : Int = 32,
   // Programm counter (PC)
   val pc = Reg(UInt(addrWidth bits)) init(startAddress);
 
+  // Instruction to be excuted
+  val instr = io.instr
+
   // ALU block
-  switch(inst(inst.high downto inst.high - 7)) {
+  switch(instr(instr.high downto (instr.high - 8) + 1)) {
 
     // Literal
-    is(M"1-------") {tos = inst(inst.high - 1 downto 0).resize(wordSize)}
+    is(M"1-------") {tos := instr(instr.high - 1 downto 0).resize(wordSize)}
 
-    default {tos = (default -> false)}
+    default {tos := (default -> false)}
 
   }
 
@@ -65,8 +68,11 @@ object J1Sc {
 
     // Generate HDL files
     SpinalConfig(genVhdlPkg = false,
-                 defaultConfigForClockDomains = globalClockConfig).generateVhdl(new J1Sc)
-    SpinalVerilog(new J1Sc)
+                 defaultConfigForClockDomains = globalClockConfig,
+                 targetDirectory="gen/src/vhdl").generateVhdl(new J1Sc)
+    SpinalConfig(genVhdlPkg = false,
+                 defaultConfigForClockDomains = globalClockConfig,
+                 targetDirectory="gen/src/verilog").generateVerilog(new J1Sc)
 
   }
 
