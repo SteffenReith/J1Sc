@@ -12,10 +12,10 @@
 import spinal.core._
 import spinal.lib._
 
-class J1Sc (wordSize     : Int = 32,
+class J1Sc (wordSize     : Int =  32,
             stackDepth   : Int = 256,
-            addrWidth    : Int = 13,
-            startAddress : Int = 0 ) extends Component {
+            addrWidth    : Int =  13,
+            startAddress : Int =   0) extends Component {
 
   // I/O ports
   val io = new Bundle {
@@ -47,7 +47,7 @@ class J1Sc (wordSize     : Int = 32,
   // Top of stack (do not init, hence undefined value after startup)
   val dtos = Reg(Bits(wordSize bits))
 
-  // Next of data stack
+  // Next of data stack (read port)
   val dnos = dStack.readAsync(address = dStackPtr);
 
   // Data stack write port
@@ -60,7 +60,7 @@ class J1Sc (wordSize     : Int = 32,
                address = rStackPtr,
                data    = );
 
-  // Top of return stack
+  // Top of return stack (read port)
   val rtos = rStack.readAsync(address = rStackPtr);
 
   // Programm counter (PC)
