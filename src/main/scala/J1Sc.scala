@@ -47,13 +47,18 @@ class J1Sc (wordSize     : Int = 32,
   // Top of stack (do not init, hence undefined value after startup)
   val dtos = Reg(Bits(wordSize bits))
 
-  // Data stack write port
-  mem.write(enable  = dStackWrite,
-            address = ,
-            data    = )
-
   // Next of data stack
   val dnos = dStack.readAsync(address = dStackPtr);
+
+  // Data stack write port
+  dStack.write(enable  = dStackWrite,
+               address = dStackPtr,
+               data    = )
+
+  // Return stack write port
+  rStack.write(enable  = rStackWrite,
+               address = rStackPtr,
+               data    = );
 
   // Top of return stack
   val rtos = rStack.readAsync(address = rStackPtr);
@@ -68,32 +73,33 @@ class J1Sc (wordSize     : Int = 32,
   switch(instr(instr.high downto (instr.high - 8) + 1)) {
 
     // Literal
-    is(M"1-------") {dtos := instr(instr.high - 1 downto 0).resize(wordSize)}
+    is(M"1-------") {dtos = instr(instr.high - 1 downto 0).resize(wordSize)}
 
-    // Jump instruction (do not change DTOS)
-    is(M"000-----") {dtos := dtos}
+    // Jump instruction (do not change dtos)
+    is(M"000-----") {dtos = dtos}
 
-    // Call instruction (do not change DTOS)
-    is(M"000-----") {dtos := dtos}
+    // Call instruction (do not change dtos)
+    is(M"000-----") {dtos = dtos}
 
-    // Conditional jump (pop the 0 at DTOS)
-    is(M"001-----") {dtos := dnos}
+    // Conditional jump (pop the 0 at dtos)
+    is(M"001-----") {dtos = dnos}
 
     // ALU operations using dtos and dnos
-    is(M"011-0000") {dtos := dtos}
-    is(M"011-0001") {dtos := dnos}
+    is(M"011-0000") {dtos = dtos}
+    is(M"011-0001") {dtos = dnos}
 
     // Arithmetic and logical operations (ALU)
-    is(M"011-0010") {dtos := (dtos.asUInt + dnos.asUInt).asBits}
-    is(M"011-0011") {dtos := dtos & dnos}
-    is(M"011-0100") {dtos := dtos | dnos}
-    is(M"011-0101") {dtos := dtos ^ dnos}
-    is(M"011-0110") {dtos := ~dtos}
-    is(M"011-1001") {dtos := dtos >> dnos(log2Up(wordSize - 1) downto 0).asUInt}
-    is(M"011-1010") {dtos := dtos << dnos(log2Up(wordSize - 1) downto 0).asUInt}
+    is(M"011-0010") {dtos = (dtos.asUInt + dnos.asUInt).asBits}
+    is(M"011-0011") {dtos = dtos & dnos}
+    is(M"011-0100") {dtos = dtos | dnos}
+    is(M"011-0101") {dtos = dtos ^ dnos}
+    is(M"011-0110") {dtos = ~dtos}
+    is(M"011-1001") {dtos = dtos >> dnos(log2Up(wordSize - 1) downto 0).asUInt}
+    is(M"011-1010") {dtos = dtos << dnos(log2Up(wordSize - 1) downto 0).asUInt}
+    is(M"011-1011") {dtos = rtos}
 
     // Set all bits of top of stack to false by default
-    default {dtos := (default -> false)}
+    default {dtos = (default -> false)}
 
   }
 
