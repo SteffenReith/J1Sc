@@ -3,8 +3,8 @@
  * Committer: <COMMITTERNAME>
  *
  * Create Date:    Tue Sep 20 15:07:10 CEST 2016 
- * Module Name:    J1Sc - Toplevel
- * Project Name:   J1Sc - A simple J1 implementation
+ * Module Name:    J1Sc
+ * Project Name:   J1Sc - A simple J1 implementation in Scala
  *
  * Hash: bc807384d0d2b794942f61aab9c8f504ae031538
  * Date: Wed Sep 21 00:06:08 2016 +0200
@@ -51,9 +51,10 @@ class J1Sc (wordSize     : Int =  32,
   val dnos = dStack.readAsync(address = dStackPtr);
 
   // Data stack write port
+  val dtosN : Bits(wordSize bits)
   dStack.write(enable  = dStackWrite,
                address = dStackPtr,
-               data    = )
+               data    = dtosN)
 
   // Return stack write port
   rStack.write(enable  = rStackWrite,
@@ -73,33 +74,33 @@ class J1Sc (wordSize     : Int =  32,
   switch(instr(instr.high downto (instr.high - 8) + 1)) {
 
     // Literal
-    is(M"1-------") {dtos = instr(instr.high - 1 downto 0).resize(wordSize)}
+    is(M"1-------") {dtosN = instr(instr.high - 1 downto 0).resize(wordSize)}
 
     // Jump instruction (do not change dtos)
-    is(M"000-----") {dtos = dtos}
+    is(M"000-----") {dtosN = dtos}
 
     // Call instruction (do not change dtos)
-    is(M"000-----") {dtos = dtos}
+    is(M"000-----") {dtosN = dtos}
 
     // Conditional jump (pop the 0 at dtos)
-    is(M"001-----") {dtos = dnos}
+    is(M"001-----") {dtosN = dnos}
 
     // ALU operations using dtos and dnos
-    is(M"011-0000") {dtos = dtos}
-    is(M"011-0001") {dtos = dnos}
+    is(M"011-0000") {dtosN = dtos}
+    is(M"011-0001") {dtosN = dnos}
 
     // Arithmetic and logical operations (ALU)
-    is(M"011-0010") {dtos = (dtos.asUInt + dnos.asUInt).asBits}
-    is(M"011-0011") {dtos = dtos & dnos}
-    is(M"011-0100") {dtos = dtos | dnos}
-    is(M"011-0101") {dtos = dtos ^ dnos}
-    is(M"011-0110") {dtos = ~dtos}
-    is(M"011-1001") {dtos = dtos >> dnos(log2Up(wordSize - 1) downto 0).asUInt}
-    is(M"011-1010") {dtos = dtos << dnos(log2Up(wordSize - 1) downto 0).asUInt}
-    is(M"011-1011") {dtos = rtos}
+    is(M"011-0010") {dtosN = (dtos.asUInt + dnos.asUInt).asBits}
+    is(M"011-0011") {dtosN = dtos & dnos}
+    is(M"011-0100") {dtosN = dtos | dnos}
+    is(M"011-0101") {dtosN = dtos ^ dnos}
+    is(M"011-0110") {dtosN = ~dtos}
+    is(M"011-1001") {dtosN = dtos >> dnos(log2Up(wordSize - 1) downto 0).asUInt}
+    is(M"011-1010") {dtosN = dtos << dnos(log2Up(wordSize - 1) downto 0).asUInt}
+    is(M"011-1011") {dtosN = rtos}
 
     // Set all bits of top of stack to false by default
-    default {dtos = (default -> false)}
+    default {dtosN = (default -> false)}
 
   }
 
@@ -171,29 +172,6 @@ class J1Sc (wordSize     : Int =  32,
 
     // By default goto next instruction
     default {pc <= pc + 1}
-
-  }
-
-}
-
-object J1Sc {
-
-  // Make the reset synchron
-  val globalClockConfig = ClockDomainConfig (
-    clockEdge        = RISING,
-    resetKind        = SYNC,
-    resetActiveLevel = HIGH
-  )
-
-  def main(args: Array[String]) {
-
-    // Generate HDL files
-    SpinalConfig(genVhdlPkg = false,
-                 defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/vhdl").generateVhdl(new J1Sc)
-    SpinalConfig(genVhdlPkg = false,
-                 defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/verilog").generateVerilog(new J1Sc)
 
   }
 
