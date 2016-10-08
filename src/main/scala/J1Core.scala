@@ -12,14 +12,74 @@
 import spinal.core._
 import spinal.lib._
 
+class J1Core extends Component {
+
+  // Configure CPU core 
+  val wordSize      =  16
+  val stackDepth    = 256
+  val addrWidth     =  13
+  val startAddress  =   0
+
+  // I/O ports
+  val io = new Bundle {
+
+    // I/O signals for memory data port
+    val writeEnable = out Bool
+    val dataAddress  = out UInt(addrWidth bits)
+    val dataWrite = out Bits(wordSize bits)
+    val dataRead  = in Bits(wordSize bits)
+
+  }.setName("")
+
+  // I/O signals for main memory
+  val writeEnable = Bool
+  val dataAddress = UInt(addrWidth bits)
+  val dataWrite = Bits(wordSize bits)
+  val dataRead = Bits(wordSize bits)
+
+  // Wire the data bus to the outside world
+  val io.writeEnable = writeEnable
+  val io.dataAddress = dataAddress
+  val io.dataWrite = dataWrite
+  val io.dataRead = dataRead
+
+  // Create main memory
+  val content = List(B"1000 0000 0000 0111", // Push 7
+                     B"0000 0000 0000 0001") // Jump 1
+  val mainMem = Mem(Bits(wordSize bits),
+                    1 << addrWidth) init (content)
+
+  // Create data port for mainMem 
+  mainMem.write(enable  = writeEnable,
+                address = dataAddress,
+                data    = dataWrite);
+  dataRead := mainMem.readAsync(address = dataAddress)
+
+  // Instruction port
+  val instr = Bits(wordSize bits)
+  val instrAddress = UInt(addrWidth bits)
+  instr := mainMem.readAsync(address = instrAddress)
+
+  // Create a new CPU
+  val coreCPU = new J1Sc
+
+  // connect the CPU core
+  coreCPU.io.writeEnable := writeEnable;
+  coreCPU.io.dataAddress := dataAddress;
+  coreCPU.io.dataWrite := dataWrite;
+  coreCPU.io.dataRead := dataRead;
+  coreCPU.io.instrAddress := instrAddress;
+  coreCPU.io.instr := instr;
+
+}
+
 object J1Core {
 
-  // Make the reset synchron
+  // Make the reset synchron and use the rising edge
   val globalClockConfig = ClockDomainConfig (
     clockEdge        = RISING,
     resetKind        = SYNC,
-    resetActiveLevel = HIGH
-  )
+    resetActiveLevel = HIGH)
 
   def main(args: Array[String]) {
 
@@ -34,4 +94,3 @@ object J1Core {
   }
 
 }
-
