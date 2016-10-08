@@ -1,4 +1,4 @@
-name := "J1Core"
+name := "J1SoC"
 
 version := "1.0"
 
