@@ -38,16 +38,19 @@ class J1SoC extends Component {
   val dataRead = Bits(wordSize bits)
 
   // Wire the data bus to the outside world
-  val io.writeEnable = writeEnable
-  val io.dataAddress = dataAddress
-  val io.dataWrite = dataWrite
-  val io.dataRead = dataRead
+  io.writeEnable := writeEnable
+  io.dataAddress := dataAddress
+  io.dataWrite := dataWrite
+  dataRead := io.dataRead;
 
   // Create main memory
-  val content = List(B"1000 0000 0000 0111", // Push 7
-                     B"0000 0000 0000 0001") // Jump 1
+  //val contentDefault = B"x0000"
+  //val contentDefault = B"wordSize'b,0"
+  val contentDefault = B(0, wordSize bits)
+  val content = List(B"1000_0000_0000_0111", // Push 7
+                     B"0000_0000_0000_0001") // Jump 1
   val mainMem = Mem(Bits(wordSize bits),
-                    1 << addrWidth) init (content)
+                    content ++ List.fill((1 << addrWidth) - content.length)(contentDefault))
 
   // Create data port for mainMem 
   mainMem.write(enable  = writeEnable,
@@ -60,26 +63,25 @@ class J1SoC extends Component {
   val instrAddress = UInt(addrWidth bits)
   instr := mainMem.readAsync(address = instrAddress)
 
-  // Create a new CPU
-  val coreCPU = new J1Core
+  // Create a new CPU core
+  val coreJ2CPU = new J1Core
 
   // connect the CPU core
-  coreCPU.io.writeEnable := writeEnable;
-  coreCPU.io.dataAddress := dataAddress;
-  coreCPU.io.dataWrite := dataWrite;
-  coreCPU.io.dataRead := dataRead;
-  coreCPU.io.instrAddress := instrAddress;
-  coreCPU.io.instr := instr;
+  writeEnable := coreJ2CPU.io.writeEnable
+  dataAddress := coreJ2CPU.io.dataAddress
+  dataWrite := coreJ2CPU.io.dataWrite
+  coreJ2CPU.io.dataRead := dataRead
+  instrAddress := coreJ2CPU.io.instrAddress
+  coreJ2CPU.io.instr := instr
 
 }
 
 object J1SoC {
 
   // Make the reset synchron and use the rising edge
-  val globalClockConfig = ClockDomainConfig (
-    clockEdge        = RISING,
-    resetKind        = SYNC,
-    resetActiveLevel = HIGH)
+  val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
+                                            resetKind        = SYNC,
+                                            resetActiveLevel = HIGH)
 
   def main(args: Array[String]) {
 

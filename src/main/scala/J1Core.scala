@@ -32,6 +32,13 @@ class J1Core(wordSize     : Int =  16,
 
   }.setName("")
 
+  // Write Enable
+  // DataAddress
+  // DataWrite
+  io.writeEnable := False;
+  io.dataAddress := 0;
+  io.dataWrite := B(0, wordSize bits)
+
   // Data stack pointer (init to first entry)
   val dStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(0)  
 
@@ -168,7 +175,7 @@ class J1Core(wordSize     : Int =  16,
   switch(instr(instr.high downto (instr.high - 4) + 1)) {
 
     // Check for jump, call and cond. jump instruction
-    is(M"000_",M"010_",M"001_") {pc := instr(addrWidth - 1 downto 0).asUInt}
+    is(M"000-",M"010-",M"001-") {pc := instr(addrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
     is(M"0111") {pc := rtos.asUInt}
