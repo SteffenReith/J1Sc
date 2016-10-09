@@ -189,3 +189,24 @@ class J1Core(wordSize     : Int =  16,
   io.instrAddress := pc
 
 }
+
+object J1Core {
+
+  // Make the reset synchron and use the rising edge
+  val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
+                                            resetKind        = SYNC,
+                                            resetActiveLevel = HIGH)
+
+  def main(args: Array[String]) {
+
+    // Generate HDL files
+    SpinalConfig(genVhdlPkg = false,
+      defaultConfigForClockDomains = globalClockConfig,
+      targetDirectory="gen/src/vhdl").generateVhdl(new J1Core)
+    SpinalConfig(genVhdlPkg = false,
+      defaultConfigForClockDomains = globalClockConfig,
+      targetDirectory="gen/src/verilog").generateVerilog(new J1Core)
+
+  }
+
+}
