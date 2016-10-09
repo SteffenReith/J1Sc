@@ -44,13 +44,10 @@ class J1SoC extends Component {
   dataRead := io.dataRead;
 
   // Create main memory
-  //val contentDefault = B"x0000"
-  //val contentDefault = B"wordSize'b,0"
-  val contentDefault = B(0, wordSize bits)
   val content = List(B"1000_0000_0000_0111", // Push 7
                      B"0000_0000_0000_0001") // Jump 1
   val mainMem = Mem(Bits(wordSize bits),
-                    content ++ List.fill((1 << addrWidth) - content.length)(contentDefault))
+                    content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
 
   // Create data port for mainMem 
   mainMem.write(enable  = writeEnable,
