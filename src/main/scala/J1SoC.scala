@@ -6,8 +6,8 @@
  * Module Name:    J1Core - Toplevel
  * Project Name:   J1Sc - A simple J1 implementation in scala
  *
- * Hash: 9b5a39bd614651c1d614feae12daf65e80ad5b3a
- * Date: Tue Sep 27 10:36:04 2016 +0200
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.core._
 import spinal.lib._
@@ -31,7 +31,7 @@ class J1SoC extends Component {
 
   }.setName("")
 
-  // I/O signals for main memory
+  // Signals for main memory
   val writeEnable = Bool
   val dataAddress = UInt(addrWidth bits)
   val dataWrite = Bits(wordSize bits)
