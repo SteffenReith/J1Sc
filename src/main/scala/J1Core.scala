@@ -39,6 +39,12 @@ class J1Core(wordSize     : Int =  16,
   io.dataAddress := 0;
   io.dataWrite := B(0, wordSize bits)
 
+  // Programm counter (PC)
+  val pc = Reg(UInt(addrWidth bits)) init(startAddress)
+
+  // Instruction to be excuted
+  val instr = io.instr
+
   // Data stack pointer (init to first entry)
   val dStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(0)  
 
@@ -56,7 +62,7 @@ class J1Core(wordSize     : Int =  16,
   val rStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
 
   // Top of stack (do not init, hence undefined value after startup)
-  val dtos = Reg(Bits(wordSize bits))
+  val dtos = Reg(Bits(wordSize bits)) init(0)
 
   // Next of data stack (read port)
   val dnos = dStack.readAsync(address = dStackPtr);
@@ -67,20 +73,18 @@ class J1Core(wordSize     : Int =  16,
                address = dStackPtr,
                data    = dtosN)
 
+  // Calculate a possible value for top of return stack (check for conditional jump)
+  val rtosN = Mux(instr(wordSize - 2) === True,
+    ((pc + 1).asBits ## B(0, log2Up(wordSize >> 3) bits)).resize(wordSize),
+    dtos)
+
   // Return stack write port
-  val rtosN = Bits(wordSize bits)
   rStack.write(enable  = rStackWrite,
                address = rStackPtr,
                data    = rtosN)
 
   // Top of return stack (read port)
   val rtos = rStack.readAsync(address = rStackPtr)
-
-  // Programm counter (PC)
-  val pc = Reg(UInt(addrWidth bits)) init(startAddress)
-
-  // Instruction to be excuted
-  val instr = io.instr
 
   // Instruction decoder (including ALU operations)
   switch(instr(instr.high downto (instr.high - 8) + 1)) {
@@ -109,6 +113,8 @@ class J1Core(wordSize     : Int =  16,
     is(M"011-0110") {dtosN := ~dtos}
     is(M"011-1001") {dtosN := dtos >> dnos(log2Up(wordSize - 1) downto 0).asUInt}
     is(M"011-1010") {dtosN := dtos << dnos(log2Up(wordSize - 1) downto 0).asUInt}
+
+    // ALU operations using the rtos
     is(M"011-1011") {dtosN := rtos}
 
     // Set all bits of top of stack to false by default
@@ -154,14 +160,14 @@ class J1Core(wordSize     : Int =  16,
   // Increment for data stack pointer
   val rStackPointerInc = SInt(log2Up(stackDepth) bits)
 
-  // Handle update of return stack
+  // Handle the update of return stack
   switch(instr(instr.high downto (instr.high - 3) + 1)) {
 
     // Call instruction (push return address to stack)
     is(M"010") {rStackWrite := True; rStackPointerInc := 1}
 
     // Conditional jump (maybe we have to push)
-    is(M"011") {rStackWrite := funcTtoR; rStackPointerInc := instr(3 downto 2).asSInt}
+    is(M"011") {rStackWrite := funcTtoR; rStackPointerInc := instr(3 downto 2).resize(log2Up(stackDepth)).asSInt}
 
     // Don't change the return stack by default
     default {rStackWrite := False; rStackPointerInc := 0}
@@ -178,7 +184,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"000-",M"010-",M"001-") {pc := instr(addrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0111") {pc := rtos.asUInt}
+    is(M"0111") {pc := rtos(addrWidth - 1 downto 0).asUInt}
 
     // By default goto next instruction
     default {pc := pc + 1}
