@@ -75,8 +75,8 @@ class J1Core(wordSize     : Int =  16,
 
   // Calculate a possible value for top of return stack (check for conditional jump)
   val rtosN = Mux(instr(wordSize - 2) === True,
-    ((pc + 1).asBits ## B(0, log2Up(wordSize >> 3) bits)).resize(wordSize),
-    dtos)
+                  ((pc + 1).asBits ## B(0, log2Up(wordSize >> 3) bits)).resize(wordSize),
+                  dtos)
 
   // Return stack write port
   rStack.write(enable  = rStackWrite,

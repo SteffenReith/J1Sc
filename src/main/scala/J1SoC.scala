@@ -61,15 +61,15 @@ class J1SoC extends Component {
   instr := mainMem.readAsync(address = instrAddress)
 
   // Create a new CPU core
-  val coreJ2CPU = new J1Core
+  val coreJ1CPU = new J1Core
 
   // connect the CPU core
-  writeEnable := coreJ2CPU.io.writeEnable
-  dataAddress := coreJ2CPU.io.dataAddress
-  dataWrite := coreJ2CPU.io.dataWrite
-  coreJ2CPU.io.dataRead := dataRead
-  instrAddress := coreJ2CPU.io.instrAddress
-  coreJ2CPU.io.instr := instr
+  writeEnable := coreJ1CPU.io.writeEnable
+  dataAddress := coreJ1CPU.io.dataAddress
+  dataWrite := coreJ1CPU.io.dataWrite
+  coreJ1CPU.io.dataRead := dataRead
+  instrAddress := coreJ1CPU.io.instrAddress
+  coreJ1CPU.io.instr := instr
 
 }
 
@@ -77,13 +77,13 @@ object J1SoC {
 
   // Make the reset synchron and use the rising edge
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
-    resetKind        = SYNC,
-    resetActiveLevel = HIGH)
+                                            resetKind        = SYNC,
+                                            resetActiveLevel = HIGH)
 
   def main(args: Array[String]) {
 
     // Generate HDL files
-    SpinalConfig(genVhdlPkg = false,
+    SpinalConfig(genVhdlPkg = true,
                  defaultConfigForClockDomains = globalClockConfig,
                  targetDirectory="gen/src/vhdl").generateVhdl(new J1SoC)
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
