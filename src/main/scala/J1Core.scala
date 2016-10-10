@@ -6,8 +6,8 @@
  * Module Name:    J1Sc
  * Project Name:   J1Sc - A simple J1 implementation in Scala
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 9300651a2643c885bebe37daac50f3f3dd269f53
+ * Date: Mon Oct 10 19:40:26 2016 +0200
  */
 import spinal.core._
 import spinal.lib._
@@ -193,25 +193,5 @@ class J1Core(wordSize     : Int =  16,
 
   // Use PC as address of instruction memory
   io.instrAddress := pc
-
-}
-
-object J1Core {
-
-  // Make the reset synchron and use the rising edge
-  val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
-                                            resetKind        = SYNC,
-                                            resetActiveLevel = HIGH)
-
-  def main(args: Array[String]) {
-
-    // Generate HDL files
-    SpinalConfig(genVhdlPkg = true,
-                 defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/vhdl").generateVhdl(new J1Core)
-    SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/verilog").generateVerilog(new J1Core)
-
-  }
 
 }

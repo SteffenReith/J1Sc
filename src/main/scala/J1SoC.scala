@@ -6,8 +6,8 @@
  * Module Name:    J1Core - Toplevel
  * Project Name:   J1Sc - A simple J1 implementation in scala
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: ece2c62952a1dd372f706f2c3f2c22e368410ec9
+ * Date: Mon Oct 10 19:37:29 2016 +0200
  */
 import spinal.core._
 import spinal.lib._
@@ -85,9 +85,9 @@ object J1SoC {
     // Generate HDL files
     SpinalConfig(genVhdlPkg = true,
                  defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/vhdl").generateVhdl(new J1SoC)
+                 targetDirectory="gen/src/vhdl").generateVhdl(new J1SoC).printPruned()
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/verilog").generateVerilog(new J1SoC)
+                 targetDirectory="gen/src/verilog").generateVerilog(new J1SoC).printPruned()
 
   }
 
