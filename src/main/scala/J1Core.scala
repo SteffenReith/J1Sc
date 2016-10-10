@@ -6,8 +6,8 @@
  * Module Name:    J1Sc
  * Project Name:   J1Sc - A simple J1 implementation in Scala
  *
- * Hash: bc807384d0d2b794942f61aab9c8f504ae031538
- * Date: Wed Sep 21 00:06:08 2016 +0200
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.core._
 import spinal.lib._
@@ -20,7 +20,7 @@ class J1Core(wordSize     : Int =  16,
   // I/O ports
   val io = new Bundle {
 
-    // I/O signals for memory data port
+    // Signals for memory data port
     val writeEnable = out Bool
     val dataAddress = out UInt(addrWidth bits)
     val dataWrite = out Bits(wordSize bits)
