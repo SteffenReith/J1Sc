@@ -206,12 +206,11 @@ object J1Core {
   def main(args: Array[String]) {
 
     // Generate HDL files
-    SpinalConfig(genVhdlPkg = false,
-      defaultConfigForClockDomains = globalClockConfig,
-      targetDirectory="gen/src/vhdl").generateVhdl(new J1Core)
-    SpinalConfig(genVhdlPkg = false,
-      defaultConfigForClockDomains = globalClockConfig,
-      targetDirectory="gen/src/verilog").generateVerilog(new J1Core)
+    SpinalConfig(genVhdlPkg = true,
+                 defaultConfigForClockDomains = globalClockConfig,
+                 targetDirectory="gen/src/vhdl").generateVhdl(new J1Core)
+    SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
+                 targetDirectory="gen/src/verilog").generateVerilog(new J1Core)
 
   }
 

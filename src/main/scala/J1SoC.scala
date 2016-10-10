@@ -41,7 +41,7 @@ class J1SoC extends Component {
   io.writeEnable := writeEnable
   io.dataAddress := dataAddress
   io.dataWrite := dataWrite
-  dataRead := io.dataRead;
+  dataRead := io.dataRead
 
   // Create main memory
   val content = List(B"1000_0000_0000_0111", // Push 7
@@ -77,8 +77,8 @@ object J1SoC {
 
   // Make the reset synchron and use the rising edge
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
-                                            resetKind        = SYNC,
-                                            resetActiveLevel = HIGH)
+    resetKind        = SYNC,
+    resetActiveLevel = HIGH)
 
   def main(args: Array[String]) {
 
@@ -86,8 +86,7 @@ object J1SoC {
     SpinalConfig(genVhdlPkg = false,
                  defaultConfigForClockDomains = globalClockConfig,
                  targetDirectory="gen/src/vhdl").generateVhdl(new J1SoC)
-    SpinalConfig(genVhdlPkg = false,
-                 defaultConfigForClockDomains = globalClockConfig,
+    SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
                  targetDirectory="gen/src/verilog").generateVerilog(new J1SoC)
 
   }
