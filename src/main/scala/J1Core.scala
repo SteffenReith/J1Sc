@@ -32,13 +32,6 @@ class J1Core(wordSize     : Int =  16,
 
   }.setName("")
 
-  // Write Enable
-  // DataAddress
-  // DataWrite
-  io.writeEnable := False;
-  io.dataAddress := 0;
-  io.dataWrite := B(0, wordSize bits)
-
   // Programm counter (PC)
   val pc = Reg(UInt(addrWidth bits)) init(startAddress)
 
@@ -111,8 +104,8 @@ class J1Core(wordSize     : Int =  16,
     is(M"011-0100") {dtosN := dtos | dnos}
     is(M"011-0101") {dtosN := dtos ^ dnos}
     is(M"011-0110") {dtosN := ~dtos}
-    is(M"011-1001") {dtosN := dtos >> dnos(log2Up(wordSize - 1) downto 0).asUInt}
-    is(M"011-1010") {dtosN := dtos << dnos(log2Up(wordSize - 1) downto 0).asUInt}
+    is(M"011-1001") {dtosN := dtos.rotateLeft(dnos(log2Up(wordSize) - 1 downto 0).asUInt)}
+    is(M"011-1010") {dtosN := dtos >> dnos(log2Up(wordSize) - 1 downto 0).asUInt}
 
     // ALU operations using the rtos
     is(M"011-1011") {dtosN := rtos}
@@ -122,17 +115,17 @@ class J1Core(wordSize     : Int =  16,
 
   }
 
+  // Internal condition flags
   val funcTtoN  = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
   val funcTtoR  = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
-  val funcWrite = (instr(6 downto 4).asUInt === 3) 
-  val funcIOW   = (instr(6 downto 4).asUInt === 4)
-  val isALU     = (instr(instr.high downto (instr.high - 3) + 1) === B"b011");
+  val funcWrite = (instr(6 downto 4).asUInt === 3) // Write to RAM
+  val funcIOW   = (instr(6 downto 4).asUInt === 4) // I/O operation
+  val isALU     = (instr(instr.high downto (instr.high - 3) + 1) === B"b011"); // ALU operation
 
-  //assign mem_wr = !reboot & is_alu & func_write;
-  //assign dout = st1;
-  //assign io_wr = !reboot & is_alu & func_iow;
-
-  //assign rstkD = (insn[13] == 1'b0) ? {{(`WIDTH - 14){1'b0}}, pc_plus_1, 1'b0} : st0;
+  // Signals for handling external memory
+  io.writeEnable := isALU && funcWrite
+  io.dataAddress := dtos(addrWidth - 1 downto 0).asUInt
+  io.dataWrite   := dnos
 
   // Increment for data stack pointer
   val dStackPointerInc = SInt(log2Up(stackDepth) bits)
@@ -147,7 +140,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"001") {dStackWrite := False; dStackPointerInc := -1}
 
     // ALU instruction
-    is(M"011"){dStackWrite := funcTtoN; dStackPointerInc := instr(1 downto 0).asSInt}
+    is(M"011"){dStackWrite := funcTtoN; dStackPointerInc := instr(1 downto 0).resize(log2Up(stackDepth)).asSInt}
 
     // Don't change the data stack by default
     default {dStackWrite := False; dStackPointerInc := 0}

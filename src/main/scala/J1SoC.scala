@@ -27,7 +27,6 @@ class J1SoC extends Component {
     val writeEnable = out Bool
     val dataAddress  = out UInt(addrWidth bits)
     val dataWrite = out Bits(wordSize bits)
-    val dataRead  = in Bits(wordSize bits)
 
   }.setName("")
 
@@ -41,7 +40,6 @@ class J1SoC extends Component {
   io.writeEnable := writeEnable
   io.dataAddress := dataAddress
   io.dataWrite := dataWrite
-  dataRead := io.dataRead
 
   // Create main memory
   val content = List(B"1000_0000_0000_0111", // Push 7
@@ -55,7 +53,7 @@ class J1SoC extends Component {
                 data    = dataWrite);
   dataRead := mainMem.readAsync(address = dataAddress)
 
-  // Instruction port
+  // Instruction port (read only)
   val instr = Bits(wordSize bits)
   val instrAddress = UInt(addrWidth bits)
   instr := mainMem.readAsync(address = instrAddress)
