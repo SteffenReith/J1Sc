@@ -22,7 +22,7 @@ library std;
 use std.textio.all;
 
 entity J1SoC_tb is
-end J1SoC_tb
+end J1SoC_tb;
 
 architecture Behavioral of J1SoC_tb is
 
@@ -70,7 +70,7 @@ begin
     writeline(output, lineBuffer);
 
     -- Reset the CPU
-    clr <= '1';
+    reset <= '1';
 
     -- Wait 20ns
     wait for 20ns;
@@ -79,7 +79,7 @@ begin
     wait until rising_edge(clk);
     
     -- Revoke the the reset
-    clr <= '0';
+    reset <= '0';
 
     -- Simply wait forever
     wait;

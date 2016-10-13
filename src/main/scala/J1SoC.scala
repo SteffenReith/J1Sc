@@ -43,7 +43,11 @@ class J1SoC extends Component {
 
   // Create main memory
   val content = List(B"1000_0000_0000_0111", // Push 7
-                     B"0000_0000_0000_0001") // Jump 1
+                     B"1000_0000_0000_0011", // Push 3
+                     B"0000_0000_0000_0100", // Jump 4
+                     B"1000_0000_0000_0001", // Push 1
+                     B"0000_0000_0000_0100") // Jump 4
+
   val mainMem = Mem(Bits(wordSize bits),
                     content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
 
@@ -59,7 +63,7 @@ class J1SoC extends Component {
   instr := mainMem.readAsync(address = instrAddress)
 
   // Create a new CPU core
-  val coreJ1CPU = new J1Core
+  val coreJ1CPU = new J1Core(stackDepth = 16)
 
   // connect the CPU core
   writeEnable := coreJ1CPU.io.writeEnable
