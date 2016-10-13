@@ -105,7 +105,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"011-0101") {dtosN := dtos ^ dnos}
     is(M"011-0110") {dtosN := ~dtos}
     is(M"011-1001") {dtosN := dtos.rotateLeft(dnos(log2Up(wordSize) - 1 downto 0).asUInt)}
-    is(M"011-1010") {dtosN := dtos >> dnos(log2Up(wordSize) - 1 downto 0).asUInt}
+    is(M"011-1010") {dtosN := dtos.rotateRight(dnos(log2Up(wordSize) - 1 downto 0).asUInt)}
 
     // ALU operations using the rtos
     is(M"011-1011") {dtosN := rtos}

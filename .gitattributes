@@ -1,2 +1,3 @@
 *.scala filter=keywords
+*.vhdl  filter=keywords
 
