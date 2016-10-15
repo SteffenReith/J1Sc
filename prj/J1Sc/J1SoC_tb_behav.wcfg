@@ -13,10 +13,10 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="146000001fs"></ZoomEndTime>
+      <ZoomEndTime time="146400001fs"></ZoomEndTime>
       <Cursor1Time time="25000000fs"></Cursor1Time>
    </zoom_setting>
-   <WVObjectSize size="19" />
+   <WVObjectSize size="22" />
    <wvobject type="logic" fp_name="/J1SoC_tb/writeEnable">
       <obj_property name="ElementShortName">writeEnable</obj_property>
       <obj_property name="ObjectShortName">writeEnable</obj_property>
@@ -33,17 +33,42 @@
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/reset">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
+   <wvobject type="logic" fp_name="/J1SoC_tb/clr">
+      <obj_property name="ElementShortName">clr</obj_property>
+      <obj_property name="ObjectShortName">clr</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtos">
+      <obj_property name="ElementShortName">dtos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtosN">
+      <obj_property name="ElementShortName">dtosN[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dtosN[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dnos">
+      <obj_property name="ElementShortName">dnos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackWrite">
+      <obj_property name="ElementShortName">dStackWrite</obj_property>
+      <obj_property name="ObjectShortName">dStackWrite</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtr">
       <obj_property name="ElementShortName">dStackPtr[3:0]</obj_property>
       <obj_property name="ObjectShortName">dStackPtr[3:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackWrite">
-      <obj_property name="ElementShortName">dStackWrite</obj_property>
-      <obj_property name="ObjectShortName">dStackWrite</obj_property>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStack">
+      <obj_property name="ElementShortName">dStack[0:9][15:0]</obj_property>
+      <obj_property name="ObjectShortName">dStack[0:9][15:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rtos">
+      <obj_property name="ElementShortName">rtos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rtos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rtosN">
+      <obj_property name="ElementShortName">rtosN[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rtosN[15:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackPtr">
       <obj_property name="ElementShortName">rStackPtr[3:0]</obj_property>
@@ -53,22 +78,9 @@
       <obj_property name="ElementShortName">rStackWrite</obj_property>
       <obj_property name="ObjectShortName">rStackWrite</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtos">
-      <obj_property name="ElementShortName">dtos[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dnos">
-      <obj_property name="ElementShortName">dnos[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStack">
-      <obj_property name="ElementShortName">dStack[0:15][15:0]</obj_property>
-      <obj_property name="ObjectShortName">dStack[0:15][15:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStack">
-      <obj_property name="ElementShortName">rStack[0:15][15:0]</obj_property>
-      <obj_property name="ObjectShortName">rStack[0:15][15:0]</obj_property>
+      <obj_property name="ElementShortName">rStack[0:9][15:0]</obj_property>
+      <obj_property name="ObjectShortName">rStack[0:9][15:0]</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/isALU">
       <obj_property name="ElementShortName">isALU</obj_property>

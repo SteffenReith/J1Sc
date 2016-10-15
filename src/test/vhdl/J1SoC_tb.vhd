@@ -7,8 +7,8 @@
 -- Module Name:    J1SoC_TB - A simple testbench for the J1 SoC
 -- Project Name:   J1Sc - A simple J1 implementation in scala
 --
--- Hash: <COMMITHASH>
--- Date: <AUTHORDATE>
+-- Hash: 1b3295f774ff2c8b47708463c37a618a142d1345
+-- Date: Thu Oct 13 21:09:18 2016 +0200
 --------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -28,15 +28,15 @@ architecture Behavioral of J1SoC_tb is
 
   -- Clock period definition (100Mhz)
   constant clk_period : time := 10 ns;
-  
+
   -- I/O signals for memory bus
   signal writeEnable : std_logic;
   signal dataAddress : unsigned(12 downto 0);
   signal dataWrite   : std_logic_vector(15 downto 0);
 
   -- Clock and reset 
-  signal clk   : std_logic;
-  signal reset : std_logic;
+  signal clk : std_logic;
+  signal clr : std_logic;
 
 begin
 
@@ -46,7 +46,7 @@ begin
       dataAddress => dataAddress,
       dataWrite   => dataWrite,
       clk         => clk,
-      reset       => reset);
+      clr         => clr);
 
   -- Clock process definitions
   clk_process : process
@@ -70,16 +70,16 @@ begin
     writeline(output, lineBuffer);
 
     -- Reset the CPU
-    reset <= '1';
+    clr <= '1';
 
-    -- Wait 20ns
-    wait for 20ns;
+    -- Wait 30ns
+    wait for 30ns;
 
     -- Wait for the next rising edge
     wait until rising_edge(clk);
-    
+
     -- Revoke the the reset
-    reset <= '0';
+    clr <= '0';
 
     -- Simply wait forever
     wait;
