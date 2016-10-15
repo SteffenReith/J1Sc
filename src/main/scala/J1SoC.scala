@@ -12,13 +12,10 @@
 import spinal.core._
 import spinal.lib._
 
-class J1SoC extends Component {
-
-  // Configure CPU core 
-  val wordSize      =  16
-  val stackDepth    = 256
-  val addrWidth     =  13
-  val startAddress  =   0
+class J1SoC (wordSize     : Int =  16,
+             stackDepth   : Int = 256,
+             addrWidth    : Int =  13,
+             startAddress : Int =   0) extends Component {
 
   // I/O ports
   val io = new Bundle {
@@ -63,7 +60,7 @@ class J1SoC extends Component {
   instr := mainMem.readAsync(address = instrAddress)
 
   // Create a new CPU core
-  val coreJ1CPU = new J1Core(stackDepth = 16)
+  val coreJ1CPU = new J1Core(stackDepth = 10)
 
   // connect the CPU core
   writeEnable := coreJ1CPU.io.writeEnable
@@ -87,9 +84,21 @@ object J1SoC {
     // Generate HDL files
     SpinalConfig(genVhdlPkg = true,
                  defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/vhdl").generateVhdl(new J1SoC).printPruned()
+                 targetDirectory="gen/src/vhdl").generateVhdl({
+
+                                                                // Set name for the synchronous reset
+                                                                ClockDomain.current.reset.setName("clr")
+                                                                new J1SoC(stackDepth = 10)
+
+                                                              }).printPruned()
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/verilog").generateVerilog(new J1SoC).printPruned()
+                 targetDirectory="gen/src/verilog").generateVerilog({
+
+                                                                      // Set name for the synchronous reset
+                                                                      ClockDomain.current.reset.setName("clr")
+                                                                      new J1SoC(stackDepth = 10)
+
+                                                                    }).printPruned()
 
   }
 
