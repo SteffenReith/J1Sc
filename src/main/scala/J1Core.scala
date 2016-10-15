@@ -39,13 +39,13 @@ class J1Core(wordSize     : Int =  16,
   val instr = io.instr
 
   // Data stack pointer (init to first entry)
-  val dStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(0)  
+  val dStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 1)
 
   // Write enable signal for data stack
   val dStackWrite : Bool = False
 
   // Return stack pointer (init to first entry)
-  val rStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(0)
+  val rStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 1)
 
   // Write enable for return stack
   val rStackWrite : Bool = False
@@ -55,16 +55,16 @@ class J1Core(wordSize     : Int =  16,
   val rStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
 
   // Top of stack (do not init, hence undefined value after startup)
-  val dtos = Reg(Bits(wordSize bits)) init(0)
-
-  // Next of data stack (read port)
-  val dnos = dStack.readAsync(address = dStackPtr);
+  val dtos = Reg(Bits(wordSize bits)) init(255)
+  val dtosN = Bits(wordSize bits)
 
   // Data stack write port
-  val dtosN = Bits(wordSize bits)
   dStack.write(enable  = dStackWrite,
                address = dStackPtr,
-               data    = dtosN)
+               data    = dtos)
+
+  // Next of data stack (read port)
+  val dnos = dStack.readAsync(address = dStackPtr)
 
   // Calculate a possible value for top of return stack (check for conditional jump)
   val rtosN = Mux(instr(wordSize - 2) === True,
@@ -115,6 +115,9 @@ class J1Core(wordSize     : Int =  16,
 
   }
 
+  // Write ALU result back to top of data stack
+  dtos := dtosN
+
   // Internal condition flags
   val funcTtoN  = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
   val funcTtoR  = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
@@ -124,8 +127,8 @@ class J1Core(wordSize     : Int =  16,
 
   // Signals for handling external memory
   io.writeEnable := isALU && funcWrite
-  io.dataAddress := dtos(addrWidth - 1 downto 0).asUInt
-  io.dataWrite   := dnos
+  io.dataAddress := dtosN(addrWidth - 1 downto 0).asUInt
+  io.dataWrite   := dtosN
 
   // Increment for data stack pointer
   val dStackPointerInc = SInt(log2Up(stackDepth) bits)

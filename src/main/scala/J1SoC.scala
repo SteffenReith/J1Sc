@@ -17,6 +17,11 @@ class J1SoC (wordSize     : Int =  16,
              addrWidth    : Int =  13,
              startAddress : Int =   0) extends Component {
 
+  // Check the generic parameters
+  assert(assertion = Bool(isPow2(stackDepth)),
+         message   = "Depth of data stack has to be a power of two",
+         severity  = FAILURE)
+
   // I/O ports
   val io = new Bundle {
 
@@ -60,7 +65,7 @@ class J1SoC (wordSize     : Int =  16,
   instr := mainMem.readAsync(address = instrAddress)
 
   // Create a new CPU core
-  val coreJ1CPU = new J1Core(stackDepth = 10)
+  val coreJ1CPU = new J1Core(wordSize, stackDepth, addrWidth, startAddress)
 
   // connect the CPU core
   writeEnable := coreJ1CPU.io.writeEnable
@@ -88,7 +93,7 @@ object J1SoC {
 
                                                                 // Set name for the synchronous reset
                                                                 ClockDomain.current.reset.setName("clr")
-                                                                new J1SoC(stackDepth = 10)
+                                                                new J1SoC(stackDepth = 8)
 
                                                               }).printPruned()
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
@@ -96,7 +101,7 @@ object J1SoC {
 
                                                                       // Set name for the synchronous reset
                                                                       ClockDomain.current.reset.setName("clr")
-                                                                      new J1SoC(stackDepth = 10)
+                                                                      new J1SoC(stackDepth = 8)
 
                                                                     }).printPruned()
 
