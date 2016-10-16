@@ -38,17 +38,18 @@ class J1Core(wordSize     : Int =  16,
   // Instruction to be excuted
   val instr = io.instr
 
-  // Data stack pointer (init to first entry)
-  val dStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 1)
+  // Data stack pointer (set to first entry, which can be abitrary)
+  val dStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 2)
+  val dStackPtrN = UInt(log2Up(stackDepth) bits)
 
   // Write enable signal for data stack
-  val dStackWrite : Bool = False
+  val dStackWrite = Bool
 
-  // Return stack pointer (init to first entry)
-  val rStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 1)
+  // Return stack pointer (set to first entry, which can be abitrary)
+  val rStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 2)
 
   // Write enable for return stack
-  val rStackWrite : Bool = False
+  val rStackWrite = Bool
 
   // Data and return stack (do not init, hence undefined value after startup) 
   val dStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
@@ -60,7 +61,7 @@ class J1Core(wordSize     : Int =  16,
 
   // Data stack write port
   dStack.write(enable  = dStackWrite,
-               address = dStackPtr,
+               address = dStackPtrN,
                data    = dtos)
 
   // Next of data stack (read port)
@@ -151,7 +152,8 @@ class J1Core(wordSize     : Int =  16,
   }
 
   // Update the data stack pointer
-  dStackPtr := (dStackPtr.asSInt + dStackPointerInc).asUInt
+  dStackPtrN := (dStackPtr.asSInt + dStackPointerInc).asUInt
+  dStackPtr := dStackPtrN
 
   // Increment for data stack pointer
   val rStackPointerInc = SInt(log2Up(stackDepth) bits)

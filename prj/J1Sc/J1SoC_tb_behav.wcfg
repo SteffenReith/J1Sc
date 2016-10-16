@@ -12,9 +12,9 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="160200001fs"></ZoomEndTime>
-      <Cursor1Time time="45000000fs"></Cursor1Time>
+      <ZoomStartTime time="866500000fs"></ZoomStartTime>
+      <ZoomEndTime time="1026700001fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
    </zoom_setting>
    <WVObjectSize size="22" />
    <wvobject type="logic" fp_name="/J1SoC_tb/writeEnable">
@@ -45,21 +45,9 @@
       <obj_property name="ElementShortName">pc[12:0]</obj_property>
       <obj_property name="ObjectShortName">pc[12:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtos">
-      <obj_property name="ElementShortName">dtos[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FF0000</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtosN">
       <obj_property name="ElementShortName">dtosN[15:0]</obj_property>
       <obj_property name="ObjectShortName">dtosN[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dnos">
-      <obj_property name="ElementShortName">dnos[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FF0000</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackWrite">
       <obj_property name="ElementShortName">dStackWrite</obj_property>
@@ -68,6 +56,18 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtr">
       <obj_property name="ElementShortName">dStackPtr[2:0]</obj_property>
       <obj_property name="ObjectShortName">dStackPtr[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtos">
+      <obj_property name="ElementShortName">dtos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dnos">
+      <obj_property name="ElementShortName">dnos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStack">
       <obj_property name="ElementShortName">dStack[0:7][15:0]</obj_property>

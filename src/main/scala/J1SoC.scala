@@ -18,9 +18,7 @@ class J1SoC (wordSize     : Int =  16,
              startAddress : Int =   0) extends Component {
 
   // Check the generic parameters
-  assert(assertion = Bool(isPow2(stackDepth)),
-         message   = "Depth of data stack has to be a power of two",
-         severity  = FAILURE)
+  assert(isPow2(stackDepth),"Depth of data stack has to be a power of two")
 
   // I/O ports
   val io = new Bundle {
@@ -48,7 +46,9 @@ class J1SoC (wordSize     : Int =  16,
                      B"1000_0000_0000_0011", // Push 3
                      B"0000_0000_0000_0100", // Jump 4
                      B"1000_0000_0000_0001", // Push 1
-                     B"0000_0000_0000_0100") // Jump 4
+                     B"1000_0000_0000_1111", // Push 15
+                     B"0110_0001_0000_0000", // Add
+                     B"0000_0000_0000_0110") // Jump 6
 
   val mainMem = Mem(Bits(wordSize bits),
                     content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
