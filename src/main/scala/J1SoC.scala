@@ -62,7 +62,7 @@ class J1SoC (wordSize     : Int =  16,
   // Instruction port (read only)
   val instr = Bits(wordSize bits)
   val instrAddress = UInt(addrWidth bits)
-  instr := mainMem.readAsync(address = instrAddress)
+  instr := mainMem.readSync(address = instrAddress)
 
   // Create a new CPU core
   val coreJ1CPU = new J1Core(wordSize, stackDepth, addrWidth, startAddress)

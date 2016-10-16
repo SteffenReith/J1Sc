@@ -34,6 +34,7 @@ class J1Core(wordSize     : Int =  16,
 
   // Programm counter (PC)
   val pc = Reg(UInt(addrWidth bits)) init(startAddress)
+  val pcN = UInt(addrWidth bits)
 
   // Instruction to be excuted
   val instr = io.instr
@@ -65,7 +66,7 @@ class J1Core(wordSize     : Int =  16,
                data    = dtos)
 
   // Next of data stack (read port)
-  val dnos = dStack.readAsync(address = dStackPtr)
+  val dnos = dStack.readSync(address = dStackPtr)
 
   // Calculate a possible value for top of return stack (check for conditional jump)
   val rtosN = Mux(instr(wordSize - 2) === True,
@@ -78,7 +79,7 @@ class J1Core(wordSize     : Int =  16,
                data    = rtosN)
 
   // Top of return stack (read port)
-  val rtos = rStack.readAsync(address = rStackPtr)
+  val rtos = rStack.readSync(address = rStackPtr)
 
   // Instruction decoder (including ALU operations)
   switch(instr(instr.high downto (instr.high - 8) + 1)) {
@@ -179,17 +180,20 @@ class J1Core(wordSize     : Int =  16,
   switch(instr(instr.high downto (instr.high - 4) + 1)) {
 
     // Check for jump, call and cond. jump instruction
-    is(M"000-",M"010-",M"001-") {pc := instr(addrWidth - 1 downto 0).asUInt}
+    is(M"000-",M"010-",M"001-") {pcN := instr(addrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0111") {pc := rtos(addrWidth - 1 downto 0).asUInt}
+    is(M"0111") {pcN := rtos(addrWidth - 1 downto 0).asUInt}
 
     // By default goto next instruction
-    default {pc := pc + 1}
+    default {pcN := pc + 1}
 
   }
 
+  // Update the PC
+  pc := pcN
+
   // Use PC as address of instruction memory
-  io.instrAddress := pc
+  io.instrAddress := pcN
 
 }
