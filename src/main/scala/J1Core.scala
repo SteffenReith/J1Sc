@@ -66,7 +66,7 @@ class J1Core(wordSize     : Int =  16,
                data    = dtos)
 
   // Next of data stack (read port)
-  val dnos = dStack.readSync(address = dStackPtr)
+  val dnos = dStack.readAsync(address = dStackPtr)
 
   // Calculate a possible value for top of return stack (check for conditional jump)
   val rtosN = Mux(instr(wordSize - 2) === True,
@@ -79,7 +79,7 @@ class J1Core(wordSize     : Int =  16,
                data    = rtosN)
 
   // Top of return stack (read port)
-  val rtos = rStack.readSync(address = rStackPtr)
+  val rtos = rStack.readAsync(address = rStackPtr)
 
   // Instruction decoder (including ALU operations)
   switch(instr(instr.high downto (instr.high - 8) + 1)) {
@@ -177,13 +177,16 @@ class J1Core(wordSize     : Int =  16,
   rStackPtr := (rStackPtr.asSInt + rStackPointerInc).asUInt
 
   // Handle the PC 
-  switch(instr(instr.high downto (instr.high - 4) + 1)) {
+  switch(ClockDomain.current.isResetActive ## instr(instr.high downto (instr.high - 4) + 1)) {
+
+    // Check if we are in reset state
+    is(M"1----") {pcN := 0}
 
     // Check for jump, call and cond. jump instruction
-    is(M"000-",M"010-",M"001-") {pcN := instr(addrWidth - 1 downto 0).asUInt}
+    is(M"0000-",M"0010-",M"0001-") {pcN := instr(addrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0111") {pcN := rtos(addrWidth - 1 downto 0).asUInt}
+    is(M"00111") {pcN := rtos(addrWidth - 1 downto 0).asUInt}
 
     // By default goto next instruction
     default {pcN := pc + 1}

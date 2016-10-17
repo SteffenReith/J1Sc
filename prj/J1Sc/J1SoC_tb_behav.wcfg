@@ -12,11 +12,11 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="866500000fs"></ZoomStartTime>
-      <ZoomEndTime time="1026700001fs"></ZoomEndTime>
-      <Cursor1Time time="1000000000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="110800001fs"></ZoomEndTime>
+      <Cursor1Time time="35000000fs"></Cursor1Time>
    </zoom_setting>
-   <WVObjectSize size="22" />
+   <WVObjectSize size="23" />
    <wvobject type="logic" fp_name="/J1SoC_tb/writeEnable">
       <obj_property name="ElementShortName">writeEnable</obj_property>
       <obj_property name="ObjectShortName">writeEnable</obj_property>
@@ -44,6 +44,10 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/pc">
       <obj_property name="ElementShortName">pc[12:0]</obj_property>
       <obj_property name="ObjectShortName">pc[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/pcN">
+      <obj_property name="ElementShortName">pcN[12:0]</obj_property>
+      <obj_property name="ObjectShortName">pcN[12:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtosN">
       <obj_property name="ElementShortName">dtosN[15:0]</obj_property>
