@@ -13,10 +13,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="110800001fs"></ZoomEndTime>
-      <Cursor1Time time="35000000fs"></Cursor1Time>
+      <ZoomEndTime time="34000001fs"></ZoomEndTime>
+      <Cursor1Time time="85000000fs"></Cursor1Time>
    </zoom_setting>
-   <WVObjectSize size="23" />
+   <column_width_setting>
+      <NameColumnWidth column_width="178"></NameColumnWidth>
+      <ValueColumnWidth column_width="330"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="26" />
    <wvobject type="logic" fp_name="/J1SoC_tb/writeEnable">
       <obj_property name="ElementShortName">writeEnable</obj_property>
       <obj_property name="ObjectShortName">writeEnable</obj_property>
@@ -61,6 +65,10 @@
       <obj_property name="ElementShortName">dStackPtr[2:0]</obj_property>
       <obj_property name="ObjectShortName">dStackPtr[2:0]</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtrN">
+      <obj_property name="ElementShortName">dStackPtrN[2:0]</obj_property>
+      <obj_property name="ObjectShortName">dStackPtrN[2:0]</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtos">
       <obj_property name="ElementShortName">dtos[15:0]</obj_property>
       <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
@@ -72,6 +80,10 @@
       <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
       <obj_property name="CustomSignalColor">#FF0000</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPointerInc">
+      <obj_property name="ElementShortName">dStackPointerInc[2:0]</obj_property>
+      <obj_property name="ObjectShortName">dStackPointerInc[2:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStack">
       <obj_property name="ElementShortName">dStack[0:7][15:0]</obj_property>
@@ -93,6 +105,10 @@
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackWrite">
       <obj_property name="ElementShortName">rStackWrite</obj_property>
       <obj_property name="ObjectShortName">rStackWrite</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackPointerInc">
+      <obj_property name="ElementShortName">rStackPointerInc[2:0]</obj_property>
+      <obj_property name="ObjectShortName">rStackPointerInc[2:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStack">
       <obj_property name="ElementShortName">rStack[0:7][15:0]</obj_property>
