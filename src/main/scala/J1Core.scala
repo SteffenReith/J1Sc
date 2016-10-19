@@ -145,7 +145,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"001") {dStackWrite := False; dStackPointerInc := -1}
 
     // ALU instruction
-    is(M"011"){dStackWrite := funcTtoN; dStackPointerInc := instr(1 downto 0).resize(log2Up(stackDepth)).asSInt}
+    is(M"011"){dStackWrite := funcTtoN; dStackPointerInc := instr(1 downto 0).asSInt.resize(log2Up(stackDepth))}
 
     // Don't change the data stack by default
     default {dStackWrite := False; dStackPointerInc := 0}
@@ -166,7 +166,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"010") {rStackWrite := True; rStackPointerInc := 1}
 
     // Conditional jump (maybe we have to push)
-    is(M"011") {rStackWrite := funcTtoR; rStackPointerInc := instr(3 downto 2).resize(log2Up(stackDepth)).asSInt}
+    is(M"011") {rStackWrite := funcTtoR; rStackPointerInc := instr(3 downto 2).asSInt.resize(log2Up(stackDepth))}
 
     // Don't change the return stack by default
     default {rStackWrite := False; rStackPointerInc := 0}
@@ -180,7 +180,7 @@ class J1Core(wordSize     : Int =  16,
   switch(ClockDomain.current.isResetActive ## instr(instr.high downto (instr.high - 4) + 1)) {
 
     // Check if we are in reset state
-    is(M"1----") {pcN := 0}
+    is(M"1----") {pcN := startAddress}
 
     // Check for jump, call and cond. jump instruction
     is(M"0000-",M"0010-",M"0001-") {pcN := instr(addrWidth - 1 downto 0).asUInt}
