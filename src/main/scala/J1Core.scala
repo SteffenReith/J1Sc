@@ -145,7 +145,8 @@ class J1Core(wordSize     : Int =  16,
     is(M"001") {dStackWrite := False; dStackPointerInc := -1}
 
     // ALU instruction
-    is(M"011"){dStackWrite := funcTtoN; dStackPointerInc := instr(1 downto 0).asSInt.resize(log2Up(stackDepth))}
+    is(M"011"){dStackWrite := funcTtoN | (instr(1 downto 0) === B"01")
+               dStackPointerInc := instr(1 downto 0).asSInt.resize(log2Up(stackDepth))}
 
     // Don't change the data stack by default
     default {dStackWrite := False; dStackPointerInc := 0}

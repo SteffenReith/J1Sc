@@ -47,9 +47,10 @@ class J1SoC (wordSize     : Int =  16,
                      B"0000_0000_0000_0100", // Jump 4
                      B"1000_0000_0000_0001", // Push 1
                      B"1000_0000_0000_1111", // Push 15
-                     B"0110_0010_0000_0011", // Add and push
+                     B"0110_0010_0000_0011", // Add, drop and push
+                     B"0110_0010_0000_0001", // Add and push
                      B"0110_0010_0000_0000", // Add and no push
-                     B"0000_0000_0000_0111") // Jump 7
+                     B"0000_0000_0000_1000") // Jump 8
 
   val mainMem = Mem(Bits(wordSize bits),
                     content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
