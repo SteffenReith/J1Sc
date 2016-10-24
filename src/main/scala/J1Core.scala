@@ -46,8 +46,9 @@ class J1Core(wordSize     : Int =  16,
   // Write enable signal for data stack
   val dStackWrite = Bool
 
-  // Return stack pointer (set to first entry, which can be abitrary)
-  val rStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 2)
+  // Return stack pointer, set to first entry (can be abitrary) s.t. the first write takes place at index 0
+  val rStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 1)
+  val rStackPtrN = UInt(log2Up(stackDepth) bits)
 
   // Write enable for return stack
   val rStackWrite = Bool
@@ -69,13 +70,13 @@ class J1Core(wordSize     : Int =  16,
   val dnos = dStack.readAsync(address = dStackPtr)
 
   // Calculate a possible value for top of return stack (check for conditional jump)
-  val rtosN = Mux(instr(wordSize - 2) === True,
-                  ((pc + 1).asBits ## B(0, log2Up(wordSize >> 3) bits)).resize(wordSize),
+  val rtosN = Mux(instr(instr.high - 3 + 1)  === False,
+                  (pc + 1).asBits.resize(wordSize),
                   dtos)
 
   // Return stack write port
   rStack.write(enable  = rStackWrite,
-               address = rStackPtr,
+               address = rStackPtrN,
                data    = rtosN)
 
   // Top of return stack (read port)
@@ -133,52 +134,53 @@ class J1Core(wordSize     : Int =  16,
   io.dataWrite   := dtosN
 
   // Increment for data stack pointer
-  val dStackPointerInc = SInt(log2Up(stackDepth) bits)
+  val dStackPtrInc = SInt(log2Up(stackDepth) bits)
 
   // Handle update of data stack
   switch(instr(instr.high downto (instr.high - 3) + 1)) {
 
     // Literal (push value to data stack)
-    is(M"1--") {dStackWrite := True; dStackPointerInc := 1}
+    is(M"1--") {dStackWrite := True; dStackPtrInc := 1}
 
     // Conditional jump (pop DTOS from data stack)
-    is(M"001") {dStackWrite := False; dStackPointerInc := -1}
+    is(M"001") {dStackWrite := False; dStackPtrInc := -1}
 
     // ALU instruction
     is(M"011"){dStackWrite := funcTtoN | (instr(1 downto 0) === B"01")
-               dStackPointerInc := instr(1 downto 0).asSInt.resize(log2Up(stackDepth))}
+               dStackPtrInc := instr(1 downto 0).asSInt.resize(log2Up(stackDepth))}
 
     // Don't change the data stack by default
-    default {dStackWrite := False; dStackPointerInc := 0}
+    default {dStackWrite := False; dStackPtrInc := 0}
 
   }
 
   // Update the data stack pointer
-  dStackPtrN := (dStackPtr.asSInt + dStackPointerInc).asUInt
+  dStackPtrN := (dStackPtr.asSInt + dStackPtrInc).asUInt
   dStackPtr := dStackPtrN
 
   // Increment for data stack pointer
-  val rStackPointerInc = SInt(log2Up(stackDepth) bits)
+  val rStackPtrInc = SInt(log2Up(stackDepth) bits)
 
   // Handle the update of return stack
   switch(instr(instr.high downto (instr.high - 3) + 1)) {
 
     // Call instruction (push return address to stack)
-    is(M"010") {rStackWrite := True; rStackPointerInc := 1}
+    is(M"010") {rStackWrite := True; rStackPtrInc := 1}
 
     // Conditional jump (maybe we have to push)
-    is(M"011") {rStackWrite := funcTtoR; rStackPointerInc := instr(3 downto 2).asSInt.resize(log2Up(stackDepth))}
+    is(M"011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resize(log2Up(stackDepth))}
 
     // Don't change the return stack by default
-    default {rStackWrite := False; rStackPointerInc := 0}
+    default {rStackWrite := False; rStackPtrInc := 0}
 
   }
 
   // Update the return stack pointer
-  rStackPtr := (rStackPtr.asSInt + rStackPointerInc).asUInt
+  rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
+  rStackPtr := rStackPtrN
 
   // Handle the PC 
-  switch(ClockDomain.current.isResetActive ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
+  switch(ClockDomain.current.isResetActive ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
 
     // Check if we are in reset state
     is(M"1_---_-_-") {pcN := startAddress}
@@ -197,7 +199,7 @@ class J1Core(wordSize     : Int =  16,
   // Update the PC
   pc := pcN
 
-  // Use PC as address of instruction memory
+  // Use next PC as address of instruction memory
   io.instrAddress := pcN
 
 }

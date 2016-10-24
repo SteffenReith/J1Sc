@@ -12,13 +12,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="155800001fs"></ZoomEndTime>
-      <Cursor1Time time="95000000fs"></Cursor1Time>
+      <ZoomStartTime time="95040000fs"></ZoomStartTime>
+      <ZoomEndTime time="248240001fs"></ZoomEndTime>
+      <Cursor1Time time="212240000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="198"></NameColumnWidth>
-      <ValueColumnWidth column_width="310"></ValueColumnWidth>
+      <ValueColumnWidth column_width="298"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="26" />
    <wvobject type="logic" fp_name="/J1SoC_tb/writeEnable">
@@ -48,10 +48,14 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/pc">
       <obj_property name="ElementShortName">pc[12:0]</obj_property>
       <obj_property name="ObjectShortName">pc[12:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/pcN">
       <obj_property name="ElementShortName">pcN[12:0]</obj_property>
       <obj_property name="ObjectShortName">pcN[12:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtosN">
       <obj_property name="ElementShortName">dtosN[15:0]</obj_property>
@@ -61,6 +65,10 @@
       <obj_property name="ElementShortName">dStackWrite</obj_property>
       <obj_property name="ObjectShortName">dStackWrite</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtrInc">
+      <obj_property name="ElementShortName">dStackPtrInc[2:0]</obj_property>
+      <obj_property name="ObjectShortName">dStackPtrInc[2:0]</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtr">
       <obj_property name="ElementShortName">dStackPtr[2:0]</obj_property>
       <obj_property name="ObjectShortName">dStackPtr[2:0]</obj_property>
@@ -68,10 +76,6 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtrN">
       <obj_property name="ElementShortName">dStackPtrN[2:0]</obj_property>
       <obj_property name="ObjectShortName">dStackPtrN[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPointerInc">
-      <obj_property name="ElementShortName">dStackPointerInc[2:0]</obj_property>
-      <obj_property name="ObjectShortName">dStackPointerInc[2:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtos">
       <obj_property name="ElementShortName">dtos[15:0]</obj_property>
@@ -93,26 +97,33 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rtos">
       <obj_property name="ElementShortName">rtos[15:0]</obj_property>
       <obj_property name="ObjectShortName">rtos[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rtosN">
       <obj_property name="ElementShortName">rtosN[15:0]</obj_property>
       <obj_property name="ObjectShortName">rtosN[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackPtr">
       <obj_property name="ElementShortName">rStackPtr[2:0]</obj_property>
       <obj_property name="ObjectShortName">rStackPtr[2:0]</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackPtrInc">
+      <obj_property name="ElementShortName">rStackPtrInc[2:0]</obj_property>
+      <obj_property name="ObjectShortName">rStackPtrInc[2:0]</obj_property>
+   </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackWrite">
       <obj_property name="ElementShortName">rStackWrite</obj_property>
       <obj_property name="ObjectShortName">rStackWrite</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackPointerInc">
-      <obj_property name="ElementShortName">rStackPointerInc[2:0]</obj_property>
-      <obj_property name="ObjectShortName">rStackPointerInc[2:0]</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStack">
       <obj_property name="ElementShortName">rStack[0:7][15:0]</obj_property>
       <obj_property name="ObjectShortName">rStack[0:7][15:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/isALU">
       <obj_property name="ElementShortName">isALU</obj_property>
