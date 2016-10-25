@@ -33,40 +33,28 @@ class J1Core(wordSize     : Int =  16,
   }.setName("")
 
   // Programm counter (PC)
-  val pc = Reg(UInt(addrWidth bits)) init(startAddress)
   val pcN = UInt(addrWidth bits)
+  val pc = RegNext(pcN) init(startAddress)
 
   // Instruction to be excuted
   val instr = io.instr
 
   // Data stack pointer (set to first entry, which can be abitrary)
-  val dStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 2)
   val dStackPtrN = UInt(log2Up(stackDepth) bits)
+  val dStackPtr = RegNext(dStackPtrN) init(stackDepth - 2)
 
   // Write enable signal for data stack
   val dStackWrite = Bool
 
-  // Return stack pointer, set to first entry (can be abitrary) s.t. the first write takes place at index 0
-  val rStackPtr = Reg(UInt(log2Up(stackDepth) bits)) init(stackDepth - 1)
-  val rStackPtrN = UInt(log2Up(stackDepth) bits)
-
-  // Write enable for return stack
-  val rStackWrite = Bool
-
-  // Data and return stack (do not init, hence undefined value after startup) 
-  val dStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
-  val rStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
-
   // Top of stack (do not init, hence undefined value after startup)
-  val dtos = Reg(Bits(wordSize bits)) init(255)
   val dtosN = Bits(wordSize bits)
+  val dtos = RegNext(dtosN) init(255)
 
-  // Data stack write port
+  // Data stack with read and write port
+  val dStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
   dStack.write(enable  = dStackWrite,
                address = dStackPtrN,
                data    = dtos)
-
-  // Next of data stack (read port)
   val dnos = dStack.readAsync(address = dStackPtr)
 
   // Calculate a possible value for top of return stack (check for conditional jump)
@@ -74,12 +62,18 @@ class J1Core(wordSize     : Int =  16,
                   (pc + 1).asBits.resize(wordSize),
                   dtos)
 
-  // Return stack write port
+  // Return stack pointer, set to first entry (can be abitrary) s.t. the first write takes place at index 0
+  val rStackPtrN = UInt(log2Up(stackDepth) bits)
+  val rStackPtr = RegNext(rStackPtrN) init(stackDepth - 1)
+
+  // Write enable for return stack
+  val rStackWrite = Bool
+
+  // Return stack with read and write port
+  val rStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
   rStack.write(enable  = rStackWrite,
                address = rStackPtrN,
                data    = rtosN)
-
-  // Top of return stack (read port)
   val rtos = rStack.readAsync(address = rStackPtr)
 
   // Instruction decoder (including ALU operations)
@@ -92,7 +86,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"000-----") {dtosN := dtos}
 
     // Call instruction (do not change dtos)
-    is(M"000-----") {dtosN := dtos}
+    is(M"010-----") {dtosN := dtos}
 
     // Conditional jump (pop the 0 at dtos)
     is(M"001-----") {dtosN := dnos}
@@ -117,9 +111,6 @@ class J1Core(wordSize     : Int =  16,
     default {dtosN := (default -> False)}
 
   }
-
-  // Write ALU result back to top of data stack
-  dtos := dtosN
 
   // Internal condition flags
   val funcTtoN  = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
@@ -156,7 +147,6 @@ class J1Core(wordSize     : Int =  16,
 
   // Update the data stack pointer
   dStackPtrN := (dStackPtr.asSInt + dStackPtrInc).asUInt
-  dStackPtr := dStackPtrN
 
   // Increment for data stack pointer
   val rStackPtrInc = SInt(log2Up(stackDepth) bits)
@@ -177,7 +167,6 @@ class J1Core(wordSize     : Int =  16,
 
   // Update the return stack pointer
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
-  rStackPtr := rStackPtrN
 
   // Handle the PC 
   switch(ClockDomain.current.isResetActive ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
@@ -195,9 +184,6 @@ class J1Core(wordSize     : Int =  16,
     default {pcN := pc + 1}
 
   }
-
-  // Update the PC
-  pc := pcN
 
   // Use next PC as address of instruction memory
   io.instrAddress := pcN

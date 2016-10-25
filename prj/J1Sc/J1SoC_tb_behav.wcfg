@@ -12,19 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="95040000fs"></ZoomStartTime>
-      <ZoomEndTime time="248240001fs"></ZoomEndTime>
-      <Cursor1Time time="212240000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="213600001fs"></ZoomEndTime>
+      <Cursor1Time time="175840000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="198"></NameColumnWidth>
-      <ValueColumnWidth column_width="298"></ValueColumnWidth>
+      <ValueColumnWidth column_width="310"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="26" />
-   <wvobject type="logic" fp_name="/J1SoC_tb/writeEnable">
-      <obj_property name="ElementShortName">writeEnable</obj_property>
-      <obj_property name="ObjectShortName">writeEnable</obj_property>
-   </wvobject>
+   <WVObjectSize size="25" />
    <wvobject type="array" fp_name="/J1SoC_tb/dataAddress">
       <obj_property name="ElementShortName">dataAddress[12:0]</obj_property>
       <obj_property name="ObjectShortName">dataAddress[12:0]</obj_property>
