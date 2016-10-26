@@ -79,16 +79,13 @@ class J1Core(wordSize     : Int =  16,
   // Instruction decoder (including ALU operations)
   switch(instr(instr.high downto (instr.high - 8) + 1)) {
 
-    // Literal
+    // Literal instruction
     is(M"1-------") {dtosN := instr(instr.high - 1 downto 0).resize(wordSize)}
 
-    // Jump instruction (do not change dtos)
-    is(M"000-----") {dtosN := dtos}
+    // Jump and call instruction (do not change dtos)
+    is(M"000-----", M"010-----") {dtosN := dtos}
 
-    // Call instruction (do not change dtos)
-    is(M"010-----") {dtosN := dtos}
-
-    // Conditional jump (pop the 0 at dtos)
+    // Conditional jump (pop the 0 at dtos by adjusting the dstack pointer)
     is(M"001-----") {dtosN := dnos}
 
     // ALU operations using dtos and dnos
@@ -104,7 +101,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"011-1001") {dtosN := dtos.rotateLeft(dnos(log2Up(wordSize) - 1 downto 0).asUInt)}
     is(M"011-1010") {dtosN := dtos.rotateRight(dnos(log2Up(wordSize) - 1 downto 0).asUInt)}
 
-    // ALU operations using the rtos
+    // ALU operations using rtos
     is(M"011-1011") {dtosN := rtos}
 
     // Set all bits of top of stack to false by default
@@ -175,7 +172,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"1_---_-_-") {pcN := startAddress}
 
     // Check for jump, cond. jump or call instruction
-    is(M"0_000_-_-",M"0_001_-_0",M"0_010_-_-") {pcN := instr(addrWidth - 1 downto 0).asUInt}
+    is(M"0_000_-_-", M"0_001_-_0", M"0_010_-_-") {pcN := instr(addrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
     is(M"0_011_1_-") {pcN := rtos(addrWidth - 1 downto 0).asUInt}
