@@ -31,13 +31,13 @@ class J1SoC (wordSize     : Int =  16,
   }.setName("")
 
   // Signals for main memory
-  val writeEnable = Bool
+  val writeMemEnable = Bool
   val dataAddress = UInt(addrWidth bits)
   val dataWrite = Bits(wordSize bits)
   val dataRead = Bits(wordSize bits)
 
   // Wire the data bus to the outside world
-  io.writeEnable := writeEnable
+  io.writeEnable := writeMemEnable
   io.dataAddress := dataAddress
   io.dataWrite := dataWrite
 
@@ -53,19 +53,35 @@ class J1SoC (wordSize     : Int =  16,
                      B"0010_0000_0000_1011", //  8. Jump 11 if tos is zero
                      B"1000_0000_0000_0000", //  9. Push 0
                      B"0010_0000_0000_1010", // 10. Jump 10 if tos is zero
-                     B"0100_0000_0001_0000", // 11. Call 16
+                     B"0100_0000_0010_0000", // 11. Call 32
                      B"1000_0000_0000_0001", // 12. Push 1
-                     B"0000_0000_0000_1101", // 13. Jump 13
-                     B"0110_0000_0000_0000", // 14. NOP
-                     B"0110_0000_0000_0000", // 15. NOP
-                     B"1000_0000_0001_0000", // 16. Push 16
-                     B"0111_0000_0000_1100") // 17. Return from Subroutine
+                     B"0110_0111_0000_0001", // 13. Compare tos and nos push result
+                     B"1000_0000_0000_0011", // 14. Push 3
+                     B"1000_0000_0000_0011", // 15. Push 3
+                     B"0110_0111_0000_0001", // 16. Compare tos and nos push result
+                     B"0000_0000_0001_0001", // 17. Jump 17
+                     B"0110_0000_0000_0000", // 18. NOP
+                     B"0110_0000_0000_0000", // 19. NOP
+                     B"0110_0000_0000_0000", // 20. NOP
+                     B"0110_0000_0000_0000", // 21. NOP
+                     B"0110_0000_0000_0000", // 22. NOP
+                     B"0110_0000_0000_0000", // 23. NOP
+                     B"0110_0000_0000_0000", // 24. NOP
+                     B"0110_0000_0000_0000", // 25. NOP
+                     B"0110_0000_0000_0000", // 26. NOP
+                     B"0110_0000_0000_0000", // 27. NOP
+                     B"0110_0000_0000_0000", // 28. NOP
+                     B"0110_0000_0000_0000", // 29. NOP
+                     B"0110_0000_0000_0000", // 30. NOP
+                     B"0110_0000_0000_0000", // 31. NOP
+                     B"1000_0000_0001_0000", // 32. Push 16
+                     B"0111_0000_0000_1100") // 33. Return from Subroutine
 
   val mainMem = Mem(Bits(wordSize bits),
                     content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
 
   // Create data port for mainMem 
-  mainMem.write(enable  = writeEnable,
+  mainMem.write(enable  = writeMemEnable,
                 address = dataAddress,
                 data    = dataWrite);
   dataRead := mainMem.readSync(address = dataAddress)
@@ -79,7 +95,7 @@ class J1SoC (wordSize     : Int =  16,
   val coreJ1CPU = new J1Core(wordSize, stackDepth, addrWidth, startAddress)
 
   // connect the CPU core
-  writeEnable := coreJ1CPU.io.writeEnable
+  writeMemEnable := coreJ1CPU.io.writeMemEnable
   dataAddress := coreJ1CPU.io.dataAddress
   dataWrite := coreJ1CPU.io.dataWrite
   coreJ1CPU.io.dataRead := dataRead

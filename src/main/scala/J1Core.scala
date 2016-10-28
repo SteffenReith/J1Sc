@@ -21,7 +21,7 @@ class J1Core(wordSize     : Int =  16,
   val io = new Bundle {
 
     // Signals for memory data port
-    val writeEnable = out Bool
+    val writeMemEnable = out Bool
     val dataAddress = out UInt(addrWidth bits)
     val dataWrite = out Bits(wordSize bits)
     val dataRead = in Bits(wordSize bits)
@@ -31,6 +31,9 @@ class J1Core(wordSize     : Int =  16,
     val instr = in (Bits(wordSize bits))
 
   }.setName("")
+
+  // Synchron reset
+  val clr = ClockDomain.current.isResetActive;
 
   // Programm counter (PC)
   val pcN = UInt(addrWidth bits)
@@ -104,22 +107,36 @@ class J1Core(wordSize     : Int =  16,
     // ALU operations using rtos
     is(M"011-1011") {dtosN := rtos}
 
-    // Set all bits of top of stack to false by default
-    default {dtosN := (default -> False)}
+    // Compare operations
+    is(M"011-0111") {dtosN := (default -> (dtos === dnos))}
+    is(M"011-1000") {dtosN := (default -> (dtos.asSInt > dnos.asSInt))}
+    is(M"011-1000") {dtosN := (default -> (dtos.asUInt > dnos.asUInt))}
+
+    // Memory read operations
+    is(M"011-1100") {dtosN := io.dataRead}
+
+    // Misc operations
+    is(M"011-1110") {dtosN := (rStackPtr.asBits ## dStackPtr.asBits).resized}
+
+    // Set all bits of top of stack to true by default
+    default {dtosN := (default -> True)}
+
+    //8'b011_?1101: st0N = io_din;
+
 
   }
 
   // Internal condition flags
-  val funcTtoN  = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
-  val funcTtoR  = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
-  val funcWrite = (instr(6 downto 4).asUInt === 3) // Write to RAM
-  val funcIOW   = (instr(6 downto 4).asUInt === 4) // I/O operation
-  val isALU     = (instr(instr.high downto (instr.high - 3) + 1) === B"b011"); // ALU operation
+  val funcTtoN     = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
+  val funcTtoR     = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
+  val funcWriteMem = (instr(6 downto 4).asUInt === 3) // Write to RAM
+  val funcIOW      = (instr(6 downto 4).asUInt === 4) // I/O operation
+  val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011"); // ALU operation
 
   // Signals for handling external memory
-  io.writeEnable := isALU && funcWrite
+  io.writeMemEnable := !clr && isALU && funcWriteMem
   io.dataAddress := dtosN(addrWidth - 1 downto 0).asUInt
-  io.dataWrite   := dtosN
+  io.dataWrite   := dnos
 
   // Increment for data stack pointer
   val dStackPtrInc = SInt(log2Up(stackDepth) bits)
@@ -166,7 +183,7 @@ class J1Core(wordSize     : Int =  16,
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
   // Handle the PC 
-  switch(ClockDomain.current.isResetActive ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
+  switch(clr ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
 
     // Check if we are in reset state
     is(M"1_---_-_-") {pcN := startAddress}
