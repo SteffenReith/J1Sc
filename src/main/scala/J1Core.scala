@@ -12,10 +12,14 @@
 import spinal.core._
 import spinal.lib._
 
-class J1Core(wordSize     : Int =  16,
-             stackDepth   : Int = 256,
-             addrWidth    : Int =  13,
-             startAddress : Int =   0) extends Component {
+class J1Core(wordSize            : Int = 16,
+             dataStackIdxWidth   : Int =  8,
+             returnStackIdxWidth : Int =  6,
+             addrWidth           : Int = 13,
+             startAddress        : Int =  0) extends Component {
+
+  // Check the generic parameters
+  assert(wordSize == 16, "Warning: Only wordsize 16 is tested!")
 
   // I/O ports
   val io = new Bundle {
@@ -45,18 +49,18 @@ class J1Core(wordSize     : Int =  16,
   val instr = io.instr
 
   // Data stack pointer (set to first entry, which can be abitrary)
-  val dStackPtrN = UInt(log2Up(stackDepth) bits)
-  val dStackPtr = RegNext(dStackPtrN) init(stackDepth - 2)
+  val dStackPtrN = UInt(dataStackIdxWidth bits)
+  val dStackPtr = RegNext(dStackPtrN) init((1 << dataStackIdxWidth) - 2)
 
   // Write enable signal for data stack
   val dStackWrite = Bool
 
   // Top of stack (do not init, hence undefined value after startup)
   val dtosN = Bits(wordSize bits)
-  val dtos = RegNext(dtosN) init(255)
+  val dtos = RegNext(dtosN) init(0)
 
   // Data stack with read and write port
-  val dStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
+  val dStack = Mem(Bits(wordSize bits), wordCount = 1 << dataStackIdxWidth)
   dStack.write(enable  = dStackWrite,
                address = dStackPtrN,
                data    = dtos)
@@ -68,14 +72,14 @@ class J1Core(wordSize     : Int =  16,
                   dtos)
 
   // Return stack pointer, set to first entry (can be abitrary) s.t. the first write takes place at index 0
-  val rStackPtrN = UInt(log2Up(stackDepth) bits)
-  val rStackPtr = RegNext(rStackPtrN) init(stackDepth - 1)
+  val rStackPtrN = UInt(returnStackIdxWidth bits)
+  val rStackPtr = RegNext(rStackPtrN) init((1 << returnStackIdxWidth) - 1)
 
   // Write enable for return stack
   val rStackWrite = Bool
 
   // Return stack with read and write port
-  val rStack = Mem(Bits(wordSize bits), wordCount = stackDepth)
+  val rStack = Mem(Bits(wordSize bits), wordCount = 1 << returnStackIdxWidth)
   rStack.write(enable  = rStackWrite,
                address = rStackPtrN,
                data    = rtosN)
@@ -140,7 +144,7 @@ class J1Core(wordSize     : Int =  16,
   io.extToWrite   := dnos
 
   // Increment for data stack pointer
-  val dStackPtrInc = SInt(log2Up(stackDepth) bits)
+  val dStackPtrInc = SInt(dataStackIdxWidth bits)
 
   // Handle update of data stack
   switch(instr(instr.high downto (instr.high - 3) + 1)) {
@@ -153,7 +157,7 @@ class J1Core(wordSize     : Int =  16,
 
     // ALU instruction
     is(M"011"){dStackWrite := funcTtoN | (instr(1 downto 0) === B"01")
-               dStackPtrInc := instr(1 downto 0).asSInt.resize(log2Up(stackDepth))}
+               dStackPtrInc := instr(1 downto 0).asSInt.resize(dataStackIdxWidth)}
 
     // Don't change the data stack by default
     default {dStackWrite := False; dStackPtrInc := 0}
@@ -164,7 +168,7 @@ class J1Core(wordSize     : Int =  16,
   dStackPtrN := (dStackPtr.asSInt + dStackPtrInc).asUInt
 
   // Increment for data stack pointer
-  val rStackPtrInc = SInt(log2Up(stackDepth) bits)
+  val rStackPtrInc = SInt(returnStackIdxWidth bits)
 
   // Handle the update of return stack
   switch(instr(instr.high downto (instr.high - 3) + 1)) {
@@ -173,7 +177,7 @@ class J1Core(wordSize     : Int =  16,
     is(M"010") {rStackWrite := True; rStackPtrInc := 1}
 
     // Conditional jump (maybe we have to push)
-    is(M"011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resize(log2Up(stackDepth))}
+    is(M"011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resize(returnStackIdxWidth)}
 
     // Don't change the return stack by default
     default {rStackWrite := False; rStackPtrInc := 0}

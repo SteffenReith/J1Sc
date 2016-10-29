@@ -12,13 +12,11 @@
 import spinal.core._
 import spinal.lib._
 
-class J1SoC (wordSize     : Int =  16,
-             stackDepth   : Int = 256,
-             addrWidth    : Int =  13,
-             startAddress : Int =   0) extends Component {
-
-  // Check the generic parameters
-  assert(isPow2(stackDepth),"Depth of data stack has to be a power of two")
+class J1SoC (wordSize            : Int = 16,
+             dataStackIdxWidth   : Int =  8,
+             returnStackIdxWidth : Int = 6,
+             addrWidth           : Int = 13,
+             startAddress        : Int =  0) extends Component {
 
   // I/O ports
   val io = new Bundle {
@@ -38,7 +36,7 @@ class J1SoC (wordSize     : Int =  16,
   val memRead = Bits(wordSize bits)
 
   // Create main memory
-  val content = List(B"1000_0000_0000_0111", //  0. Push 7
+  def content = List(B"1000_0000_0000_0111", //  0. Push 7
                      B"1000_0000_0000_0011", //  1. Push 3
                      B"0000_0000_0000_0100", //  2. Jump 4
                      B"1000_0000_0000_0001", //  3. Push 1
@@ -72,14 +70,13 @@ class J1SoC (wordSize     : Int =  16,
                      B"0110_0000_0000_0000", // 31. NOP
                      B"1000_0000_0001_0000", // 32. Push 16
                      B"0111_0000_0000_1100") // 33. Return from Subroutine
-
   val mainMem = Mem(Bits(wordSize bits),
                     content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
 
   // Create a new CPU core
-  val coreJ1CPU = new J1Core(wordSize, stackDepth, addrWidth, startAddress)
+  val coreJ1CPU = new J1Core(wordSize, dataStackIdxWidth, returnStackIdxWidth, addrWidth, startAddress)
 
-  // Create data port for mainMem 
+  // Create data port for mainMem
   mainMem.write(enable  = writeMemEnable,
                 address = memAdr,
                 data    = memWrite);
@@ -118,7 +115,8 @@ object J1SoC {
 
                                                                 // Set name for the synchronous reset
                                                                 ClockDomain.current.reset.setName("clr")
-                                                                new J1SoC(stackDepth = 8)
+                                                                new J1SoC(dataStackIdxWidth = 3,
+                                                                          returnStackIdxWidth = 2)
 
                                                               }).printPruned()
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
@@ -126,7 +124,8 @@ object J1SoC {
 
                                                                       // Set name for the synchronous reset
                                                                       ClockDomain.current.reset.setName("clr")
-                                                                      new J1SoC(stackDepth = 8)
+                                                                      new J1SoC(dataStackIdxWidth = 3,
+                                                                                returnStackIdxWidth = 2)
 
                                                                     }).printPruned()
 
