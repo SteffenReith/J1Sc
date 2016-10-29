@@ -68,8 +68,19 @@ class J1SoC (wordSize            : Int = 16,
                      B"0110_0000_0000_0000", // 29. NOP
                      B"0110_0000_0000_0000", // 30. NOP
                      B"0110_0000_0000_0000", // 31. NOP
-                     B"1000_0000_0001_0000", // 32. Push 16
-                     B"0111_0000_0000_1100") // 33. Return from Subroutine
+                     B"1000_0000_0001_0001", // 32. Push 17
+                     B"1000_0000_0001_0000", // 33. Push 16
+                     B"0110_1111_0000_0001", // 34. Compare unsigned and push
+                     B"1011_1111_1111_1111", // 35. Push +maxint
+                     B"1111_1111_1111_1111", // 36. Push -1
+                     B"0110_1000_0000_0001", // 37. Compare signed and push
+                     B"0110_0001_0000_0011", // 38. Pop
+                     B"0110_0001_0000_0011", // 39. Pop
+                     B"0110_0001_0000_0011", // 40. Pop
+                     B"0110_0001_0000_0011", // 41. Pop
+                     B"0110_0001_0000_0011", // 42. Pop
+                     B"0110_0001_0000_0011", // 43. Pop
+                     B"0111_0000_0000_1100") // 38. Return from Subroutine
   val mainMem = Mem(Bits(wordSize bits),
                     content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
 
