@@ -33,6 +33,7 @@ architecture Behavioral of J1SoC_tb is
   signal writeEnable : std_logic;
   signal dataAddress : unsigned(12 downto 0);
   signal dataWrite   : std_logic_vector(15 downto 0);
+  signal dataRead    : std_logic_vector(15 downto 0);
 
   -- Clock and reset 
   signal clk : std_logic;
@@ -45,6 +46,7 @@ begin
       writeEnable => writeEnable,
       dataAddress => dataAddress,
       dataWrite   => dataWrite,
+      dataRead    => dataRead,
       clk         => clk,
       clr         => clr);
 
@@ -69,6 +71,9 @@ begin
     write(lineBuffer, string'("Reset of CPU"));
     writeline(output, lineBuffer);
 
+    -- Init read data
+    dataRead <= (others => '1');
+    
     -- Reset the CPU
     clr <= '1';
 

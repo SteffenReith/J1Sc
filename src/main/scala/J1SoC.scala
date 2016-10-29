@@ -27,19 +27,15 @@ class J1SoC (wordSize     : Int =  16,
     val writeEnable = out Bool
     val dataAddress  = out UInt(addrWidth bits)
     val dataWrite = out Bits(wordSize bits)
+    val dataRead = in Bits(wordSize bits)
 
   }.setName("")
 
   // Signals for main memory
   val writeMemEnable = Bool
-  val dataAddress = UInt(addrWidth bits)
-  val dataWrite = Bits(wordSize bits)
-  val dataRead = Bits(wordSize bits)
-
-  // Wire the data bus to the outside world
-  io.writeEnable := writeMemEnable
-  io.dataAddress := dataAddress
-  io.dataWrite := dataWrite
+  val memAdr = UInt(addrWidth bits)
+  val memWrite = Bits(wordSize bits)
+  val memRead = Bits(wordSize bits)
 
   // Create main memory
   val content = List(B"1000_0000_0000_0111", //  0. Push 7
@@ -80,27 +76,29 @@ class J1SoC (wordSize     : Int =  16,
   val mainMem = Mem(Bits(wordSize bits),
                     content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
 
-  // Create data port for mainMem 
-  mainMem.write(enable  = writeMemEnable,
-                address = dataAddress,
-                data    = dataWrite);
-  dataRead := mainMem.readSync(address = dataAddress)
-
-  // Instruction port (read only)
-  val instr = Bits(wordSize bits)
-  val instrAddress = UInt(addrWidth bits)
-  instr := mainMem.readSync(address = instrAddress)
-
   // Create a new CPU core
   val coreJ1CPU = new J1Core(wordSize, stackDepth, addrWidth, startAddress)
 
-  // connect the CPU core
-  writeMemEnable := coreJ1CPU.io.writeMemEnable
-  dataAddress := coreJ1CPU.io.dataAddress
-  dataWrite := coreJ1CPU.io.dataWrite
-  coreJ1CPU.io.dataRead := dataRead
-  instrAddress := coreJ1CPU.io.instrAddress
-  coreJ1CPU.io.instr := instr
+  // Create data port for mainMem 
+  mainMem.write(enable  = writeMemEnable,
+                address = memAdr,
+                data    = memWrite);
+  memRead := mainMem.readSync(address = memAdr)
+
+  // Instruction port (read only)
+  coreJ1CPU.io.instr := mainMem.readSync(address = coreJ1CPU.io.instrAdr)
+
+  // connect the CPU core with the internal memory
+  writeMemEnable <> coreJ1CPU.io.writeMemEnable
+  memAdr <> coreJ1CPU.io.extAdr
+  memWrite <> coreJ1CPU.io.extToWrite
+  coreJ1CPU.io.memToRead <> memRead
+
+  // Wire the IO data bus to the outside world
+  io.writeEnable <> coreJ1CPU.io.writeIOEnable
+  io.dataAddress <> coreJ1CPU.io.extAdr
+  coreJ1CPU.io.ioToRead <> io.dataRead
+  io.dataWrite <> coreJ1CPU.io.extToWrite
 
 }
 

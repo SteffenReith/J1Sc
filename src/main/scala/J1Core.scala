@@ -22,12 +22,14 @@ class J1Core(wordSize     : Int =  16,
 
     // Signals for memory data port
     val writeMemEnable = out Bool
-    val dataAddress = out UInt(addrWidth bits)
-    val dataWrite = out Bits(wordSize bits)
-    val dataRead = in Bits(wordSize bits)
+    val writeIOEnable = out Bool
+    val extAdr = out UInt(addrWidth bits)
+    val extToWrite = out Bits(wordSize bits)
+    val memToRead = in Bits(wordSize bits)
+    val ioToRead = in Bits(wordSize bits)
 
     // I/O port for instruction port
-    val instrAddress = out (UInt(addrWidth bits))
+    val instrAdr = out (UInt(addrWidth bits))
     val instr = in (Bits(wordSize bits))
 
   }.setName("")
@@ -113,7 +115,8 @@ class J1Core(wordSize     : Int =  16,
     is(M"011-1000") {dtosN := (default -> (dtos.asUInt > dnos.asUInt))}
 
     // Memory read operations
-    is(M"011-1100") {dtosN := io.dataRead}
+    is(M"011-1100") {dtosN := io.memToRead}
+    is(M"011-1101") {dtosN := io.ioToRead}
 
     // Misc operations
     is(M"011-1110") {dtosN := (rStackPtr.asBits ## dStackPtr.asBits).resized}
@@ -121,22 +124,20 @@ class J1Core(wordSize     : Int =  16,
     // Set all bits of top of stack to true by default
     default {dtosN := (default -> True)}
 
-    //8'b011_?1101: st0N = io_din;
-
-
   }
 
   // Internal condition flags
   val funcTtoN     = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
   val funcTtoR     = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
   val funcWriteMem = (instr(6 downto 4).asUInt === 3) // Write to RAM
-  val funcIOW      = (instr(6 downto 4).asUInt === 4) // I/O operation
+  val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O operation
   val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011"); // ALU operation
 
   // Signals for handling external memory
   io.writeMemEnable := !clr && isALU && funcWriteMem
-  io.dataAddress := dtosN(addrWidth - 1 downto 0).asUInt
-  io.dataWrite   := dnos
+  io.writeIOEnable := !clr && isALU && funcWriteIO
+  io.extAdr := dtosN(addrWidth - 1 downto 0).asUInt
+  io.extToWrite   := dnos
 
   // Increment for data stack pointer
   val dStackPtrInc = SInt(log2Up(stackDepth) bits)
@@ -182,7 +183,7 @@ class J1Core(wordSize     : Int =  16,
   // Update the return stack pointer
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
-  // Handle the PC 
+  // Handle the PC
   switch(clr ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
 
     // Check if we are in reset state
@@ -200,6 +201,6 @@ class J1Core(wordSize     : Int =  16,
   }
 
   // Use next PC as address of instruction memory
-  io.instrAddress := pcN
+  io.instrAdr := pcN
 
 }

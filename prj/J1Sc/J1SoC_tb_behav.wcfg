@@ -13,14 +13,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="213600001fs"></ZoomEndTime>
+      <ZoomEndTime time="75300001fs"></ZoomEndTime>
       <Cursor1Time time="175840000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="198"></NameColumnWidth>
-      <ValueColumnWidth column_width="310"></ValueColumnWidth>
+      <NameColumnWidth column_width="180"></NameColumnWidth>
+      <ValueColumnWidth column_width="325"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="25" />
+   <WVObjectSize size="24" />
    <wvobject type="array" fp_name="/J1SoC_tb/dataAddress">
       <obj_property name="ElementShortName">dataAddress[12:0]</obj_property>
       <obj_property name="ObjectShortName">dataAddress[12:0]</obj_property>
@@ -132,9 +132,5 @@
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/funcTtoR">
       <obj_property name="ElementShortName">funcTtoR</obj_property>
       <obj_property name="ObjectShortName">funcTtoR</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/funcWrite">
-      <obj_property name="ElementShortName">funcWrite</obj_property>
-      <obj_property name="ObjectShortName">funcWrite</obj_property>
    </wvobject>
 </wave_config>
