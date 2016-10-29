@@ -24,7 +24,7 @@ class J1Core(wordSize            : Int = 16,
   // I/O ports
   val io = new Bundle {
 
-    // Signals for memory data port
+    // Signals for memory and io port
     val writeMemEnable = out Bool
     val writeIOEnable = out Bool
     val extAdr = out UInt(addrWidth bits)
@@ -32,7 +32,7 @@ class J1Core(wordSize            : Int = 16,
     val memToRead = in Bits(wordSize bits)
     val ioToRead = in Bits(wordSize bits)
 
-    // I/O port for instruction port
+    // I/O port for instructions
     val instrAdr = out (UInt(addrWidth bits))
     val instr = in (Bits(wordSize bits))
 
@@ -64,7 +64,7 @@ class J1Core(wordSize            : Int = 16,
   dStack.write(enable  = dStackWrite,
                address = dStackPtrN,
                data    = dtos)
-  val dnos = dStack.readAsync(address = dStackPtr)
+  val dnos = dStack.readAsync(address = dStackPtr, readUnderWrite = writeFirst)
 
   // Calculate a possible value for top of return stack (check for conditional jump)
   val rtosN = Mux(instr(instr.high - 3 + 1)  === False,
@@ -83,7 +83,7 @@ class J1Core(wordSize            : Int = 16,
   rStack.write(enable  = rStackWrite,
                address = rStackPtrN,
                data    = rtosN)
-  val rtos = rStack.readAsync(address = rStackPtr)
+  val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
   // Instruction decoder (including ALU operations)
   switch(instr(instr.high downto (instr.high - 8) + 1)) {
@@ -116,7 +116,7 @@ class J1Core(wordSize            : Int = 16,
     // Compare operations
     is(M"011-0111") {dtosN := (default -> (dtos === dnos))}
     is(M"011-1000") {dtosN := (default -> (dtos.asSInt > dnos.asSInt))}
-    is(M"011-1000") {dtosN := (default -> (dtos.asUInt > dnos.asUInt))}
+    is(M"011-1111") {dtosN := (default -> (dtos.asUInt > dnos.asUInt))}
 
     // Memory read operations
     is(M"011-1100") {dtosN := io.memToRead}
