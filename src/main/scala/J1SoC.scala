@@ -79,7 +79,7 @@ class J1SoC (wordSize            : Int = 16,
   // Create data port for mainMem
   mainMem.write(enable  = writeMemEnable,
                 address = memAdr,
-                data    = memWrite);
+                data    = memWrite)
   memRead := mainMem.readSync(address = memAdr, readUnderWrite = readFirst)
 
   // Instruction port (read only)

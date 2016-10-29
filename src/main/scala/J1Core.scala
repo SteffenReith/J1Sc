@@ -39,7 +39,7 @@ class J1Core(wordSize            : Int = 16,
   }.setName("")
 
   // Synchron reset
-  val clr = ClockDomain.current.isResetActive;
+  val clr = ClockDomain.current.isResetActive
 
   // Programm counter (PC)
   val pcN = UInt(addrWidth bits)
