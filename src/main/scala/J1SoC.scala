@@ -14,7 +14,7 @@ import spinal.lib._
 
 class J1SoC (wordSize            : Int = 16,
              dataStackIdxWidth   : Int =  8,
-             returnStackIdxWidth : Int = 6,
+             returnStackIdxWidth : Int =  6,
              addrWidth           : Int = 13,
              startAddress        : Int =  0) extends Component {
 
@@ -80,10 +80,10 @@ class J1SoC (wordSize            : Int = 16,
   mainMem.write(enable  = writeMemEnable,
                 address = memAdr,
                 data    = memWrite);
-  memRead := mainMem.readSync(address = memAdr)
+  memRead := mainMem.readSync(address = memAdr, readUnderWrite = readFirst)
 
   // Instruction port (read only)
-  coreJ1CPU.io.instr := mainMem.readSync(address = coreJ1CPU.io.instrAdr)
+  coreJ1CPU.io.instr := mainMem.readSync(address = coreJ1CPU.io.instrAdr, readUnderWrite = readFirst)
 
   // connect the CPU core with the internal memory
   writeMemEnable <> coreJ1CPU.io.writeMemEnable
