@@ -80,7 +80,7 @@ class J1SoC (wordSize            : Int = 16,
                      B"0110_0001_0000_0011", // 41. Pop
                      B"0110_0001_0000_0011", // 42. Pop
                      B"0110_0001_0000_0011", // 43. Pop
-                     B"0111_0000_0000_1100") // 38. Return from Subroutine
+                     B"0111_0000_0000_1100") // 44. Return from Subroutine
   val mainMem = Mem(Bits(wordSize bits),
                     content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
 
