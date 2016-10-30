@@ -12,11 +12,11 @@
 import spinal.core._
 import spinal.lib._
 
-class J1SoC (wordSize            : Int = 16,
-             dataStackIdxWidth   : Int =  8,
-             returnStackIdxWidth : Int =  6,
-             addrWidth           : Int = 13,
-             startAddress        : Int =  0) extends Component {
+class J1(wordSize            : Int = 16,
+         dataStackIdxWidth   : Int =  8,
+         returnStackIdxWidth : Int =  6,
+         addrWidth           : Int = 13,
+         startAddress        : Int =  0) extends Component {
 
   // I/O ports
   val io = new Bundle {
@@ -30,7 +30,7 @@ class J1SoC (wordSize            : Int = 16,
   }.setName("")
 
   // Signals for main memory
-  val writeMemEnable = Bool
+  val memWriteEnable = Bool
   val memAdr = UInt(addrWidth bits)
   val memWrite = Bits(wordSize bits)
   val memRead = Bits(wordSize bits)
@@ -86,36 +86,36 @@ class J1SoC (wordSize            : Int = 16,
                      B"0110_0001_0000_0011", // 47. Pop
                      B"0110_0001_0000_0011", // 48. Pop
                      B"0111_0000_0000_1100") // 49. Return from Subroutine
-  val mainMem = Mem(Bits(wordSize bits),
-                    content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
+  val mainMemory = Mem(Bits(wordSize bits),
+                            content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
 
   // Create a new CPU core
   val coreJ1CPU = new J1Core(wordSize, dataStackIdxWidth, returnStackIdxWidth, addrWidth, startAddress)
 
   // Create data port for mainMem
-  mainMem.write(enable  = writeMemEnable,
-                address = memAdr,
-                data    = memWrite)
-  memRead := mainMem.readSync(address = memAdr, readUnderWrite = readFirst)
+  mainMemory.write(enable  = memWriteEnable,
+                   address = memAdr,
+                   data    = memWrite)
+  memRead := mainMemory.readSync(address = memAdr, readUnderWrite = readFirst)
 
   // Instruction port (read only)
-  coreJ1CPU.io.instr := mainMem.readSync(address = coreJ1CPU.io.instrAdr, readUnderWrite = readFirst)
+  coreJ1CPU.io.instr := mainMemory.readSync(address = coreJ1CPU.io.instrAdr, readUnderWrite = readFirst)
 
   // connect the CPU core with the internal memory
-  writeMemEnable <> coreJ1CPU.io.writeMemEnable
+  memWriteEnable <> coreJ1CPU.io.memWriteEnable
   memAdr <> coreJ1CPU.io.extAdr
   memWrite <> coreJ1CPU.io.extToWrite
   coreJ1CPU.io.memToRead <> memRead
 
   // Wire the IO data bus to the outside world
-  io.writeEnable <> coreJ1CPU.io.writeIOEnable
+  io.writeEnable <> coreJ1CPU.io.ioWriteEnable
   io.dataAddress <> coreJ1CPU.io.extAdr
   coreJ1CPU.io.ioToRead <> io.dataRead
   io.dataWrite <> coreJ1CPU.io.extToWrite
 
 }
 
-object J1SoC {
+object J1 {
 
   // Make the reset synchron and use the rising edge
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
@@ -131,7 +131,7 @@ object J1SoC {
 
                                                                 // Set name for the synchronous reset
                                                                 ClockDomain.current.reset.setName("clr")
-                                                                new J1SoC(dataStackIdxWidth = 3,
+                                                                new J1(dataStackIdxWidth = 3,
                                                                           returnStackIdxWidth = 2)
 
                                                               }).printPruned()
@@ -140,7 +140,7 @@ object J1SoC {
 
                                                                       // Set name for the synchronous reset
                                                                       ClockDomain.current.reset.setName("clr")
-                                                                      new J1SoC(dataStackIdxWidth = 3,
+                                                                      new J1(dataStackIdxWidth = 3,
                                                                                 returnStackIdxWidth = 2)
 
                                                                     }).printPruned()

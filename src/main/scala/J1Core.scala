@@ -25,8 +25,8 @@ class J1Core(wordSize            : Int = 16,
   val io = new Bundle {
 
     // Signals for memory and io port
-    val writeMemEnable = out Bool
-    val writeIOEnable = out Bool
+    val memWriteEnable = out Bool
+    val ioWriteEnable = out Bool
     val extAdr = out UInt(addrWidth bits)
     val extToWrite = out Bits(wordSize bits)
     val memToRead = in Bits(wordSize bits)
@@ -138,8 +138,8 @@ class J1Core(wordSize            : Int = 16,
   val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011"); // ALU operation
 
   // Signals for handling external memory
-  io.writeMemEnable := !clr && isALU && funcWriteMem
-  io.writeIOEnable := !clr && isALU && funcWriteIO
+  io.memWriteEnable := !clr && isALU && funcWriteMem
+  io.ioWriteEnable := !clr && isALU && funcWriteIO
   io.extAdr := dtosN(addrWidth - 1 downto 0).asUInt
   io.extToWrite   := dnos
 
@@ -155,7 +155,7 @@ class J1Core(wordSize            : Int = 16,
     // Conditional jump (pop DTOS from data stack)
     is(M"001") {dStackWrite := False; dStackPtrInc := -1}
 
-    // ALU instruction
+    // ALU instruction (check for a possible push of data)
     is(M"011"){dStackWrite := funcTtoN | (instr(1 downto 0) === B"01")
                dStackPtrInc := instr(1 downto 0).asSInt.resize(dataStackIdxWidth)}
 
