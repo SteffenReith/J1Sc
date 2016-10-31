@@ -3,7 +3,7 @@
  * Committer: <COMMITTERNAME>
  *
  * Create Date:    Tue Sep 20 15:07:10 CEST 2016 
- * Module Name:    J1Sc
+ * Module Name:    J1 - Toplevel CPU (Core, Memory)
  * Project Name:   J1Sc - A simple J1 implementation in Scala
  *
  * Hash: <COMMITHASH>
