@@ -141,7 +141,7 @@ class J1Core(wordSize            : Int = 16,
   io.memWriteEnable := !clr && isALU && funcWriteMem
   io.ioWriteEnable := !clr && isALU && funcWriteIO
   io.extAdr := dtosN(addrWidth - 1 downto 0).asUInt
-  io.extToWrite   := dnos
+  io.extToWrite := dnos
 
   // Increment for data stack pointer
   val dStackPtrInc = SInt(dataStackIdxWidth bits)
@@ -157,7 +157,7 @@ class J1Core(wordSize            : Int = 16,
 
     // ALU instruction (check for a possible push of data)
     is(M"011"){dStackWrite := funcTtoN | (instr(1 downto 0) === B"01")
-               dStackPtrInc := instr(1 downto 0).asSInt.resize(dataStackIdxWidth)}
+               dStackPtrInc := instr(1 downto 0).asSInt.resized}
 
     // Don't change the data stack by default
     default {dStackWrite := False; dStackPtrInc := 0}
@@ -177,7 +177,7 @@ class J1Core(wordSize            : Int = 16,
     is(M"010") {rStackWrite := True; rStackPtrInc := 1}
 
     // Conditional jump (maybe we have to push)
-    is(M"011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resize(returnStackIdxWidth)}
+    is(M"011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resized}
 
     // Don't change the return stack by default
     default {rStackWrite := False; rStackPtrInc := 0}
