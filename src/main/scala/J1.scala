@@ -1,13 +1,13 @@
 /*
- * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
- * Committer: Steffen Reith
+ * Author: <AUTHORNAME>
+ * Committer: <COMMITTERNAME>
  *
- * Create Date:    Tue Sep 27 10:35:21 CEST 2016 
- * Module Name:    J1Core - Toplevel
- * Project Name:   J1Sc - A simple J1 implementation in scala
+ * Create Date:    Tue Sep 20 15:07:10 CEST 2016 
+ * Module Name:    J1Sc
+ * Project Name:   J1Sc - A simple J1 implementation in Scala
  *
- * Hash: ece2c62952a1dd372f706f2c3f2c22e368410ec9
- * Date: Mon Oct 10 19:37:29 2016 +0200
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.core._
 import spinal.lib._
