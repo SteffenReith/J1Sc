@@ -114,37 +114,3 @@ class J1(wordSize            : Int = 16,
   io.dataWrite <> coreJ1CPU.io.extToWrite
 
 }
-
-object J1 {
-
-  // Make the reset synchron and use the rising edge
-  val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
-                                            resetKind        = SYNC,
-                                            resetActiveLevel = HIGH)
-
-  def main(args: Array[String]) {
-
-    // Generate HDL files
-    SpinalConfig(genVhdlPkg = true,
-                 defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/vhdl").generateVhdl({
-
-                                                                // Set name for the synchronous reset
-                                                                ClockDomain.current.reset.setName("clr")
-                                                                new J1(dataStackIdxWidth = 3,
-                                                                          returnStackIdxWidth = 2)
-
-                                                              }).printPruned()
-    SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/verilog").generateVerilog({
-
-                                                                      // Set name for the synchronous reset
-                                                                      ClockDomain.current.reset.setName("clr")
-                                                                      new J1(dataStackIdxWidth = 3,
-                                                                                returnStackIdxWidth = 2)
-
-                                                                    }).printPruned()
-
-  }
-
-}
