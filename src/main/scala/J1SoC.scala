@@ -4,7 +4,7 @@
  *
  * Creation Date:  Tue Nov 1 14:34:09 GMT+1 2016
  * Module Name:    J1SoC - A small but complete system based on the J1-core
- * Project Name:   J1Sc - A simple J1 implementation in Scala
+ * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  * Hash: <COMMITHASH>
  * Date: <AUTHORDATE>

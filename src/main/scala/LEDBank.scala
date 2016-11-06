@@ -4,7 +4,7 @@
  *
  * Creation Date:  Tue Nov 1 00:19:43 GMT+1 2016
  * Module Name:    LEDBank - A simple LED bank
- * Project Name:   J1Sc - A simple J1 implementation in Scala
+ * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  * Hash: <COMMITHASH>
  * Date: <AUTHORDATE>
@@ -39,10 +39,10 @@ class LEDBank(width     : Int = 16,
   io.leds := lowActive ? ~ledReg | ledReg
 
   // Implement the bus interface
-  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt)(ledState : Seq[Bool]) = new Area {
+  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
     // The register is mapped at Address 0 and is of type r/w
-    io.ledState := busCtrl.createReadWrite(Bits(ledState.length bits), baseAddress + 0, 0) init(0)
+    io.ledState := busCtrl.createReadWrite(Bits(width bits), baseAddress + 0, 0) init(0)
     io.writeEnable setWhen(busCtrl.isWriting(baseAddress + 0))
 
   }

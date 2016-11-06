@@ -4,7 +4,7 @@
  *
  * Create Date:    Tue Sep 20 15:07:10 CEST 2016 
  * Module Name:    J1 - Toplevel CPU (Core, Memory)
- * Project Name:   J1Sc - A simple J1 implementation in Scala
+ * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  * Hash: <COMMITHASH>
  * Date: <AUTHORDATE>
