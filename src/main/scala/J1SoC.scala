@@ -15,7 +15,7 @@ class J1SoC extends Component {
 
   val io = new Bundle {
 
-    val leds = out Bits(ledBankWidth bits)
+    val leds = out Bits(ledBankWidth bits) // The physical pins for the connected FPGAs
 
   }
 
@@ -36,16 +36,16 @@ class J1SoC extends Component {
   val ledBusCtrl = SimpleBusSlaveFactory(ledBus)
 
   // Connect the bus and enable it permanently
-  ledBus.enable    := True
-  ledBus.writeMode := cpuCore.io.writeEnable
-  ledBus.address   := cpuCore.io.dataAddress
-  ledBus.readData  := cpuCore.io.dataRead
-  ledBus.writeData := cpuCore.io.dataWrite
+  ledBus.enable       := True
+  ledBus.writeMode    := cpuCore.io.writeEnable
+  ledBus.address      := cpuCore.io.dataAddress
+  cpuCore.io.dataRead := ledBus.readData
+  io.leds             := ledBus.readData
+  ledBus.writeData    := cpuCore.io.dataWrite
 
   // Create a LED bank at address 0x00 and connect it to the outside world
-  val leds = new LEDBank(ledBankWidth, False)
-  val ledsBridge = leds.driveFrom(ledBusCtrl, 0x00)
-  io.leds := leds.io.leds
+  val ledBank = new LEDBank(ledBankWidth, False)
+  val ledBridge = ledBank.driveFrom(ledBusCtrl, 0x00)
 
 }
 
