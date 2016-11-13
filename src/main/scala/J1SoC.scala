@@ -13,18 +13,39 @@ import spinal.core._
 
 class J1SoC extends Component {
 
+  val io = new Bundle {
+
+    val leds = out Bits(ledBankWidth bits)
+
+  }
+
+  // Parameters to configure the CPU
+  def wordSize     = 16
+  def addrWidth    = 13
+  def ledBankWidth = 16
+
   // Create a new CPU core
-  val core = new J1(wordSize = 16,
-                    dataStackIdxWidth = 4,
-                    returnStackIdxWidth = 3,
-                    addrWidth = 13,
-                    startAddress = 0)
+  val cpuCore = new J1(wordSize = wordSize,
+                       dataStackIdxWidth = 4,
+                       returnStackIdxWidth = 3,
+                       addrWidth = addrWidth,
+                       startAddress = 0)
 
-  // Create a LED bank
-  val leds = new LEDBank(16, False)
+  // Create a bus for the LED bank
+  val ledBus = SimpleBus(addrWidth, wordSize)
+  val ledBusCtrl = SimpleBusSlaveFactory(ledBus)
 
-  // Create the interconnect
-  
+  // Connect the bus and enable it permanently
+  ledBus.enable    := True
+  ledBus.writeMode := cpuCore.io.writeEnable
+  ledBus.address   := cpuCore.io.dataAddress
+  ledBus.readData  := cpuCore.io.dataRead
+  ledBus.writeData := cpuCore.io.dataWrite
+
+  // Create a LED bank at address 0x00 and connect it to the outside world
+  val leds = new LEDBank(ledBankWidth, False)
+  val ledsBridge = leds.driveFrom(ledBusCtrl, 0x00)
+  io.leds := leds.io.leds
 
 }
 
