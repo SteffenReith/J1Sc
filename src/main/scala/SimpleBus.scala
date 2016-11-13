@@ -38,16 +38,13 @@ case class SimpleBus(addressWidth : Int, dataWidth : Int) extends Bundle with IM
 
 case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed {
 
-  val readDataReg = Reg(Bits(bus.dataWidth bits)) //Give one cycle delay to reads
-  bus.readData := readDataReg
-
-  // Build the bus
+  // Build the bridging logic between master and slave
   override def build() : Unit = {
 
     // The bus consists out of different BusSlaveFactoryElement's (iterate over the internal list of them)
     for(element <- elements) element match {
 
-      // Only non-stop write mode is implement
+      // Only non-stop write mode is implement (can be e.g. used to send data of a Flow)
       case element : BusSlaveFactoryNonStopWrite =>
 
         // Write payload of 'getBitsWidth' bits at 'bitOffset' to the BusSlaveFactoryElement
@@ -58,7 +55,7 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
 
     }
 
-    // There is a list of I/O jobs to be done, hence iterate over them
+    // Iterate over a map where the keys a addresses and the values are arrays of jobs to be done for that address
     for((address, jobs) <- elementsPerAddress) {
 
       // Check whether the address matches and the bus is enabled
@@ -94,8 +91,8 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
             // Check of a Read job
             case element : BusSlaveFactoryRead => {
 
-                // Read data to the delay - register
-                readDataReg(element.bitOffset, element.that.getBitsWidth bits) := element.that.asBits
+                // Read data on the bus
+                bus.readData(element.bitOffset, element.that.getBitsWidth bits) := element.that.asBits
             }
 
             // Execute the action which is registered to a read operation on the actual address
