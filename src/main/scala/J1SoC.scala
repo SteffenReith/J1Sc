@@ -20,9 +20,10 @@ class J1SoC extends Component {
   }
 
   // Parameters to configure the CPU
-  def wordSize     = 16
-  def addrWidth    = 13
-  def ledBankWidth = 16
+  def wordSize            = 16
+  def addrWidth           = 13
+  def ledBankWidth        = 16
+  def peripheralWaitState =  1
 
   // Create a new CPU core
   val cpuCore = new J1(wordSize = wordSize,
@@ -31,21 +32,26 @@ class J1SoC extends Component {
                        addrWidth = addrWidth,
                        startAddress = 0)
 
-  // Create a bus for the LED bank
-  val ledBus = SimpleBus(addrWidth, wordSize)
-  val ledBusCtrl = SimpleBusSlaveFactory(ledBus)
+  // Create a bus for the cpu core
+  val cpuBus = SimpleBus(addrWidth, wordSize)
 
-  // Connect the bus and enable it permanently
-  ledBus.enable       := True
-  ledBus.writeMode    := cpuCore.io.writeEnable
-  ledBus.address      := cpuCore.io.dataAddress
-  cpuCore.io.dataRead := ledBus.readData
-  io.leds             := ledBus.readData
-  ledBus.writeData    := cpuCore.io.dataWrite
+  // Connect to the cpu bus and enable it permanently
+  cpuBus.enable       := True
+  cpuBus.writeMode    := cpuCore.io.writeEnable
+  cpuBus.address      := cpuCore.io.dataAddress
+  cpuCore.io.dataRead := cpuBus.readData
+  cpuBus.writeData    := cpuCore.io.dataWrite
+
+  // Create a delayed version of the cpu core
+  val peripheralBus = cpuBus.delayed(peripheralWaitState)
+  val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
   // Create a LED bank at address 0x00 and connect it to the outside world
   val ledBank = new LEDBank(ledBankWidth, false)
-  val ledBridge = ledBank.driveFrom(ledBusCtrl, 0x00)
+  val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x00)
+
+  // Drive the leds from the LEDBank register
+  io.leds := peripheralBus.readData
 
 }
 

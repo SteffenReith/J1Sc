@@ -8,8 +8,8 @@
  *
  * Remark: Initial code provided by: Charles Papon (charles.papon.90@gmail.com)
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 787d619f91f3d93f7372e61fe368f386fc8ae7d3
+ * Date: Sun Nov 13 15:54:41 2016 +0100
  */
 import spinal.core._
 import spinal.lib._
@@ -17,11 +17,45 @@ import spinal.lib.bus.misc._
 
 case class SimpleBus(addressWidth : Int, dataWidth : Int) extends Bundle with IMasterSlave {
 
-  val enable     = Bool // Bus can be used when 'enable' is high
-  val writeMode  = Bool // High to write data, low to read data
-  val address    = UInt(addressWidth bits) // Address (byte-aligned)
-  val writeData  = Bits(dataWidth bits)
-  val readData   = Bits(dataWidth bits)
+  val enable    = Bool // Bus can be used when 'enable' is high
+  val writeMode = Bool // High to write data, low to read data
+  val address   = UInt(addressWidth bits) // Address (byte-aligned)
+  val writeData = Bits(dataWidth bits)
+  val readData  = Bits(dataWidth bits)
+
+  // Created a copy of the current bus which signals are delayed by 'delayCnt' ticks
+  def delayed(delayCnt : Int = 1) : SimpleBus = {
+
+    // Check for proper parameter
+    require (delayCnt >= 0, "Error: delayCnt has to be at least 0")
+
+    // Make a copy
+    val retVal = cloneOf(this)
+
+    // Delay all signals
+    retVal.enable    := Delay(this.enable     ,delayCnt)
+    retVal.writeMode := Delay(this.writeMode  ,delayCnt)
+    retVal.address   := Delay(this.address    ,delayCnt)
+    retVal.writeData := Delay(this.writeData  ,delayCnt)
+    this.readData    := Delay(retVal.readData ,delayCnt)
+
+    // Return the delayed version of the actual SimpleBus object
+    return retVal
+
+  }
+
+  // Methods to connect SimpleBus objects
+  def << (that : SimpleBus) : Unit = {
+
+    // Simply wire the signals of 'this' and 'that'
+    that.enable    := this.enable
+    that.writeMode := this.writeMode
+    that.address   := this.address
+    that.writeData := this.writeData
+    this.readData  := that.readData
+
+  }
+  def >>(that : SimpleBus) : Unit = that << this
 
   // This is called by 'apply' when the master-object is called with data (-> side effect write/read data)
   override def asMaster() : Unit = {
