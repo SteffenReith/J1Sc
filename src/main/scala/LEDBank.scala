@@ -12,8 +12,8 @@
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
-class LEDBank(width     : Int = 16,
-              lowActive : Bool = False) extends Component {
+class LEDBank(width     : Int     = 16,
+              lowActive : Boolean = false) extends Component {
 
   val io = new Bundle {
 
@@ -36,7 +36,7 @@ class LEDBank(width     : Int = 16,
   }
 
   // Set output for the leds (invert it if asked for by the generic parameter)
-  io.leds := lowActive ? ~ledReg | ledReg
+  if (lowActive) io.leds := ~ledReg else io.leds := ledReg;
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {

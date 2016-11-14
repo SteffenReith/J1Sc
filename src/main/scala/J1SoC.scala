@@ -44,7 +44,7 @@ class J1SoC extends Component {
   ledBus.writeData    := cpuCore.io.dataWrite
 
   // Create a LED bank at address 0x00 and connect it to the outside world
-  val ledBank = new LEDBank(ledBankWidth, False)
+  val ledBank = new LEDBank(ledBankWidth, false)
   val ledBridge = ledBank.driveFrom(ledBusCtrl, 0x00)
 
 }

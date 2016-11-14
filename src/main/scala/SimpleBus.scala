@@ -93,6 +93,7 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
 
                 // Read data on the bus
                 bus.readData(element.bitOffset, element.that.getBitsWidth bits) := element.that.asBits
+
             }
 
             // Execute the action which is registered to a read operation on the actual address
