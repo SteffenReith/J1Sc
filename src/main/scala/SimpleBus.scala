@@ -33,11 +33,11 @@ case class SimpleBus(addressWidth : Int, dataWidth : Int) extends Bundle with IM
     val retVal = cloneOf(this)
 
     // Delay all signals
-    retVal.enable    := Delay(this.enable     ,delayCnt)
-    retVal.writeMode := Delay(this.writeMode  ,delayCnt)
-    retVal.address   := Delay(this.address    ,delayCnt)
-    retVal.writeData := Delay(this.writeData  ,delayCnt)
-    this.readData    := Delay(retVal.readData ,delayCnt)
+    retVal.enable    := Delay(this.enable,     delayCnt)
+    retVal.writeMode := Delay(this.writeMode,  delayCnt)
+    retVal.address   := Delay(this.address,    delayCnt)
+    retVal.writeData := Delay(this.writeData,  delayCnt)
+    this.readData    := Delay(retVal.readData, delayCnt)
 
     // Return the delayed version of the actual SimpleBus object
     return retVal
@@ -74,6 +74,9 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
 
   // Build the bridging logic between master and slave
   override def build() : Unit = {
+
+    // Init the read data wire
+    bus.readData := 0
 
     // The bus consists out of different BusSlaveFactoryElement's (iterate over the internal list of them)
     for(element <- elements) element match {
