@@ -21,15 +21,15 @@ class J1Core(cfg : J1Config) extends Component {
 
     // Signals for memory and io port
     val memWriteEnable = out Bool
-    val ioWriteEnable = out Bool
-    val extAdr = out UInt(cfg.addrWidth bits)
-    val extToWrite = out Bits(cfg.wordSize bits)
-    val memToRead = in Bits(cfg.wordSize bits)
-    val ioToRead = in Bits(cfg.wordSize bits)
+    val ioWriteEnable  = out Bool
+    val extAdr         = out UInt(cfg.addrWidth bits)
+    val extToWrite     = out Bits(cfg.wordSize bits)
+    val memToRead      = in Bits(cfg.wordSize bits)
+    val ioToRead       = in Bits(cfg.wordSize bits)
 
     // I/O port for instructions
     val instrAdr = out (UInt(cfg.addrWidth bits))
-    val instr = in (Bits(cfg.wordSize bits))
+    val instr    = in (Bits(cfg.wordSize bits))
 
   }.setName("")
 

@@ -19,8 +19,8 @@ class LEDBank(width     : Int     = 16,
 
     // I/O signals for memory data port
     val writeEnable = in Bool
-    val ledState = in Bits(width bits)
-    val leds = out Bits(width bits)
+    val ledState    = in Bits(width bits)
+    val leds        = out Bits(width bits)
 
   }.setName("")
 

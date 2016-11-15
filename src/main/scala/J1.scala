@@ -17,10 +17,10 @@ class J1(cfg : J1Config) extends Component {
   val io = new Bundle {
 
     // I/O signals for memory data port
-    val writeEnable = out Bool
+    val writeEnable  = out Bool
     val dataAddress  = out UInt(cfg.addrWidth bits)
-    val dataWrite = out Bits(cfg.wordSize bits)
-    val dataRead = in Bits(cfg.wordSize bits)
+    val dataWrite    = out Bits(cfg.wordSize bits)
+    val dataRead     = in Bits(cfg.wordSize bits)
 
   }.setName("")
 
