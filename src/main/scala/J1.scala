@@ -6,8 +6,8 @@
  * Module Name:    J1 - Toplevel CPU (Core, Memory)
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 0a82e2997654f501bf8937447a1521127602ea03
+ * Date: Tue Nov 1 15:35:55 2016 +0100
  */
 import spinal.core._
 import spinal.lib._
@@ -53,13 +53,13 @@ class J1(wordSize            : Int = 16,
                      B"1000_0000_0000_0011", // 14. Push 3
                      B"1000_0000_0000_0011", // 15. Push 3
                      B"0110_0111_0000_0001", // 16. Compare tos and nos push result
-                     B"0000_0000_0001_0001", // 17. Jump 17
-                     B"0110_0000_0000_0000", // 18. NOP
-                     B"0110_0000_0000_0000", // 19. NOP
-                     B"0110_0000_0000_0000", // 20. NOP
-                     B"0110_0000_0000_0000", // 21. NOP
-                     B"0110_0000_0000_0000", // 22. NOP
-                     B"0110_0000_0000_0000", // 23. NOP
+                     B"1101_0101_0101_0101", // 17. Push 0x5555
+                     B"1000_0000_0000_0000", // 18. Push 0x0000
+                     B"0110_0000_0100_0000", // 19. ALU I/O operation
+                     B"0110_0000_0000_0000", // 20. ALU I/O operation (wait state)
+                     B"0110_0000_0000_0000", // 21. Clear I/O
+                     B"0110_0000_0000_0000", // 22. Clear I/O (wait state)
+                     B"0000_0000_0001_0111", // 23. Jump 23
                      B"0110_0000_0000_0000", // 24. NOP
                      B"0110_0000_0000_0000", // 25. NOP
                      B"0110_0000_0000_0000", // 26. NOP

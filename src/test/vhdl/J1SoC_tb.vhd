@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
--- Author: <AUTHORNAME> (<AUTHOREMAIL>)
+-- Author: Steffen Reith (Steffen.Reith@hs-rm.de)
 -- Committer: <COMMITTERNAME>
 --
 -- Creation Date:  Thu Oct 13 20:44:40 GMT+2 2016
@@ -29,11 +29,8 @@ architecture Behavioral of J1SoC_tb is
   -- Clock period definition (100Mhz)
   constant clk_period : time := 10 ns;
 
-  -- I/O signals for memory bus
-  signal writeEnable : std_logic;
-  signal dataAddress : unsigned(12 downto 0);
-  signal dataWrite   : std_logic_vector(15 downto 0);
-  signal dataRead    : std_logic_vector(15 downto 0);
+  -- I/O signals 
+  signal leds : std_logic_vector(15 downto 0);
 
   -- Clock and reset 
   signal clk : std_logic;
@@ -42,13 +39,9 @@ architecture Behavioral of J1SoC_tb is
 begin
 
   uut : entity work.J1SoC
-    port map (
-      writeEnable => writeEnable,
-      dataAddress => dataAddress,
-      dataWrite   => dataWrite,
-      dataRead    => dataRead,
-      clk         => clk,
-      clr         => clr);
+    port map (clk  => clk,
+              clr  => clr,
+              leds => leds);
 
   -- Clock process definitions
   clk_process : process
@@ -70,9 +63,6 @@ begin
     -- Give a info message
     write(lineBuffer, string'("Reset of CPU"));
     writeline(output, lineBuffer);
-
-    -- Init read data
-    dataRead <= (others => '1');
     
     -- Reset the CPU
     clr <= '1';

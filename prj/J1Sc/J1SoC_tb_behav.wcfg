@@ -12,23 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="272500000fs"></ZoomStartTime>
-      <ZoomEndTime time="341500001fs"></ZoomEndTime>
-      <Cursor1Time time="315000000fs"></Cursor1Time>
+      <ZoomStartTime time="902600000fs"></ZoomStartTime>
+      <ZoomEndTime time="1001939830fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="180"></NameColumnWidth>
-      <ValueColumnWidth column_width="165"></ValueColumnWidth>
+      <ValueColumnWidth column_width="161"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="26" />
-   <wvobject type="array" fp_name="/J1SoC_tb/dataAddress">
-      <obj_property name="ElementShortName">dataAddress[12:0]</obj_property>
-      <obj_property name="ObjectShortName">dataAddress[12:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/dataWrite">
-      <obj_property name="ElementShortName">dataWrite[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dataWrite[15:0]</obj_property>
-   </wvobject>
+   <WVObjectSize size="5" />
    <wvobject type="logic" fp_name="/J1SoC_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -37,108 +29,17 @@
       <obj_property name="ElementShortName">clr</obj_property>
       <obj_property name="ObjectShortName">clr</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/instr">
-      <obj_property name="ElementShortName">instr[15:0]</obj_property>
-      <obj_property name="ObjectShortName">instr[15:0]</obj_property>
+   <wvobject type="array" fp_name="/J1SoC_tb/leds">
+      <obj_property name="ElementShortName">leds[15:0]</obj_property>
+      <obj_property name="ObjectShortName">leds[15:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/pc">
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/ledBank/writeEnable">
+      <obj_property name="ElementShortName">writeEnable</obj_property>
+      <obj_property name="ObjectShortName">writeEnable</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpuCore/coreJ1CPU/pc">
       <obj_property name="ElementShortName">pc[12:0]</obj_property>
       <obj_property name="ObjectShortName">pc[12:0]</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/pcN">
-      <obj_property name="ElementShortName">pcN[12:0]</obj_property>
-      <obj_property name="ObjectShortName">pcN[12:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtosN">
-      <obj_property name="ElementShortName">dtosN[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dtosN[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackWrite">
-      <obj_property name="ElementShortName">dStackWrite</obj_property>
-      <obj_property name="ObjectShortName">dStackWrite</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtrInc">
-      <obj_property name="ElementShortName">dStackPtrInc[2:0]</obj_property>
-      <obj_property name="ObjectShortName">dStackPtrInc[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtr">
-      <obj_property name="ElementShortName">dStackPtr[2:0]</obj_property>
-      <obj_property name="ObjectShortName">dStackPtr[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStackPtrN">
-      <obj_property name="ElementShortName">dStackPtrN[2:0]</obj_property>
-      <obj_property name="ObjectShortName">dStackPtrN[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dtos">
-      <obj_property name="ElementShortName">dtos[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FF0000</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dnos">
-      <obj_property name="ElementShortName">dnos[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FF0000</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/dStack">
-      <obj_property name="ElementShortName">dStack[0:7][15:0]</obj_property>
-      <obj_property name="ObjectShortName">dStack[0:7][15:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rtos">
-      <obj_property name="ElementShortName">rtos[15:0]</obj_property>
-      <obj_property name="ObjectShortName">rtos[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rtosN">
-      <obj_property name="ElementShortName">rtosN[15:0]</obj_property>
-      <obj_property name="ObjectShortName">rtosN[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackPtr">
-      <obj_property name="ElementShortName">rStackPtr[1:0]</obj_property>
-      <obj_property name="ObjectShortName">rStackPtr[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackPtrInc">
-      <obj_property name="ElementShortName">rStackPtrInc[1:0]</obj_property>
-      <obj_property name="ObjectShortName">rStackPtrInc[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStackWrite">
-      <obj_property name="ElementShortName">rStackWrite</obj_property>
-      <obj_property name="ObjectShortName">rStackWrite</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreJ1CPU/rStack">
-      <obj_property name="ElementShortName">rStack[0:3][15:0]</obj_property>
-      <obj_property name="ObjectShortName">rStack[0:3][15:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/isALU">
-      <obj_property name="ElementShortName">isALU</obj_property>
-      <obj_property name="ObjectShortName">isALU</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/funcTtoN">
-      <obj_property name="ElementShortName">funcTtoN</obj_property>
-      <obj_property name="ObjectShortName">funcTtoN</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/funcTtoR">
-      <obj_property name="ElementShortName">funcTtoR</obj_property>
-      <obj_property name="ObjectShortName">funcTtoR</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/writeMemEnable">
-      <obj_property name="ElementShortName">writeMemEnable</obj_property>
-      <obj_property name="ObjectShortName">writeMemEnable</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreJ1CPU/writeIOEnable">
-      <obj_property name="ElementShortName">writeIOEnable</obj_property>
-      <obj_property name="ObjectShortName">writeIOEnable</obj_property>
    </wvobject>
 </wave_config>

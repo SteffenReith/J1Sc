@@ -17,7 +17,7 @@ class J1SoC extends Component {
 
     val leds = out Bits(ledBankWidth bits) // The physical pins for the connected FPGAs
 
-  }
+  }.setName("")
 
   // Parameters to configure the CPU
   def wordSize            = 16

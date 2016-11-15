@@ -22,7 +22,7 @@ class LEDBank(width     : Int     = 16,
     val ledState = in Bits(width bits)
     val leds = out Bits(width bits)
 
-  }
+  }.setName("")
 
   // Register for holding the bit-vector storing the LED states
   val ledReg = Reg(Bits(width bits)) init(0)
