@@ -6,20 +6,15 @@
  * Module Name:    J1Core - CPU core (ALU, Decoder, Stacks, etc)
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: e1772196dc059b6eab1272d060afbb2c17a8749a
+ * Date: Mon Oct 31 22:40:41 2016 +0100
  */
 import spinal.core._
-import spinal.lib._
 
-class J1Core(wordSize            : Int = 16,
-             dataStackIdxWidth   : Int =  8,
-             returnStackIdxWidth : Int =  6,
-             addrWidth           : Int = 13,
-             startAddress        : Int =  0) extends Component {
+class J1Core(cfg : J1Config) extends Component {
 
   // Check the generic parameters
-  assert(wordSize == 16, "Warning: Only wordsize 16 is tested!")
+  assert(cfg.wordSize == 16, "Warning: Only wordsize 16 is tested!")
 
   // I/O ports
   val io = new Bundle {
@@ -27,14 +22,14 @@ class J1Core(wordSize            : Int = 16,
     // Signals for memory and io port
     val memWriteEnable = out Bool
     val ioWriteEnable = out Bool
-    val extAdr = out UInt(addrWidth bits)
-    val extToWrite = out Bits(wordSize bits)
-    val memToRead = in Bits(wordSize bits)
-    val ioToRead = in Bits(wordSize bits)
+    val extAdr = out UInt(cfg.addrWidth bits)
+    val extToWrite = out Bits(cfg.wordSize bits)
+    val memToRead = in Bits(cfg.wordSize bits)
+    val ioToRead = in Bits(cfg.wordSize bits)
 
     // I/O port for instructions
-    val instrAdr = out (UInt(addrWidth bits))
-    val instr = in (Bits(wordSize bits))
+    val instrAdr = out (UInt(cfg.addrWidth bits))
+    val instr = in (Bits(cfg.wordSize bits))
 
   }.setName("")
 
@@ -42,25 +37,25 @@ class J1Core(wordSize            : Int = 16,
   val clr = ClockDomain.current.isResetActive
 
   // Programm counter (PC)
-  val pcN = UInt(addrWidth bits)
-  val pc = RegNext(pcN) init(startAddress)
+  val pcN = UInt(cfg.addrWidth bits)
+  val pc = RegNext(pcN) init(cfg.startAddress)
 
   // Instruction to be excuted
   val instr = io.instr
 
   // Data stack pointer (set to first entry, which can be abitrary)
-  val dStackPtrN = UInt(dataStackIdxWidth bits)
-  val dStackPtr = RegNext(dStackPtrN) init((1 << dataStackIdxWidth) - 2)
+  val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)
+  val dStackPtr = RegNext(dStackPtrN) init((1 << cfg.dataStackIdxWidth) - 2)
 
   // Write enable signal for data stack
   val dStackWrite = Bool
 
   // Top of stack (do not init, hence undefined value after startup)
-  val dtosN = Bits(wordSize bits)
+  val dtosN = Bits(cfg.wordSize bits)
   val dtos = RegNext(dtosN) init(0)
 
   // Data stack with read and write port
-  val dStack = Mem(Bits(wordSize bits), wordCount = 1 << dataStackIdxWidth)
+  val dStack = Mem(Bits(cfg.wordSize bits), wordCount = 1 << cfg.dataStackIdxWidth)
   dStack.write(enable  = dStackWrite,
                address = dStackPtrN,
                data    = dtos)
@@ -68,18 +63,18 @@ class J1Core(wordSize            : Int = 16,
 
   // Calculate a possible value for top of return stack (check for conditional jump)
   val rtosN = Mux(instr(instr.high - 3 + 1)  === False,
-                  (pc + 1).asBits.resize(wordSize),
+                  (pc + 1).asBits.resize(cfg.wordSize),
                   dtos)
 
   // Return stack pointer, set to first entry (can be abitrary) s.t. the first write takes place at index 0
-  val rStackPtrN = UInt(returnStackIdxWidth bits)
-  val rStackPtr = RegNext(rStackPtrN) init((1 << returnStackIdxWidth) - 1)
+  val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
+  val rStackPtr = RegNext(rStackPtrN) init((1 << cfg.returnStackIdxWidth) - 1)
 
   // Write enable for return stack
   val rStackWrite = Bool
 
   // Return stack with read and write port
-  val rStack = Mem(Bits(wordSize bits), wordCount = 1 << returnStackIdxWidth)
+  val rStack = Mem(Bits(cfg.wordSize bits), wordCount = 1 << cfg.returnStackIdxWidth)
   rStack.write(enable  = rStackWrite,
                address = rStackPtrN,
                data    = rtosN)
@@ -89,7 +84,7 @@ class J1Core(wordSize            : Int = 16,
   switch(instr(instr.high downto (instr.high - 8) + 1)) {
 
     // Literal instruction
-    is(M"1-------") {dtosN := instr(instr.high - 1 downto 0).resize(wordSize)}
+    is(M"1-------") {dtosN := instr(instr.high - 1 downto 0).resize(cfg.wordSize)}
 
     // Jump and call instruction (do not change dtos)
     is(M"000-----", M"010-----") {dtosN := dtos}
@@ -107,8 +102,8 @@ class J1Core(wordSize            : Int = 16,
     is(M"011-0100") {dtosN := dtos | dnos}
     is(M"011-0101") {dtosN := dtos ^ dnos}
     is(M"011-0110") {dtosN := ~dtos}
-    is(M"011-1001") {dtosN := dtos.rotateLeft(dnos(log2Up(wordSize) - 1 downto 0).asUInt)}
-    is(M"011-1010") {dtosN := dtos.rotateRight(dnos(log2Up(wordSize) - 1 downto 0).asUInt)}
+    is(M"011-1001") {dtosN := dtos.rotateLeft(dnos(log2Up(cfg.wordSize) - 1 downto 0).asUInt)}
+    is(M"011-1010") {dtosN := dtos.rotateRight(dnos(log2Up(cfg.wordSize) - 1 downto 0).asUInt)}
 
     // ALU operations using rtos
     is(M"011-1011") {dtosN := rtos}
@@ -140,11 +135,11 @@ class J1Core(wordSize            : Int = 16,
   // Signals for handling external memory
   io.memWriteEnable := !clr && isALU && funcWriteMem
   io.ioWriteEnable := !clr && isALU && funcWriteIO
-  io.extAdr := dtosN(addrWidth - 1 downto 0).asUInt
+  io.extAdr := dtosN(cfg.addrWidth - 1 downto 0).asUInt
   io.extToWrite := dnos
 
   // Increment for data stack pointer
-  val dStackPtrInc = SInt(dataStackIdxWidth bits)
+  val dStackPtrInc = SInt(cfg.dataStackIdxWidth bits)
 
   // Handle update of data stack
   switch(instr(instr.high downto (instr.high - 3) + 1)) {
@@ -168,7 +163,7 @@ class J1Core(wordSize            : Int = 16,
   dStackPtrN := (dStackPtr.asSInt + dStackPtrInc).asUInt
 
   // Increment for data stack pointer
-  val rStackPtrInc = SInt(returnStackIdxWidth bits)
+  val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
 
   // Handle the update of return stack
   switch(instr(instr.high downto (instr.high - 3) + 1)) {
@@ -191,13 +186,13 @@ class J1Core(wordSize            : Int = 16,
   switch(clr ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
 
     // Check if we are in reset state
-    is(M"1_---_-_-") {pcN := startAddress}
+    is(M"1_---_-_-") {pcN := cfg.startAddress}
 
     // Check for jump, cond. jump or call instruction
-    is(M"0_000_-_-", M"0_001_-_0", M"0_010_-_-") {pcN := instr(addrWidth - 1 downto 0).asUInt}
+    is(M"0_000_-_-", M"0_001_-_0", M"0_010_-_-") {pcN := instr(cfg.addrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0_011_1_-") {pcN := rtos(addrWidth - 1 downto 0).asUInt}
+    is(M"0_011_1_-") {pcN := rtos(cfg.addrWidth - 1 downto 0).asUInt}
 
     // By default goto next instruction
     default {pcN := pc + 1}

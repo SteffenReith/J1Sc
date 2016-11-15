@@ -150,6 +150,6 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
   }
 
   // Tell the width of data bus
-  override def busDataWidth: Int = bus.dataWidth
+  override def busDataWidth : Int = bus.dataWidth
 
 }

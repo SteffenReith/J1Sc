@@ -10,30 +10,25 @@
  * Date: Tue Nov 1 15:35:55 2016 +0100
  */
 import spinal.core._
-import spinal.lib._
 
-class J1(wordSize            : Int = 16,
-         dataStackIdxWidth   : Int =  8,
-         returnStackIdxWidth : Int =  6,
-         addrWidth           : Int = 13,
-         startAddress        : Int =  0) extends Component {
+class J1(cfg : J1Config) extends Component {
 
   // I/O ports
   val io = new Bundle {
 
     // I/O signals for memory data port
     val writeEnable = out Bool
-    val dataAddress  = out UInt(addrWidth bits)
-    val dataWrite = out Bits(wordSize bits)
-    val dataRead = in Bits(wordSize bits)
+    val dataAddress  = out UInt(cfg.addrWidth bits)
+    val dataWrite = out Bits(cfg.wordSize bits)
+    val dataRead = in Bits(cfg.wordSize bits)
 
   }.setName("")
 
   // Signals for main memory
   val memWriteEnable = Bool
-  val memAdr = UInt(addrWidth bits)
-  val memWrite = Bits(wordSize bits)
-  val memRead = Bits(wordSize bits)
+  val memAdr = UInt(cfg.addrWidth bits)
+  val memWrite = Bits(cfg.wordSize bits)
+  val memRead = Bits(cfg.wordSize bits)
 
   // Create main memory
   def content = List(B"1000_0000_0000_0111", //  0. Push 7
@@ -86,11 +81,11 @@ class J1(wordSize            : Int = 16,
                      B"0110_0001_0000_0011", // 47. Pop
                      B"0110_0001_0000_0011", // 48. Pop
                      B"0111_0000_0000_1100") // 49. Return from Subroutine
-  val mainMemory = Mem(Bits(wordSize bits),
-                            content ++ List.fill((1 << addrWidth) - content.length)(B(0, wordSize bits)))
+  val mainMemory = Mem(Bits(cfg.wordSize bits),
+                            content ++ List.fill((1 << cfg.addrWidth) - content.length)(B(0, cfg.wordSize bits)))
 
   // Create a new CPU core
-  val coreJ1CPU = new J1Core(wordSize, dataStackIdxWidth, returnStackIdxWidth, addrWidth, startAddress)
+  val coreJ1CPU = new J1Core(cfg)
 
   // Create data port for mainMem
   mainMemory.write(enable  = memWriteEnable,
