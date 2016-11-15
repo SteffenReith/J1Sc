@@ -21,26 +21,29 @@ class J1SoC extends Component {
 
   // Parameters to configure the CPU
   def wordSize            = 16
+  def dstackWidth         =  4
+  def rstackWidth         =  3
   def addrWidth           = 13
+  def startAddress        =  0
   def ledBankWidth        = 16
   def peripheralWaitState =  1
 
   // Create a new CPU core
   val cpuCore = new J1(wordSize = wordSize,
-                       dataStackIdxWidth = 4,
-                       returnStackIdxWidth = 3,
+                       dataStackIdxWidth = dstackWidth,
+                       returnStackIdxWidth = rstackWidth,
                        addrWidth = addrWidth,
-                       startAddress = 0)
+                       startAddress = startAddress)
 
   // Create a bus for the cpu core
   val cpuBus = SimpleBus(addrWidth, wordSize)
 
   // Connect to the cpu bus and enable it permanently
   cpuBus.enable       := True
-  cpuBus.writeMode    := cpuCore.io.writeEnable
-  cpuBus.address      := cpuCore.io.dataAddress
-  cpuCore.io.dataRead := cpuBus.readData
-  cpuBus.writeData    := cpuCore.io.dataWrite
+  cpuBus.writeMode    <> cpuCore.io.writeEnable
+  cpuBus.address      <> cpuCore.io.dataAddress
+  cpuCore.io.dataRead <> cpuBus.readData
+  cpuBus.writeData    <> cpuCore.io.dataWrite
 
   // Create a delayed version of the cpu core
   val peripheralBus = cpuBus.delayed(peripheralWaitState)
