@@ -26,9 +26,9 @@ class J1(cfg : J1Config) extends Component {
 
   // Signals for main memory
   val memWriteEnable = Bool
-  val memAdr = UInt(cfg.addrWidth bits)
-  val memWrite = Bits(cfg.wordSize bits)
-  val memRead = Bits(cfg.wordSize bits)
+  val memAdr         = UInt(cfg.addrWidth bits)
+  val memWrite       = Bits(cfg.wordSize bits)
+  val memRead        = Bits(cfg.wordSize bits)
 
   // Create main memory
   def content = List(B"1000_0000_0000_0111", //  0. Push 7
