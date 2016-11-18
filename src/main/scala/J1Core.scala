@@ -22,6 +22,7 @@ class J1Core(cfg : J1Config) extends Component {
     // Signals for memory and io port
     val memWriteEnable = out Bool
     val ioWriteEnable  = out Bool
+    val ioReadEnable   = out Bool
     val extAdr         = out UInt(cfg.addrWidth bits)
     val extToWrite     = out Bits(cfg.wordSize bits)
     val memToRead      = in Bits(cfg.wordSize bits)
@@ -129,12 +130,14 @@ class J1Core(cfg : J1Config) extends Component {
   val funcTtoN     = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
   val funcTtoR     = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
   val funcWriteMem = (instr(6 downto 4).asUInt === 3) // Write to RAM
-  val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O operation
-  val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011"); // ALU operation
+  val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O write operation
+  val funcReadIO   = (instr(instr.high - 4 downto (instr.high - 4) + 1) === B"b1101") // I/O read operation
+  val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Signals for handling external memory
   io.memWriteEnable := !clr && isALU && funcWriteMem
   io.ioWriteEnable := !clr && isALU && funcWriteIO
+  io.ioReadEnable := !clr && isALU && funcReadIO
   io.extAdr := dtosN(cfg.addrWidth - 1 downto 0).asUInt
   io.extToWrite := dnos
 

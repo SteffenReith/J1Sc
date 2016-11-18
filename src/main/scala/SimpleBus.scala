@@ -32,7 +32,7 @@ case class SimpleBus(addressWidth : Int, dataWidth : Int) extends Bundle with IM
     // Make a copy
     val retVal = cloneOf(this)
 
-    // Delay all signals
+    // Delay all signals and wire them
     retVal.enable    := Delay(this.enable,     delayCnt)
     retVal.writeMode := Delay(this.writeMode,  delayCnt)
     retVal.address   := Delay(this.address,    delayCnt)
@@ -96,7 +96,7 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
     for((address, jobs) <- elementsPerAddress) {
 
       // Check whether the address matches and the bus is enabled
-      when ((bus.address === address) && (bus.enable)) {
+      when ((bus.address === address) && bus.enable) {
 
         // Check for write - mode
         when(bus.writeMode) {

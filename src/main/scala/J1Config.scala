@@ -12,7 +12,7 @@
 
 import spinal.core._
 
-// The configuration set of a J1-CPU
+// The configuration of a J1-CPU
 case class J1Config (wordSize            : Int = 16,
                      dataStackIdxWidth   : Int =  8,
                      returnStackIdxWidth : Int =  6,

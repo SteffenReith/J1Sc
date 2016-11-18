@@ -18,6 +18,7 @@ class J1(cfg : J1Config) extends Component {
 
     // I/O signals for memory data port
     val writeEnable  = out Bool
+    val readEnable   = out Bool
     val dataAddress  = out UInt(cfg.addrWidth bits)
     val dataWrite    = out Bits(cfg.wordSize bits)
     val dataRead     = in Bits(cfg.wordSize bits)
@@ -51,7 +52,7 @@ class J1(cfg : J1Config) extends Component {
                      B"1101_0101_0101_0111", // 17. Push 0x5557
                      B"1000_0000_0000_0000", // 18. Push 0x0000
                      B"0110_0000_0100_0000", // 19. ALU I/O operation
-                     B"0110_0000_0000_0000", // 20. ALU I/O operation (wait state)
+                     B"0110_0000_0000_0000", // 20. NOP (wait state for I/O)
                      B"0110_0000_0000_0000", // 21. Clear I/O
                      B"0110_0000_0000_0000", // 22. Clear I/O (wait state)
                      B"0000_0000_0001_0111", // 23. Jump 23
@@ -104,6 +105,7 @@ class J1(cfg : J1Config) extends Component {
 
   // Wire the IO data bus to the outside world
   io.writeEnable <> coreJ1CPU.io.ioWriteEnable
+  io.readEnable <> coreJ1CPU.io.ioReadEnable
   io.dataAddress <> coreJ1CPU.io.extAdr
   coreJ1CPU.io.ioToRead <> io.dataRead
   io.dataWrite <> coreJ1CPU.io.extToWrite

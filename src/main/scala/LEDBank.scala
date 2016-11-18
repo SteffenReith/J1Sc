@@ -42,7 +42,7 @@ class LEDBank(width     : Int     = 16,
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
     // The register is mapped at Address 0 and is of type r/w
-    busCtrl.read(io.leds, baseAddress + 0)
+    busCtrl.read(io.ledState, baseAddress + 0)
     busCtrl.nonStopWrite(io.ledState, 0) // ledState will be constantly driven by the data of the memory bus
     io.writeEnable := busCtrl.isWriting(baseAddress + 0)
 

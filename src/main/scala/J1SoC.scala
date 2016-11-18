@@ -37,7 +37,7 @@ class J1SoC extends Component {
   val cpuBus = SimpleBus(cfgJ1.addrWidth, cfgJ1.wordSize)
 
   // Connect to the cpu bus and enable it permanently
-  cpuBus.enable       := True
+  cpuBus.enable       := cpuCore.io.readEnable || cpuCore.io.writeEnable
   cpuBus.writeMode    <> cpuCore.io.writeEnable
   cpuBus.address      <> cpuCore.io.dataAddress
   cpuCore.io.dataRead <> cpuBus.readData
@@ -52,7 +52,7 @@ class J1SoC extends Component {
   val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x00)
 
   // Drive the leds from the LEDBank register
-  io.leds := peripheralBus.readData
+  io.leds := ledBank.io.leds
 
 }
 
