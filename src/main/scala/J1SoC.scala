@@ -11,7 +11,7 @@
  */
 import spinal.core._
 
-class J1SoC extends Component {
+class J1SoC (config : J1Config) extends Component {
 
   val io = new Bundle {
 
@@ -19,22 +19,15 @@ class J1SoC extends Component {
 
   }.setName("")
 
-  // Parameters to configure the CPU
-  def cfgJ1 = J1Config(wordSize = 16,
-                       dataStackIdxWidth = 3,
-                       returnStackIdxWidth = 3,
-                       addrWidth = 8,
-                       startAddress = 0)
-
   // Parameters for peripheral bus
   def ledBankWidth        = 16
   def peripheralWaitState =  1
 
   // Create a new CPU core
-  val cpuCore = new J1(cfgJ1)
+  val cpuCore = new J1(config)
 
-  // Create a bus for the cpu core
-  val cpuBus = SimpleBus(cfgJ1.addrWidth, cfgJ1.wordSize)
+  // Create a bus for the cpu core used for connecting simple IOs
+  val cpuBus = SimpleBus(config.addrWidth, config.wordSize)
 
   // Connect to the cpu bus and enable it permanently
   cpuBus.enable       := cpuCore.io.readEnable || cpuCore.io.writeEnable
@@ -48,7 +41,8 @@ class J1SoC extends Component {
   val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
   // Create a LED bank at address 0x00 and connect it to the outside world
-  val ledBank = new LEDBank(ledBankWidth, false)
+  val ledBank = new LEDBank(GPIOConfig.default.ledConfig.width,
+                            GPIOConfig.default.ledConfig.lowActive)
   val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x00)
 
   // Drive the leds from the LEDBank register
@@ -72,7 +66,7 @@ object J1SoC {
 
       // Set name for the synchronous reset
       ClockDomain.current.reset.setName("clr")
-      new J1SoC()
+      new J1SoC(J1Config.debug)
 
     }).printPruned()
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
@@ -80,7 +74,7 @@ object J1SoC {
 
       // Set name for the synchronous reset
       ClockDomain.current.reset.setName("clr")
-      new J1SoC()
+      new J1SoC(J1Config.debug)
 
     }).printPruned()
 

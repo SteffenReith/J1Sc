@@ -10,11 +10,44 @@
  * Date: <AUTHORDATE>
  */
 
-import spinal.core._
-
 // The configuration of a J1-CPU
-case class J1Config (wordSize            : Int = 16,
-                     dataStackIdxWidth   : Int =  8,
-                     returnStackIdxWidth : Int =  6,
-                     addrWidth           : Int = 13,
-                     startAddress        : Int =  0 )
+case class J1Config (wordSize : Int,
+                     dataStackIdxWidth : Int,
+                     returnStackIdxWidth : Int,
+                     addrWidth : Int,
+                     startAddress : Int)
+
+// Holds the configuration parameters of a J1
+object J1Config {
+
+  // Provide a default configuration
+  def default = {
+
+    // Default configuration values
+    val config = J1Config(wordSize            = 16,
+                          dataStackIdxWidth   =  8,
+                          returnStackIdxWidth =  6,
+                          addrWidth           = 13,
+                          startAddress        =  0 )
+
+    // Return the default configuration
+    config
+
+  }
+
+  // Provide a debug configuration
+  def debug = {
+
+    // Default configuration values
+    val config = J1Config(wordSize            = 16,
+                          dataStackIdxWidth   =  4,
+                          returnStackIdxWidth =  3,
+                          addrWidth           =  8,
+                          startAddress        =  0 )
+
+    // Return the default configuration
+    config
+
+  }
+
+}
