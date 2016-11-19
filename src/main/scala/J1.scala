@@ -10,18 +10,15 @@
  * Date: Tue Nov 1 15:35:55 2016 +0100
  */
 import spinal.core._
+import spinal.lib._
 
 class J1(cfg : J1Config) extends Component {
 
   // I/O ports
   val io = new Bundle {
 
-    // I/O signals for memory data port
-    val writeEnable  = out Bool
-    val readEnable   = out Bool
-    val dataAddress  = out UInt(cfg.addrWidth bits)
-    val dataWrite    = out Bits(cfg.wordSize bits)
-    val dataRead     = in Bits(cfg.wordSize bits)
+    // I/O signals for peripheral data port
+    val cpuBus = master(SimpleBus(cfg.addrWidth, cfg.wordSize))
 
   }.setName("")
 
@@ -98,16 +95,16 @@ class J1(cfg : J1Config) extends Component {
   coreJ1CPU.io.instr := mainMemory.readSync(address = coreJ1CPU.io.instrAdr, readUnderWrite = readFirst)
 
   // connect the CPU core with the internal memory
-  memWriteEnable <> coreJ1CPU.io.memWriteEnable
+  memWriteEnable <> coreJ1CPU.io.memWriteMode
   memAdr <> coreJ1CPU.io.extAdr
   memWrite <> coreJ1CPU.io.extToWrite
   coreJ1CPU.io.memToRead <> memRead
 
-  // Wire the IO data bus to the outside world
-  io.writeEnable <> coreJ1CPU.io.ioWriteEnable
-  io.readEnable <> coreJ1CPU.io.ioReadEnable
-  io.dataAddress <> coreJ1CPU.io.extAdr
-  coreJ1CPU.io.ioToRead <> io.dataRead
-  io.dataWrite <> coreJ1CPU.io.extToWrite
+  // Connect the external bus to the core
+  io.cpuBus.enable      := coreJ1CPU.io.ioWriteMode || coreJ1CPU.io.ioReadMode
+  io.cpuBus.writeMode   <> coreJ1CPU.io.ioWriteMode
+  io.cpuBus.address     <> coreJ1CPU.io.extAdr
+  coreJ1CPU.io.ioToRead <> io.cpuBus.readData
+  io.cpuBus.writeData   <> coreJ1CPU.io.extToWrite
 
 }

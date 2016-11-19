@@ -3,7 +3,7 @@
  * Committer: <COMMITTERNAME>
  *
  * Creation Date:  Sat Nov 12 15:36:19 GMT+1 2016
- * Module Name:    SimpleBus - A simple bus used to communicate with GPIO peripherial components
+ * Module Name:    SimpleBus - A simple bus which consists out of address / dataIn / dataOut / writeMode / enable
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  * Remark: Initial code provided by: Charles Papon (charles.papon.90@gmail.com)
@@ -149,7 +149,7 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
 
   }
 
-  // Tell the width of data bus
+  // Tell the width of the data bus
   override def busDataWidth : Int = bus.dataWidth
 
 }

@@ -20,13 +20,13 @@ class J1Core(cfg : J1Config) extends Component {
   val io = new Bundle {
 
     // Signals for memory and io port
-    val memWriteEnable = out Bool
-    val ioWriteEnable  = out Bool
-    val ioReadEnable   = out Bool
-    val extAdr         = out UInt(cfg.addrWidth bits)
-    val extToWrite     = out Bits(cfg.wordSize bits)
-    val memToRead      = in Bits(cfg.wordSize bits)
-    val ioToRead       = in Bits(cfg.wordSize bits)
+    val memWriteMode = out Bool
+    val ioWriteMode  = out Bool
+    val ioReadMode   = out Bool
+    val extAdr       = out UInt(cfg.addrWidth bits)
+    val extToWrite   = out Bits(cfg.wordSize bits)
+    val memToRead    = in Bits(cfg.wordSize bits)
+    val ioToRead     = in Bits(cfg.wordSize bits)
 
     // I/O port for instructions
     val instrAdr = out (UInt(cfg.addrWidth bits))
@@ -135,9 +135,9 @@ class J1Core(cfg : J1Config) extends Component {
   val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Signals for handling external memory
-  io.memWriteEnable := !clr && isALU && funcWriteMem
-  io.ioWriteEnable := !clr && isALU && funcWriteIO
-  io.ioReadEnable := !clr && isALU && funcReadIO
+  io.memWriteMode := !clr && isALU && funcWriteMem
+  io.ioWriteMode := !clr && isALU && funcWriteIO
+  io.ioReadMode := !clr && isALU && funcReadIO
   io.extAdr := dtosN(cfg.addrWidth - 1 downto 0).asUInt
   io.extToWrite := dnos
 

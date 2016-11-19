@@ -10,37 +10,26 @@
  * Date: Tue Nov 1 15:34:51 2016 +0100
  */
 import spinal.core._
+import spinal.lib._
 
 class J1SoC (j1Cfg   : J1Config,
              gpioCfg : GPIOConfig) extends Component {
 
   val io = new Bundle {
 
-    val leds = out Bits(gpioCfg.ledConfig.width bits) // The physical pins for the connected FPGAs
+    val leds = out Bits(gpioCfg.ledBankConfig.width bits) // The physical pins for the connected FPGAs
 
   }.setName("")
 
   // Create a new CPU core
-  val cpuCore = new J1(j1Cfg)
+  val cpu = new J1(j1Cfg)
 
-  // Create a bus for the cpu core used for connecting simple IOs
-  val cpuBus = SimpleBus(j1Cfg.addrWidth, j1Cfg.wordSize)
-
-  // Connect to the cpu bus and enable it permanently
-  cpuBus.enable       := cpuCore.io.readEnable || cpuCore.io.writeEnable
-  cpuBus.writeMode    <> cpuCore.io.writeEnable
-  cpuBus.address      <> cpuCore.io.dataAddress
-  cpuCore.io.dataRead <> cpuBus.readData
-  cpuBus.writeData    <> cpuCore.io.dataWrite
-
-  // Create a delayed version of the cpu core
-  def peripheralWaitState =  1
-  val peripheralBus = cpuBus.delayed(peripheralWaitState)
+  // Create a delayed version of the cpu core interface to GPIO
+  val peripheralBus = cpu.io.cpuBus.delayed(gpioCfg.gpioWaitStates)
   val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
   // Create a LED bank at address 0x00 and connect it to the outside world
-  val ledBank = new LEDBank(gpioCfg.ledConfig.width,
-                            gpioCfg.ledConfig.lowActive)
+  val ledBank = new LEDBank(gpioCfg.ledBankConfig)
   val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x00)
 
   // Drive the leds from the LEDBank register
@@ -55,7 +44,7 @@ object J1SoC {
                                             resetKind        = SYNC,
                                             resetActiveLevel = HIGH)
 
-  def main(args: Array[String]) {
+  def main(args : Array[String]) {
 
     // Configuration of CPU and GPIO system
     val j1Cfg = J1Config.debug

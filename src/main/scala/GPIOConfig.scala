@@ -31,7 +31,8 @@ object LEDBankConfig {
 }
 
 // Configuration of all GPIO components
-case class GPIOConfig (ledConfig: LEDBankConfig)
+case class GPIOConfig (ledBankConfig :  LEDBankConfig,
+                       gpioWaitStates : Int)
 
 object GPIOConfig {
 
@@ -39,7 +40,7 @@ object GPIOConfig {
   def default = {
 
     // Default configuration values
-    val config = GPIOConfig(ledConfig = LEDBankConfig.default)
+    val config = GPIOConfig(ledBankConfig = LEDBankConfig.default, 1)
 
     // Return the default configuration
     config
