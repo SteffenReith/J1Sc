@@ -52,6 +52,25 @@ begin
     wait for clk_period/2;
   end process;
 
+
+  reboot_proc : process
+  begin
+
+    -- Reset the CPU
+    clr <= '1';
+
+    -- Wait 30ns
+    wait for 30 ns;
+    wait until rising_edge(clk);
+
+    -- Revoke the the reset
+    clr <= '0';
+
+    -- Wait very long
+    wait for 3000 ns;
+    
+  end process;
+  
   -- Stimulus process
   stim_proc : process
 
@@ -64,22 +83,9 @@ begin
     write(lineBuffer, string'("Reset of CPU"));
     writeline(output, lineBuffer);
     
-    -- Reset the CPU
-    clr <= '1';
-
-    -- Wait 30ns
-    wait for 30ns;
-
-    -- Wait for the next rising edge
-    wait until rising_edge(clk);
-
-    -- Revoke the the reset
-    clr <= '0';
-
     -- Simply wait forever
     wait;
 
   end process;
 
 end architecture;
-
