@@ -11,23 +11,20 @@
  */
 import spinal.core._
 
-class J1SoC (config : J1Config) extends Component {
+class J1SoC (j1Cfg   : J1Config,
+             gpioCfg : GPIOConfig) extends Component {
 
   val io = new Bundle {
 
-    val leds = out Bits(ledBankWidth bits) // The physical pins for the connected FPGAs
+    val leds = out Bits(gpioCfg.ledConfig.width bits) // The physical pins for the connected FPGAs
 
   }.setName("")
 
-  // Parameters for peripheral bus
-  def ledBankWidth        = 16
-  def peripheralWaitState =  1
-
   // Create a new CPU core
-  val cpuCore = new J1(config)
+  val cpuCore = new J1(j1Cfg)
 
   // Create a bus for the cpu core used for connecting simple IOs
-  val cpuBus = SimpleBus(config.addrWidth, config.wordSize)
+  val cpuBus = SimpleBus(j1Cfg.addrWidth, j1Cfg.wordSize)
 
   // Connect to the cpu bus and enable it permanently
   cpuBus.enable       := cpuCore.io.readEnable || cpuCore.io.writeEnable
@@ -37,12 +34,13 @@ class J1SoC (config : J1Config) extends Component {
   cpuBus.writeData    <> cpuCore.io.dataWrite
 
   // Create a delayed version of the cpu core
+  def peripheralWaitState =  1
   val peripheralBus = cpuBus.delayed(peripheralWaitState)
   val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
   // Create a LED bank at address 0x00 and connect it to the outside world
-  val ledBank = new LEDBank(GPIOConfig.default.ledConfig.width,
-                            GPIOConfig.default.ledConfig.lowActive)
+  val ledBank = new LEDBank(gpioCfg.ledConfig.width,
+                            gpioCfg.ledConfig.lowActive)
   val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x00)
 
   // Drive the leds from the LEDBank register
@@ -59,6 +57,10 @@ object J1SoC {
 
   def main(args: Array[String]) {
 
+    // Configuration of CPU and GPIO system
+    val j1Cfg = J1Config.debug
+    val gpioCfg = GPIOConfig.default
+
     // Generate HDL files
     SpinalConfig(genVhdlPkg = true,
       defaultConfigForClockDomains = globalClockConfig,
@@ -66,7 +68,7 @@ object J1SoC {
 
       // Set name for the synchronous reset
       ClockDomain.current.reset.setName("clr")
-      new J1SoC(J1Config.debug)
+      new J1SoC(j1Cfg, gpioCfg)
 
     }).printPruned()
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
@@ -74,7 +76,7 @@ object J1SoC {
 
       // Set name for the synchronous reset
       ClockDomain.current.reset.setName("clr")
-      new J1SoC(J1Config.debug)
+      new J1SoC(j1Cfg, gpioCfg)
 
     }).printPruned()
 
