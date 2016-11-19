@@ -35,7 +35,7 @@ class J1Core(cfg : J1Config) extends Component {
   }.setName("")
 
   // Synchron reset
-  val clr = ClockDomain.current.isResetActive
+  val resetActive = ClockDomain.current.isResetActive
 
   // Programm counter (PC)
   val pcN = UInt(cfg.addrWidth bits)
@@ -135,9 +135,9 @@ class J1Core(cfg : J1Config) extends Component {
   val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Signals for handling external memory
-  io.memWriteMode := !clr && isALU && funcWriteMem
-  io.ioWriteMode := !clr && isALU && funcWriteIO
-  io.ioReadMode := !clr && isALU && funcReadIO
+  io.memWriteMode := !resetActive && isALU && funcWriteMem
+  io.ioWriteMode := !resetActive && isALU && funcWriteIO
+  io.ioReadMode := !resetActive && isALU && funcReadIO
   io.extAdr := dtosN(cfg.addrWidth - 1 downto 0).asUInt
   io.extToWrite := dnos
 
@@ -186,7 +186,7 @@ class J1Core(cfg : J1Config) extends Component {
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
   // Handle the PC
-  switch(clr ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
+  switch(resetActive ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
 
     // Check if we are in reset state
     is(M"1_---_-_-") {pcN := cfg.startAddress}
