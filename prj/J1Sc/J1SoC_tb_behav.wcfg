@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="543416518fs"></ZoomEndTime>
-      <Cursor1Time time="415000000fs"></Cursor1Time>
+      <ZoomStartTime time="3050766667fs"></ZoomStartTime>
+      <ZoomEndTime time="3198366668fs"></ZoomEndTime>
+      <Cursor1Time time="3065000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="231"></NameColumnWidth>
-      <ValueColumnWidth column_width="63"></ValueColumnWidth>
+      <NameColumnWidth column_width="233"></NameColumnWidth>
+      <ValueColumnWidth column_width="2321"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="21" />
+   <WVObjectSize size="16" />
    <wvobject type="logic" fp_name="/J1SoC_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -47,49 +47,6 @@
       <obj_property name="ObjectShortName">writeEnable</obj_property>
       <obj_property name="label">writeEnable (ledBank)</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpuCore/coreJ1CPU/instr">
-      <obj_property name="ElementShortName">instr[15:0]</obj_property>
-      <obj_property name="ObjectShortName">instr[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpuCore/coreJ1CPU/pc">
-      <obj_property name="ElementShortName">pc[7:0]</obj_property>
-      <obj_property name="ObjectShortName">pc[7:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpuCore/writeEnable">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">writeEnable</obj_property>
-      <obj_property name="ObjectShortName">writeEnable</obj_property>
-      <obj_property name="label">writeEnable (cpuCore)</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpuCore/dataWrite">
-      <obj_property name="ElementShortName">dataWrite[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dataWrite[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpuCore/dataRead">
-      <obj_property name="ElementShortName">dataRead[15:0]</obj_property>
-      <obj_property name="ObjectShortName">dataRead[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpuBus_enable">
-      <obj_property name="ElementShortName">cpuBus_enable</obj_property>
-      <obj_property name="ObjectShortName">cpuBus_enable</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpuBus_writeMode">
-      <obj_property name="ElementShortName">cpuBus_writeMode</obj_property>
-      <obj_property name="ObjectShortName">cpuBus_writeMode</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpuBus_address">
-      <obj_property name="ElementShortName">cpuBus_address[7:0]</obj_property>
-      <obj_property name="ObjectShortName">cpuBus_address[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpuBus_writeData">
-      <obj_property name="ElementShortName">cpuBus_writeData[15:0]</obj_property>
-      <obj_property name="ObjectShortName">cpuBus_writeData[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpuBus_readData">
-      <obj_property name="ElementShortName">cpuBus_readData[15:0]</obj_property>
-      <obj_property name="ObjectShortName">cpuBus_readData[15:0]</obj_property>
-   </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/peripheralBus_enable">
       <obj_property name="ElementShortName">peripheralBus_enable</obj_property>
       <obj_property name="ObjectShortName">peripheralBus_enable</obj_property>
@@ -109,5 +66,25 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/peripheralBus_readData">
       <obj_property name="ElementShortName">peripheralBus_readData[15:0]</obj_property>
       <obj_property name="ObjectShortName">peripheralBus_readData[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/mainMem">
+      <obj_property name="ElementShortName">mainMem[0:255][15:0]</obj_property>
+      <obj_property name="ObjectShortName">mainMem[0:255][15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/instr">
+      <obj_property name="ElementShortName">instr[15:0]</obj_property>
+      <obj_property name="ObjectShortName">instr[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/instrAdr">
+      <obj_property name="ElementShortName">instrAdr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">instrAdr[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/pcN">
+      <obj_property name="ElementShortName">pcN[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pcN[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/pc">
+      <obj_property name="ElementShortName">pc[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pc[7:0]</obj_property>
    </wvobject>
 </wave_config>

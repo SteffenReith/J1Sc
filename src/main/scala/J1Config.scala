@@ -6,8 +6,8 @@
  * Module Name:    J1Config - Holds a complete CPU configuration
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 0a2e9c9b22e7282083028bf56157ad357d6eaeab
+ * Date: Sat Nov 19 00:31:59 2016 +0100
  */
 
 import spinal.core._
@@ -72,7 +72,7 @@ object J1Config {
                        B"0110_0001_0000_0011", // 42. Pop                     
                        B"0110_0001_0000_0011", // 43. Pop                     
                        B"1000_0000_1111_1110", // 44. Push 254                
-                       B"1000_0001_0000_0000", // 45. Push 256                
+                       B"1000_0000_1000_0000", // 45. Push 128
                        B"0110_0000_0011_0000", // 46. Write to external RAM   
                        B"0110_0001_0000_0011", // 47. Pop                     
                        B"0110_0001_0000_0011", // 48. Pop                     
