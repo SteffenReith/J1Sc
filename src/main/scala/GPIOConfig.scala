@@ -6,8 +6,8 @@
  * Module Name:    GPIOConfig - Holds the configuration of GPIO components
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 10743e7bebbaa8df9957d4dc3b12aa70c2835144
+ * Date: Sat Nov 19 00:31:09 2016 +0100
  */
 
 // Configuration of a LED-bank
@@ -31,7 +31,7 @@ object LEDBankConfig {
 }
 
 // Configuration of all GPIO components
-case class GPIOConfig (ledBankConfig :  LEDBankConfig,
+case class GPIOConfig (ledBankConfig  :  LEDBankConfig,
                        gpioWaitStates : Int)
 
 object GPIOConfig {
