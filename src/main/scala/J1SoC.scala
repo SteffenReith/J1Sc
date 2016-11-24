@@ -30,9 +30,9 @@ class J1SoC (j1Cfg   : J1Config,
   val peripheralBus = cpu.io.cpuBus.delayed(gpioCfg.gpioWaitStates)
   val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
-  // Create a LED bank at base address 0x100
+  // Create a LED bank at base address 0x40
   val ledBank = new LEDBank(gpioCfg.ledBankConfig)
-  val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x100)
+  val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x40)
 
   // Create an UART interface
   val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = 8,
@@ -41,7 +41,7 @@ class J1SoC (j1Cfg   : J1Config,
                                           samplingSize      = 5,
                                           postSamplingSize  = 2)
   val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = 115200,
-                                              dataLength = 8,
+                                              dataLength = 7,
                                               parity = UartParityType.NONE,
                                               stop = UartStopType.ONE)
   val uartCtrlMemoryMappedConfig = UartCtrlMemoryMappedConfig(uartCtrlConfig = uartCtrlGenerics,
@@ -51,7 +51,9 @@ class J1SoC (j1Cfg   : J1Config,
                                                               txFifoDepth = 8,
                                                               rxFifoDepth = 8)
   val uartCtrl = new UartCtrl(uartCtrlGenerics)
-  val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartCtrlMemoryMappedConfig)
+
+  // Map the UART to 0x80
+  val uartBridge = uartCtrl.driveFrom16(peripheralBusCtrl, uartCtrlMemoryMappedConfig, baseAddress = 0x80)
 
   // Connect the physical UART pins to the outside world
   io.tx := uartCtrl.io.uart.txd
