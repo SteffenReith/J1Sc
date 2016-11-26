@@ -35,21 +35,21 @@ class J1SoC (j1Cfg   : J1Config,
   val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x40)
 
   // Create an UART interface
-  val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = 8,
-                                          clockDividerWidth = 20,
-                                          preSamplingSize   = 1,
-                                          samplingSize      = 5,
-                                          postSamplingSize  = 2)
-  val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = 115200,
-                                              dataLength = 7,
-                                              parity = UartParityType.NONE,
-                                              stop = UartStopType.ONE)
+  val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = gpioCfg.uartConfig.dataWidthMax,
+                                          clockDividerWidth = gpioCfg.uartConfig.clockDividerWidth,
+                                          preSamplingSize   = gpioCfg.uartConfig.preSamplingSize,
+                                          samplingSize      = gpioCfg.uartConfig.samplingSize,
+                                          postSamplingSize  = gpioCfg.uartConfig.postSamplingSize)
+  val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = gpioCfg.uartConfig.baudrate,
+                                              dataLength = gpioCfg.uartConfig.dataLength,
+                                              parity = gpioCfg.uartConfig.parity,
+                                              stop = gpioCfg.uartConfig.stop)
   val uartCtrlMemoryMappedConfig = UartCtrlMemoryMappedConfig(uartCtrlConfig = uartCtrlGenerics,
                                                               initConfig = uartCtrlInitConfig,
                                                               busCanWriteClockDividerConfig = false,
                                                               busCanWriteFrameConfig = false,
-                                                              txFifoDepth = 8,
-                                                              rxFifoDepth = 8)
+                                                              txFifoDepth = gpioCfg.uartConfig.fifoDepth,
+                                                              rxFifoDepth = gpioCfg.uartConfig.fifoDepth)
   val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
   // Map the UART to 0x80

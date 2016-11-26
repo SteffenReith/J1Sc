@@ -16,6 +16,7 @@ import spinal.core._
 case class J1Config (wordSize : Int,
                      dataStackIdxWidth : Int,
                      returnStackIdxWidth : Int,
+                     noOfInterrupts : Int,
                      addrWidth : Int,
                      startAddress : Int,
                      bootCode : () => List[Bits])
@@ -85,6 +86,7 @@ object J1Config {
     val config = J1Config(wordSize            = 16,
                           dataStackIdxWidth   =  8,
                           returnStackIdxWidth =  6,
+                          noOfInterrupts      =  8,
                           addrWidth           = 13,
                           startAddress        =  0,
                           bootCode            =  endlessLoop)
@@ -102,6 +104,7 @@ object J1Config {
                           dataStackIdxWidth   =  4,
                           returnStackIdxWidth =  3,
                           addrWidth           =  8,
+                          noOfInterrupts      =  8,
                           startAddress        =  0,
                           bootCode            =  isaTest)
 

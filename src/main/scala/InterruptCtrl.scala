@@ -12,22 +12,25 @@
 import spinal.core._
 import spinal.lib._
 
-class InterruptCtrl(width : Int) extends Component {
+class InterruptCtrl(noOfInterrupts : Int) extends Component {
+
+  // Check the number of interrupts
+  assert(isPow2(noOfInterrupts), "Warning: Specify a power of 2 as number of interrupts")
 
   var io = new Bundle {
 
-    val intsE = in Bits(width bits)
+    val intsE = in Bits(noOfInterrupts bits)
 
-    val intNo = out UInt(log2Up(width) bits)
+    val intNo = out UInt(log2Up(noOfInterrupts) bits)
     val irq   = out Bool
 
   }.setName("")
 
-  // All interrupts are asynchron hence make them synchron
+  // All interrupts are asynchronous hence make them synchronous
   val interrupts = BufferCC(io.intsE)
 
   // Check all interrupts
-  for(i <- (width - 1) to 0 by -1) {
+  for(i <- (noOfInterrupts - 1) to 0 by -1) {
 
     // Check if ith interrupt is active
     if (interrupts(i) == True) io.intNo := i

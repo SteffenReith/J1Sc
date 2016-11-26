@@ -28,6 +28,10 @@ class J1Core(cfg : J1Config) extends Component {
     val memToRead    = in Bits(cfg.wordSize bits)
     val ioToRead     = in Bits(cfg.wordSize bits)
 
+    // Interface for interrupt system
+    val irq   = in Bool
+    val intNo = in UInt(log2Up(cfg.noOfInterrupts) bits)
+
     // I/O port for instructions
     val instrAdr = out (UInt(cfg.addrWidth bits))
     val instr    = in (Bits(cfg.wordSize bits))

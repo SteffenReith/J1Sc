@@ -50,6 +50,11 @@ class J1(cfg : J1Config) extends Component {
   memWrite <> coreJ1CPU.io.extToWrite
   coreJ1CPU.io.memToRead <> memRead
 
+  // Create an interrupt controller and connect it
+  val intCtrl = new InterruptCtrl(noOfInterrupts = cfg.noOfInterrupts)
+  coreJ1CPU.io.intNo <> intCtrl.io.intNo
+  coreJ1CPU.io.irq <> intCtrl.io.irq
+
   // Connect the external bus to the core
   io.cpuBus.enable      := coreJ1CPU.io.ioWriteMode || coreJ1CPU.io.ioReadMode
   io.cpuBus.writeMode   <> coreJ1CPU.io.ioWriteMode
