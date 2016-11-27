@@ -28,9 +28,8 @@ class J1(cfg : J1Config) extends Component {
   val memWrite       = Bits(cfg.wordSize bits)
   val memRead        = Bits(cfg.wordSize bits)
 
-  // Main memory prefilled with boot code
-  val mainMem = Mem(Bits(cfg.wordSize bits),
-                    cfg.bootCode() ++ List.fill((1 << cfg.addrWidth) - cfg.bootCode().length)(B(0, cfg.wordSize bits)))
+  // Main memory pre filled with boot code
+  val mainMem = Mem(Bits(cfg.wordSize bits), cfg.bootCode())
 
   // Create a new CPU core
   val coreJ1CPU = new J1Core(cfg)

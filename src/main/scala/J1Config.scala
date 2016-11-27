@@ -82,14 +82,26 @@ object J1Config {
   // Provide a default configuration
   def default = {
 
+    def wordSize            = 16
+    def dataStackIdxWidth   =  8
+    def returnStackIdxWidth =  4
+    def noOfInterrupts      =  4
+    def addrWidth           = 13
+    def startAddress        =  0
+    def instrRTS            = B"111_0000_0000_1100"
+
+    def bootCode() = endlessLoop() ++
+                     List.fill((1 << addrWidth) - endlessLoop().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill(noOfInterrupts)(instrRTS)
+
     // Default configuration values
-    val config = J1Config(wordSize            = 16,
-                          dataStackIdxWidth   =  8,
-                          returnStackIdxWidth =  6,
-                          noOfInterrupts      =  8,
-                          addrWidth           = 13,
-                          startAddress        =  0,
-                          bootCode            =  endlessLoop)
+    val config = J1Config(wordSize            = wordSize,
+                          dataStackIdxWidth   = dataStackIdxWidth,
+                          returnStackIdxWidth = returnStackIdxWidth,
+                          noOfInterrupts      = noOfInterrupts,
+                          addrWidth           = addrWidth,
+                          startAddress        = startAddress,
+                          bootCode            = bootCode)
 
     // Return the default configuration
     config
@@ -99,14 +111,26 @@ object J1Config {
   // Provide a debug configuration
   def debug = {
 
+    def wordSize            = 16
+    def dataStackIdxWidth   =  5
+    def returnStackIdxWidth =  4
+    def noOfInterrupts      =  2
+    def addrWidth           =  9
+    def startAddress        =  0
+    def instrRTS            = B"111_0000_0000_1100"
+
+    def bootCode() = isaTest() ++
+                     List.fill((1 << addrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill(noOfInterrupts)(instrRTS)
+
     // Default configuration values
-    val config = J1Config(wordSize            = 16,
-                          dataStackIdxWidth   =  4,
-                          returnStackIdxWidth =  3,
-                          addrWidth           =  8,
-                          noOfInterrupts      =  8,
-                          startAddress        =  0,
-                          bootCode            =  isaTest)
+    val config = J1Config(wordSize            = wordSize,
+                          dataStackIdxWidth   = dataStackIdxWidth,
+                          returnStackIdxWidth = returnStackIdxWidth,
+                          noOfInterrupts      = noOfInterrupts,
+                          addrWidth           = addrWidth,
+                          startAddress        = startAddress,
+                          bootCode            = bootCode)
 
     // Return the default configuration
     config
