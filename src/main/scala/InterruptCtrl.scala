@@ -4,7 +4,7 @@
  *
  * Creation Date:  Fri Nov 25 13:04:23 GMT+1 2016
  * Module Name:    InterruptCtrl - A small interrupt controller for the J1 CPU
-* Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
+ * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  * Hash: <COMMITHASH>
  * Date: <AUTHORDATE>
