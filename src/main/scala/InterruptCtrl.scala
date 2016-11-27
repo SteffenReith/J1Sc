@@ -36,7 +36,7 @@ class InterruptCtrl(noOfInterrupts : Int) extends Component {
   for(i <- (noOfInterrupts - 1) to 0 by -1) {
 
     // Check if ith interrupt is active
-    if (interrupts(i) == True) io.intNo := i
+    when(interrupts(i) === True) {io.intNo := i}
 
   }
 
