@@ -17,6 +17,9 @@ class J1(cfg : J1Config) extends Component {
   // I/O ports
   val io = new Bundle {
 
+    // Asynchronous interrupts for the outside world
+    val extInt = in Bits(cfg.noOfInterrupts bits)
+
     // I/O signals for peripheral data port
     val cpuBus = master(SimpleBus(cfg.addrWidth, cfg.wordSize))
 
@@ -51,6 +54,7 @@ class J1(cfg : J1Config) extends Component {
 
   // Create an interrupt controller and connect it
   val intCtrl = new InterruptCtrl(noOfInterrupts = cfg.noOfInterrupts)
+  intCtrl.io.intsE <> io.extInt
   coreJ1CPU.io.intNo <> intCtrl.io.intNo
   coreJ1CPU.io.irq <> intCtrl.io.irq
 

@@ -17,7 +17,13 @@ class J1SoC (j1Cfg   : J1Config,
 
   val io = new Bundle {
 
-    val leds = out Bits(gpioCfg.ledBankConfig.width bits) // The physical pins for the connected FPGAs
+    // Asynchronous interrupts for the outside world
+    val extInt = in Bits(j1Cfg.noOfInterrupts bits)
+
+    // The physical pins for the connected FPGAs
+    val leds = out Bits(gpioCfg.ledBankConfig.width bits)
+
+    // I/O pins for the UART
     val rx   =  in Bool // UART input
     val tx   = out Bool // UART output
 
@@ -25,6 +31,9 @@ class J1SoC (j1Cfg   : J1Config,
 
   // Create a new CPU core
   val cpu = new J1(j1Cfg)
+
+  // Connect the external interrupts
+  cpu.io.extInt <> io.extInt
 
   // Create a delayed version of the cpu core interface to GPIO
   val peripheralBus = cpu.io.cpuBus.delayed(gpioCfg.gpioWaitStates)

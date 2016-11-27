@@ -29,6 +29,13 @@ architecture Behavioral of J1SoC_tb is
   -- Clock period definition (100Mhz)
   constant clk_period : time := 10 ns;
 
+  -- Interrupts
+  signal extInt : std_logic_vector(1 downto 0) := "00";
+
+  -- UART signals
+  signal rx : std_logic := '0';
+  signal tx : std_logic;
+
   -- I/O signals 
   signal leds : std_logic_vector(15 downto 0);
 
@@ -39,9 +46,12 @@ architecture Behavioral of J1SoC_tb is
 begin
 
   uut : entity work.J1SoC
-    port map (clk  => clk,
-              clr  => clr,
-              leds => leds);
+    port map (clk    => clk,
+              clr    => clr,
+              extInt => extInt,
+              rx     => rx,
+              tx     => tx,
+              leds   => leds);
 
   -- Clock process definitions
   clk_process : process
@@ -52,6 +62,25 @@ begin
     wait for clk_period/2;
   end process;
 
+  interrup_proc : process
+  begin
+
+    -- Wait 1537ns
+    wait for 1537 ns;
+
+    -- Activate an interrupt (asynchronous)
+    extInt(0) <= '1';
+
+    -- Wait some clocks
+    wait for 53 ns;
+    
+    -- Revoke the the interrupt (asynchronous)
+    extInt(0) <= '0';
+
+    -- Wait 3000 ns long
+    wait for 3000 ns;
+
+  end process;
 
   reboot_proc : process
   begin
@@ -67,10 +96,11 @@ begin
     clr <= '0';
 
     -- Wait very long
-    wait for 3000 ns;
-    
+    wait for 30000 ns;
+
   end process;
-  
+
+
   -- Stimulus process
   stim_proc : process
 
@@ -82,7 +112,7 @@ begin
     -- Give a info message
     write(lineBuffer, string'("Reset of CPU"));
     writeline(output, lineBuffer);
-    
+
     -- Simply wait forever
     wait;
 

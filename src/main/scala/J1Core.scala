@@ -66,10 +66,11 @@ class J1Core(cfg : J1Config) extends Component {
                data    = dtos)
   val dnos = dStack.readAsync(address = dStackPtr, readUnderWrite = writeFirst)
 
+  // Check for interrupt mode, because afterwards the current instruction has to be executed
+  val nextPC = Mux(io.irq === True, pc.asBits.resize(cfg.wordSize), (pc + 1).asBits.resize(cfg.wordSize))
+
   // Calculate a possible value for top of return stack (check for conditional jump)
-  val rtosN = Mux(instr(instr.high - 3 + 1)  === False,
-                  (pc + 1).asBits.resize(cfg.wordSize),
-                  dtos)
+  val rtosN = Mux(instr(instr.high - 3 + 1)  === False, nextPC, dtos)
 
   // Return stack pointer, set to first entry (can be abitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
@@ -173,13 +174,13 @@ class J1Core(cfg : J1Config) extends Component {
   val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
 
   // Handle the update of return stack
-  switch(instr(instr.high downto (instr.high - 3) + 1)) {
+  switch(io.irq ## instr(instr.high downto (instr.high - 3) + 1)) {
 
-    // Call instruction (push return address to stack)
-    is(M"010") {rStackWrite := True; rStackPtrInc := 1}
+    // Call instruction or interrupt (push return address to stack)
+    is(M"-_010", M"1_---") {rStackWrite := True; rStackPtrInc := 1}
 
     // Conditional jump (maybe we have to push)
-    is(M"011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resized}
+    is(M"-_011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resized}
 
     // Don't change the return stack by default
     default {rStackWrite := False; rStackPtrInc := 0}
@@ -190,16 +191,19 @@ class J1Core(cfg : J1Config) extends Component {
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
   // Handle the PC
-  switch(resetActive ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
+  switch(resetActive ## io.irq ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
 
     // Check if we are in reset state
-    is(M"1_---_-_-") {pcN := cfg.startAddress}
+    is(M"1_-_---_-_-") {pcN := cfg.startAddress}
+
+    // Check if an interrupt is active and jump to the corresponding interrupt vector
+    is(M"-_1_---_-_-") {pcN := ((1 << cfg.addrWidth) - 1) - io.intNo}
 
     // Check for jump, cond. jump or call instruction
-    is(M"0_000_-_-", M"0_001_-_0", M"0_010_-_-") {pcN := instr(cfg.addrWidth - 1 downto 0).asUInt}
+    is(M"0_-_000_-_-", M"0_-_001_-_0", M"0_-_010_-_-") {pcN := instr(cfg.addrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0_011_1_-") {pcN := rtos(cfg.addrWidth - 1 downto 0).asUInt}
+    is(M"0_-_011_1_-") {pcN := rtos(cfg.addrWidth - 1 downto 0).asUInt}
 
     // By default goto next instruction
     default {pcN := pc + 1}

@@ -27,9 +27,12 @@ class InterruptCtrl(noOfInterrupts : Int) extends Component {
   }.setName("")
 
   // All interrupts are asynchronous hence make them synchronous
-  val interrupts = BufferCC(io.intsE)
+  val interrupts = BufferCC(io.intsE,
+                            init = B(0, noOfInterrupts bits),
+                            bufferDepth = 3)
 
   // Check all interrupts
+  io.intNo := 0;
   for(i <- (noOfInterrupts - 1) to 0 by -1) {
 
     // Check if ith interrupt is active
