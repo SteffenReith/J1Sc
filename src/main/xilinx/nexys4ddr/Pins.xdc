@@ -74,7 +74,6 @@ set_property  SLEW FAST [get_ports {leds[15]}]
 
 set_property  PACKAGE_PIN C4 [get_ports {rx}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {rx}]
-set_property  SLEW FAST [get_ports {rx}]
 
 set_property  PACKAGE_PIN D4 [get_ports {tx}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {tx}]
@@ -83,11 +82,9 @@ set_property  SLEW FAST [get_ports {tx}]
 
 set_property  PACKAGE_PIN M17 [get_ports {extInt[0]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {extInt[0]}]
-set_property  SLEW FAST [get_ports {extInt[0]}]
 
 set_property  PACKAGE_PIN P17 [get_ports {extInt[1]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {extInt[1]}]
-set_property  SLEW FAST [get_ports {extInt[1]}]
 
 
 #set_property  PACKAGE_PIN U13 [get_ports {sel[7]}]
