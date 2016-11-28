@@ -14,7 +14,8 @@ import spinal.core._
 class J1Core(cfg : J1Config) extends Component {
 
   // Check the generic parameters
-  assert(cfg.wordSize == 16, "Warning: Only wordsize 16 is tested!")
+  assert(Bool(cfg.wordSize == 16), "Warning: Only wordsize 16 was tested!", ERROR)
+  assert(Bool(cfg.wordSize >= cfg.addrWidth), "Error: The width of an address can not be larger than a word!", FAILURE)
 
   // I/O ports
   val io = new Bundle {
