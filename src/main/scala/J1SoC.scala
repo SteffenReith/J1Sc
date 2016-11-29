@@ -32,9 +32,6 @@ class J1SoC (j1Cfg   : J1Config,
   // Create a new CPU core
   val cpu = new J1(j1Cfg)
 
-  // Connect the external interrupts
-  cpu.io.extInt <> io.extInt
-
   // Create a delayed version of the cpu core interface to GPIO
   val peripheralBus = cpu.io.cpuBus.delayed(gpioCfg.gpioWaitStates)
   val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
@@ -42,6 +39,9 @@ class J1SoC (j1Cfg   : J1Config,
   // Create a LED bank at base address 0x40
   val ledBank = new LEDBank(gpioCfg.ledBankConfig)
   val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x40)
+
+  // Connect the physical LED pins to the outside world
+  io.leds := ledBank.io.leds
 
   // Create an UART interface
   val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = gpioCfg.uartConfig.dataWidthMax,
@@ -68,8 +68,11 @@ class J1SoC (j1Cfg   : J1Config,
   io.tx := uartCtrl.io.uart.txd
   uartCtrl.io.uart.rxd := io.rx
 
-  // Connect the physical LED pins to the outside world
-  io.leds := ledBank.io.leds
+  // Create an interrupt controller and connect it
+  val intCtrl = new InterruptCtrl(noOfInterrupts = j1Cfg.noOfInterrupts)
+  intCtrl.io.intsE <> io.extInt
+  cpu.io.intNo <> intCtrl.io.intNo
+  cpu.io.irq <> intCtrl.io.irq
 
 }
 
