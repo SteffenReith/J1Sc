@@ -17,6 +17,7 @@ case class J1Config (wordSize : Int,
                      dataStackIdxWidth : Int,
                      returnStackIdxWidth : Int,
                      noOfInterrupts : Int,
+                     noOfInternalInterrupts : Int,
                      addrWidth : Int,
                      startAddress : Int,
                      bootCode : () => List[Bits])
@@ -82,26 +83,28 @@ object J1Config {
   // Provide a default configuration
   def default = {
 
-    def wordSize            = 16
-    def dataStackIdxWidth   =  8
-    def returnStackIdxWidth =  4
-    def noOfInterrupts      =  4
-    def addrWidth           = 13
-    def startAddress        =  0
-    def instrRTS            = B"111_0000_0000_1100"
+    def wordSize               = 16
+    def dataStackIdxWidth      =  8
+    def returnStackIdxWidth    =  4
+    def noOfInterrupts         =  8
+    def noOfInternalInterrupts = 1
+    def addrWidth              = 13
+    def startAddress           =  0
+    def instrRTS               = B"111_0000_0000_1100"
 
     def bootCode() = endlessLoop() ++
                      List.fill((1 << addrWidth) - endlessLoop().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(noOfInterrupts)(instrRTS)
 
     // Default configuration values
-    val config = J1Config(wordSize            = wordSize,
-                          dataStackIdxWidth   = dataStackIdxWidth,
-                          returnStackIdxWidth = returnStackIdxWidth,
-                          noOfInterrupts      = noOfInterrupts,
-                          addrWidth           = addrWidth,
-                          startAddress        = startAddress,
-                          bootCode            = bootCode)
+    val config = J1Config(wordSize               = wordSize,
+                          dataStackIdxWidth      = dataStackIdxWidth,
+                          returnStackIdxWidth    = returnStackIdxWidth,
+                          noOfInterrupts         = noOfInterrupts,
+                          noOfInternalInterrupts = noOfInternalInterrupts,
+                          addrWidth              = addrWidth,
+                          startAddress           = startAddress,
+                          bootCode               = bootCode)
 
     // Return the default configuration
     config
@@ -111,26 +114,28 @@ object J1Config {
   // Provide a debug configuration
   def debug = {
 
-    def wordSize            = 16
-    def dataStackIdxWidth   =  5
-    def returnStackIdxWidth =  4
-    def noOfInterrupts      =  2
-    def addrWidth           =  9
-    def startAddress        =  0
-    def instrRTS            = B"111_0000_0000_1100"
+    def wordSize               = 16
+    def dataStackIdxWidth      =  5
+    def returnStackIdxWidth    =  4
+    def noOfInterrupts         =  4
+    def noOfInternalInterrupts =  1
+    def addrWidth              =  9
+    def startAddress           =  0
+    def instrRTS               = B"111_0000_0000_1100"
 
     def bootCode() = isaTest() ++
                      List.fill((1 << addrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(noOfInterrupts)(instrRTS)
 
     // Default configuration values
-    val config = J1Config(wordSize            = wordSize,
-                          dataStackIdxWidth   = dataStackIdxWidth,
-                          returnStackIdxWidth = returnStackIdxWidth,
-                          noOfInterrupts      = noOfInterrupts,
-                          addrWidth           = addrWidth,
-                          startAddress        = startAddress,
-                          bootCode            = bootCode)
+    val config = J1Config(wordSize               = wordSize,
+                          dataStackIdxWidth      = dataStackIdxWidth,
+                          returnStackIdxWidth    = returnStackIdxWidth,
+                          noOfInterrupts         = noOfInterrupts,
+                          noOfInternalInterrupts = noOfInternalInterrupts,
+                          addrWidth              = addrWidth,
+                          startAddress           = startAddress,
+                          bootCode               = bootCode)
 
     // Return the default configuration
     config

@@ -63,5 +63,5 @@ class J1(cfg : J1Config) extends Component {
   // Connect the interrupts
   coreJ1CPU.io.intNo <> io.intNo
   coreJ1CPU.io.irq <> io.irq
-  
+
 }

@@ -10,6 +10,7 @@
  * Date: Tue Nov 1 15:34:51 2016 +0100
  */
 import spinal.core._
+import spinal.lib._
 import spinal.lib.com.uart._
 
 class J1SoC (j1Cfg   : J1Config,
@@ -18,7 +19,7 @@ class J1SoC (j1Cfg   : J1Config,
   val io = new Bundle {
 
     // Asynchronous interrupts for the outside world
-    val extInt = in Bits(j1Cfg.noOfInterrupts bits)
+    val extInt = in Bits(j1Cfg.noOfInterrupts - j1Cfg.noOfInternalInterrupts bits)
 
     // The physical pins for the connected FPGAs
     val leds = out Bits(gpioCfg.ledBankConfig.width bits)
@@ -70,7 +71,8 @@ class J1SoC (j1Cfg   : J1Config,
 
   // Create an interrupt controller and connect it
   val intCtrl = new InterruptCtrl(noOfInterrupts = j1Cfg.noOfInterrupts)
-  intCtrl.io.intsE <> io.extInt
+  intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.noOfInternalInterrupts) <> io.extInt
+  intCtrl.io.intsE(0) := uartBridge.interruptCtrl.readInt
   cpu.io.intNo <> intCtrl.io.intNo
   cpu.io.irq <> intCtrl.io.irq
 
