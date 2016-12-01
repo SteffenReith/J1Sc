@@ -69,6 +69,10 @@ class J1SoC (j1Cfg   : J1Config,
   io.tx := uartCtrl.io.uart.txd
   uartCtrl.io.uart.rxd := io.rx
 
+  // Tell spinal that some unneeded signals are allowed to be pruned to avoid warnings
+  uartBridge.interruptCtrl.interrupt.allowPruning()
+  uartBridge.write.streamUnbuffered.ready.allowPruning()
+
   // Create an interrupt controller and connect it
   val intCtrl = new InterruptCtrl(noOfInterrupts = j1Cfg.noOfInterrupts)
   intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.noOfInternalInterrupts) <> io.extInt
