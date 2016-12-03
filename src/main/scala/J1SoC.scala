@@ -44,7 +44,7 @@ class J1SoC (j1Cfg   : J1Config,
   // Connect the physical LED pins to the outside world
   io.leds := ledBank.io.leds
 
-  // Create an UART interface
+  // Create an UART interface with fixed capabilities
   val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = gpioCfg.uartConfig.dataWidthMax,
                                           clockDividerWidth = gpioCfg.uartConfig.clockDividerWidth,
                                           preSamplingSize   = gpioCfg.uartConfig.preSamplingSize,
@@ -62,23 +62,24 @@ class J1SoC (j1Cfg   : J1Config,
                                                               rxFifoDepth = gpioCfg.uartConfig.fifoDepth)
   val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
-  // Map the UART to 0x80
+  // Map the UART to 0x80 and enable the generation of read interrupts
   val uartBridge = uartCtrl.driveFrom16(peripheralBusCtrl, uartCtrlMemoryMappedConfig, baseAddress = 0x80)
-
-  // Connect the physical UART pins to the outside world
-  io.tx := uartCtrl.io.uart.txd
-  uartCtrl.io.uart.rxd := io.rx
+  uartBridge.interruptCtrl.readIntEnable := True
 
   // Tell spinal that some unneeded signals are allowed to be pruned to avoid warnings
   uartBridge.interruptCtrl.interrupt.allowPruning()
   uartBridge.write.streamUnbuffered.ready.allowPruning()
 
-  // Create an interrupt controller and connect it
+  // Create an interrupt controller und connect it
   val intCtrl = new InterruptCtrl(noOfInterrupts = j1Cfg.noOfInterrupts)
   intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.noOfInternalInterrupts) <> io.extInt
   intCtrl.io.intsE(0) := uartBridge.interruptCtrl.readInt
   cpu.io.intNo <> intCtrl.io.intNo
   cpu.io.irq <> intCtrl.io.irq
+
+  // Connect the physical UART pins to the outside world
+  io.tx := uartCtrl.io.uart.txd
+  uartCtrl.io.uart.rxd := io.rx
 
 }
 

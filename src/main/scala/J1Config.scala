@@ -78,7 +78,37 @@ object J1Config {
                        B"0110_0000_0011_0000", // 46. Write to external RAM   
                        B"0110_0001_0000_0011", // 47. Pop                     
                        B"0110_0001_0000_0011", // 48. Pop                     
-                       B"0111_0000_0000_1100") // 49. Return from Subroutine)
+                       B"0111_0000_0000_1100", // 49. Return from Subroutine)
+                       B"1010_1010_1010_1000", // 50. Push 0x2AA8 (Interrupt Entry)
+                       B"1000_0000_0100_0000", // 51. Push 0x040
+                       B"0110_0000_0100_0000", // 52. ALU I/O operation
+                       B"0110_0000_0000_0000", // 53. NOP (wait state for I/O)
+                       B"0110_0000_0000_0000", // 54. Clear I/O
+                       B"0110_0000_0000_0000", // 55. Clear I/O (wait state)
+                       B"0110_0001_0000_0011", // 56. Pop
+                       B"0110_0001_0000_0011", // 57. Pop
+                       B"0111_0000_0000_1100", // 58. Return from Subroutine
+                       B"0110_0000_0000_0000", // 59. NOP
+                       B"0110_0000_0000_0000", // 60. NOP
+                       B"0110_0000_0000_0000", // 61. NOP
+                       B"0110_0000_0000_0000", // 62. NOP
+                       B"0110_0000_0000_0000", // 63. NOP
+                       B"0110_0000_0000_0000", // 64. NOP
+                       B"0110_0000_0000_0000", // 65. NOP
+                       B"0110_0000_0000_0000", // 66. NOP
+                       B"0110_0000_0000_0000", // 67. NOP
+                       B"0110_0000_0000_0000", // 68. NOP
+                       B"0110_0000_0000_0000", // 69. NOP
+                       B"0110_0000_0000_0000", // 70. NOP
+                       B"0110_0000_0000_0000", // 71. NOP
+                       B"0110_0000_0000_0000", // 72. NOP
+                       B"0110_0000_0000_0000", // 73. NOP
+                       B"0110_0000_0000_0000", // 74. NOP
+                       B"0110_0000_0000_0000", // 75. NOP
+                       B"0110_0000_0000_0000", // 76. NOP
+                       B"0110_0000_0000_0000", // 77. NOP
+                       B"0110_0000_0000_0000", // 78. NOP
+                       B"0110_0000_0000_0000") // 79. NOP
 
   // Provide a default configuration
   def default = {
@@ -90,7 +120,7 @@ object J1Config {
     def noOfInternalInterrupts = 1
     def addrWidth              = 13
     def startAddress           =  0
-    def instrRTS               = B"111_0000_0000_1100"
+    def instrRTS               = B"0111_0000_0000_1100"
 
     def bootCode() = endlessLoop() ++
                      List.fill((1 << addrWidth) - endlessLoop().length - noOfInterrupts)(B(0, wordSize bits)) ++
@@ -117,15 +147,17 @@ object J1Config {
     def wordSize               = 16
     def dataStackIdxWidth      =  5
     def returnStackIdxWidth    =  4
-    def noOfInterrupts         =  4
+    def noOfInterrupts         =  2
     def noOfInternalInterrupts =  1
     def addrWidth              =  9
     def startAddress           =  0
-    def instrRTS               = B"111_0000_0000_1100"
+    def instrRTS               = B"0111_0000_0000_1100"
+    def instrJMP               = B"0000_0000_0011_0010"
 
     def bootCode() = isaTest() ++
                      List.fill((1 << addrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List.fill(noOfInterrupts)(instrRTS)
+                     List.fill(1)(instrJMP) ++
+                     List.fill(1)(instrJMP)
 
     // Default configuration values
     val config = J1Config(wordSize               = wordSize,
