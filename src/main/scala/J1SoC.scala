@@ -10,7 +10,6 @@
  * Date: Tue Nov 1 15:34:51 2016 +0100
  */
 import spinal.core._
-import spinal.lib._
 import spinal.lib.com.uart._
 
 class J1SoC (j1Cfg   : J1Config,
@@ -92,7 +91,7 @@ object J1SoC {
 
   def main(args : Array[String]) {
 
-    // Configuration of CPU and GPIO system
+    // Configuration of CPU-core and GPIO system
     val j1Cfg = J1Config.debug
     val gpioCfg = GPIOConfig.default
 
