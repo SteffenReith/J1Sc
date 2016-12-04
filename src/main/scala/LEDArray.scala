@@ -1,6 +1,6 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
- * Committer: <COMMITTERNAME>
+ * Author: Steffen Reith (steffen.reith@hs-rm.de)
+ * Committer: Steffen Reith
  *
  * Creation Date:  Tue Nov 1 00:19:43 GMT+1 2016
  * Module Name:    LEDBank - A simple LED bank
@@ -12,7 +12,7 @@
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
-class LEDBank(ledBankCfg : LEDBankConfig) extends Component {
+class LEDArray(ledBankCfg : LEDBankConfig) extends Component {
 
   val io = new Bundle {
 
@@ -40,7 +40,7 @@ class LEDBank(ledBankCfg : LEDBankConfig) extends Component {
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
-    // The register is mapped at Address 0 and is of type r/w
+    // The register is mapped at address 0 and is of type r/w
     busCtrl.read(io.ledState, baseAddress + 0, 0)
     busCtrl.nonStopWrite(io.ledState, 0) // ledState will be constantly driven by the data of the memory bus
     io.writeEnable := busCtrl.isWriting(baseAddress + 0)
