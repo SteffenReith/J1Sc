@@ -37,11 +37,17 @@ class J1SoC (j1Cfg   : J1Config,
   val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
   // Create a LED bank at base address 0x40
-  val ledBank = new LEDBank(gpioCfg.ledBankConfig)
-  val ledBridge = ledBank.driveFrom(peripheralBusCtrl, 0x40)
+  val ledArray = new LEDArray(gpioCfg.ledBankConfig)
+  val ledBridge = ledArray.driveFrom(peripheralBusCtrl, 0x40)
 
   // Connect the physical LED pins to the outside world
-  io.leds := ledBank.io.leds
+  io.leds := ledArray.io.leds
+
+  // Create two timer and map it at 0xC0 and 0xD0
+  var timerA = new Timer(gpioCfg.timerConfig)
+  var timerABridge = timerA.driveFrom(peripheralBusCtrl, 0xC0)
+  var timerB = new Timer(gpioCfg.timerConfig)
+  var timerBBridge = timerB.driveFrom(peripheralBusCtrl, 0xD0)
 
   // Create an UART interface with fixed capabilities
   val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = gpioCfg.uartConfig.dataWidthMax,
@@ -69,10 +75,12 @@ class J1SoC (j1Cfg   : J1Config,
   uartBridge.interruptCtrl.interrupt.allowPruning()
   uartBridge.write.streamUnbuffered.ready.allowPruning()
 
-  // Create an interrupt controller und connect it
+  // Create an interrupt controller und connect all interrupts
   val intCtrl = new InterruptCtrl(noOfInterrupts = j1Cfg.noOfInterrupts)
   intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.noOfInternalInterrupts) <> io.extInt
   intCtrl.io.intsE(0) := uartBridge.interruptCtrl.readInt
+  intCtrl.io.intsE(1) := timerA.io.interrupt
+  intCtrl.io.intsE(2) := timerB.io.interrupt
   cpu.io.intNo <> intCtrl.io.intNo
   cpu.io.irq <> intCtrl.io.irq
 

@@ -79,7 +79,7 @@ object J1Config {
                        B"0110_0001_0000_0011", // 47. Pop                     
                        B"0110_0001_0000_0011", // 48. Pop                     
                        B"0111_0000_0000_1100", // 49. Return from Subroutine)
-                       B"1010_1010_1010_1000", // 50. Push 0x2AA8 (Interrupt Entry)
+                       B"1010_1010_1010_1000", // 50. Push 0x2AA8 (Interrupt entry point)
                        B"1000_0000_0100_0000", // 51. Push 0x040
                        B"0110_0000_0100_0000", // 52. ALU I/O operation
                        B"0110_0000_0000_0000", // 53. NOP (wait state for I/O)
@@ -147,8 +147,8 @@ object J1Config {
     def wordSize               = 16
     def dataStackIdxWidth      =  5
     def returnStackIdxWidth    =  4
-    def noOfInterrupts         =  2
-    def noOfInternalInterrupts =  1
+    def noOfInterrupts         =  4
+    def noOfInternalInterrupts =  3
     def addrWidth              =  9
     def startAddress           =  0
     def instrRTS               = B"0111_0000_0000_1100"
@@ -157,6 +157,8 @@ object J1Config {
     def bootCode() = isaTest() ++
                      List.fill((1 << addrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrJMP) ++
+                     List.fill(1)(instrJMP) ++
+                     List.fill(1)(instrRTS) ++
                      List.fill(1)(instrJMP)
 
     // Default configuration values

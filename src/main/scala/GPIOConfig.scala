@@ -32,6 +32,24 @@ object LEDBankConfig {
 
 }
 
+// Configuration of timer used for timer interrupts
+case class TimerConfig (width : Int)
+
+object TimerConfig {
+
+  // Provide a default configuration
+  def default = {
+
+    // Default configuration values
+    val config = TimerConfig(width = 32)
+
+    // Return the default configuration
+    config
+
+  }
+
+}
+
 // Configuration of the UART
 case class J1UARTConfig (clockDividerWidth : Int,
                          dataWidthMax : Int,
@@ -66,6 +84,7 @@ object J1UARTConfig {
 
 // Configuration of all GPIO components
 case class GPIOConfig (ledBankConfig  : LEDBankConfig,
+                       timerConfig    : TimerConfig,
                        uartConfig     : J1UARTConfig,
                        gpioWaitStates : Int)
 
@@ -76,7 +95,8 @@ object GPIOConfig {
 
     // Default configuration values
     val config = GPIOConfig(ledBankConfig = LEDBankConfig.default,
-                            uartConfig = J1UARTConfig.default,
+                            timerConfig   = TimerConfig.default,
+                            uartConfig    = J1UARTConfig.default,
                             1)
 
     // Return the default configuration
