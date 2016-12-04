@@ -157,7 +157,7 @@ object J1Config {
     def bootCode() = isaTest() ++
                      List.fill((1 << addrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrJMP) ++
-                     List.fill(1)(instrJMP) ++
+                     List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrJMP)
 
