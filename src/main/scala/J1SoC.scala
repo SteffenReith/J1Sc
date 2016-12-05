@@ -78,9 +78,9 @@ class J1SoC (j1Cfg   : J1Config,
   // Create an interrupt controller und connect all interrupts
   val intCtrl = new InterruptCtrl(noOfInterrupts = j1Cfg.noOfInterrupts)
   intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.noOfInternalInterrupts) <> io.extInt
-  intCtrl.io.intsE(0) := uartBridge.interruptCtrl.readInt
-  intCtrl.io.intsE(1) := timerA.io.interrupt
-  intCtrl.io.intsE(2) := timerB.io.interrupt
+  intCtrl.io.intsE(0) <> uartBridge.interruptCtrl.readInt
+  intCtrl.io.intsE(1) <> timerA.io.interrupt
+  intCtrl.io.intsE(2) <> timerB.io.interrupt
   cpu.io.intNo <> intCtrl.io.intNo
   cpu.io.irq <> intCtrl.io.irq
 
