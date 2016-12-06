@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1287416666fs"></ZoomStartTime>
-      <ZoomEndTime time="1430416667fs"></ZoomEndTime>
-      <Cursor1Time time="1537000000fs"></Cursor1Time>
+      <ZoomStartTime time="25166666fs"></ZoomStartTime>
+      <ZoomEndTime time="45166667fs"></ZoomEndTime>
+      <Cursor1Time time="125000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="233"></NameColumnWidth>
-      <ValueColumnWidth column_width="2289"></ValueColumnWidth>
+      <NameColumnWidth column_width="253"></NameColumnWidth>
+      <ValueColumnWidth column_width="2321"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="18" />
+   <WVObjectSize size="32" />
    <wvobject type="logic" fp_name="/J1SoC_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -30,51 +30,64 @@
       <obj_property name="ObjectShortName">clr</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/extInt">
-      <obj_property name="ElementShortName">extInt[1:0]</obj_property>
-      <obj_property name="ObjectShortName">extInt[1:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
+      <obj_property name="ElementShortName">extInt[0:0]</obj_property>
+      <obj_property name="ObjectShortName">extInt[0:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/irq">
       <obj_property name="ElementShortName">irq</obj_property>
       <obj_property name="ObjectShortName">irq</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/intCtrl/intsE">
+      <obj_property name="ElementShortName">intsE[3:0]</obj_property>
+      <obj_property name="ObjectShortName">intsE[3:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/intCtrl/intNo">
+      <obj_property name="ElementShortName">intNo[1:0]</obj_property>
+      <obj_property name="ObjectShortName">intNo[1:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/leds">
       <obj_property name="ElementShortName">leds[15:0]</obj_property>
       <obj_property name="ObjectShortName">leds[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/ledBank/ledState">
-      <obj_property name="ElementShortName">ledState[15:0]</obj_property>
-      <obj_property name="ObjectShortName">ledState[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/ledBank/ledReg">
-      <obj_property name="ElementShortName">ledReg[15:0]</obj_property>
-      <obj_property name="ObjectShortName">ledReg[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/ledBank/writeEnable">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">writeEnable</obj_property>
-      <obj_property name="ObjectShortName">writeEnable</obj_property>
-      <obj_property name="label">writeEnable (ledBank)</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/peripheralBus_enable">
       <obj_property name="ElementShortName">peripheralBus_enable</obj_property>
       <obj_property name="ObjectShortName">peripheralBus_enable</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/peripheralBus_writeMode">
       <obj_property name="ElementShortName">peripheralBus_writeMode</obj_property>
       <obj_property name="ObjectShortName">peripheralBus_writeMode</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/peripheralBus_address">
       <obj_property name="ElementShortName">peripheralBus_address[8:0]</obj_property>
       <obj_property name="ObjectShortName">peripheralBus_address[8:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/peripheralBus_writeData">
       <obj_property name="ElementShortName">peripheralBus_writeData[15:0]</obj_property>
       <obj_property name="ObjectShortName">peripheralBus_writeData[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/peripheralBus_readData">
       <obj_property name="ElementShortName">peripheralBus_readData[15:0]</obj_property>
       <obj_property name="ObjectShortName">peripheralBus_readData[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF0000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/mainMem">
       <obj_property name="ElementShortName">mainMem[0:511][15:0]</obj_property>
@@ -95,5 +108,77 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/pc">
       <obj_property name="ElementShortName">pc[8:0]</obj_property>
       <obj_property name="ObjectShortName">pc[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/dtos">
+      <obj_property name="ElementShortName">dtos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/dtosN">
+      <obj_property name="ElementShortName">dtosN[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dtosN[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/dnos">
+      <obj_property name="ElementShortName">dnos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/ioWriteMode">
+      <obj_property name="ElementShortName">ioWriteMode</obj_property>
+      <obj_property name="ObjectShortName">ioWriteMode</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/ioReadMode">
+      <obj_property name="ElementShortName">ioReadMode</obj_property>
+      <obj_property name="ObjectShortName">ioReadMode</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/funcWriteIO">
+      <obj_property name="ElementShortName">funcWriteIO</obj_property>
+      <obj_property name="ObjectShortName">funcWriteIO</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/funcReadIO">
+      <obj_property name="ElementShortName">funcReadIO</obj_property>
+      <obj_property name="ObjectShortName">funcReadIO</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/isALU">
+      <obj_property name="ElementShortName">isALU</obj_property>
+      <obj_property name="ObjectShortName">isALU</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/cpuBus_address">
+      <obj_property name="ElementShortName">cpuBus_address[8:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuBus_address[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/timerA/loadHigh">
+      <obj_property name="ElementShortName">loadHigh</obj_property>
+      <obj_property name="ObjectShortName">loadHigh</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/timerA/valueHigh">
+      <obj_property name="ElementShortName">valueHigh[15:0]</obj_property>
+      <obj_property name="ObjectShortName">valueHigh[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/timerA/loadLow">
+      <obj_property name="ElementShortName">loadLow</obj_property>
+      <obj_property name="ObjectShortName">loadLow</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/timerA/valueLow">
+      <obj_property name="ElementShortName">valueLow[15:0]</obj_property>
+      <obj_property name="ObjectShortName">valueLow[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/timerA/enable">
+      <obj_property name="ElementShortName">enable</obj_property>
+      <obj_property name="ObjectShortName">enable</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/timerA/enabled">
+      <obj_property name="ElementShortName">enabled</obj_property>
+      <obj_property name="ObjectShortName">enabled</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
 </wave_config>

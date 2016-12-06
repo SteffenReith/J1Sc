@@ -25,6 +25,11 @@ case class J1Config (wordSize : Int,
 // Holds the configuration parameters of a J1
 object J1Config {
 
+  // Some useful instructions
+  def instrRTS   = B"0111_0000_0000_1100"
+  def instrJMP50 = B"0000_0000_0011_0010"
+  def instrJMP60 = B"0000_0000_0011_1100"
+
   // Simply halt the CPU (endless loop of instruction at 0)
   def endlessLoop() = List(B"0000_0000_0000_0000") // 0. Jump 0
 
@@ -58,7 +63,7 @@ object J1Config {
                        B"0110_0000_0000_0000", // 26. NOP (wait state for I/O)
                        B"0110_0000_0000_0000", // 27. Clear I/O
                        B"0110_0000_0000_0000", // 28. Clear I/O
-                       B"0000_0000_0001_1101", // 29. Jump 29
+                       B"0000_0000_0100_0110", // 29. Jump 70
                        B"0110_0000_0000_0000", // 30. NOP                     
                        B"0110_0000_0000_0000", // 31. NOP                     
                        B"1000_0000_0001_0001", // 32. Push 17                 
@@ -87,28 +92,53 @@ object J1Config {
                        B"0110_0000_0000_0000", // 55. Clear I/O (wait state)
                        B"0110_0001_0000_0011", // 56. Pop
                        B"0110_0001_0000_0011", // 57. Pop
-                       B"0111_0000_0000_1100", // 58. Return from Subroutine
+                       B"0111_0000_0000_1100", // 58. Return from subroutine
                        B"0110_0000_0000_0000", // 59. NOP
-                       B"0110_0000_0000_0000", // 60. NOP
-                       B"0110_0000_0000_0000", // 61. NOP
-                       B"0110_0000_0000_0000", // 62. NOP
-                       B"0110_0000_0000_0000", // 63. NOP
-                       B"0110_0000_0000_0000", // 64. NOP
-                       B"0110_0000_0000_0000", // 65. NOP
-                       B"0110_0000_0000_0000", // 66. NOP
-                       B"0110_0000_0000_0000", // 67. NOP
-                       B"0110_0000_0000_0000", // 68. NOP
+                       B"1000_0000_0100_0000", // 60. Push LED I/O address 0x40 (Interrupt entry point)
+                       B"0110_1101_0000_0000", // 61. Read data from I/O space
+                       B"0110_0110_0000_0000", // 62. Negate DTOS
+                       B"1000_0000_0100_0000", // 63. Push LED I/O address 0x40
+                       B"0110_0000_0011_0000", // 64. ALU I/O operation
+                       B"0110_0000_0000_0000", // 65. NOP (wait state of I/O)
+                       B"0110_0001_0000_0011", // 66. Pop
+                       B"0110_0001_0000_0011", // 67. Pop
+                       B"0111_0000_0000_1100", // 68. Return from subroutine
                        B"0110_0000_0000_0000", // 69. NOP
-                       B"0110_0000_0000_0000", // 70. NOP
-                       B"0110_0000_0000_0000", // 71. NOP
-                       B"0110_0000_0000_0000", // 72. NOP
-                       B"0110_0000_0000_0000", // 73. NOP
-                       B"0110_0000_0000_0000", // 74. NOP
-                       B"0110_0000_0000_0000", // 75. NOP
+                       //B"1000_0101_1111_0101", // 70. Push high value for approx 1sec
+                       //B"1000_0000_1100_0001", // 71. I/O address 0xC1
+                       B"1000_0000_0000_1111", // 70. Push high value for approx 1sec
+                       B"1000_0000_1100_0001", // 71. I/O address 0xC0
+                       B"0110_0000_0011_0000", // 72. ALU I/O operation
+                       B"0110_0000_1100_0010", // 73. I/O address 0xC2
+                       B"0110_0000_0011_0000", // 74. ALU I/O operation (arbitrary value starts timer)
+                       B"0000_0000_0100_1011", // 75. Jump 75
                        B"0110_0000_0000_0000", // 76. NOP
                        B"0110_0000_0000_0000", // 77. NOP
                        B"0110_0000_0000_0000", // 78. NOP
-                       B"0110_0000_0000_0000") // 79. NOP
+                       B"0110_0000_0000_0000", // 79. NOP
+                       B"0110_0000_0000_0000", // 80. NOP
+                       B"0110_0000_0000_0000", // 81. NOP
+                       B"0110_0000_0000_0000", // 82. NOP
+                       B"0110_0000_0000_0000", // 83. NOP
+                       B"0110_0000_0000_0000", // 84. NOP
+                       B"0110_0000_0000_0000", // 85. NOP
+                       B"0110_0000_0000_0000", // 86. NOP
+                       B"0110_0000_0000_0000", // 87. NOP
+                       B"0110_0000_0000_0000", // 88. NOP
+                       B"0110_0000_0000_0000") // 89. NOP
+
+  // Simple test of external memory bus and internal memory
+  def ioTest() = List(B"1101_0101_0101_0111", //  0. Push 0x5557
+                      B"1000_0000_0100_0000", //  1. Push 0x040
+                      B"0110_0000_0100_0000", //  2. I/O write operation
+                      B"0110_0000_0000_0000", //  3. NOP (wait state for I/O)
+                      B"0110_0000_0000_0000", //  4. Clear I/O
+                      B"0110_0000_0000_0000", //  5. Clear I/O (wait state)
+                      B"1000_0000_1111_1111", //  6. Push 0xff as a seperator
+                      B"1000_0000_0100_0000", //  7. Push LED I/O address 0x40
+                      B"0110_1101_0000_0011", //  8. Read data from I/O space
+                      B"0110_1101_0000_0000", //  9. Read data from I/O space
+                      B"0000_0000_0000_1010") // 10. Jump 11
 
   // Provide a default configuration
   def default = {
@@ -117,10 +147,9 @@ object J1Config {
     def dataStackIdxWidth      =  8
     def returnStackIdxWidth    =  4
     def noOfInterrupts         =  8
-    def noOfInternalInterrupts = 1
+    def noOfInternalInterrupts =  1
     def addrWidth              = 13
     def startAddress           =  0
-    def instrRTS               = B"0111_0000_0000_1100"
 
     def bootCode() = endlessLoop() ++
                      List.fill((1 << addrWidth) - endlessLoop().length - noOfInterrupts)(B(0, wordSize bits)) ++
@@ -151,15 +180,46 @@ object J1Config {
     def noOfInternalInterrupts =  3
     def addrWidth              =  9
     def startAddress           =  0
-    def instrRTS               = B"0111_0000_0000_1100"
-    def instrJMP               = B"0000_0000_0011_0010"
 
     def bootCode() = isaTest() ++
                      List.fill((1 << addrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List.fill(1)(instrJMP) ++
+                     List.fill(1)(instrJMP60) ++
+                     List.fill(1)(instrRTS) ++
+                     List.fill(1)(instrJMP60) ++
+                     List.fill(1)(instrJMP50)
+
+    // Default configuration values
+    val config = J1Config(wordSize               = wordSize,
+                          dataStackIdxWidth      = dataStackIdxWidth,
+                          returnStackIdxWidth    = returnStackIdxWidth,
+                          noOfInterrupts         = noOfInterrupts,
+                          noOfInternalInterrupts = noOfInternalInterrupts,
+                          addrWidth              = addrWidth,
+                          startAddress           = startAddress,
+                          bootCode               = bootCode)
+
+    // Return the default configuration
+    config
+
+  }
+
+  // Provide a debug configuration of memory mapped IO instructions
+  def debugIO = {
+
+    def wordSize               = 16
+    def dataStackIdxWidth      =  5
+    def returnStackIdxWidth    =  4
+    def noOfInterrupts         =  4
+    def noOfInternalInterrupts =  3
+    def addrWidth              =  9
+    def startAddress           =  0
+
+    def bootCode() = ioTest() ++
+                     List.fill((1 << addrWidth) - ioTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrJMP)
+                     List.fill(1)(instrRTS) ++
+                     List.fill(1)(instrRTS)
 
     // Default configuration values
     val config = J1Config(wordSize               = wordSize,

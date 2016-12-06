@@ -32,12 +32,16 @@ case class SimpleBus(addressWidth : Int, dataWidth : Int) extends Bundle with IM
     // Make a copy
     val retVal = cloneOf(this)
 
-    // Delay all signals and wire them
+    // Address comes one clock too early from CPU-core (dtosN) hence delay it one clock further
+    retVal.address := Delay(this.address, delayCnt + 1)
+
+    // Don't delay the data to be read hence we have one wait state for read operation
+    this.readData := retVal.readData
+
+    // Delay all other signals and wire them
     retVal.enable    := Delay(this.enable,     delayCnt)
     retVal.writeMode := Delay(this.writeMode,  delayCnt)
-    retVal.address   := Delay(this.address,    delayCnt)
     retVal.writeData := Delay(this.writeData,  delayCnt)
-    this.readData    := Delay(retVal.readData, delayCnt)
 
     // Return the delayed version of the actual SimpleBus object
     return retVal
