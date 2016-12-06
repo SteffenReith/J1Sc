@@ -137,7 +137,7 @@ class J1Core(cfg : J1Config) extends Component {
   val funcTtoR     = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
   val funcWriteMem = (instr(6 downto 4).asUInt === 3) // Write to RAM
   val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O write operation
-  val funcReadIO   = (instr(instr.high - 4 downto (instr.high - 4) + 1) === B"b1101") // I/O read operation
+  val funcReadIO   = (instr(instr.high - 4 downto (instr.high - 8) + 1) === B"b1101") // I/O read operation
   val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Signals for handling external memory
