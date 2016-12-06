@@ -30,7 +30,7 @@ architecture Behavioral of J1SoC_tb is
   constant clk_period : time := 10 ns;
 
   -- Interrupts
-  signal extInt : std_logic_vector(1 downto 0) := "00";
+  signal extInt : std_logic_vector(0 downto 0) := "0";
 
   -- UART signals
   signal rx : std_logic := '0';
@@ -65,8 +65,8 @@ begin
   interrup_proc : process
   begin
 
-    -- Wait 1537ns
-    wait for 1537 ns;
+    -- Wait 15370ns
+    wait for 15370 ns;
 
     -- Activate an interrupt (asynchronous)
     extInt(0) <= '1';
@@ -77,8 +77,8 @@ begin
     -- Revoke the the interrupt (asynchronous)
     extInt(0) <= '0';
 
-    -- Wait 3000 ns long
-    wait for 3000 ns;
+    -- Wait 30000 ns long
+    wait for 30000 ns;
 
   end process;
 
