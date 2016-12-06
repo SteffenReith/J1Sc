@@ -42,21 +42,21 @@ class Timer(cfg : TimerConfig) extends Component {
   // Register the enable signal
   when(io.enable) {enabled := True}
 
-  // Check if the high word of the compare register has to be loaded
-  when(io.loadHigh) {
+  // Check if the low word of the compare register has to be loaded
+  when(io.loadLow) {
 
     // Load the compare value, reset the timer and disable it
-    cmp(cmp.high downto cfg.width / 2) := io.valueHigh
+    cmp(cfg.width / 2 - 1 downto 0) := io.valueLow
     enabled := False
     cnt := 0
 
   }
 
-  // Check if the low word of the compare register has to be loaded
+  // Check if the high word of the compare register has to be loaded
   when(io.loadHigh) {
 
     // Load the compare value, reset the timer and disable it
-    cmp(cfg.width / 2 - 1 downto 0) := io.valueLow
+    cmp(cmp.high downto cfg.width / 2) := io.valueHigh
     enabled := False
     cnt := 0
 
@@ -99,7 +99,7 @@ class Timer(cfg : TimerConfig) extends Component {
     io.loadHigh := busCtrl.isWriting(baseAddress + 1)
 
     // Enable the time by a simple write access
-    io.enable := busCtrl.isWriting(baseAddress + 3)
+    io.enable := busCtrl.isWriting(baseAddress + 2)
 
   }
 
