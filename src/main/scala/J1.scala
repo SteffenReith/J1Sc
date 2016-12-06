@@ -53,10 +53,10 @@ class J1(cfg : J1Config) extends Component {
   memWrite <> coreJ1CPU.io.extToWrite
   coreJ1CPU.io.memToRead <> memRead
 
-  // Connect the external bus to the core
+  // Connect the external bus to the core (remember coreJ1CPU.io.extAdr is one clock to early)
   io.cpuBus.enable      := coreJ1CPU.io.ioWriteMode || coreJ1CPU.io.ioReadMode
   io.cpuBus.writeMode   <> coreJ1CPU.io.ioWriteMode
-  io.cpuBus.address     <> coreJ1CPU.io.extAdr
+  io.cpuBus.address     <> Delay(coreJ1CPU.io.extAdr, 1)
   coreJ1CPU.io.ioToRead <> io.cpuBus.readData
   io.cpuBus.writeData   <> coreJ1CPU.io.extToWrite
 
