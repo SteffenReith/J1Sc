@@ -41,7 +41,17 @@ class LEDArray(ledBankCfg : LEDBankConfig) extends Component {
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
     // The register is mapped at address 0 and is of type r/w
-    busCtrl.read(io.ledState, baseAddress + 0, 0)
+    if (ledBankCfg.lowActive) {
+
+      // Negate to get the register content
+      busCtrl.read(~io.leds, baseAddress + 0, 0)
+
+    } else {
+
+      // Simply give back the register content
+      busCtrl.read(io.leds, baseAddress + 0, 0)
+
+    }
     busCtrl.nonStopWrite(io.ledState, 0) // ledState will be constantly driven by the data of the memory bus
     io.writeEnable := busCtrl.isWriting(baseAddress + 0)
 
