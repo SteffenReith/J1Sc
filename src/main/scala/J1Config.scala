@@ -132,13 +132,17 @@ object J1Config {
                       B"1000_0000_0100_0000", //  1. Push 0x040
                       B"0110_0000_0100_0000", //  2. I/O write operation
                       B"0110_0000_0000_0000", //  3. NOP (wait state for I/O)
-                      B"0110_0000_0000_0000", //  4. Clear I/O
-                      B"0110_0000_0000_0000", //  5. Clear I/O (wait state)
-                      B"1000_0000_1111_1111", //  6. Push 0xff as a seperator
-                      B"1000_0000_0100_0000", //  7. Push LED I/O address 0x40
-                      B"0110_1101_0000_0011", //  8. Read data from I/O space
-                      B"0110_1101_0000_0000", //  9. Read data from I/O space
-                      B"0000_0000_0000_1010") // 10. Jump 11
+                      B"1000_0000_1111_1111", //  4. Push 0xff as a seperator
+                      B"1000_0000_0100_0000", //  5. Push LED I/O address 0x40
+                      B"0110_1101_0000_0001", //  6. Read data from I/O space
+                      B"0110_1101_0000_0000", //  7. Read data from I/O space
+                      B"1010_1010_1010_1010", //  8. Push 0x2AAA
+                      B"1000_0000_0100_0000", //  9. Push 0x040
+                      B"0110_0000_0011_0000", // 10. I/O write operation
+                      B"1000_0000_1110_1110", // 11. Push 0xee as a seperator
+                      B"1000_0000_0100_0000", // 12. Push address 0x40
+                      B"0110_1100_0000_0000", // 13. Read data from memory
+                      B"0000_0000_0000_1110") // 14. Jump 14
 
   // Provide a default configuration
   def default = {
