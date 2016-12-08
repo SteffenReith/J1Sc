@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="25166666fs"></ZoomStartTime>
-      <ZoomEndTime time="45166667fs"></ZoomEndTime>
-      <Cursor1Time time="125000000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="109908263fs"></ZoomEndTime>
+      <Cursor1Time time="18349000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="253"></NameColumnWidth>
-      <ValueColumnWidth column_width="2321"></ValueColumnWidth>
+      <ValueColumnWidth column_width="2324"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="32" />
+   <WVObjectSize size="34" />
    <wvobject type="logic" fp_name="/J1SoC_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -178,6 +178,18 @@
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/timerA/enabled">
       <obj_property name="ElementShortName">enabled</obj_property>
       <obj_property name="ObjectShortName">enabled</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/timerA/cmp">
+      <obj_property name="ElementShortName">cmp[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cmp[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/timerA/cnt">
+      <obj_property name="ElementShortName">cnt[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt[31:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>

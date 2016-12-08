@@ -95,28 +95,27 @@ object J1Config {
                        B"0111_0000_0000_1100", // 58. Return from subroutine
                        B"0110_0000_0000_0000", // 59. NOP
                        B"1000_0000_0100_0000", // 60. Push LED I/O address 0x40 (Interrupt entry point)
-                       B"0110_1101_0000_0000", // 61. Read data from I/O space
-                       B"0110_0110_0000_0000", // 62. Negate DTOS
-                       B"1000_0000_0100_0000", // 63. Push LED I/O address 0x40
-                       B"0110_0000_0011_0000", // 64. ALU I/O operation
-                       B"0110_0000_0000_0000", // 65. NOP (wait state of I/O)
-                       B"0110_0001_0000_0011", // 66. Pop
+                       B"0110_1101_0000_0001", // 61. Read data from I/O space
+                       B"0110_1101_0000_0000", // 62. Read data from I/O space
+                       B"0110_0110_0000_0000", // 63. Negate DTOS
+                       B"1000_0000_0100_0000", // 64. Push LED I/O address 0x40
+                       B"0110_0000_0100_0000", // 65. Write data to I/O space
+                       B"0110_0000_0000_0000", // 66. NOP (wait state for I/O)
                        B"0110_0001_0000_0011", // 67. Pop
-                       B"0111_0000_0000_1100", // 68. Return from subroutine
-                       B"0110_0000_0000_0000", // 69. NOP
-                       //B"1000_0101_1111_0101", // 70. Push high value for approx 1sec
-                       //B"1000_0000_1100_0001", // 71. I/O address 0xC1
-                       B"1000_0000_0000_1111", // 70. Push high value for approx 1sec
-                       B"1000_0000_1100_0001", // 71. I/O address 0xC0
-                       B"0110_0000_0011_0000", // 72. ALU I/O operation
-                       B"0110_0000_1100_0010", // 73. I/O address 0xC2
-                       B"0110_0000_0011_0000", // 74. ALU I/O operation (arbitrary value starts timer)
-                       B"0000_0000_0100_1011", // 75. Jump 75
-                       B"0110_0000_0000_0000", // 76. NOP
-                       B"0110_0000_0000_0000", // 77. NOP
-                       B"0110_0000_0000_0000", // 78. NOP
+                       B"0110_0001_0000_0011", // 68. Pop
+                       B"0111_0000_0000_1100", // 69. Return from subroutine
+                       B"1000_0101_1111_0101", // 70. Push high value for approx 1sec
+   //                    B"1000_0000_0000_0001",
+                       B"1000_0000_1100_0001", // 71. Push I/O address 0xC1
+                       B"0110_0000_0100_0000", // 72. ALU I/O operation
+                       B"0110_0000_0000_0000", // 73. NOP (wait state for I/O)
+                       B"0110_0001_0000_0011", // 74. Pop
+                       B"0110_0001_0000_0011", // 75. Pop
+                       B"1000_0000_1111_1111", // 76. Push some value
+                       B"0110_0000_1100_0010", // 77. Push I/O address 0xC2
+                       B"0110_0000_0100_0000", // 78. ALU I/O operation (arbitrary value starts timer)
                        B"0110_0000_0000_0000", // 79. NOP
-                       B"0110_0000_0000_0000", // 80. NOP
+                       B"0000_0000_0101_0000", // 80. Jump 80
                        B"0110_0000_0000_0000", // 81. NOP
                        B"0110_0000_0000_0000", // 82. NOP
                        B"0110_0000_0000_0000", // 83. NOP
@@ -188,7 +187,7 @@ object J1Config {
     def bootCode() = isaTest() ++
                      List.fill((1 << addrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrJMP60) ++
-                     List.fill(1)(instrRTS) ++
+                     List.fill(1)(instrJMP60) ++
                      List.fill(1)(instrJMP60) ++
                      List.fill(1)(instrJMP50)
 
