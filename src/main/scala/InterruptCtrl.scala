@@ -31,8 +31,8 @@ class InterruptCtrl(noOfInterrupts : Int) extends Component {
                             init = B(0, noOfInterrupts bits),
                             bufferDepth = 3)
 
-  // Check all interrupts
-  io.intNo := OHToUInt(OHMasking.first(io.intsE))
+  // Check all interrupts (priority from 0 (high) to noOfInterrupts - 1 (low))
+  io.intNo := OHToUInt(OHMasking.first(interrupts))
 
   // Generate a rising edge when an interrupt has happened (init value is false)
   io.irq := interrupts.orR.rise(False)
