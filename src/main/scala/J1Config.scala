@@ -105,7 +105,7 @@ object J1Config {
                        B"0110_0001_0000_0011", // 68. Pop
                        B"0111_0000_0000_1100", // 69. Return from subroutine
                        B"1000_0101_1111_0101", // 70. Push high value for approx 1sec
-   //                    B"1000_0000_0000_0001",
+     //                  B"1000_0000_0000_0001",
                        B"1000_0000_1100_0001", // 71. Push I/O address 0xC1
                        B"0110_0000_0100_0000", // 72. ALU I/O operation
                        B"0110_0000_0000_0000", // 73. NOP (wait state for I/O)

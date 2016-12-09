@@ -80,7 +80,7 @@ class Timer(cfg : TimerConfig) extends Component {
 
   }
 
-  enabled := True
+  enabled := True;
 
   // Generate the interrupt signal
   io.interrupt := enabled && (cnt === 0) && !(io.loadHigh || io.loadLow)
