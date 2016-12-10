@@ -6,11 +6,10 @@
  * Module Name:    Timer16 - A programmable timer which generates interrupts for a 16 bit bus interface
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 4c961c8a56dd548d8645eca4cf7e04ea1b86e398
- * Date: Sun Dec 4 22:20:44 2016 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.core._
-import spinal.lib._
 import spinal.lib.bus.misc.BusSlaveFactory
 
 class Timer(cfg : TimerConfig) extends Component {
