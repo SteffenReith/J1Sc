@@ -62,25 +62,25 @@ begin
     wait for clk_period/2;
   end process;
 
-  interrup_proc : process
-  begin
+  --interrup_proc : process
+  --begin
 
     -- Wait 15370ns
-    wait for 15370 ns;
+    --wait for 15370 ns;
 
     -- Activate an interrupt (asynchronous)
-    extInt(0) <= '1';
+    --extInt(0) <= '1';
 
     -- Wait some clocks
-    wait for 53 ns;
+    --wait for 53 ns;
     
     -- Revoke the the interrupt (asynchronous)
-    extInt(0) <= '0';
+    --extInt(0) <= '0';
 
     -- Wait 30000 ns long
-    wait for 30000 ns;
+    --wait for 30000 ns;
 
-  end process;
+  --end process;
 
   reboot_proc : process
   begin
@@ -95,8 +95,8 @@ begin
     -- Revoke the the reset
     clr <= '0';
 
-    -- Wait very long
-    wait for 30000 ns;
+    -- Wait forever  
+    wait;
 
   end process;
 
