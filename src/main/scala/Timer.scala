@@ -15,7 +15,7 @@ import spinal.lib.bus.misc.BusSlaveFactory
 class Timer(cfg : TimerConfig) extends Component {
 
   // The width has to be even to be split into two halfs
-  assert(Bool((cfg.width) % 2 == 0), "Error: Timer width has to be equal!", FAILURE)
+  assert(Bool((cfg.width) % 2 == 0), "Error: Timer width has to be even!", FAILURE)
 
   val io = new Bundle {
 
