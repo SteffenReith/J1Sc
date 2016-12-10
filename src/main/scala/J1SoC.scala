@@ -37,7 +37,7 @@ class J1SoC (j1Cfg   : J1Config,
   val peripheralBus = cpu.io.cpuBus.delayed(gpioCfg.gpioWaitStates)
   val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
-  // Create a LED bank at base address 0x40
+  // Create a LED array at base address 0x40
   val ledArray = new LEDArray(gpioCfg.ledBankConfig)
   val ledBridge = ledArray.driveFrom(peripheralBusCtrl, 0x40)
 

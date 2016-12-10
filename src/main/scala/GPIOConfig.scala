@@ -81,7 +81,6 @@ object J1UARTConfig {
 
 }
 
-
 // Configuration of all GPIO components
 case class GPIOConfig (ledBankConfig  : LEDBankConfig,
                        timerConfig    : TimerConfig,
