@@ -27,6 +27,7 @@ object J1Config {
 
   // Some useful instructions
   def instrRTS   = B"0111_0000_0000_1100"
+  def instrJMP20 = B"0000_0000_0001_0100"
   def instrJMP50 = B"0000_0000_0011_0010"
   def instrJMP60 = B"0000_0000_0011_1100"
 
@@ -142,6 +143,33 @@ object J1Config {
                       B"0110_1100_0000_0000", // 13. Read data from memory
                       B"0000_0000_0000_1110") // 14. Jump 14
 
+  // Simple test of irq logic
+  def simpleIRQTest() = List(B"1000_0000_0000_0001", //  0. Push  1
+                             B"1000_0000_0000_0010", //  1. Push  2
+                             B"1000_0000_0000_0011", //  2. Push  3
+                             B"1000_0000_0000_0100", //  3. Push  4
+                             B"1000_0000_0000_0101", //  4. Push  5
+                             B"1000_0000_0000_0110", //  5. Push  6
+                             B"1000_0000_0000_0111", //  6. Push  7
+                             B"1000_0000_0000_1000", //  7. Push  8
+                             B"1000_0000_0000_1001", //  8. Push  9
+                             B"1000_0000_0000_1010", //  9. Push 10
+                             B"1000_0000_0000_1011", // 10. Push 11
+                             B"1000_0000_0000_1100", // 11. Push 12
+                             B"1000_0000_0000_1101", // 12. Push 13
+                             B"1000_0000_0000_1110", // 13. Push 14
+                             B"1000_0000_0000_1111", // 14. Push 15
+                             B"1000_0000_0001_0000", // 15. Push 16
+                             B"0000_0000_0001_0000", // 16. Jump 16
+                             B"0110_0000_0000_0000", // 17. NOP
+                             B"0110_0000_0000_0000", // 18. NOP
+                             B"0110_0000_0000_0000", // 19. NOP
+                             B"1000_1110_1111_0000", // 20. Push 0x0EF0 (Interrupt entry)
+                             B"1000_0000_0000_1110", // 21. Push 0x000E
+                             B"0110_0001_0000_0011", // 22. Pop
+                             B"0110_0001_0000_0011", // 23. Pop
+                             B"0111_0000_0000_1100") // 24. Return from subroutine
+
   // Provide a default configuration
   def default = {
 
@@ -232,6 +260,39 @@ object J1Config {
                           addrWidth              = addrWidth,
                           startAddress           = startAddress,
                           bootCode               = bootCode)
+
+    // Return the default configuration
+    config
+
+  }
+
+
+  // Provide a debug configuration for the interrupt controller
+  def debugIRQ = {
+
+    def wordSize = 16
+    def dataStackIdxWidth = 5
+    def returnStackIdxWidth = 4
+    def noOfInterrupts = 4
+    def noOfInternalInterrupts = 3
+    def addrWidth = 9
+    def startAddress = 0
+    def bootCode() = simpleIRQTest() ++
+                     List.fill((1 << addrWidth) - simpleIRQTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill(1)(instrJMP20) ++
+                     List.fill(1)(instrRTS) ++
+                     List.fill(1)(instrRTS) ++
+                     List.fill(1)(instrRTS)
+
+    // Default configuration values
+    val config = J1Config(wordSize = wordSize,
+                          dataStackIdxWidth = dataStackIdxWidth,
+                          returnStackIdxWidth = returnStackIdxWidth,
+                          noOfInterrupts = noOfInterrupts,
+                          noOfInternalInterrupts = noOfInternalInterrupts,
+                          addrWidth = addrWidth,
+                          startAddress = startAddress,
+                          bootCode = bootCode)
 
     // Return the default configuration
     config

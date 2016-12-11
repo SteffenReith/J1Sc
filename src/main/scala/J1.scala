@@ -45,7 +45,7 @@ class J1(cfg : J1Config) extends Component {
   memRead := mainMem.readSync(address = memAdr, readUnderWrite = readFirst)
 
   // Instruction port (read only)
-  coreJ1CPU.io.instr := mainMem.readSync(address = coreJ1CPU.io.instrAdr, readUnderWrite = readFirst)
+  coreJ1CPU.io.memInstr := mainMem.readSync(address = coreJ1CPU.io.instrAdr, readUnderWrite = readFirst)
 
   // connect the CPU core with the internal memory
   memWriteEnable <> coreJ1CPU.io.memWriteMode

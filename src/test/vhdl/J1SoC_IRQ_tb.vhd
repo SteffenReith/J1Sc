@@ -21,7 +21,7 @@ use std.textio.all;
 entity J1SoC_IRQ_tb is
 end J1SoC_IRQ_tb;
 
-architecture Behavioral of J1SoC_tb is
+architecture Behavioral of J1SoC_IRQ_tb is
 
   -- Clock period definition (100Mhz)
   constant clk_period : time := 10 ns;
@@ -65,13 +65,13 @@ begin
     --Wait 95ns
     wait for 95 ns;
 
-    Activate an interrupt (asynchronous)
+    -- Activate an interrupt (asynchronous)
     extInt(0) <= '1';
 
     --Wait some clocks
     wait for 33 ns;
     
-    Revoke the the interrupt (asynchronous)
+    -- Revoke the the interrupt (asynchronous)
     extInt(0) <= '0';
 
     -- wait forever

@@ -6,8 +6,8 @@
  * Module Name:    Timer16 - A programmable timer which generates interrupts for a 16 bit bus interface
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: ee1beb34b925da30e37c95eaa0186ed3454834a1
+ * Date: Sat Dec 10 07:52:45 2016 +0100
  */
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
@@ -68,11 +68,14 @@ class Timer(cfg : TimerConfig) extends Component {
 
   }
 
+  // Maximal value of counter
+  val maxCnt = cmp - 1
+
   // Check if the timer is enabled
   when(isEnabled && !(io.loadHigh || io.loadLow)) {
 
     // Count modulo
-    when(cnt < cmp - 1) {
+    when(cnt < maxCnt) {
 
       // Increment the timer
       cnt := cnt + 1
@@ -87,7 +90,7 @@ class Timer(cfg : TimerConfig) extends Component {
   }
 
   // Generate the interrupt signal
-  io.interrupt := isEnabled && (cnt === 0) && !(io.loadHigh || io.loadLow)
+  io.interrupt := isEnabled && (cnt === maxCnt) && !(io.loadHigh || io.loadLow)
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
