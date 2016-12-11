@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="603991281fs"></ZoomEndTime>
-      <Cursor1Time time="75000000fs"></Cursor1Time>
+      <ZoomStartTime time="40000000fs"></ZoomStartTime>
+      <ZoomEndTime time="99900001fs"></ZoomEndTime>
+      <Cursor1Time time="71200000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="253"></NameColumnWidth>
-      <ValueColumnWidth column_width="2288"></ValueColumnWidth>
+      <ValueColumnWidth column_width="2324"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="34" />
+   <WVObjectSize size="35" />
    <wvobject type="logic" fp_name="/J1SoC_tb/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -28,6 +28,18 @@
    <wvobject type="logic" fp_name="/J1SoC_tb/clr">
       <obj_property name="ElementShortName">clr</obj_property>
       <obj_property name="ObjectShortName">clr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/rx">
+      <obj_property name="ElementShortName">rx</obj_property>
+      <obj_property name="ObjectShortName">rx</obj_property>
+      <obj_property name="CustomSignalColor">#DCDCDC</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/tx">
+      <obj_property name="ElementShortName">tx</obj_property>
+      <obj_property name="ObjectShortName">tx</obj_property>
+      <obj_property name="CustomSignalColor">#DCDCDC</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/extInt">
       <obj_property name="ElementShortName">extInt[0:0]</obj_property>
@@ -38,16 +50,11 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/intCtrl/intsE">
       <obj_property name="ElementShortName">intsE[3:0]</obj_property>
       <obj_property name="ObjectShortName">intsE[3:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/irq">
       <obj_property name="ElementShortName">irq</obj_property>
       <obj_property name="ObjectShortName">irq</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/intCtrl/intsE">
-      <obj_property name="ElementShortName">intsE[3:0]</obj_property>
-      <obj_property name="ObjectShortName">intsE[3:0]</obj_property>
       <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -145,6 +152,18 @@
       <obj_property name="ElementShortName">isALU</obj_property>
       <obj_property name="ObjectShortName">isALU</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/rtos">
+      <obj_property name="ElementShortName">rtos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rtos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/rStackWrite">
+      <obj_property name="ElementShortName">rStackWrite</obj_property>
+      <obj_property name="ObjectShortName">rStackWrite</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/coreJ1CPU/rStackPtr">
+      <obj_property name="ElementShortName">rStackPtr[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rStackPtr[3:0]</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/cpu/cpuBus_address">
       <obj_property name="ElementShortName">cpuBus_address[8:0]</obj_property>
       <obj_property name="ObjectShortName">cpuBus_address[8:0]</obj_property>
@@ -155,27 +174,9 @@
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/timerA/valueHigh">
-      <obj_property name="ElementShortName">valueHigh[15:0]</obj_property>
-      <obj_property name="ObjectShortName">valueHigh[15:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FFD700</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_tb/uut/timerA/loadLow">
       <obj_property name="ElementShortName">loadLow</obj_property>
       <obj_property name="ObjectShortName">loadLow</obj_property>
-      <obj_property name="CustomSignalColor">#FFD700</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/timerA/valueLow">
-      <obj_property name="ElementShortName">valueLow[15:0]</obj_property>
-      <obj_property name="ObjectShortName">valueLow[15:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FFD700</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_tb/uut/timerA/enabled">
-      <obj_property name="ElementShortName">enabled</obj_property>
-      <obj_property name="ObjectShortName">enabled</obj_property>
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
