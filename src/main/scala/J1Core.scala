@@ -74,7 +74,9 @@ class J1Core(cfg : J1Config) extends Component {
   val nextPC = Mux(io.irq === True, pc.asBits.resize(cfg.wordSize), (pc + 1).asBits.resize(cfg.wordSize))
 
   // Calculate a possible value for top of return stack (check for conditional jump)
-  val rtosN = Mux(instr(instr.high - 3 + 1)  === False, nextPC, dtos)
+  //val rtosN = Mux(instr(instr.high - 3 + 1)  === False, nextPC, dtos)
+
+  val rtosN = Mux((!instr(instr.high - 3 + 1) | io.irq)  === True , nextPC, dtos)
 
   // Return stack pointer, set to first entry (can be abitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
