@@ -1,14 +1,15 @@
 --------------------------------------------------------------------------------
--- Author: Steffen Reith (Steffen.Reith@hs-rm.de)
+-- Author: <AUTHORNAME> (<AUTHOREMAIL>)
 -- Committer: <COMMITTERNAME>
 --
--- Creation Date:  Thu Oct 13 20:44:40 GMT+2 2016
+-- Creation Date:  Sun Dec 11 11:46:48 GMT+1 2016
 -- Creator:        Steffen Reith
--- Module Name:    J1SoC_TB - A simple testbench for the J1 SoC
+-- Module Name:    J1SoC_IRQ_TB - A simple testbench for testing the interrupts
+--                                of the J1 SoC
 -- Project Name:   J1Sc - A simple J1 implementation in scala
 --
--- Hash: 1b3295f774ff2c8b47708463c37a618a142d1345
--- Date: Thu Oct 13 21:09:18 2016 +0200
+-- Hash: <COMMITHASH>
+-- Date: <AUTHORDATE>
 --------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -17,10 +18,10 @@ use ieee.numeric_std.all;
 library std;
 use std.textio.all;
 
-entity J1SoC_tb is
-end J1SoC_tb;
+entity J1SoC_IRQ_tb is
+end J1SoC_IRQ_tb;
 
-architecture Behavioral of J1SoC_tb is
+architecture Behavioral of J1SoC_IRQ_tb is
 
   -- Clock period definition (100Mhz)
   constant clk_period : time := 10 ns;
@@ -52,15 +53,32 @@ begin
   -- Clock process definitions
   clk_process : process
   begin
-
     clk <= '0';
     wait for clk_period/2;
-
     clk <= '1';
     wait for clk_period/2;
+  end process;
+
+  interrup_proc : process
+  begin
+
+    --Wait 95ns
+    wait for 95 ns;
+
+    -- Activate an interrupt (asynchronous)
+    extInt(0) <= '1';
+
+    --Wait some clocks
+    wait for 33 ns;
+    
+    -- Revoke the the interrupt (asynchronous)
+    extInt(0) <= '0';
+
+    -- wait forever
+    wait;
 
   end process;
-  
+
   reboot_proc : process
   begin
 

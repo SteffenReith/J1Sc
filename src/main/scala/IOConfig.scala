@@ -1,9 +1,9 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
- * Committer: <COMMITTERNAME>
+ * Author: Steffen Reith (steffen.reith@hs-rm.de)
+ * Committer: Steffen Reith
  *
  * Creation Date:  Tue Nov 15 17:04:09 GMT+1 2016
- * Module Name:    GPIOConfig - Holds the configuration of GPIO components
+ * Module Name:    IOConfig - Holds the configuration of external IO components
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  * Hash: 10743e7bebbaa8df9957d4dc3b12aa70c2835144
@@ -12,17 +12,16 @@
 
 import spinal.lib.com.uart._
 
-// Configuration of a LED-bank
-case class LEDBankConfig (width : Int,
-                          lowActive : Boolean)
+// Configuration of a LED-array
+case class LEDArrayConfig(width : Int, lowActive : Boolean)
 
-object LEDBankConfig {
+object LEDArrayConfig {
 
   // Provide a default configuration
   def default = {
 
     // Default configuration values
-    val config = LEDBankConfig(width = 16,
+    val config = LEDArrayConfig(width = 16,
                                lowActive = false)
 
     // Return the default configuration
@@ -82,7 +81,7 @@ object J1UARTConfig {
 }
 
 // Configuration of all GPIO components
-case class GPIOConfig (ledBankConfig  : LEDBankConfig,
+case class GPIOConfig (ledBankConfig  : LEDArrayConfig,
                        timerConfig    : TimerConfig,
                        uartConfig     : J1UARTConfig,
                        gpioWaitStates : Int)
@@ -93,7 +92,7 @@ object GPIOConfig {
   def default = {
 
     // Default configuration values
-    val config = GPIOConfig(ledBankConfig = LEDBankConfig.default,
+    val config = GPIOConfig(ledBankConfig = LEDArrayConfig.default,
                             timerConfig   = TimerConfig.default,
                             uartConfig    = J1UARTConfig.default,
                             1)

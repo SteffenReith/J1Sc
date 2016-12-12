@@ -12,7 +12,7 @@
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
-class LEDArray(ledBankCfg : LEDBankConfig) extends Component {
+class LEDArray(ledBankCfg : LEDArrayConfig) extends Component {
 
   val io = new Bundle {
 
