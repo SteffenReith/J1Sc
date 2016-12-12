@@ -266,7 +266,6 @@ object J1Config {
 
   }
 
-
   // Provide a debug configuration for the interrupt controller
   def debugIRQ = {
 
