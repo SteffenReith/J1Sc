@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="17" Path="/media/psf/Home/src/scala/J1Sc/prj/J1Sc/J1Sc.xpr">
+<Project Version="7" Minor="17" Path="/media/psf/Home/src/scala/J1Sc/vprj/VHDL/J1Sc/J1Sc.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="83182bd19d904ee6ad6575be97c48319"/>
@@ -27,7 +27,7 @@
     <Option Name="IPStaticSourceDir" Val="$PPRDIR/J1Sc.ip_user_files/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSANumComputeUnits" Val="16"/>
-    <Option Name="WTXSimLaunchSim" Val="434"/>
+    <Option Name="WTXSimLaunchSim" Val="439"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -50,7 +50,7 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PPRDIR/../../gen/src/vhdl/J1SoC.vhd">
+      <File Path="$PPRDIR/../../../gen/src/vhdl/J1SoC.vhd">
         <FileInfo>
           <Attr Name="Library" Val="work"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -65,7 +65,7 @@
     </FileSet>
     <FileSet Name="simple" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/simple">
       <Filter Type="Srcs"/>
-      <File Path="$PPRDIR/../../src/test/vhdl/J1SoC_tb.vhd">
+      <File Path="$PPRDIR/../../../src/test/vhdl/J1SoC_tb.vhd">
         <FileInfo>
           <Attr Name="Library" Val="work"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -88,13 +88,13 @@
       </Config>
     </FileSet>
     <FileSet Name="Nexys4DDR" Type="Constrs" RelSrcDir="$PSRCDIR/Nexys4DDR">
-      <File Path="$PPRDIR/../../src/main/xilinx/nexys4ddr/Pins.xdc">
+      <File Path="$PPRDIR/../../../src/main/xilinx/nexys4ddr/Pins.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../src/main/xilinx/nexys4ddr/Clocks.xdc">
+      <File Path="$PPRDIR/../../../src/main/xilinx/nexys4ddr/Clocks.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -105,13 +105,13 @@
       </Config>
     </FileSet>
     <FileSet Name="Nexys4" Type="Constrs" RelSrcDir="$PSRCDIR/Nexys4">
-      <File Path="$PPRDIR/../../src/main/xilinx/nexys4/Pins.xdc">
+      <File Path="$PPRDIR/../../../src/main/xilinx/nexys4ddr/Pins.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../src/main/xilinx/nexys4/Clocks.xdc">
+      <File Path="$PPRDIR/../../../src/main/xilinx/nexys4/Clocks.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -122,7 +122,8 @@
       </Config>
     </FileSet>
     <FileSet Name="irq" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/irq">
-      <File Path="$PPRDIR/../../src/test/vhdl/J1SoC_IRQ_tb.vhd">
+      <Filter Type="Srcs"/>
+      <File Path="$PPRDIR/../../../src/test/vhdl/J1SoC_IRQ_tb.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
