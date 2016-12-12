@@ -45,6 +45,7 @@ class J1Core(cfg : J1Config) extends Component {
   // Program counter (PC)
   val pcN = UInt(cfg.addrWidth bits)
   val pc = RegNext(pcN) init(cfg.startAddress)
+  val pcPlusOne = pc + 1
 
   // Instruction to be executed (insert a call-instruction for an interrupt)
   val instr = Mux(io.irq, B"010" ## (((1 << cfg.addrWidth) - 1) - io.intNo).resize(cfg.wordSize - 3), io.memInstr)
@@ -71,7 +72,7 @@ class J1Core(cfg : J1Config) extends Component {
   val dnos = dStack.readAsync(address = dStackPtr, readUnderWrite = writeFirst)
 
   // Check for interrupt mode, because afterwards the current instruction has to be executed
-  val nextPC = Mux(io.irq, pc.asBits.resize(cfg.wordSize), (pc + 1).asBits.resize(cfg.wordSize))
+  val nextPC = Mux(io.irq, pc.asBits.resize(cfg.wordSize), pcPlusOne.asBits.resize(cfg.wordSize))
 
   // Set next value for RTOS (check for conditional jump (implicitly for an interrupt) or T -> R ALU instruction field
   val rtosN = Mux(!instr(instr.high - 3 + 1), nextPC, dtos)
@@ -204,7 +205,7 @@ class J1Core(cfg : J1Config) extends Component {
     is(M"0_011_1_-") {pcN := rtos(cfg.addrWidth - 1 downto 0).asUInt}
 
     // By default goto next instruction
-    default {pcN := pc + 1}
+    default {pcN := pcPlusOne}
 
   }
 

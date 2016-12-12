@@ -24,7 +24,8 @@ class Timer(cfg : TimerConfig) extends Component {
     val cmpHigh  = in UInt(cfg.width / 2 bits)
     val cmpLow   = in UInt(cfg.width / 2 bits)
 
-    val enable = in Bits(cfg.width / 2 bits)
+    val enable =            in Bits(cfg.width / 2 bits)
+    val accessEnableWrite = in Bool()
 
     val highState = out UInt(cfg.width / 2 bits)
     val lowState  = out UInt(cfg.width / 2 bits)
@@ -36,16 +37,15 @@ class Timer(cfg : TimerConfig) extends Component {
   }.setName("")
 
   // Register for holding the counter
-  val cnt = Reg(UInt(cfg.width bits)) init (0)
+  val cnt = Reg(UInt(cfg.width bits)) init(0)
 
   // Compare register (maximal values to count to)
-  val cmp = Reg(UInt(cfg.width bits)) init (0)
+  val cmp = Reg(UInt(cfg.width bits)) init(0)
   io.highState := cmp(cmp.high downto cfg.width / 2)
   io.lowState := cmp(cfg.width / 2 - 1 downto 0)
 
   // Register the enable flag (adapt the width for the 1 bit register)
-  val isEnabled = Reg(Bool) init (False)
-  isEnabled := io.enable.orR
+  val isEnabled = RegNextWhen(io.enable.orR, io.accessEnableWrite) init(False)
   io.enableState := (default -> isEnabled)
 
   // Check if the low word of the compare register has to be loaded
@@ -110,6 +110,9 @@ class Timer(cfg : TimerConfig) extends Component {
     // A r/w register for enabling the timer (anything != 0 means true)
     busCtrl.read(io.enableState, baseAddress + 2, 0)
     busCtrl.nonStopWrite(io.enable, 0) // the enable signal is constantly driven by the data of the memory bus
+
+    // Generate a flag for write access of io.enable
+    io.accessEnableWrite := busCtrl.isWriting(baseAddress + 2)
 
   }
 

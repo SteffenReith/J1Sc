@@ -52,7 +52,7 @@ object J1Config {
                        B"1000_0000_0000_0011", // 14. Push 3
                        B"1000_0000_0000_0011", // 15. Push 3
                        B"0110_0111_0000_0001", // 16. Compare tos and nos push result
-                       B"1101_0101_0101_0111", // 17. Push 0x5557
+                       B"1101_0101_0101_0101", // 17. Push 0x5555
                        B"1000_0000_0100_0000", // 18. Push 0x040
                        B"0110_0000_0100_0000", // 19. ALU I/O operation
                        B"0110_0000_0000_0000", // 20. NOP (wait state for I/O)
@@ -112,8 +112,8 @@ object J1Config {
                        B"0110_0001_0000_0011", // 74. Pop
                        B"0110_0001_0000_0011", // 75. Pop
                        B"1000_0000_1111_1111", // 76. Push some value
-                       B"0110_0000_1100_0010", // 77. Push I/O address 0xC2
-                       B"0110_0000_0100_0000", // 78. ALU I/O operation (arbitrary value starts timer)
+                       B"1000_0000_1100_0010", // 77. Push I/O address 0xC2
+                       B"0110_0000_0100_0000", // 78. ALU I/O operation (arbitrary non-zero value starts timer)
                        B"0110_0000_0000_0000", // 79. NOP
                        B"0000_0000_0101_0000", // 80. Jump 80
                        B"0110_0000_0000_0000", // 81. NOP
@@ -213,7 +213,7 @@ object J1Config {
 
     def bootCode() = isaTest() ++
                      List.fill((1 << addrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List.fill(1)(instrJMP60) ++
+                     List.fill(1)(instrJMP50) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrJMP60) ++
                      List.fill(1)(instrJMP50)
