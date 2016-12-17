@@ -357,7 +357,7 @@ decimal
 : dumpall.16
     s" hex" out-suffix to file
 
-    hex
+    hex 
     4096 0 do
         tflash i 2* + w@
         s>d <# # # # # #> file write-line throw
