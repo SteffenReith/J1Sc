@@ -352,12 +352,28 @@ target included                         \ include the program.fs
 [ tdp @ 0 org ] main quit [ org ]
 meta
 
+: bin 2 base ! ;
+
 decimal
 0 value file
+: dumpbinall.16
+    s" hex" out-suffix to file
+
+    bin
+    4096 0 do
+        tflash i 2* + w@
+	s>d <# [char] " hold
+	     # # # # [char] _ hold
+	     # # # # [char] _ hold
+	     # # # # [char] _ hold
+	     # # # # [char] " hold [char] B hold #> file write-line throw
+    loop
+    file close-file
+;
 : dumpall.16
     s" hex" out-suffix to file
 
-    hex 
+    hex
     4096 0 do
         tflash i 2* + w@
         s>d <# # # # # #> file write-line throw
@@ -375,7 +391,7 @@ decimal
     file close-file
 ;
 
-dumpall.16
+dumpbinall.16
 ." tdp " tdp @ .
 ." tcp " tcp @ .
 
