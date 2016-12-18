@@ -72,7 +72,7 @@ class J1SoC (j1Cfg   : J1Config,
   val uartBridge = uartCtrl.driveFrom16(peripheralBusCtrl, uartCtrlMemoryMappedConfig, baseAddress = 0x80)
   uartBridge.interruptCtrl.readIntEnable := True
 
-  // Tell spinal that some unneeded signals are allowed to be pruned to avoid warnings
+  // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
   uartBridge.interruptCtrl.interrupt.allowPruning()
   uartBridge.write.streamUnbuffered.ready.allowPruning()
 
