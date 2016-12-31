@@ -6,7 +6,7 @@
  * Module Name:    SimpleBus - A simple bus which consists out of address / dataIn / dataOut / writeMode / enable
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Remark: Initial code provided by: Charles Papon (charles.papon.90@gmail.com)
+ * Remark: Initial code provided by Charles Papon (charles.papon.90@gmail.com)
  *
  * Hash: 787d619f91f3d93f7372e61fe368f386fc8ae7d3
  * Date: Sun Nov 13 15:54:41 2016 +0100
