@@ -22,7 +22,7 @@ object LEDArrayConfig {
 
     // Default configuration values
     val config = LEDArrayConfig(width = 16,
-                               lowActive = false)
+                                lowActive = false)
 
     // Return the default configuration
     config
