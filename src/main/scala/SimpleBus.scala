@@ -15,11 +15,16 @@ import spinal.core._
 import spinal.lib._
 import spinal.lib.bus.misc._
 
-case class SimpleBus(addressWidth : Int, dataWidth : Int) extends Bundle with IMasterSlave {
+case class SimpleBus(cfg : J1Config) extends Bundle with IMasterSlave {
 
+  // Width of addresses and data
+  def adrWidth  = cfg.adrWidth
+  def dataWidth = cfg.wordSize
+
+  // Signals used by 'SimpleBus'
   val enable    = Bool // Bus can be used when 'enable' is high
   val writeMode = Bool // High to write data, low to read data
-  val address   = UInt(addressWidth bits) // Address (byte-aligned)
+  val address   = UInt(adrWidth bits) // Address (byte-aligned)
   val writeData = Bits(dataWidth bits)
   val readData  = Bits(dataWidth bits)
 
