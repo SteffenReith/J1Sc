@@ -12,19 +12,19 @@
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
-class LEDArray(ledBankCfg : LEDArrayConfig) extends Component {
+class LEDArray(cfg : LEDArrayConfig) extends Component {
 
   val io = new Bundle {
 
     // I/O signals for memory data port
     val writeEnable = in Bool
-    val ledState    = in Bits(ledBankCfg.width bits)
-    val leds        = out Bits(ledBankCfg.width bits)
+    val ledState    = in Bits(cfg.width bits)
+    val leds        = out Bits(cfg.width bits)
 
   }.setName("")
 
   // Register for holding the bit-vector storing the LED states
-  val ledReg = Reg(Bits(ledBankCfg.width bits)) init(0)
+  val ledReg = Reg(Bits(cfg.width bits)) init (0)
 
   // Check for write mode
   when(io.writeEnable) {
@@ -35,13 +35,13 @@ class LEDArray(ledBankCfg : LEDArrayConfig) extends Component {
   }
 
   // Set output for the leds (invert it if asked for by the generic parameter)
-  if (ledBankCfg.lowActive) io.leds := ~ledReg else io.leds := ledReg;
+  if (cfg.lowActive) io.leds := ~ledReg else io.leds := ledReg;
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
     // The register is mapped at address 0 and is of type r/w
-    if (ledBankCfg.lowActive) {
+    if (cfg.lowActive) {
 
       // Negate to get the register content
       busCtrl.read(~io.leds, baseAddress + 0, 0)
