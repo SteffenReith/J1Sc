@@ -27,7 +27,7 @@ architecture Behavioral of J1SoC_tb is
 
   -- Interrupts
   signal extInt : std_logic_vector(0 downto 0) := "0";
-
+ 
   -- UART signals
   signal rx : std_logic := '0';
   signal tx : std_logic;
@@ -44,7 +44,7 @@ begin
   uut : entity work.J1SoC
     port map (clk    => clk,
               clr    => clr,
-              extInt => extInt,
+              extInt => extInterrupts,
               rx     => rx,
               tx     => tx,
               leds   => leds);

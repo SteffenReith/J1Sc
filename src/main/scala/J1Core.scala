@@ -15,7 +15,7 @@ class J1Core(cfg : J1Config) extends Component {
 
   // Check the generic parameters
   assert(Bool(cfg.wordSize == 16), "Warning: Only wordsize 16 was tested!", ERROR)
-  assert(Bool(cfg.wordSize - 3 >= cfg.addrWidth), "Error: The width of an address is too large", FAILURE)
+  assert(Bool(cfg.wordSize - 3 >= cfg.adrWidth), "Error: The width of an address is too large", FAILURE)
 
   // I/O ports
   val io = new Bundle {
@@ -24,17 +24,17 @@ class J1Core(cfg : J1Config) extends Component {
     val memWriteMode = out Bool
     val ioWriteMode  = out Bool
     val ioReadMode   = out Bool
-    val extAdr       = out UInt(cfg.addrWidth bits)
+    val extAdr       = out UInt(cfg.adrWidth bits)
     val extToWrite   = out Bits(cfg.wordSize bits)
     val memToRead    = in Bits(cfg.wordSize bits)
     val ioToRead     = in Bits(cfg.wordSize bits)
 
     // Interface for the interrupt system
     val irq   = in Bool
-    val intNo = in UInt(log2Up(cfg.noOfInterrupts) bits)
+    val intNo = in UInt(log2Up(cfg.irqConfig.numOfInterrupts) bits)
 
     // I/O port for instructions
-    val instrAdr = out (UInt(cfg.addrWidth bits))
+    val instrAdr = out (UInt(cfg.adrWidth bits))
     val memInstr = in (Bits(cfg.wordSize bits))
 
   }.setName("")
@@ -43,12 +43,12 @@ class J1Core(cfg : J1Config) extends Component {
   val clrActive = ClockDomain.current.isResetActive
 
   // Program counter (PC)
-  val pcN = UInt(cfg.addrWidth bits)
+  val pcN = UInt(cfg.adrWidth bits)
   val pc = RegNext(pcN) init(cfg.startAddress)
   val pcPlusOne = pc + 1
 
   // Instruction to be executed (insert a call-instruction for an interrupt)
-  val instr = Mux(io.irq, B"010" ## (((1 << cfg.addrWidth) - 1) - io.intNo).resize(cfg.wordSize - 3), io.memInstr)
+  val instr = Mux(io.irq, B"010" ## (((1 << cfg.adrWidth) - 1) - io.intNo).resize(cfg.wordSize - 3), io.memInstr)
 
   // Data stack pointer (set to first entry, which can be abitrary)
   val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)
@@ -145,7 +145,7 @@ class J1Core(cfg : J1Config) extends Component {
   io.memWriteMode := !clrActive && isALU && funcWriteMem
   io.ioWriteMode := !clrActive && isALU && funcWriteIO
   io.ioReadMode := !clrActive && isALU && funcReadIO
-  io.extAdr := dtosN(cfg.addrWidth - 1 downto 0).asUInt
+  io.extAdr := dtosN(cfg.adrWidth - 1 downto 0).asUInt
   io.extToWrite := dnos
 
   // Increment for data stack pointer
@@ -199,10 +199,10 @@ class J1Core(cfg : J1Config) extends Component {
     is(M"1_---_-_-") {pcN := cfg.startAddress}
 
     // Check for jump, cond. jump or call instruction
-    is(M"0_000_-_-", M"0_001_-_0", M"0_010_-_-") {pcN := instr(cfg.addrWidth - 1 downto 0).asUInt}
+    is(M"0_000_-_-", M"0_001_-_0", M"0_010_-_-") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0_011_1_-") {pcN := rtos(cfg.addrWidth - 1 downto 0).asUInt}
+    is(M"0_011_1_-") {pcN := rtos(cfg.adrWidth - 1 downto 0).asUInt}
 
     // By default goto next instruction
     default {pcN := pcPlusOne}

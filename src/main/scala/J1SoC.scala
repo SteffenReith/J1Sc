@@ -19,14 +19,14 @@ class J1SoC (j1Cfg   : J1Config,
   val io = new Bundle {
 
     // Asynchronous interrupts for the outside world
-    val extInt = in Bits(j1Cfg.noOfInterrupts - j1Cfg.noOfInternalInterrupts bits)
+    val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
 
     // The physical pins for the connected FPGAs
     val leds = out Bits(gpioCfg.ledBankConfig.width bits)
 
     // I/O pins for the UART
-    val rx   =  in Bool // UART input
-    val tx   = out Bool // UART output
+    val rx =  in Bool // UART input
+    val tx = out Bool // UART output
 
   }.setName("")
 
@@ -45,10 +45,10 @@ class J1SoC (j1Cfg   : J1Config,
   io.leds := ledArray.io.leds
 
   // Create two timer and map it at 0xC0 and 0xD0
-  var timerA = new Timer(gpioCfg.timerConfig)
-  var timerABridge = timerA.driveFrom(peripheralBusCtrl, 0xC0)
-  var timerB = new Timer(gpioCfg.timerConfig)
-  var timerBBridge = timerB.driveFrom(peripheralBusCtrl, 0xD0)
+  val timerA       = new Timer(gpioCfg.timerConfig)
+  val timerABridge = timerA.driveFrom(peripheralBusCtrl, 0xC0)
+  val timerB       = new Timer(gpioCfg.timerConfig)
+  val timerBBridge = timerB.driveFrom(peripheralBusCtrl, 0xD0)
 
   // Create an UART interface with fixed capabilities
   val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = gpioCfg.uartConfig.dataWidthMax,
@@ -76,9 +76,10 @@ class J1SoC (j1Cfg   : J1Config,
   uartBridge.interruptCtrl.interrupt.allowPruning()
   uartBridge.write.streamUnbuffered.ready.allowPruning()
 
-  // Create an interrupt controller und connect all interrupts
-  val intCtrl = new InterruptCtrl(noOfInterrupts = j1Cfg.noOfInterrupts)
-  intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.noOfInternalInterrupts) <> io.extInt
+  // Create an interrupt controller, map it to 0xF0 and connect all interrupts
+  val intCtrl = new InterruptCtrl(j1Cfg)
+  val intCtrlBridge = intCtrl.driveFrom(peripheralBusCtrl, 0xF0)
+  intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.irqConfig.numOfInternalInterrupts) <> io.extInt
   intCtrl.io.intsE(0) <> uartBridge.interruptCtrl.readInt
   intCtrl.io.intsE(1) <> timerA.io.interrupt
   intCtrl.io.intsE(2) <> timerB.io.interrupt

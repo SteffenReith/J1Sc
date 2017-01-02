@@ -19,16 +19,16 @@ class J1(cfg : J1Config) extends Component {
 
     // Interface for the interrupt system
     val irq   = in Bool
-    val intNo = in UInt(log2Up(cfg.noOfInterrupts) bits)
+    val intNo = in UInt(log2Up(cfg.irqConfig.numOfInterrupts) bits)
 
     // I/O signals for peripheral data port
-    val cpuBus = master(SimpleBus(cfg.addrWidth, cfg.wordSize))
+    val cpuBus = master(SimpleBus(cfg))
 
   }.setName("")
 
   // Signals for main memory
   val memWriteEnable = Bool
-  val memAdr         = UInt(cfg.addrWidth bits)
+  val memAdr         = UInt(cfg.adrWidth bits)
   val memWrite       = Bits(cfg.wordSize bits)
   val memRead        = Bits(cfg.wordSize bits)
 
@@ -53,7 +53,7 @@ class J1(cfg : J1Config) extends Component {
   memWrite <> coreJ1CPU.io.extToWrite
   coreJ1CPU.io.memToRead <> memRead
 
-  // Connect the external bus to the core (remember coreJ1CPU.io.extAdr is one clock to early)
+  // Connect the external bus to the core (remember coreJ1CPU.io.extAdr is one clock too early)
   io.cpuBus.enable      := coreJ1CPU.io.ioWriteMode || coreJ1CPU.io.ioReadMode
   io.cpuBus.writeMode   <> coreJ1CPU.io.ioWriteMode
   io.cpuBus.address     <> Delay(coreJ1CPU.io.extAdr, 1)
