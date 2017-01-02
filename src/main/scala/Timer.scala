@@ -42,6 +42,8 @@ class Timer(cfg : TimerConfig) extends Component {
 
   // Compare register (maximal values to count to)
   val cmp = Reg(UInt(cfg.width bits)) init(0)
+
+  // Split the compare register into high and low part
   io.highState := cmp(cmp.high downto cfg.width / 2)
   io.lowState := cmp(cfg.width / 2 - 1 downto 0)
 
