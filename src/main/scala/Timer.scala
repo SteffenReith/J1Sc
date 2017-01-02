@@ -25,13 +25,12 @@ class Timer(cfg : TimerConfig) extends Component {
     val cmpHigh  = in UInt(cfg.width / 2 bits)
     val cmpLow   = in UInt(cfg.width / 2 bits)
 
-    val enable =            in Bits(cfg.width / 2 bits)
+    val enable            = in Bits(cfg.width / 2 bits)
     val accessEnableWrite = in Bool
+    val enableState       = out Bits(cfg.width / 2  bits)
 
     val highState = out UInt(cfg.width / 2 bits)
     val lowState  = out UInt(cfg.width / 2 bits)
-
-    val enableState = out Bits(cfg.width / 2  bits)
 
     val interrupt = out Bool
 
