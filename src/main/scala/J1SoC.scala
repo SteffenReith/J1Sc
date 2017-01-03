@@ -6,10 +6,9 @@
  * Module Name:    J1SoC - A small but complete system based on the J1-core
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 75da160a8717f54ba74b46487e015a59732841eb
- * Date: Mon Dec 5 14:08:59 2016 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
-
 import spinal.core._
 import spinal.lib.com.uart._
 
