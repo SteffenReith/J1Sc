@@ -65,15 +65,15 @@ object J1UARTConfig {
 
   // Provide a default configuration
   def default = J1UARTConfig(clockDividerWidth = 20,
-                             dataWidthMax = 8,
-                             baudrate = 115200,
-                             dataLength = 7,
-                             parity = UartParityType.NONE,
-                             stop = UartStopType.ONE,
-                             preSamplingSize = 1,
-                             samplingSize = 5,
-                             postSamplingSize = 2,
-                             fifoDepth = 8)
+                             dataWidthMax      = 8,
+                             baudrate          = 115200,
+                             dataLength        = 7,
+                             parity            = UartParityType.NONE,
+                             stop              = UartStopType.ONE,
+                             preSamplingSize   = 1,
+                             samplingSize      = 5,
+                             postSamplingSize  = 2,
+                             fifoDepth         = 8)
 
   // Return the default configuration
   default
