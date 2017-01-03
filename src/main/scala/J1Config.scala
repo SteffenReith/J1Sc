@@ -13,8 +13,8 @@
 import spinal.core._
 
 // Configuration of the IRQ controller
-case class IRQCtrlConfig (numOfInterrupts          : Int,
-                          numOfInternalInterrupts  : Int,
+case class IRQCtrlConfig (numOfInterrupts         : Int,
+                          numOfInternalInterrupts : Int,
                           interruptsDefaultActive : Boolean)
 
 object IRQCtrlConfig {
@@ -23,7 +23,7 @@ object IRQCtrlConfig {
   def default = {
 
     // Default configuration values
-    val config = IRQCtrlConfig(numOfInterrupts = 4,
+    val config = IRQCtrlConfig(numOfInterrupts         = 4,
                                numOfInternalInterrupts = 3,
                                interruptsDefaultActive = false)
 
