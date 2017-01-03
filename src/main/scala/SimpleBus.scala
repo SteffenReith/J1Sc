@@ -8,8 +8,8 @@
  *
  * Remark: Initial code provided by Charles Papon (charles.papon.90@gmail.com)
  *
- * Hash: 787d619f91f3d93f7372e61fe368f386fc8ae7d3
- * Date: Sun Nov 13 15:54:41 2016 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.core._
 import spinal.lib._
