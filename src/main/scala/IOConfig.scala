@@ -1,15 +1,14 @@
 /*
- * Author: Steffen Reith (steffen.reith@hs-rm.de)
- * Committer: Steffen Reith
+ * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Committer: <COMMITTERNAME>
  *
  * Creation Date:  Tue Nov 15 17:04:09 GMT+1 2016
  * Module Name:    IOConfig - Holds the configuration of external IO components
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 10743e7bebbaa8df9957d4dc3b12aa70c2835144
- * Date: Sat Nov 19 00:31:09 2016 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
-
 import spinal.lib.com.uart._
 
 // Configuration of a LED-array
