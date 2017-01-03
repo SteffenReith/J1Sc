@@ -135,11 +135,11 @@ object J1Config {
                        B"1000_0000_1100_0010", // 77. Push I/O address 0xC2
                        B"0110_0000_0100_0000", // 78. ALU I/O operation (arbitrary non-zero value starts timer)
                        B"0110_0000_0000_0000", // 79. NOP
-                       B"0000_0000_0101_0000", // 80. Jump 80
-                       B"0110_0000_0000_0000", // 81. NOP
-                       B"0110_0000_0000_0000", // 82. NOP
-                       B"0110_0000_0000_0000", // 83. NOP
-                       B"0110_0000_0000_0000", // 84. NOP
+                       B"1000_0000_0000_0010", // 80. Push 2 to dstack (to enable interrupts)
+                       B"1000_0000_1110_0000", // 81. Push IRQ-controller I/O address 0xE0
+                       B"0110_0000_0100_0000", // 82. Write data to I/O space
+                       B"0110_0000_0000_0000", // 83. NOP (wait state for I/O)
+                       B"0000_0000_0101_0100", // 84. Jump 84
                        B"0110_0000_0000_0000", // 85. NOP
                        B"0110_0000_0000_0000", // 86. NOP
                        B"0110_0000_0000_0000", // 87. NOP
@@ -234,8 +234,8 @@ object J1Config {
     def adrWidth               =  9
     def startAddress           =  0
 
-    // IRQ controller parameters (enable all interrupts by default)
-    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
+    // IRQ controller parameters (disable all interrupts by default)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
     def bootCode() = isaTest() ++
                      List.fill((1 << adrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++

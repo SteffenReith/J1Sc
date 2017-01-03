@@ -75,9 +75,9 @@ class J1SoC (j1Cfg   : J1Config,
   uartBridge.interruptCtrl.interrupt.allowPruning()
   uartBridge.write.streamUnbuffered.ready.allowPruning()
 
-  // Create an interrupt controller, map it to 0xF0 and connect all interrupts
+  // Create an interrupt controller, map it to 0xE0 and connect all interrupts
   val intCtrl = new InterruptCtrl(j1Cfg)
-  val intCtrlBridge = intCtrl.driveFrom(peripheralBusCtrl, 0xF0)
+  val intCtrlBridge = intCtrl.driveFrom(peripheralBusCtrl, 0xE0)
   intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.irqConfig.numOfInternalInterrupts) <> io.extInt
   intCtrl.io.intsE(0) <> uartBridge.interruptCtrl.readInt
   intCtrl.io.intsE(1) <> timerA.io.interrupt
