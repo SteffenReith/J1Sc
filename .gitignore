@@ -7,6 +7,7 @@ vprj/VHDL/J1Sc/J1Sc.hw
 vprj/VHDL/J1Sc/J1Sc.ip_user_files
 vprj/VHDL/J1Sc/J1Sc.sim
 vprj/VHDL/J1Sc/J1Sc.runs/
+toolchain/forth/build/
 toolchain/forth/build/nuc.hex
 toolchain/forth/build/nuc.lst
 toolchain/forth/build/nuc.binary
