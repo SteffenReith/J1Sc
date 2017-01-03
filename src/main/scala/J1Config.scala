@@ -6,10 +6,9 @@
  * Module Name:    J1Config - Holds a complete CPU configuration
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 0a2e9c9b22e7282083028bf56157ad357d6eaeab
- * Date: Sat Nov 19 00:31:59 2016 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
-
 import spinal.core._
 
 // Configuration of the IRQ controller
