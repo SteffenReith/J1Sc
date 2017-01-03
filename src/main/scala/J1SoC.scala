@@ -6,8 +6,8 @@
  * Module Name:    J1SoC - A small but complete system based on the J1-core
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 4f0f185ce5d5b072464389a58c4630ac8f660104
+ * Date: Tue Jan 3 02:56:50 2017 +0100
  */
 import spinal.core._
 import spinal.lib.com.uart._
@@ -101,7 +101,7 @@ object J1SoC {
   def main(args : Array[String]) {
 
     // Configuration of CPU-core and GPIO system
-    val j1Cfg = J1Config.debug
+    val j1Cfg = J1Config.forth
     val gpioCfg = GPIOConfig.default
 
     // Generate HDL files

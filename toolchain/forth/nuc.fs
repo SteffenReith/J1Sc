@@ -8,6 +8,10 @@
 \ It is compiled by cross.fs to produce nuc.hex, the boot
 \ image.
 \
+\ Modified by Steffen Reith (Steffen.Reith@hs-rm.de) at Tue Jan 3 16:20:00 GMT+1 2017
+\ for the Spinal HDL based implementation of J1 using another memory mapped layout
+\ and which has a simple interrupt system.
+\
 \ Some notes on idioms in this file:
 \   header xxx  creates a header entry
 \   h# xxx      hex literal
@@ -63,11 +67,9 @@ header rshift
     drop
 ;
 
-header key?
+header key? ( -- f ) \ true if character can be read 
 : key?
-    d# 2
-: uart-stat ( mask -- f ) \ is bit in UART status register on?
-    h# 2000 io@ and 0<>
+    h# 0086 io@ h# ff00 and 0<>
 ;
 
 header key
@@ -76,15 +78,15 @@ header key
         key?
     until
 : key>
-    h# 1000 io@
+    h# 0080 io@
 ;
 
 header emit
 : emit
     begin
-        d# 1 uart-stat
+        h# 0086 io@ h# 00ff and d# 4 <
     until
-    h# 1000 _io!
+    h# 0080 _io!
 ;
 
 header space

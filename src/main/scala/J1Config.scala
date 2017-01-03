@@ -6,10 +6,11 @@
  * Module Name:    J1Config - Holds a complete CPU configuration
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 642e2856b75cc7772f789e4681fe66262b47ce7b
+ * Date: Tue Jan 3 02:19:11 2017 +0100
  */
 import spinal.core._
+import scala.io.Source
 
 // Configuration of the IRQ controller
 case class IRQCtrlConfig (numOfInterrupts         : Int,
@@ -190,6 +191,23 @@ object J1Config {
                              B"0110_0001_0000_0011", // 23. Pop
                              B"0111_0000_0000_1100") // 24. Return from subroutine
 
+  // Convert a bin-string to an integer
+  def binToBits(s : String, w : Int) = {B(s.toList.map("01".indexOf(_)).reduceLeft(_ * 2 + _), w bits)}
+
+  // Convert a hex-string to an integer
+  def hexToBits(s : String, w : Int) = {B(s.toList.map("0123456789ABCDEF".indexOf(_)).reduceLeft(_ * 16 + _), w bits)}
+
+  // Provide the SwapForth base system
+  def forthBase(w : Int) = {
+
+    // Read all lines of the hex dump into a list of strings
+    val lines = Source.fromFile("toolchain/forth/build/nuc_trunc.binary").getLines().toList
+
+    // Convert it to a list of Bits of width w
+    lines.map((s : String) => binToBits(s, w))
+
+  }
+
   // Provide a default configuration
   def default = {
 
@@ -327,5 +345,43 @@ object J1Config {
     config
 
   }
+
+  // Provide a configuration for SwapForth
+  def forth = {
+
+    def wordSize               = 16
+    def dataStackIdxWidth      =  5
+    def returnStackIdxWidth    =  5
+    def noOfInterrupts         =  4
+    def noOfInternalInterrupts =  3
+    def adrWidth               = 12
+    def startAddress           =  0
+
+    // IRQ controller parameters (disable all interrupts by default)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
+
+    def baseSystem = forthBase(wordSize)
+    def bootCode() = baseSystem ++
+                     List.fill((1 << adrWidth) - baseSystem.length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill(1)(instrRTS) ++
+                     List.fill(1)(instrRTS) ++
+                     List.fill(1)(instrRTS) ++
+                     List.fill(1)(instrRTS)
+
+    // Set the configuration values for the forth system
+    val config = J1Config(wordSize            = wordSize,
+                          dataStackIdxWidth   = dataStackIdxWidth,
+                          returnStackIdxWidth = returnStackIdxWidth,
+                          irqConfig           = irqConfig,
+                          adrWidth            = adrWidth,
+                          startAddress        = startAddress,
+                          bootCode            = bootCode)
+
+    // Return the default configuration
+    config
+
+  }
+
+
 
 }

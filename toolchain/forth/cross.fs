@@ -356,17 +356,28 @@ meta
 
 decimal
 0 value file
-: dumpbinall.16
+: dumpspinalall.16
     s" hex" out-suffix to file
 
     bin
     4096 0 do
         tflash i 2* + w@
-	s>d <# [char] " hold
-	     # # # # [char] _ hold
-	     # # # # [char] _ hold
-	     # # # # [char] _ hold
-	     # # # # [char] " hold [char] B hold #> file write-line throw
+	s>d <# [char] , hold
+	       [char] " hold
+	       # # # # [char] _ hold
+	       # # # # [char] _ hold
+	       # # # # [char] _ hold
+	       # # # # [char] " hold [char] B hold #> file write-line throw
+    loop
+    file close-file
+;
+: dumpbinall.16
+    s" binary" out-suffix to file
+
+    bin
+    4096 0 do
+        tflash i 2* + w@
+        s>d <# # # # # # # # # # # # # # # # # #> file write-line throw
     loop
     file close-file
 ;
