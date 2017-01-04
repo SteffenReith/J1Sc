@@ -44,7 +44,7 @@ begin
   uut : entity work.J1SoC
     port map (clk    => clk,
               clr    => clr,
-              extInt => extInterrupts,
+              extInt => extInt,
               rx     => rx,
               tx     => tx,
               leds   => leds);
