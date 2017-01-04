@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo python shell.py -h /dev/ttyUSB1 -p ../common/
+
