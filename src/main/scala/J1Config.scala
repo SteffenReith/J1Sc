@@ -11,6 +11,7 @@
  */
 import spinal.core._
 import scala.io.Source
+import scala.util.matching.Regex
 
 // Configuration of the IRQ controller
 case class IRQCtrlConfig (numOfInterrupts         : Int,
@@ -200,11 +201,20 @@ object J1Config {
   // Provide the SwapForth base system
   def forthBase(w : Int) = {
 
+    // A pattern for valid numbers
+    val regExNum = new Regex("[^0-9a-fA-F]")
+
     // Read all lines of the hex dump into a list of strings
-    val lines = Source.fromFile("toolchain/forth/build/nuc_trunc.binary").getLines().toList
+    val lines = Source.fromFile("toolchain/forth/build/nuc.binary").getLines().toList.map((s : String) => s.toUpperCase)
+
+    // Only use valid lines (so anything not matching a number is a comment)
+    val filteredLines = lines.filter((s : String) => s.matches("[0-9A-F]+"))
+
+    // Write a message
+    println("[J1Sc] The Forth base system has " + filteredLines.length + " words")
 
     // Convert it to a list of Bits of width w
-    lines.map((s : String) => binToBits(s, w))
+    filteredLines.map((s : String) => binToBits(s, w))
 
   }
 
@@ -360,9 +370,11 @@ object J1Config {
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
-    def baseSystem = forthBase(wordSize)
+    // Take the base system and cut the interrupt vectors at the end
+    def baseSystem = forthBase(wordSize).take((1 << adrWidth) - noOfInterrupts)
+
+    // Generate the complete memory layout of the system (including valid interrupt vectors)
     def bootCode() = baseSystem ++
-                     List.fill((1 << adrWidth) - baseSystem.length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
