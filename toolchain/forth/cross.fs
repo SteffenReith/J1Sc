@@ -116,7 +116,7 @@ variable wordstart
 
 :: :
     hex
-    there s>d
+    there s>d 2 /                   \ Remove the words '2 /' if an address should be printed out (here we print the cell number of the word)
     <# bl hold # # # # #>
     lst @ write-file throw
     wordstr lst @ write-line throw
