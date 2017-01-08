@@ -48,7 +48,7 @@ case class J1Config (wordSize : Int,
 object J1Config {
 
   // Some useful instructions
-  def instrRTS   = B"0111_0000_0000_1100"
+  def instrRTS   = B"0110_0000_1000_1100"
   def instrJMP20 = B"0000_0000_0001_0100"
   def instrJMP50 = B"0000_0000_0011_0010"
   def instrJMP60 = B"0000_0000_0011_1100"
@@ -106,7 +106,7 @@ object J1Config {
                        B"0110_0000_0011_0000", // 46. Write to external RAM
                        B"0110_0001_0000_0011", // 47. Pop
                        B"0110_0001_0000_0011", // 48. Pop
-                       B"0111_0000_0000_1100", // 49. Return from Subroutine)
+                       B"0110_0000_1000_1100", // 49. Return from Subroutine)
                        B"1010_1010_1010_1000", // 50. Push 0x2AA8 (Interrupt entry point)
                        B"1000_0000_0100_0000", // 51. Push 0x040
                        B"0110_0000_0100_0000", // 52. ALU I/O operation
@@ -115,7 +115,7 @@ object J1Config {
                        B"0110_0000_0000_0000", // 55. Clear I/O (wait state)
                        B"0110_0001_0000_0011", // 56. Pop
                        B"0110_0001_0000_0011", // 57. Pop
-                       B"0111_0000_0000_1100", // 58. Return from subroutine
+                       B"0110_0000_1000_1100", // 58. Return from subroutine
                        B"0110_0000_0000_0000", // 59. NOP
                        B"1000_0000_0100_0000", // 60. Push LED I/O address 0x40 (Interrupt entry point)
                        B"0110_1101_0000_0001", // 61. Read data from I/O space
@@ -126,7 +126,7 @@ object J1Config {
                        B"0110_0000_0000_0000", // 66. NOP (wait state for I/O)
                        B"0110_0001_0000_0011", // 67. Pop
                        B"0110_0001_0000_0011", // 68. Pop
-                       B"0111_0000_0000_1100", // 69. Return from subroutine
+                       B"0110_0000_1000_1100", // 69. Return from subroutine
                        B"1000_0101_1111_0101", // 70. Push high value for approx 1sec
                        B"1000_0000_1100_0001", // 71. Push I/O address 0xC1
                        B"0110_0000_0100_0000", // 72. ALU I/O operation
@@ -190,7 +190,7 @@ object J1Config {
                              B"1000_0000_0000_1110", // 21. Push 0x000E
                              B"0110_0001_0000_0011", // 22. Pop
                              B"0110_0001_0000_0011", // 23. Pop
-                             B"0111_0000_0000_1100") // 24. Return from subroutine
+                             B"0110_0000_1000_1100") // 24. Return from subroutine
 
   // Convert a bin-string to an integer
   def binToBits(s : String, w : Int) = {B(s.toList.map("01".indexOf(_)).reduceLeft(_ * 2 + _), w bits)}

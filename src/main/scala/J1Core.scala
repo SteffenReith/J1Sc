@@ -192,17 +192,17 @@ class J1Core(cfg : J1Config) extends Component {
   // Update the return stack pointer
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
-  // Handle the PC
-  switch(clrActive ## instr(instr.high downto instr.high - 3) ## dtos.orR) {
+  // Handle the PC (remember instr(7) is the R -> PC field)
+  switch(clrActive ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7)) {
 
     // Check if we are in reset state
-    is(M"1_---_-_-") {pcN := cfg.startAddress}
+    is(M"1_---_-") {pcN := cfg.startAddress}
 
     // Check for jump, cond. jump or call instruction
-    is(M"0_000_-_-", M"0_001_-_0", M"0_010_-_-") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
+    is(M"0_000_-", M"0_001_-", M"0_010_-") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0_011_1_-") {pcN := rtos(cfg.adrWidth - 1 downto 0).asUInt}
+    is(M"0_011_1") {pcN := rtos(cfg.adrWidth - 1 downto 0).asUInt}
 
     // By default goto next instruction
     default {pcN := pcPlusOne}
