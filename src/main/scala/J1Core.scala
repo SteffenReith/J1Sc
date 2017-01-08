@@ -1,13 +1,13 @@
 /*
- * Author: <AUTHORNAME>
+ * Author: <AUTHORNAME> (<AUTHOREMAIL>)
  * Committer: <COMMITTERNAME>
  *
- * Create Date:    Tue Sep 20 15:07:10 CEST 2016 
+ * Create Date:    Tue Sep 20 15:07:10 CEST 2016
  * Module Name:    J1Core - CPU core (ALU, Decoder, Stacks, etc)
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: e1772196dc059b6eab1272d060afbb2c17a8749a
- * Date: Mon Oct 31 22:40:41 2016 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.core._
 
