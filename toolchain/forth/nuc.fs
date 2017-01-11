@@ -69,22 +69,23 @@ header rshift
 
 header key? ( -- f ) \ true if character can be read 
 : key?
-    h# 0086 io@ h# ff00 and 0<>
+    h# 0086 io@ h# 0f00 and 0<>
 ;
 
-header key
+header key ( -- c) \ note that 0x80 always set the high bit hence & 0xFF 
 : key
     begin
         key?
     until
 : key>
-    h# 0080 io@
+    h# 0080 io@ h# 00ff and
 ;
 
 header emit
 : emit
     begin
-        h# 0086 io@ h# 00ff and d# 4 <
+	\ h# 0086 io@ h# 00ff and 0<>
+        h# 0086 io@ h# 00ff 8 = 
     until
     h# 0080 _io!
 ;
@@ -1156,19 +1157,6 @@ header quit
         cr
     again
 
-header tasksel
-: tasksel
-    h# 8000 io@ if 
-        begin 
-            h# 4000 io@ dup if 
-                execute 
-            else 
-                drop
-            then
-        again 
-    then
-;
-
 header .s
 : .s
     [char] < emit depth hex2 [char] > emit space
@@ -1179,16 +1167,28 @@ header .s
     then
 ;
 
+header delay
+: delay
+    0
+    begin 1 + dup 10000 = until
+    drop
+;
+
 header init :noname var:
 create init meta t' quit 2* target ,
 
-: main
-    tasksel
+: main    
+    h# 0001 h# 0040 io!
     cr
+    h# 0002 h# 0040 io!
     decimal
+    h# 0003 h# 0040 io!
     tethered off
+    h# 0004 h# 0040 io!
     key> drop
+    h# 0010 h# 0040 io!
     init @i execute
+    h# 0020 h# 0040 io!
 ;
 
 meta
