@@ -18,7 +18,7 @@ import spinal.lib.bus.misc._
 case class SimpleBus(cfg : J1Config) extends Bundle with IMasterSlave {
 
   // Width of addresses and data
-  def adrWidth  = cfg.adrWidth
+  def adrWidth  = cfg.wordSize
   def dataWidth = cfg.wordSize
 
   // Signals used by 'SimpleBus'

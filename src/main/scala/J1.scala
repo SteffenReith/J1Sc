@@ -49,7 +49,7 @@ class J1(cfg : J1Config) extends Component {
 
   // connect the CPU core with the internal memory
   memWriteEnable <> coreJ1CPU.io.memWriteMode
-  memAdr <> coreJ1CPU.io.extAdr
+  memAdr <> coreJ1CPU.io.extAdr(cfg.adrWidth - 1 downto 0)
   memWrite <> coreJ1CPU.io.extToWrite
   coreJ1CPU.io.memToRead <> memRead
 

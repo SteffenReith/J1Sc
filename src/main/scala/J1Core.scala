@@ -24,7 +24,7 @@ class J1Core(cfg : J1Config) extends Component {
     val memWriteMode = out Bool
     val ioWriteMode  = out Bool
     val ioReadMode   = out Bool
-    val extAdr       = out UInt(cfg.adrWidth bits)
+    val extAdr       = out UInt(cfg.wordSize bits)
     val extToWrite   = out Bits(cfg.wordSize bits)
     val memToRead    = in Bits(cfg.wordSize bits)
     val ioToRead     = in Bits(cfg.wordSize bits)
@@ -91,44 +91,47 @@ class J1Core(cfg : J1Config) extends Component {
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
   // Instruction decoder (including ALU operations)
-  switch(instr(instr.high downto (instr.high - 8) + 1)) {
+  switch(pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 8) + 1)) {
 
-    // Literal instruction
-    is(M"1-------") {dtosN := instr(instr.high - 1 downto 0).resize(cfg.wordSize)}
+    // PC to dstack
+    is(M"1_--------") {dtosN := instr}
+
+    // Literal instruction (Push value)
+    is(M"0_1-------") {dtosN := instr(instr.high - 1 downto 0).resize(cfg.wordSize)}
 
     // Jump and call instruction (do not change dtos)
-    is(M"000-----", M"010-----") {dtosN := dtos}
+    is(M"0_000-----", M"0_010-----") {dtosN := dtos}
 
     // Conditional jump (pop the 0 at dtos by adjusting the dstack pointer)
-    is(M"001-----") {dtosN := dnos}
+    is(M"0_001-----") {dtosN := dnos}
 
     // ALU operations using dtos and dnos
-    is(M"011-0000") {dtosN := dtos}
-    is(M"011-0001") {dtosN := dnos}
+    is(M"0_011-0000") {dtosN := dtos}
+    is(M"0_011-0001") {dtosN := dnos}
 
     // Arithmetic and logical operations (ALU)
-    is(M"011-0010") {dtosN := (dtos.asUInt + dnos.asUInt).asBits}
-    is(M"011-0011") {dtosN := dtos & dnos}
-    is(M"011-0100") {dtosN := dtos | dnos}
-    is(M"011-0101") {dtosN := dtos ^ dnos}
-    is(M"011-0110") {dtosN := ~dtos}
-    is(M"011-1001") {dtosN := dtos.rotateLeft(dnos(log2Up(cfg.wordSize) - 1 downto 0).asUInt)}
-    is(M"011-1010") {dtosN := dtos.rotateRight(dnos(log2Up(cfg.wordSize) - 1 downto 0).asUInt)}
+    is(M"0_011-0010") {dtosN := (dtos.asUInt + dnos.asUInt).asBits}
+    is(M"0_011-0011") {dtosN := dtos & dnos}
+    is(M"0_011-0100") {dtosN := dtos | dnos}
+    is(M"0_011-0101") {dtosN := dtos ^ dnos}
+    is(M"0_011-0110") {dtosN := ~dtos}
+    is(M"0_011-1001") {dtosN := dtos.rotateLeft(dnos(log2Up(cfg.wordSize) - 1 downto 0).asUInt)}
+    is(M"0_011-1010") {dtosN := dtos.rotateRight(dnos(log2Up(cfg.wordSize) - 1 downto 0).asUInt)}
 
     // ALU operations using rtos
-    is(M"011-1011") {dtosN := rtos}
+    is(M"0_011-1011") {dtosN := rtos}
 
     // Compare operations
-    is(M"011-0111") {dtosN := (default -> (dtos === dnos))}
-    is(M"011-1000") {dtosN := (default -> (dtos.asSInt > dnos.asSInt))}
-    is(M"011-1111") {dtosN := (default -> (dtos.asUInt > dnos.asUInt))}
+    is(M"0_011-0111") {dtosN := (default -> (dtos === dnos))}
+    is(M"0_011-1000") {dtosN := (default -> (dtos.asSInt > dnos.asSInt))}
+    is(M"0_011-1111") {dtosN := (default -> (dtos.asUInt > dnos.asUInt))}
 
     // Memory read operations
-    is(M"011-1100") {dtosN := io.memToRead}
-    is(M"011-1101") {dtosN := io.ioToRead}
+    is(M"0_011-1100") {dtosN := io.memToRead}
+    is(M"0_011-1101") {dtosN := io.ioToRead}
 
     // Misc operations
-    is(M"011-1110") {dtosN := (rStackPtr.asBits ## dStackPtr.asBits).resized}
+    is(M"0_011-1110") {dtosN := (rStackPtr.asBits ## dStackPtr.asBits).resized}
 
     // Set all bits of top of stack to true by default
     default {dtosN := (default -> True)}
@@ -147,24 +150,24 @@ class J1Core(cfg : J1Config) extends Component {
   io.memWriteMode := !clrActive && isALU && funcWriteMem
   io.ioWriteMode := !clrActive && isALU && funcWriteIO
   io.ioReadMode := !clrActive && isALU && funcReadIO
-  io.extAdr := dtosN(cfg.adrWidth - 1 downto 0).asUInt
+  io.extAdr := dtosN.asUInt
   io.extToWrite := dnos
 
   // Increment for data stack pointer
   val dStackPtrInc = SInt(cfg.dataStackIdxWidth bits)
 
   // Handle update of data stack
-  switch(instr(instr.high downto (instr.high - 3) + 1)) {
+  switch(pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 3) + 1)) {
 
     // Literal (push value to data stack)
-    is(M"1--") {dStackWrite := True; dStackPtrInc := 1}
+    is(M"1_---", M"0_1--") {dStackWrite := True; dStackPtrInc := 1}
 
     // Conditional jump (pop DTOS from data stack)
-    is(M"001") {dStackWrite := False; dStackPtrInc := -1}
+    is(M"0_001") {dStackWrite := False; dStackPtrInc := -1}
 
     // ALU instruction (check for a possible push of data)
-    is(M"011"){dStackWrite := funcTtoN | (instr(1 downto 0) === B"01")
-               dStackPtrInc := instr(1 downto 0).asSInt.resized}
+    is(M"0_011"){dStackWrite := funcTtoN | (instr(1 downto 0) === B"01")
+                 dStackPtrInc := instr(1 downto 0).asSInt.resized}
 
     // Don't change the data stack by default
     default {dStackWrite := False; dStackPtrInc := 0}
@@ -178,13 +181,16 @@ class J1Core(cfg : J1Config) extends Component {
   val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
 
   // Handle the update of return stack
-  switch(instr(instr.high downto (instr.high - 3) + 1)) {
+  switch(pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 3) + 1)) {
+
+    // Pseudo pop of return address when address high bit is set
+    is(M"1_---") {rStackWrite := False; rStackPtrInc := -1}
 
     // Call instruction or interrupt (push return address to stack)
-    is(M"010") {rStackWrite := True; rStackPtrInc := 1}
+    is(M"0_010") {rStackWrite := True; rStackPtrInc := 1}
 
     // Conditional jump (maybe we have to push)
-    is(M"011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resized}
+    is(M"0_011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resized}
 
     // Don't change the return stack by default
     default {rStackWrite := False; rStackPtrInc := 0}
@@ -195,16 +201,16 @@ class J1Core(cfg : J1Config) extends Component {
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
   // Handle the PC (remember instr(7) is the R -> PC field)
-  switch(clrActive ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
+  switch(clrActive ## pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
 
     // Check if we are in reset state
-    is(M"1_---_-_-") {pcN := cfg.startAddress}
+    is(M"1_0_---_-_-") {pcN := cfg.startAddress}
 
     // Check for jump, cond. jump or call instruction
-    is(M"0_000_-_-", M"0_001_-_0", M"0_010_-_-") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
+    is(M"0_0_000_-_-", M"0_0_001_-_0", M"0_0_010_-_-") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0_011_1_-") {pcN := rtos(cfg.adrWidth - 1 downto 0).asUInt}
+    is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := rtos(cfg.adrWidth -1 downto 0).asUInt}
 
     // By default goto next instruction
     default {pcN := pcPlusOne}

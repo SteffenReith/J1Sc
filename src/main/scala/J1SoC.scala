@@ -50,11 +50,11 @@ class J1SoC (j1Cfg   : J1Config,
   val timerBBridge = timerB.driveFrom(peripheralBusCtrl, 0xD0)
 
   // Create an UART interface with fixed capabilities
-  val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = gpioCfg.uartConfig.dataWidthMax,
+  val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax = gpioCfg.uartConfig.dataWidthMax,
                                           clockDividerWidth = gpioCfg.uartConfig.clockDividerWidth,
-                                          preSamplingSize   = gpioCfg.uartConfig.preSamplingSize,
-                                          samplingSize      = gpioCfg.uartConfig.samplingSize,
-                                          postSamplingSize  = gpioCfg.uartConfig.postSamplingSize)
+                                          preSamplingSize = gpioCfg.uartConfig.preSamplingSize,
+                                          samplingSize = gpioCfg.uartConfig.samplingSize,
+                                          postSamplingSize = gpioCfg.uartConfig.postSamplingSize)
   val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = gpioCfg.uartConfig.baudrate,
                                               dataLength = gpioCfg.uartConfig.dataLength,
                                               parity = gpioCfg.uartConfig.parity,
