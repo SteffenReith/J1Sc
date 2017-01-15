@@ -6,8 +6,8 @@
  * Module Name:    J1Core - CPU core (ALU, Decoder, Stacks, etc)
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 028a6886d6bf0b5a552a09b661ccebc5eeb60c42
+ * Date: Sun Jan 8 20:40:26 2017 +0100
  */
 import spinal.core._
 
@@ -74,12 +74,12 @@ class J1Core(cfg : J1Config) extends Component {
   val dnos = dStack.readAsync(address = dStackPtr, readUnderWrite = writeFirst)
 
   // Check for interrupt mode, because afterwards the current instruction has to be executed
-  val nextPC = Mux(io.irq, pc.asBits.resize(cfg.wordSize), pcPlusOne.asBits.resize(cfg.wordSize))
+  val retPC = Mux(io.irq, pc.asBits.resize(cfg.wordSize), pcPlusOne.asBits.resize(cfg.wordSize))
 
-  // Set next value for RTOS (check for conditional jump (implicitly for an interrupt) or T -> R ALU instruction field
-  val rtosN = Mux(!instr(instr.high - 3 + 1), nextPC, dtos)
+  // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
+  val rtosN = Mux(!instr(instr.high - 3 + 1), retPC(retPC.high - 1  downto 0) ## B"0", dtos)
 
-  // Return stack pointer, set to first entry (can be abitrary) s.t. the first write takes place at index 0
+  // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
   val rStackPtr = RegNext(rStackPtrN) init((1 << cfg.returnStackIdxWidth) - 1)
 
@@ -210,7 +210,7 @@ class J1Core(cfg : J1Config) extends Component {
     is(M"0_0_000_-_-", M"0_0_001_-_0", M"0_0_010_-_-") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
 
     // Check for R -> PC field of an ALU instruction
-    is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := rtos(cfg.adrWidth -1 downto 0).asUInt}
+    is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := rtos(cfg.adrWidth downto 1).asUInt}
 
     // By default goto next instruction
     default {pcN := pcPlusOne}
