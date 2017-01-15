@@ -55,14 +55,16 @@
 :: >r        N     T->R      r+1 d-1 alu ;
 :: r>        rT    T->N      r-1 d+1 alu ;
 :: r@        rT    T->N          d+1 alu ;
-:: io@       io[T]                   alu
+:: io@
+             io[T]                   alu
              io[T]                   alu ;
 :: !         
              T     N->[T]        d-1 alu
              N                   d-1 alu ;
 :: io!       
              T     N->io[T]      d-1 alu
-             N                   d-1 alu ;
+   	     N                   d-1 alu ;
+     
 :: 2/        T2/                     alu ;
 :: 2*        T2*                     alu ;
 :: depth     status T->N         d+1 alu ;

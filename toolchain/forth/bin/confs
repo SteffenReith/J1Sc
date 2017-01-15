@@ -1,4 +1,5 @@
 #!/bin/bash
 
-sudo python shell.py -h /dev/ttyUSB1 -p ../common/
+export PYTHONPATH=shell:$PYTHONPATH
+python shell.py -h /dev/ttyUSB1 -p common/
 

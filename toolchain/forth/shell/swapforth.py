@@ -346,7 +346,7 @@ class TetheredTarget:
                 break
 
 def main(Tethered):
-    port = '/dev/ttyUSB0'
+    port = '/dev/ttyUSB1'
     image = None
 
     r = None

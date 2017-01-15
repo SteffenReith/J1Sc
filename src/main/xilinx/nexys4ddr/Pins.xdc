@@ -77,7 +77,6 @@ set_property  IOSTANDARD LVCMOS33 [get_ports {rx}]
 
 set_property  PACKAGE_PIN D4 [get_ports {tx}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {tx}]
-set_property  SLEW FAST [get_ports {tx}]
 
 
 set_property  PACKAGE_PIN P17 [get_ports {extInt[0]}]

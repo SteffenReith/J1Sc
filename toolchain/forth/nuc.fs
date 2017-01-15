@@ -85,9 +85,12 @@ header emit
 : emit
     begin
 	\ h# 0086 io@ h# 00ff and 0<>
-        h# 0086 io@ h# 00ff 8 = 
+	h# 0086 io@ h# 00ff and h# 0008 = 
     until
     h# 0080 _io!
+    begin
+	h# 0086 io@ h# 00ff and h# 0008 = 
+    until
 ;
 
 header space
@@ -1156,6 +1159,7 @@ header quit
         [char] o 2emit
         cr
     again
+;
 
 header .s
 : .s
@@ -1169,26 +1173,29 @@ header .s
 
 header delay
 : delay
-    0
-    begin 1 + dup 10000 = until
+    h# 0
+    begin h# 0001 + dup h# 1000 = until
     drop
 ;
 
 header init :noname var:
 create init meta t' quit 2* target ,
 
-: main    
+: main
     h# 0001 h# 0040 io!
+    \ init @i execute
     cr
-    h# 0002 h# 0040 io!
+    \ h# 0001 h# 0040 io!
     decimal
-    h# 0003 h# 0040 io!
     tethered off
-    h# 0004 h# 0040 io!
+    h# 0002 h# 0040 io!
     key> drop
+    h# 0004 h# 0040 io!
+    h# 0008 h# 0040 io!
     h# 0010 h# 0040 io!
     init @i execute
     h# 0020 h# 0040 io!
+    h# 0040 h# 0040 io!
 ;
 
 meta
