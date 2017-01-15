@@ -2,3 +2,15 @@ log
 obj_dir/
 build/
 *.vcd
+.idea/
+gen/
+lib/
+project/
+target/
+toolchain/forth/nuc.fs.orig
+vprj/VHDL/J1Sc/J1Sc.cache/
+vprj/VHDL/J1Sc/J1Sc.hw/
+vprj/VHDL/J1Sc/J1Sc.ip_user_files/
+vprj/VHDL/J1Sc/J1Sc.runs/
+vprj/VHDL/J1Sc/J1Sc.sim/
+
