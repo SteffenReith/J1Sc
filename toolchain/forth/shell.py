@@ -32,9 +32,10 @@ class TetheredJ1a(swapforth.TetheredTarget):
 
         print("Vor waitcc")
         waitcr()
+        print("Nach waitcc 1")
         ser.write(b'\r')
         waitcr()
-        print("Nach waitcc")
+        print("Nach waitcc 1")
 
         print("For-Schleife")
         for c in ' 1 tth !':
