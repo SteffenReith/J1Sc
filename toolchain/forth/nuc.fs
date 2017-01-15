@@ -1185,7 +1185,6 @@ create init meta t' quit 2* target ,
     h# 0001 h# 0040 io!
     \ init @i execute
     cr
-    \ h# 0001 h# 0040 io!
     decimal
     tethered off
     h# 0002 h# 0040 io!
