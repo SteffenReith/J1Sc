@@ -49,7 +49,7 @@ class J1Core(cfg : J1Config) extends Component {
   pc2x.keep()
 
   // Instruction to be executed (insert a call-instruction for an interrupt)
-  val instr = Mux(io.irq, B"010" ## (((1 << cfg.adrWidth) - 1) - io.intNo).resize(cfg.wordSize - 3), io.memInstr)
+  val instr = Mux(io.irq, B"b010" ## (((1 << cfg.adrWidth) - 1) - io.intNo).resize(cfg.wordSize - 3), io.memInstr)
 
   // Data stack pointer (set to first entry, which can be abitrary)
   val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)
@@ -76,7 +76,7 @@ class J1Core(cfg : J1Config) extends Component {
   val retPC = Mux(io.irq, pc.asBits, pcPlusOne.asBits)
 
   // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
-  val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC(retPC.high - 1  downto 0) ## B"0").resized, dtos)
+  val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC(retPC.high - 1  downto 0) ## B"b0").resized, dtos)
 
   // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
@@ -89,8 +89,8 @@ class J1Core(cfg : J1Config) extends Component {
                data    = rtosN)
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
-  // Calculate difference (dnos - dtos) and sign to be reused multiple times
-  val difference = (B"1" ## ~dnos).asUInt + dtos.asUInt.resized + 1
+  // Calculate difference (- dtos + dnos) and sign to be reused multiple times
+  val difference = (B"b1" ## ~dtos).asUInt + dnos.asUInt.resized + 1
   val nosIsLess = (dtos.msb ^ dnos.msb) ? dnos.msb | difference.msb
 
   // Instruction decoder (including ALU operations)
@@ -100,12 +100,12 @@ class J1Core(cfg : J1Config) extends Component {
     is(M"1_--------") {dtosN := instr}
 
     // Literal instruction (Push value)
-    is(M"0_1-------") {dtosN := instr(instr.high - 1 downto 0).resize(cfg.wordSize)}
+    is(M"0_1-------") {dtosN := instr(instr.high - 1 downto 0).resized}
 
     // Jump and call instruction (do not change dtos)
     is(M"0_000-----", M"0_010-----") {dtosN := dtos}
 
-    // Conditional jump (pop the 0 at dtos by adjusting the dstack pointer)
+    // Conditional jump (pop a 0 at dtos by adjusting the dstack pointer)
     is(M"0_001-----") {dtosN := dnos}
 
     // ALU operations using dtos and dnos
@@ -120,7 +120,7 @@ class J1Core(cfg : J1Config) extends Component {
     is(M"0_011-0101") {dtosN := dtos ^ dnos}
     is(M"0_011-0110") {dtosN := ~dtos}
     is(M"0_011-1001") {dtosN := dtos(dtos.high) ## dtos(dtos.high downto 1).asUInt}
-    is(M"0_011-1010") {dtosN := dtos(dtos.high - 1 downto 0) ## B"1"}
+    is(M"0_011-1010") {dtosN := dtos(dtos.high - 1 downto 0) ## B"b0"}
 
     // ALU operations using rtos
     is(M"0_011-1011") {dtosN := rtos}
@@ -168,9 +168,8 @@ class J1Core(cfg : J1Config) extends Component {
     // Conditional jump (pop DTOS from data stack)
     is(M"0_001") {dStackWrite := False; dStackPtrInc := -1}
 
-    // ALU instruction (check for a possible push of data)
-    is(M"0_011"){dStackWrite := funcTtoN | (instr(1 downto 0) === B"01")
-                 dStackPtrInc := instr(1 downto 0).asSInt.resized}
+    // ALU instruction (check for a possible push of data, ISA bug can be fixed by '| (instr(1 downto 0) === B"b01")')
+    is(M"0_011"){dStackWrite  := funcTtoN; dStackPtrInc := instr(1 downto 0).asSInt.resized}
 
     // Don't change the data stack by default
     default {dStackWrite := False; dStackPtrInc := 0}
