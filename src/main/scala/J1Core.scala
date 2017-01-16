@@ -26,8 +26,7 @@ class J1Core(cfg : J1Config) extends Component {
     val ioReadMode   = out Bool
     val extAdr       = out UInt(cfg.wordSize bits)
     val extToWrite   = out Bits(cfg.wordSize bits)
-    val memToRead    = in Bits(cfg.wordSize bits)
-    val ioToRead     = in Bits(cfg.wordSize bits)
+    val toRead       = in  Bits(cfg.wordSize bits)
 
     // Interface for the interrupt system
     val irq   = in Bool
@@ -62,7 +61,7 @@ class J1Core(cfg : J1Config) extends Component {
   // Write enable for return stack
   val rStackWrite = Bool
 
-  // Top of stack (do not init, hence undefined value after startup)
+  // Top of stack and next value
   val dtosN = Bits(cfg.wordSize bits)
   val dtos = RegNext(dtosN) init(0)
 
@@ -74,10 +73,10 @@ class J1Core(cfg : J1Config) extends Component {
   val dnos = dStack.readAsync(address = dStackPtr, readUnderWrite = writeFirst)
 
   // Check for interrupt mode, because afterwards the current instruction has to be executed
-  val retPC = Mux(io.irq, pc.asBits.resize(cfg.wordSize), pcPlusOne.asBits.resize(cfg.wordSize))
+  val retPC = Mux(io.irq, pc.asBits, pcPlusOne.asBits)
 
   // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
-  val rtosN = Mux(!instr(instr.high - 3 + 1), retPC(retPC.high - 1  downto 0) ## B"0", dtos)
+  val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC(retPC.high - 1  downto 0) ## B"0").resized, dtos)
 
   // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
@@ -89,6 +88,10 @@ class J1Core(cfg : J1Config) extends Component {
                address = rStackPtrN,
                data    = rtosN)
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
+
+  // Calculate difference (dnos - dtos) and sign to be reused multiple times
+  val difference = (B"1" ## ~dnos).asUInt + dtos.asUInt.resized + 1
+  val nosIsLess = (dtos.msb ^ dnos.msb) ? dnos.msb | difference.msb
 
   // Instruction decoder (including ALU operations)
   switch(pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 8) + 1)) {
@@ -111,27 +114,27 @@ class J1Core(cfg : J1Config) extends Component {
 
     // Arithmetic and logical operations (ALU)
     is(M"0_011-0010") {dtosN := (dtos.asUInt + dnos.asUInt).asBits}
+    is(M"0_011-1100") {dtosN := difference(difference.high - 1 downto 0).asBits}
     is(M"0_011-0011") {dtosN := dtos & dnos}
     is(M"0_011-0100") {dtosN := dtos | dnos}
     is(M"0_011-0101") {dtosN := dtos ^ dnos}
     is(M"0_011-0110") {dtosN := ~dtos}
-    is(M"0_011-1001") {dtosN := dtos.rotateLeft(dnos(log2Up(cfg.wordSize) - 1 downto 0).asUInt)}
-    is(M"0_011-1010") {dtosN := dtos.rotateRight(dnos(log2Up(cfg.wordSize) - 1 downto 0).asUInt)}
+    is(M"0_011-1001") {dtosN := dtos(dtos.high) ## dtos(dtos.high downto 1).asUInt}
+    is(M"0_011-1010") {dtosN := dtos(dtos.high - 1 downto 0) ## B"1"}
 
     // ALU operations using rtos
     is(M"0_011-1011") {dtosN := rtos}
 
-    // Compare operations
-    is(M"0_011-0111") {dtosN := (default -> (dtos === dnos))}
-    is(M"0_011-1000") {dtosN := (default -> (dtos.asSInt > dnos.asSInt))}
-    is(M"0_011-1111") {dtosN := (default -> (dtos.asUInt > dnos.asUInt))}
+    // Compare operations (dtos > dnos, signed and unsigned)
+    is(M"0_011-0111") {dtosN := (default -> (difference === 0))}
+    is(M"0_011-1000") {dtosN := (default -> nosIsLess)}
+    is(M"0_011-1111") {dtosN := (default -> difference.msb)}
 
     // Memory read operations
-    is(M"0_011-1100") {dtosN := io.memToRead}
-    is(M"0_011-1101") {dtosN := io.ioToRead}
+    is(M"0_011-1101") {dtosN := io.toRead}
 
     // Misc operations
-    is(M"0_011-1110") {dtosN := (rStackPtr.asBits ## dStackPtr.asBits).resized}
+    is(M"0_011-1110") {dtosN := dStackPtr.asBits.resized}
 
     // Set all bits of top of stack to true by default
     default {dtosN := (default -> True)}
@@ -143,8 +146,8 @@ class J1Core(cfg : J1Config) extends Component {
   val funcTtoR     = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
   val funcWriteMem = (instr(6 downto 4).asUInt === 3) // Write to RAM
   val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O write operation
-  val funcReadIO   = (instr(instr.high - 4 downto (instr.high - 8) + 1) === B"b1101") // I/O read operation
-  val isALU        = (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
+  val funcReadIO   = (instr(6 downto 4).asUInt === 5) // I/O read operation
+  val isALU        = !pc(cfg.adrWidth - 1) & (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Signals for handling external memory
   io.memWriteMode := !clrActive && isALU && funcWriteMem
@@ -200,16 +203,16 @@ class J1Core(cfg : J1Config) extends Component {
   // Update the return stack pointer
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
-  // Handle the PC (remember instr(7) is the R -> PC field)
+  // Handle the PC (remember cfg.adrWidth - 1 is the high indicator and instr(7) is the R -> PC field)
   switch(clrActive ## pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
 
     // Check if we are in reset state
     is(M"1_0_---_-_-") {pcN := cfg.startAddress}
 
     // Check for jump, cond. jump or call instruction
-    is(M"0_0_000_-_-", M"0_0_001_-_0", M"0_0_010_-_-") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
+    is(M"0_0_000_-_-", M"0_0_010_-_-", M"0_0_001_-_0") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
 
-    // Check for R -> PC field of an ALU instruction
+    // Check either for high address or R -> PC field of an ALU instruction
     is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := rtos(cfg.adrWidth downto 1).asUInt}
 
     // By default goto next instruction
