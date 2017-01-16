@@ -234,7 +234,7 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
     def bootCode() = endlessLoop() ++
-                     List.fill((1 << adrWidth) - endlessLoop().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill((1 << wordSize) - endlessLoop().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(noOfInterrupts)(instrRTS)
 
     // Set the default configuration values
@@ -266,7 +266,7 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
     def bootCode() = isaTest() ++
-                     List.fill((1 << adrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill((1 << wordSize) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrJMP50) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrJMP60) ++
@@ -301,7 +301,7 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
 
     def bootCode() = ioTest() ++
-                     List.fill((1 << adrWidth) - ioTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill((1 << wordSize) - ioTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
@@ -336,7 +336,7 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
 
     def bootCode() = simpleIRQTest() ++
-                     List.fill((1 << adrWidth) - simpleIRQTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill((1 << wordSize) - simpleIRQTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrJMP20) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
@@ -375,7 +375,7 @@ object J1Config {
 
     // Generate the complete memory layout of the system (including valid interrupt vectors)
     def bootCode() = baseSystem ++
-                     List.fill((1 << adrWidth) - baseSystem.length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill((1 << wordSize) - baseSystem.length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
