@@ -16,14 +16,14 @@ use ieee.std_logic_1164.all;
 library unisim;
 use unisim.vcomponents.all;
 
-entity ClkGen is
+entity MMCM is
 
   port (clkIn  : in  std_logic;
         clkOut : out std_logic);
 
-end ClkGen;
+end MMCM;
 
-architecture Structural of ClkGen is
+architecture Structural of MMCM is
 
   -- Control signals
   signal locked              : std_logic;  -- The MMCM has achieved phase alignment
@@ -156,3 +156,4 @@ begin
   clkOut <= clkOutI1;
   
 end architecture;
+
