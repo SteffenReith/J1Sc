@@ -18,8 +18,9 @@ use unisim.vcomponents.all;
 
 entity MMCM is
 
-  port (clkIn  : in  std_logic;
-        clkOut : out std_logic);
+  port (clkIn    : in  std_logic;
+        clkOut   : out std_logic;
+        isLocked : out std_logic);
 
 end MMCM;
 
@@ -154,6 +155,9 @@ begin
               CE => locked,
               I  => clkI1);
   clkOut <= clkOutI1;
+
+  -- Provide the locked signal to the outside world
+  isLocked <= locked;
   
 end architecture;
 
