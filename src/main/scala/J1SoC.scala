@@ -10,15 +10,17 @@
  * Date: Tue Jan 3 02:56:50 2017 +0100
  */
 import spinal.core._
+import spinal.lib._
 import spinal.lib.com.uart._
 
-// Provide a MMCM
-class MMCM extends BlackBox {
+// Provide a PLL
+class PLL extends BlackBox {
 
   val io = new Bundle {
 
-    val providedClk = in Bool
-    val synthClk = out Bool
+    val clkIn = in Bool
+    val clkOut = out Bool
+    val isLocked = out Bool
 
   }
 
@@ -30,6 +32,12 @@ class J1SoC (j1Cfg   : J1Config,
              gpioCfg : GPIOConfig) extends Component {
 
   val io = new Bundle {
+
+    // Asynchron reset
+    val reset = in Bool
+
+    // A 100 Mhz clock
+    val clk100Mhz = in Bool
 
     // Asynchronous interrupts for the outside world
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
@@ -46,24 +54,25 @@ class J1SoC (j1Cfg   : J1Config,
   // Physical clock area
   val clkCtrl = new Area {
 
-    // Create a MMCM instance and connect it to the current clock
-    val mmcm = new MMCM
-    mmcm.io.providedClk := ClockDomain.current.readClockWire
+    // Create a new PLL and connect the input to 100Mhz
+    val pll = new PLL
+    pll.io.clkIn := io.clk100Mhz
 
-    // Create clock area which is related to the clock synthesized by the MMCM
-    val coreClockDomain = ClockDomain(
+    // Create a clock domain which is related to the synthesized clock
+    val coreClockDomain = ClockDomain.internal("core", frequency = FixedFrequency(80 MHz))
 
-      // Use the synthesized clock for this domain
-      clock = mmcm.io.synthClk,
+    // Connect the synthesized clock
+    coreClockDomain.clock := pll.io.clkOut
 
-      // Use the current reset
-      reset = ClockDomain.current.reset,
+    // Connect the new asynchron reset
+    coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert (
 
-      // Scale the frequency according to the frequency provided by the MMCM
-      frequency = FixedFrequency(ClockDomain.current.frequency.getValue*4/5)
+      // Hold the reset as long as the PLL is not locked
+      input = io.reset || ! pll.io.isLocked,
+      clockDomain = coreClockDomain
 
-    )
-
+    )))
+    
   }
 
   // Generate the application specific clocking area
@@ -108,7 +117,7 @@ class J1SoC (j1Cfg   : J1Config,
     val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
     // Map the UART to 0x80 and enable the generation of read interrupts
-    val uartBridge = uartCtrl.driveFrom16(peripheralBusCtrl, uartCtrlMemoryMappedConfig, baseAddress = 0x80)
+    val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartCtrlMemoryMappedConfig, baseAddress = 0x80)
     uartBridge.interruptCtrl.readIntEnable := True
 
     // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
@@ -149,11 +158,8 @@ object J1SoC {
     // Generate all VHDL files
     SpinalConfig(genVhdlPkg = true,
                  defaultConfigForClockDomains = globalClockConfig,
-                 defaultClockDomainFrequency = FixedFrequency(80 MHz),
+                 defaultClockDomainFrequency = FixedFrequency(100 MHz),
                  targetDirectory="gen/src/vhdl").generateVhdl({
-
-                   // Set name for the synchronous reset
-                   ClockDomain.current.reset.setName("clr")
 
                    // A new system instance
                    new J1SoC(j1Cfg, gpioCfg)
@@ -162,11 +168,8 @@ object J1SoC {
 
     // Generate all Verilog files
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
-                 defaultClockDomainFrequency = FixedFrequency(80 MHz),
+                 defaultClockDomainFrequency = FixedFrequency(100 MHz),
                  targetDirectory="gen/src/verilog").generateVerilog({
-
-                   // Set name for the synchronous reset
-                   ClockDomain.current.reset.setName("clr")
 
                    // A new system instance
                    new J1SoC(j1Cfg, gpioCfg)
