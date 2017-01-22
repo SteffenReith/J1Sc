@@ -16,15 +16,15 @@ use ieee.std_logic_1164.all;
 library unisim;
 use unisim.vcomponents.all;
 
-entity MMCM is
+entity PLL is
 
   port (clkIn    : in  std_logic;
         clkOut   : out std_logic;
         isLocked : out std_logic);
 
-end MMCM;
+end PLL;
 
-architecture Structural of MMCM is
+architecture Structural of PLL is
 
   -- Control signals
   signal locked              : std_logic;  -- The MMCM has achieved phase alignment
@@ -83,7 +83,7 @@ begin
 
       DIVCLK_DIVIDE => 1,               -- Division ratio for output clocks
 
-      CLKFBOUT_MULT_F      => 7.000,    -- multiply feedback for 80Mhz 
+      CLKFBOUT_MULT_F      => 8.000,    -- multiply feedback for 80Mhz 
       --CLKFBOUT_MULT_F      => 10.000,   -- multiply feedback for 100Mhz 
       CLKFBOUT_PHASE       => 0.000,    -- phase of feedback output
       CLKFBOUT_USE_FINE_PS => false,    -- Don't enable fine shift
