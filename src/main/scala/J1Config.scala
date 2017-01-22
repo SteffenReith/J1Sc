@@ -149,21 +149,17 @@ object J1Config {
                        B"0110_0000_0000_0000") // 89. NOP
 
   // Simple test of external memory bus and internal memory
-  def ioTest() = List(B"1101_0101_0101_0111", //  0. Push 0x5557
-                      B"1000_0000_0100_0000", //  1. Push 0x040
-                      B"0110_0000_0100_0000", //  2. I/O write operation
-                      B"0110_0000_0000_0000", //  3. NOP (wait state for I/O)
-                      B"1000_0000_1111_1111", //  4. Push 0xff as a seperator
+  def ioTest() = List(B"1000_0000_0000_1001", //  0. Push 9
+                      B"1000_0000_0100_0000", //  1. Push 0x40
+                      B"0110_0000_0100_0011", //  2. I/O write operation and pop
+                      B"0110_0000_0101_0011", //  3. wait state for I/O and pop
+                      B"1000_0000_1111_1111", //  4. Push 0xff as a separator
                       B"1000_0000_0100_0000", //  5. Push LED I/O address 0x40
-                      B"0110_1101_0000_0001", //  6. Read data from I/O space
-                      B"0110_1101_0000_0000", //  7. Read data from I/O space
-                      B"1010_1010_1010_1010", //  8. Push 0x2AAA
-                      B"1000_0000_0100_0000", //  9. Push 0x040
-                      B"0110_0000_0011_0000", // 10. I/O write operation
-                      B"1000_0000_1110_1110", // 11. Push 0xee as a seperator
-                      B"1000_0000_0100_0000", // 12. Push address 0x40
-                      B"0110_1100_0000_0000", // 13. Read data from memory
-                      B"0000_0000_0000_1110") // 14. Jump 14
+                      B"0110_1101_0101_0000", //  6. Read data from I/O space
+                      B"0110_1101_0101_0000", //  7. Read data from I/O space
+                      B"1000_0000_1000_0000", //  8. Push address 0x80
+                      B"0110_0000_0011_0000", //  9. Write DTOS to memory
+                      B"0000_0000_0000_1010") // 10. Jump 10
 
   // Simple test of irq logic
   def simpleIRQTest() = List(B"1000_0000_0000_0001", //  0. Push  1
@@ -294,11 +290,11 @@ object J1Config {
     def returnStackIdxWidth    =  4
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
-    def adrWidth               =  9
+    def adrWidth               = 13
     def startAddress           =  0
 
     // IRQ controller parameters (enable all interrupts by default)
-    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
     def bootCode() = ioTest() ++
                      List.fill((1 << wordSize) - ioTest().length - noOfInterrupts)(B(0, wordSize bits)) ++

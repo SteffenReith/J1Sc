@@ -130,7 +130,7 @@ class J1Core(cfg : J1Config) extends Component {
     is(M"0_011-1000") {dtosN := (default -> nosIsLess)}
     is(M"0_011-1111") {dtosN := (default -> difference.msb)}
 
-    // Memory read operations
+    // Memory / IO read operations
     is(M"0_011-1101") {dtosN := io.toRead}
 
     // Misc operations
@@ -206,9 +206,9 @@ class J1Core(cfg : J1Config) extends Component {
   switch(clrActive ## pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
 
     // Check if we are in reset state
-    is(M"1_0_---_-_-") {pcN := cfg.startAddress}
+    is(M"1_-_---_-_-") {pcN := cfg.startAddress}
 
-    // Check for jump, cond. jump or call instruction
+    // Check for jump, call instruction or conditional jump
     is(M"0_0_000_-_-", M"0_0_010_-_-", M"0_0_001_-_0") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
 
     // Check either for high address or R -> PC field of an ALU instruction

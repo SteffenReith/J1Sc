@@ -43,11 +43,16 @@ class J1SoC (j1Cfg   : J1Config,
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
 
     // The physical pins for the connected FPGAs
-    val leds = out Bits(gpioCfg.ledBankConfig.width bits)
+    //val leds = out Bits(gpioCfg.ledBankConfig.width bits)
+    val leds = out Bits(16 bits)
 
     // I/O pins for the UART
     val rx =  in Bool // UART input
     val tx = out Bool // UART output
+
+    // Some debug ports
+    val clkFast = out Bool
+    val clkSlow = out Bool
 
   }.setName("")
 
@@ -64,6 +69,10 @@ class J1SoC (j1Cfg   : J1Config,
     // Connect the synthesized clock
     coreClockDomain.clock := pll.io.clkOut
 
+    // Connect the debug clocks
+    io.clkFast := io.clk100Mhz
+    io.clkSlow := pll.io.clkOut
+
     // Connect the new asynchron reset
     coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert (
 
@@ -72,7 +81,7 @@ class J1SoC (j1Cfg   : J1Config,
       clockDomain = coreClockDomain
 
     )))
-    
+
   }
 
   // Generate the application specific clocking area

@@ -29,33 +29,22 @@ class J1(cfg : J1Config) extends Component {
   // Create a new CPU core
   val coreJ1CPU = new J1Core(cfg)
 
-  // Signals for main memory
-  val memWriteEnable = Bool
-  val memAdr         = UInt(cfg.wordSize bits)
-  val memWrite       = Bits(cfg.wordSize bits)
-  val memRead        = Bits(cfg.wordSize bits)
-
-  // Main memory pre filled with boot code
-  val mainMem = Mem(Bits(cfg.wordSize bits), cfg.bootCode())
-
-  // Create data port for mainMem
-  mainMem.write(enable  = memWriteEnable,
-                address = memAdr,
-                data    = memWrite)
-  memRead := mainMem.readSync(address = memAdr, readUnderWrite = readFirst)
+  // Create the main memory
+  val mainMem = new MainMemory(cfg)
 
   // Instruction port (read only)
-  coreJ1CPU.io.memInstr := mainMem.readSync(address = coreJ1CPU.io.instrAdr.resized, readUnderWrite = readFirst)
+  mainMem.io.memInstrAdr <> coreJ1CPU.io.instrAdr
+  coreJ1CPU.io.memInstr <> mainMem.io.memInstr
 
   // Select from which source the data should be read
-  val coreMemRead = coreJ1CPU.io.ioReadMode ? io.cpuBus.readData | memRead
+  val coreMemRead = coreJ1CPU.io.ioReadMode ? io.cpuBus.readData | mainMem.io.memRead
 
-  // connect the CPU core with the internal memory
-  memWriteEnable <> coreJ1CPU.io.memWriteMode
-  memAdr <> coreJ1CPU.io.extAdr
-  memWrite <> coreJ1CPU.io.extToWrite
+  // Connect the CPU core with the main memory
+  mainMem.io.memWriteEnable <> coreJ1CPU.io.memWriteMode
+  mainMem.io.memAdr <> coreJ1CPU.io.extAdr
+  mainMem.io.memWrite <> coreJ1CPU.io.extToWrite
 
-  // Read port the CPU core (multiplexed)
+  // Read port of CPU core (multiplexed)
   coreJ1CPU.io.toRead <> coreMemRead
 
   // Connect the external bus to the core (remember coreJ1CPU.io.extAdr is one clock too early)
