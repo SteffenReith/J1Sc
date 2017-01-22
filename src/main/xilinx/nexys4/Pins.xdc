@@ -1,12 +1,17 @@
 set_property CFGBVS Vcco [current_design]
 set_property CONFIG_VOLTAGE 3.3 [current_design]
 
-set_property PACKAGE_PIN E3 [get_ports clk]
-set_property IOSTANDARD LVCMOS33 [get_ports clk]
-
 set_property PACKAGE_PIN E16 [get_ports reset]
 set_property IOSTANDARD LVCMOS33 [get_ports reset]
 
+set_property PACKAGE_PIN E3 [get_ports clk100Mhz]
+set_property IOSTANDARD LVCMOS33 [get_ports clk100Mhz]
+
+set_property PACKAGE_PIN B13 [get_ports clkFast]
+set_property IOSTANDARD LVCMOS33 [get_ports clkFast]
+
+set_property PACKAGE_PIN G14 [get_ports clkSlow]
+set_property IOSTANDARD LVCMOS33 [get_ports clkSlow]
 
 set_property  PACKAGE_PIN T8 [get_ports {leds[0]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {leds[0]}]
@@ -72,6 +77,14 @@ set_property  PACKAGE_PIN P2 [get_ports {leds[15]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {leds[15]}]
 set_property  SLEW FAST [get_ports {leds[15]}]
 
+set_property  PACKAGE_PIN C4 [get_ports {tx}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {tx}]
+
+set_property  PACKAGE_PIN D4 [get_ports {rx}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {rx}]
+
+set_property  PACKAGE_PIN T16 [get_ports {extInt[0]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {extInt[0]}]
 
 #set_property  PACKAGE_PIN M1 [get_ports {sel[7]}]
 #set_property  IOSTANDARD LVCMOS33 [get_ports {sel[7]}]
