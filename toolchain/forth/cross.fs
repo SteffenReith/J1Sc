@@ -403,6 +403,7 @@ decimal
 ;
 
 dumpbinall.16
+hex
 ." tdp " tdp @ .
 ." tcp " tcp @ .
 

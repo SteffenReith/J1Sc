@@ -1182,8 +1182,9 @@ header init :noname var:
 create init meta t' quit 2* target ,
 
 : main
+    \ init h# 0040 io!    
     h# 0001 h# 0040 io!
-    \ init @i execute
+    \ drop
     cr
     decimal
     tethered off
