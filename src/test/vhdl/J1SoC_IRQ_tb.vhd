@@ -82,12 +82,11 @@ begin
   reboot_proc : process
   begin
 
-    -- Reset the CPU
+    -- Reset the CPU (asynchron)
     clr <= '1';
 
-    -- Wait 30ns
-    wait for 30 ns;
-    wait until rising_edge(clk);
+    -- Wait 400ns
+    wait for 407 ns;
 
     -- Revoke the the reset
     clr <= '0';
