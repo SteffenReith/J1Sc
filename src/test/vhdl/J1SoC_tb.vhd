@@ -36,27 +36,27 @@ architecture Behavioral of J1SoC_tb is
   signal leds : std_logic_vector(15 downto 0);
 
   -- Clock and reset 
-  signal clk : std_logic;
-  signal clr : std_logic;
+  signal clk100Mhz : std_logic;
+  signal reset : std_logic;
 
 begin
 
   uut : entity work.J1SoC
-    port map (clk    => clk,
-              clr    => clr,
-              extInt => extInt,
-              rx     => rx,
-              tx     => tx,
-              leds   => leds);
+    port map (clk100Mhz => clk100Mhz,
+              reset     => reset,
+              extInt    => extInt,
+              rx        => rx,
+              tx        => tx,
+              leds      => leds);
 
   -- Clock process definitions
   clk_process : process
   begin
 
-    clk <= '0';
+    clk100Mhz <= '0';
     wait for clk_period/2;
 
-    clk <= '1';
+    clk100Mhz <= '1';
     wait for clk_period/2;
 
   end process;
@@ -64,15 +64,14 @@ begin
   reboot_proc : process
   begin
 
-    -- Reset the CPU
-    clr <= '1';
+    -- Reset the CPU (asynchronous) 
+    reset <= '1';
 
-    -- Wait 30ns
-    wait for 30 ns;
-    wait until rising_edge(clk);
+    -- Wait 57ns
+    wait for 57 ns;
 
     -- Revoke the the reset
-    clr <= '0';
+    reset <= '0';
 
     -- Wait forever  
     wait;
