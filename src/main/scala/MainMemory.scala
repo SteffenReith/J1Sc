@@ -3,8 +3,8 @@
  * Committer: <COMMITTERNAME>
  *
  * Creation Date:  Sun Jan 22 12:51:03 GMT+1 2017
- * Module Name:    XXXX
- * Project Name:   XXXX - A simple YYYY implementation 
+ * Module Name:    MainMemory - implementation of 64k words main memory
+ * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  * Hash: <COMMITHASH>
  * Date: <AUTHORDATE>
