@@ -7,12 +7,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports reset]
 set_property PACKAGE_PIN E3 [get_ports clk100Mhz]
 set_property IOSTANDARD LVCMOS33 [get_ports clk100Mhz]
 
-set_property PACKAGE_PIN B13 [get_ports clkFast]
-set_property IOSTANDARD LVCMOS33 [get_ports clkFast]
-
-set_property PACKAGE_PIN G14 [get_ports clkSlow]
-set_property IOSTANDARD LVCMOS33 [get_ports clkSlow]
-
 set_property  PACKAGE_PIN T8 [get_ports {leds[0]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {leds[0]}]
 set_property  SLEW FAST [get_ports {leds[0]}]
