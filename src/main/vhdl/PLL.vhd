@@ -4,7 +4,7 @@
 --
 -- Creation Date:  Tue Jan 17 19:29:25 GMT+1 2017
 -- Creator:        Steffen Reith
--- Module Name:    ClkGen - Behavioral
+-- Module Name:    PLL - Behavioral
 -- Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
 --
 -- Hash: <COMMITHASH>
