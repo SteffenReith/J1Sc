@@ -50,10 +50,6 @@ class J1SoC (j1Cfg   : J1Config,
     val rx =  in Bool // UART input
     val tx = out Bool // UART output
 
-    // Some debug ports
-    val clkFast = out Bool
-    val clkSlow = out Bool
-
   }.setName("")
 
   // Physical clock area
@@ -68,11 +64,7 @@ class J1SoC (j1Cfg   : J1Config,
 
     // Connect the synthesized clock
     coreClockDomain.clock := pll.io.clkOut
-
-    // Connect the debug clocks
-    io.clkFast := io.clk100Mhz
-    io.clkSlow := pll.io.clkOut
-
+    
     // Connect the new asynchron reset
     coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert (
 

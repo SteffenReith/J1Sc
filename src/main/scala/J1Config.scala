@@ -150,16 +150,17 @@ object J1Config {
 
   // Simple test of external memory bus and internal memory
   def ioTest() = List(B"1000_0000_0000_1001", //  0. Push 9
-                      B"1000_0000_0100_0000", //  1. Push 0x40
-                      B"0110_0000_0100_0011", //  2. I/O write operation and pop
-                      B"0110_0000_0101_0011", //  3. wait state for I/O and pop
-                      B"1000_0000_1111_1111", //  4. Push 0xff as a separator
-                      B"1000_0000_0100_0000", //  5. Push LED I/O address 0x40
-                      B"0110_1101_0101_0000", //  6. Read data from I/O space
+                      B"1000_0000_0000_1011", //  1. Push 11
+                      B"1000_0000_0100_0000", //  2. Push 0x40
+                      B"0110_0000_0100_0011", //  3. I/O write operation and pop
+                      B"0110_0000_0101_0011", //  4. wait state for I/O and pop
+                      B"1000_0000_1111_1111", //  5. Push 0xff as a separator
+                      B"1000_0000_0100_0000", //  6. Push LED I/O address 0x40
                       B"0110_1101_0101_0000", //  7. Read data from I/O space
-                      B"1000_0000_1000_0000", //  8. Push address 0x80
-                      B"0110_0000_0011_0000", //  9. Write DTOS to memory
-                      B"0000_0000_0000_1010") // 10. Jump 10
+                      B"0110_1101_0101_0000", //  8. Read data from I/O space
+                      B"1000_0000_1000_0000", //  9. Push address 0x80
+                      B"0110_0000_0011_0000", // 10. Write DTOS to memory
+                      B"0000_0000_0000_1011") // 11. Jump 11
 
   // Simple test of irq logic
   def simpleIRQTest() = List(B"1000_0000_0000_0001", //  0. Push  1
@@ -291,17 +292,17 @@ object J1Config {
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def adrWidth               = 13
-    def startAddress           =  0
+    def startAddress           =  1
 
     // IRQ controller parameters (enable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
-    def bootCode() = ioTest() ++
-                     List.fill((1 << wordSize) - ioTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrRTS)
+    def bootCode() = ioTest() ++ List.fill((1 << wordSize) - ioTest.length)(B(0, wordSize bits))
+                     //List.fill((1 << wordSize) - ioTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     //List.fill(1)(instrRTS) ++
+                     //List.fill(1)(instrRTS) ++
+                     //List.fill(1)(instrRTS) ++
+                     //List.fill(1)(instrRTS)
 
     // Set the configuration values for debugging I/O instructions
     val config = J1Config(wordSize            = wordSize,
