@@ -218,7 +218,7 @@ object J1Config {
   // Provide a default configuration
   def default = {
 
-    // Default parameters for a J1 cpu
+    // Default parameters for a J1 CPU
     def wordSize               = 16
     def dataStackIdxWidth      =  8
     def returnStackIdxWidth    =  4
@@ -230,9 +230,9 @@ object J1Config {
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
+    // Relevant content of all generated memory blocks
     def bootCode() = endlessLoop() ++
-                     List.fill((1 << wordSize) - endlessLoop().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List.fill(noOfInterrupts)(instrRTS)
+                     List.fill((1 << adrWidth) - endlessLoop().length)(B(0, wordSize bits))
 
     // Set the default configuration values
     val config = J1Config(wordSize            = wordSize,
@@ -251,6 +251,7 @@ object J1Config {
   // Provide a debug configuration
   def debug = {
 
+    // Parameters of a debug configuration
     def wordSize               = 16
     def dataStackIdxWidth      =  5
     def returnStackIdxWidth    =  4
@@ -260,10 +261,10 @@ object J1Config {
     def startAddress           =  0
 
     // IRQ controller parameters (disable all interrupts by default)
-    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
 
     def bootCode() = isaTest() ++
-                     List.fill((1 << wordSize) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill((1 << adrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrJMP50) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrJMP60) ++
@@ -294,15 +295,11 @@ object J1Config {
     def adrWidth               = 13
     def startAddress           =  1
 
-    // IRQ controller parameters (enable all interrupts by default)
+    // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
-    def bootCode() = ioTest() ++ List.fill((1 << wordSize) - ioTest.length)(B(0, wordSize bits))
-                     //List.fill((1 << wordSize) - ioTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     //List.fill(1)(instrRTS) ++
-                     //List.fill(1)(instrRTS) ++
-                     //List.fill(1)(instrRTS) ++
-                     //List.fill(1)(instrRTS)
+    // Relevant content of all generated memories
+    def bootCode() = ioTest() ++ List.fill((1 << adrWidth) - ioTest.length)(B(0, wordSize bits))
 
     // Set the configuration values for debugging I/O instructions
     val config = J1Config(wordSize            = wordSize,
@@ -333,7 +330,7 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
 
     def bootCode() = simpleIRQTest() ++
-                     List.fill((1 << wordSize) - simpleIRQTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill((1 << adrWidth) - simpleIRQTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
                      List.fill(1)(instrJMP20) ++
                      List.fill(1)(instrRTS) ++
                      List.fill(1)(instrRTS) ++
@@ -370,13 +367,8 @@ object J1Config {
     // Take the base system and cut the interrupt vectors at the end
     def baseSystem = forthBase(wordSize).take((1 << adrWidth) - noOfInterrupts)
 
-    // Generate the complete memory layout of the system (including valid interrupt vectors)
-    def bootCode() = baseSystem ++
-                     List.fill((1 << wordSize) - baseSystem.length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrRTS)
+    // Generate the complete memory layout of the system (without valid interrupt vectors)
+    def bootCode() = baseSystem ++ List.fill((1 << adrWidth) - baseSystem.length)(B(0, wordSize bits))
 
     // Set the configuration values for the forth system
     val config = J1Config(wordSize            = wordSize,
@@ -391,7 +383,5 @@ object J1Config {
     config
 
   }
-
-
 
 }
