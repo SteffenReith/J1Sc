@@ -14,7 +14,7 @@ import spinal.core._
 class MainMemory(cfg : J1Config) extends Component {
 
   // Check the generic parameters
-  assert(Bool(cfg.wordSize >= cfg.adrWidth), "Error: The width of an address is too large", FAILURE)
+  assert(Bool(cfg.wordSize >= cfg.adrWidth), "Error: The width of addresses are too large", FAILURE)
 
   // I/O ports
   val io = new Bundle {
@@ -35,7 +35,7 @@ class MainMemory(cfg : J1Config) extends Component {
   val lowMem = Mem(Bits(cfg.wordSize bits), cfg.bootCode())
 
   // Create the instruction port (read only) for the instruction memory
-  io.memInstr := lowMem.readSync(address = io.memInstrAdr.resized, readUnderWrite = readFirst)
+  io.memInstr := lowMem.readSync(address = io.memInstrAdr, readUnderWrite = readFirst)
 
   // Calculate the number of needed rams
   def noOfRAMs = (1 << (cfg.wordSize - cfg.adrWidth))
@@ -53,30 +53,26 @@ class MainMemory(cfg : J1Config) extends Component {
 
   }
 
-  // Create all write ports and the needed enable signals
-  val ramIdxList = ramList.zipWithIndex
-  ramIdxList.map {case(mem, idx) => mem.write(enable  = io.memWriteEnable &&
-                                                        (U(idx) === io.memAdr(cfg.wordSize - 1 downto cfg.adrWidth)),
-                                              address = io.memAdr(cfg.adrWidth - 1 downto 0),
-                                              data    = io.memWrite)}
-
-  // Create a list of all read ports
-  val rPortsList = ramList.map {mem => mem.readSync(address        = io.memAdr(cfg.adrWidth - 1 downto 0),
-                                                    readUnderWrite = readFirst)}
-
   // Convert the list to a spinal vector
   val rPortsVec = Vec(Bits(cfg.wordSize bits), noOfRAMs)
 
-  // Copy the list to the vector
+  // Iterate over all RAMs
   for(i <- 0 to noOfRAMs - 1) {
 
-    // Copy the ith RAM to the Vec
-    rPortsVec(i) := rPortsList(i)
+    // Create the write port of the ith RAM
+    ramList(i).write(enable  = io.memWriteEnable &&
+                               (U(i) === io.memAdr(cfg.wordSize - 1 downto cfg.adrWidth)),
+                     address = io.memAdr(cfg.adrWidth - 1 downto 0),
+                     data    = io.memWrite)
+
+    // Create the read port of the ith RAM
+    rPortsVec(i) := ramList(i).readSync(address        = io.memAdr(cfg.adrWidth - 1 downto 0),
+                                        readUnderWrite = readFirst)
 
   }
 
   // Multiplex the output
-  io.memRead := rPortsVec(io.memAdr(cfg.wordSize - 1 downto cfg.adrWidth))
+  io.memRead := rPortsVec(RegNext(io.memAdr(cfg.wordSize - 1 downto cfg.adrWidth)))
 
 }
 

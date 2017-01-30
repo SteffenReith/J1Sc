@@ -226,3 +226,9 @@ set_property IOSTANDARD LVCMOS33 [get_ports {extInt[0]}]
 #set_property  IOSTANDARD LVCMOS33 [get_ports {btn[19]}]
 #set_property  SLEW FAST [get_ports {btn[19]}]
 
+
+
+
+
+
+
