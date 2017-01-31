@@ -152,15 +152,18 @@ object J1Config {
   def ioTest() = List(B"1000_0000_0000_1001", //  0. Push 9
                       B"1000_0000_0000_1011", //  1. Push 11
                       B"1000_0000_0100_0000", //  2. Push 0x40
-                      B"0110_0000_0100_0011", //  3. I/O write operation and pop
-                      B"0110_0000_0101_0011", //  4. wait state for I/O and pop
+                      B"0110_0000_0100_0011", //  3. I/O write operation and nip
+                      B"0110_0001_0000_0011", //  4. wait state for I/O and pop
                       B"1000_0000_1111_1111", //  5. Push 0xff as a separator
                       B"1000_0000_0100_0000", //  6. Push LED I/O address 0x40
                       B"0110_1101_0101_0000", //  7. Read data from I/O space
                       B"0110_1101_0101_0000", //  8. Read data from I/O space
                       B"1000_0000_1000_0000", //  9. Push address 0x80
-                      B"0110_0000_0011_0000", // 10. Write DTOS to memory
-                      B"0000_0000_0000_1011") // 11. Jump 11
+                      B"0110_0000_0011_0011", // 10. Write DTOS to memory and nip
+                      B"0110_0001_0000_0011", // 11. Pop to clean stack
+                      B"1000_0000_1010_1010", // 12. Push 0x0055
+                      B"0110_0001_0000_0011", // 13  Pop to clean stack
+                      B"0000_0000_0000_1100") // 14. Jump 12
 
   // Simple test of irq logic
   def simpleIRQTest() = List(B"1000_0000_0000_0001", //  0. Push  1
@@ -293,7 +296,7 @@ object J1Config {
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def adrWidth               = 13
-    def startAddress           =  1
+    def startAddress           =  0
 
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)

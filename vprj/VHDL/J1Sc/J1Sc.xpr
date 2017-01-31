@@ -29,7 +29,7 @@
     <Option Name="IPStaticSourceDir" Val="$PPRDIR/J1Sc.ip_user_files/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSANumComputeUnits" Val="16"/>
-    <Option Name="WTXSimLaunchSim" Val="23"/>
+    <Option Name="WTXSimLaunchSim" Val="38"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -135,22 +135,6 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL.v"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL_clk_wiz.v"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="mmcm_pll_drp_func_us_pll.vh"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="mmcm_pll_drp_func_us_mmcm.vh"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="mmcm_pll_drp_func_7s_pll.vh"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="mmcm_pll_drp_func_7s_mmcm.vh"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL.vho"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL_board.xdc"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="doc/clk_wiz_v5_3_changelog.txt"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL_ooc.xdc"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL.xdc"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL.xml"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL_sim_netlist.v"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL_stub.vhdl"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL_sim_netlist.vhdl"/>
-        <CompFileExtendedInfo CompFileName="PLL.xci" FileRelPathName="PLL_stub.v"/>
       </File>
       <Config>
         <Option Name="TopModule" Val="PLL"/>
@@ -196,7 +180,7 @@
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
     </Run>
-    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xa7a100tcsg324-1I" ConstrsSet="Nexys4DDR" Description="Default settings for Implementation." State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true">
+    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xa7a100tcsg324-1I" ConstrsSet="Nexys4DDR" Description="Default settings for Implementation." State="current" SynthRun="synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2016"/>
         <Step Id="init_design"/>
@@ -209,7 +193,6 @@
         <Step Id="post_route_phys_opt_design"/>
         <Step Id="write_bitstream"/>
       </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
     </Run>
     <Run Id="PLL_impl_1" Type="Ft2:EntireDesign" Part="xa7a100tcsg324-1I" ConstrsSet="PLL" Description="Default settings for Implementation." SynthRun="PLL_synth_1" IncludeInArchive="false">

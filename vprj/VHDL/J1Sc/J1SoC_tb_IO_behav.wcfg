@@ -13,15 +13,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="457083334fs"></ZoomStartTime>
-      <ZoomEndTime time="585083335fs"></ZoomEndTime>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="284689658fs"></ZoomEndTime>
       <Cursor1Time time="527500000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="129"></NameColumnWidth>
+      <NameColumnWidth column_width="127"></NameColumnWidth>
       <ValueColumnWidth column_width="63"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="22" />
+   <WVObjectSize size="23" />
    <wave_markers>
       <marker label="" time="590675000000" />
       <marker label="" time="815000000" />
@@ -99,6 +99,10 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/dtos">
       <obj_property name="ElementShortName">dtos[15:0]</obj_property>
       <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/dnos">
+      <obj_property name="ElementShortName">dnos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/pcN">
       <obj_property name="ElementShortName">pcN[12:0]</obj_property>
