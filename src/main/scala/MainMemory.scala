@@ -6,6 +6,12 @@
  * Module Name:    MainMemory - implementation of 64k words main memory
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
+ * Note: This module takes "small" blocks of BRAM and uses Spinal to tie them
+ * together. The reason for doing so is the incapability of Xilinx Vivado 2016.4
+ * the generate a dual ported BRAM bigger than 64K (one port one gives 0 as
+ * a value back). Warning: The simulation works, but the real hardware causes
+ * pain
+ *
  * Hash: 8469f68ac67bc74f6a39e8dd8dd35e6750c1bd48
  * Date: Sun Jan 22 13:10:06 2017 +0100
  */
@@ -34,7 +40,7 @@ class MainMemory(cfg : J1Config) extends Component {
   // Generate a list holding the lowest memory block (holding the instructions to be executed)
   val lowMem = Mem(Bits(cfg.wordSize bits), cfg.bootCode())
 
-  // Create the instruction port (read only) for the instruction memory
+  // Create a read-only port for the instructions (J1 has Harvard-style but shares the data/instruction - memory)
   io.memInstr := lowMem.readSync(address = io.memInstrAdr, readUnderWrite = readFirst)
 
   // Calculate the number of needed rams
@@ -54,57 +60,21 @@ class MainMemory(cfg : J1Config) extends Component {
   }
 
   // Convert the list to a spinal vector
-  val rPortsVec = Vec(Bits(cfg.wordSize bits), noOfRAMs)
-
-  // Iterate over all RAMs
-  for(i <- 0 to noOfRAMs - 1) {
+  val rPortsVec = Vec(for((ram,i) <- ramList.zipWithIndex) yield {
 
     // Create the write port of the ith RAM
-    ramList(i).write(enable  = io.memWriteEnable &&
+    ram.write(enable  = io.memWriteEnable &&
                                (U(i) === io.memAdr(cfg.wordSize - 1 downto cfg.adrWidth)),
                      address = io.memAdr(cfg.adrWidth - 1 downto 0),
                      data    = io.memWrite)
 
     // Create the read port of the ith RAM
-    rPortsVec(i) := ramList(i).readSync(address        = io.memAdr(cfg.adrWidth - 1 downto 0),
-                                        readUnderWrite = readFirst)
+    ram.readSync(address = io.memAdr(cfg.adrWidth - 1 downto 0),
+                 readUnderWrite = readFirst)
 
-  }
+  })
 
   // Multiplex the output
   io.memRead := rPortsVec(RegNext(io.memAdr(cfg.wordSize - 1 downto cfg.adrWidth)))
-
-}
-
-class MainMemoryOld(cfg : J1Config) extends Component {
-
-  // I/O ports
-  val io = new Bundle {
-
-    // Instruction port
-    val memInstrAdr = in UInt(cfg.adrWidth bits)
-    val memInstr    = out Bits(cfg.wordSize bits)
-
-    // Memory port
-    val memWriteEnable = in Bool
-    val memAdr         = in UInt(cfg.wordSize bits)
-    val memWrite       = in Bits(cfg.wordSize bits)
-    val memRead        = out Bits(cfg.wordSize bits)
-
-  }.setName("")
-
-  // Main memory pre filled with boot code
-  val mainMem = Mem(Bits(cfg.wordSize bits), cfg.bootCode())
-
-  // Create the instruction port (read only)
-  io.memInstr := mainMem.readSync(address = io.memInstrAdr.resized, readUnderWrite = readFirst)
-
-  // Create write port port for mainMem
-  mainMem.write(enable  = io.memWriteEnable,
-                address = io.memAdr(cfg.wordSize - 1 downto 0),
-                data    = io.memWrite)
-
-  // Read port for main memory
-  io.memRead := mainMem.readSync(address = io.memAdr(cfg.wordSize - 1 downto 0), readUnderWrite = readFirst)
 
 }
