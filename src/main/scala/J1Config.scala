@@ -200,10 +200,7 @@ object J1Config {
 
   // Provide the SwapForth base system
   def forthBase(w : Int) = {
-
-    // A pattern for valid numbers
-    val regExNum = new Regex("[^0-9a-fA-F]")
-
+    
     // Read all lines of the hex dump into a list of strings
     val lines = Source.fromFile("toolchain/forth/build/nuc.binary").getLines().toList.map((s : String) => s.toUpperCase)
 
