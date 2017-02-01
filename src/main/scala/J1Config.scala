@@ -161,9 +161,10 @@ object J1Config {
                       B"1000_0000_1000_0000", //  9. Push address 0x80
                       B"0110_0000_0011_0011", // 10. Write DTOS to memory and nip
                       B"0110_0001_0000_0011", // 11. Pop to clean stack
-                      B"1000_0000_1010_1010", // 12. Push 0x0055
-                      B"0110_0001_0000_0011", // 13  Pop to clean stack
-                      B"0000_0000_0000_1100") // 14. Jump 12
+                      B"1000_0000_1000_0000", // 12. Push address 0x80
+                      B"0110_1101_0000_0000", // 13. Read from memory
+                      B"0110_0001_0000_0011", // 14. Pop to clean stack
+                      B"0000_0000_0000_1100") // 15. Jump 12
 
   // Simple test of irq logic
   def simpleIRQTest() = List(B"1000_0000_0000_0001", //  0. Push  1
@@ -200,7 +201,7 @@ object J1Config {
 
   // Provide the SwapForth base system
   def forthBase(w : Int) = {
-    
+
     // Read all lines of the hex dump into a list of strings
     val lines = Source.fromFile("toolchain/forth/build/nuc.binary").getLines().toList.map((s : String) => s.toUpperCase)
 
