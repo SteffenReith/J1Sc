@@ -37,25 +37,25 @@ architecture Behavioral of J1SoC_IRQ_tb is
   signal leds : std_logic_vector(15 downto 0);
 
   -- Clock and reset 
-  signal clk : std_logic;
-  signal clr : std_logic;
+    signal clk100Mhz : std_logic;
+    signal reset     : std_logic;
 
 begin
 
   uut : entity work.J1SoC
-    port map (clk    => clk,
-              clr    => clr,
-              extInt => extInt,
-              rx     => rx,
-              tx     => tx,
-              leds   => leds);
+    port map (clk100Mhz => clk100Mhz,
+              reset     => reset,
+              extInt    => extInt,
+              rx        => rx,
+              tx        => tx,
+              leds      => leds);
 
   -- Clock process definitions
   clk_process : process
   begin
-    clk <= '0';
+    clk100Mhz <= '0';
     wait for clk_period/2;
-    clk <= '1';
+    clk100Mhz <= '1';
     wait for clk_period/2;
   end process;
 
@@ -83,13 +83,13 @@ begin
   begin
 
     -- Reset the CPU (asynchron)
-    clr <= '1';
+    reset <= '1';
 
-    -- Wait 400ns
-    wait for 407 ns;
+    -- Wait 107ns
+    wait for 107 ns;
 
     -- Revoke the the reset
-    clr <= '0';
+    reset <= '0';
 
     -- Wait forever  
     wait;
