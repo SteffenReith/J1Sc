@@ -14,11 +14,11 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="284689658fs"></ZoomEndTime>
+      <ZoomEndTime time="608646856fs"></ZoomEndTime>
       <Cursor1Time time="527500000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="127"></NameColumnWidth>
+      <NameColumnWidth column_width="125"></NameColumnWidth>
       <ValueColumnWidth column_width="63"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="23" />
@@ -105,20 +105,20 @@
       <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/pcN">
-      <obj_property name="ElementShortName">pcN[12:0]</obj_property>
-      <obj_property name="ObjectShortName">pcN[12:0]</obj_property>
+      <obj_property name="ElementShortName">pcN[8:0]</obj_property>
+      <obj_property name="ObjectShortName">pcN[8:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/pc2x">
-      <obj_property name="ElementShortName">pc2x[13:0]</obj_property>
-      <obj_property name="ObjectShortName">pc2x[13:0]</obj_property>
+      <obj_property name="ElementShortName">pc2x[9:0]</obj_property>
+      <obj_property name="ObjectShortName">pc2x[9:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/pc">
-      <obj_property name="ElementShortName">pc[12:0]</obj_property>
-      <obj_property name="ObjectShortName">pc[12:0]</obj_property>
+      <obj_property name="ElementShortName">pc[8:0]</obj_property>
+      <obj_property name="ObjectShortName">pc[8:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/instrAdr">
-      <obj_property name="ElementShortName">instrAdr[12:0]</obj_property>
-      <obj_property name="ObjectShortName">instrAdr[12:0]</obj_property>
+      <obj_property name="ElementShortName">instrAdr[8:0]</obj_property>
+      <obj_property name="ObjectShortName">instrAdr[8:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/instr">
       <obj_property name="ElementShortName">instr[15:0]</obj_property>
