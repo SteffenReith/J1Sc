@@ -153,7 +153,8 @@ object J1SoC {
   def main(args : Array[String]) {
 
     // Configuration of CPU-core and GPIO system
-    val j1Cfg = J1Config.debugIO
+    //val j1Cfg = J1Config.debugIO
+    val j1Cfg = J1Config.debug
     val gpioCfg = GPIOConfig.default
 
     // Generate all VHDL files

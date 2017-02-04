@@ -62,8 +62,8 @@ begin
   interrup_proc : process
   begin
 
-    --Wait 95ns
-    wait for 95 ns;
+    --Wait 1003ns
+    wait for 1003 ns;
 
     -- Activate an interrupt (asynchronous)
     extInt(0) <= '1';

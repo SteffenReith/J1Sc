@@ -41,8 +41,8 @@ class J1Core(cfg : J1Config) extends Component {
   // Synchron reset
   val clrActive = ClockDomain.current.isResetActive
 
-  // Program counter (PC)
-  val pcN = UInt(cfg.adrWidth bits)
+  // Program counter (note that the MSB is used to control dstack and rstack, hence make is one bit larger)
+  val pcN = UInt(cfg.adrWidth + 1 bits)
   val pc = RegNext(pcN) init(cfg.startAddress)
   val pcPlusOne = pc + 1
   val pc2x = pc << 1
@@ -94,9 +94,9 @@ class J1Core(cfg : J1Config) extends Component {
   val nosIsLess = (dtos.msb ^ dnos.msb) ? dnos.msb | difference.msb
 
   // Instruction decoder (including ALU operations)
-  switch(pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 8) + 1)) {
+  switch(pc.msb ## instr(instr.high downto (instr.high - 8) + 1)) {
 
-    // PC to dstack
+    // Push instruction to dstack
     is(M"1_--------") {dtosN := instr}
 
     // Literal instruction (Push value)
@@ -160,9 +160,9 @@ class J1Core(cfg : J1Config) extends Component {
   val dStackPtrInc = SInt(cfg.dataStackIdxWidth bits)
 
   // Handle update of data stack
-  switch(pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 3) + 1)) {
+  switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
 
-    // Literal (push value to data stack)
+    // Either push instruction to stack or literal (push value to data stack)
     is(M"1_---", M"0_1--") {dStackWrite := True; dStackPtrInc := 1}
 
     // Conditional jump (pop DTOS from data stack)
@@ -183,9 +183,9 @@ class J1Core(cfg : J1Config) extends Component {
   val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
 
   // Handle the update of return stack
-  switch(pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 3) + 1)) {
+  switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
 
-    // Pseudo pop of return address when address high bit is set
+    // Pseudo pop of return address when msb of PC is set
     is(M"1_---") {rStackWrite := False; rStackPtrInc := -1}
 
     // Call instruction or interrupt (push return address to stack)
@@ -203,23 +203,23 @@ class J1Core(cfg : J1Config) extends Component {
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
   // Handle the PC (remember cfg.adrWidth - 1 is the high indicator and instr(7) is the R -> PC field)
-  switch(clrActive ## pc(cfg.adrWidth - 1) ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
+  switch(clrActive ## pc.msb ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
 
     // Check if we are in reset state
     is(M"1_-_---_-_-") {pcN := cfg.startAddress}
 
     // Check for jump, call instruction or conditional jump
-    is(M"0_0_000_-_-", M"0_0_010_-_-", M"0_0_001_-_0") {pcN := instr(cfg.adrWidth - 1 downto 0).asUInt}
+    is(M"0_0_000_-_-", M"0_0_010_-_-", M"0_0_001_-_0") {pcN := (B"0" ## instr(cfg.adrWidth - 1 downto 0)).asUInt}
 
     // Check either for high address or R -> PC field of an ALU instruction
-    is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := rtos(cfg.adrWidth downto 1).asUInt}
+    is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := (B"0" ## rtos(cfg.adrWidth downto 1)).asUInt}
 
     // By default goto next instruction
     default {pcN := pcPlusOne}
 
   }
 
-  // Use next PC as address of instruction memory
-  io.instrAdr := pcN
+  // Use next PC as address of instruction memory (do not use the MSB)
+  io.instrAdr := pcN(pcN.high - 1 downto 0)
 
 }

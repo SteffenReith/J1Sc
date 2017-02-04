@@ -76,14 +76,14 @@ object J1Config {
                        B"0110_0111_0000_0001", // 16. Compare tos and nos push result
                        B"1101_0101_0101_0101", // 17. Push 0x5555
                        B"1000_0000_0100_0000", // 18. Push 0x040
-                       B"0110_0000_0100_0000", // 19. ALU I/O operation
-                       B"0110_0000_0000_0000", // 20. NOP (wait state for I/O)
+                       B"0110_0000_0100_0011", // 19. ALU I/O operation
+                       B"0110_0001_0000_0011", // 20. NOP (wait state for I/O)
                        B"0110_0000_0000_0000", // 21. Clear I/O
                        B"0110_0000_0000_0000", // 22. Clear I/O (wait state)
                        B"1000_0000_0100_0001", // 23. Push 0x41
-                       B"1000_0010_1000_0000", // 24. Push 0x080
-                       B"0110_0000_0100_0000", // 25. ALU I/O operation
-                       B"0110_0000_0000_0000", // 26. NOP (wait state for I/O)
+                       B"1000_0000_1000_0000", // 24. Push 0x080
+                       B"0110_0000_0100_0011", // 25. ALU I/O operation
+                       B"0110_0001_0000_0011", // 26. NOP (wait state for I/O)
                        B"0110_0000_0000_0000", // 27. Clear I/O
                        B"0110_0000_0000_0000", // 28. Clear I/O
                        B"0000_0000_0100_0110", // 29. Jump 70
@@ -109,8 +109,8 @@ object J1Config {
                        B"0110_0000_1000_1100", // 49. Return from Subroutine)
                        B"1010_1010_1010_1000", // 50. Push 0x2AA8 (Interrupt entry point)
                        B"1000_0000_0100_0000", // 51. Push 0x040
-                       B"0110_0000_0100_0000", // 52. ALU I/O operation
-                       B"0110_0000_0000_0000", // 53. NOP (wait state for I/O)
+                       B"0110_0000_0100_0011", // 52. ALU I/O operation
+                       B"0110_0001_0000_0011", // 53. NOP (wait state for I/O)
                        B"0110_0000_0000_0000", // 54. Clear I/O
                        B"0110_0000_0000_0000", // 55. Clear I/O (wait state)
                        B"0110_0001_0000_0011", // 56. Pop
@@ -118,8 +118,8 @@ object J1Config {
                        B"0110_0000_1000_1100", // 58. Return from subroutine
                        B"0110_0000_0000_0000", // 59. NOP
                        B"1000_0000_0100_0000", // 60. Push LED I/O address 0x40 (Interrupt entry point)
-                       B"0110_1101_0000_0001", // 61. Read data from I/O space
-                       B"0110_1101_0000_0000", // 62. Read data from I/O space
+                       B"0110_1101_0101_0000", // 61. Read data from I/O space
+                       B"0110_1101_0101_0000", // 62. Read data from I/O space
                        B"0110_0110_0000_0000", // 63. Negate DTOS
                        B"1000_0000_0100_0000", // 64. Push LED I/O address 0x40
                        B"0110_0000_0100_0000", // 65. Write data to I/O space
@@ -135,12 +135,12 @@ object J1Config {
                        B"0110_0001_0000_0011", // 75. Pop
                        B"1000_0000_1111_1111", // 76. Push some value
                        B"1000_0000_1100_0010", // 77. Push I/O address 0xC2
-                       B"0110_0000_0100_0000", // 78. ALU I/O operation (arbitrary non-zero value starts timer)
-                       B"0110_0000_0000_0000", // 79. NOP
+                       B"0110_0000_0100_0011", // 78. ALU I/O operation (arbitrary non-zero value starts timer)
+                       B"0110_0000_0000_0011", // 79. NOP
                        B"1000_0000_0000_0010", // 80. Push 2 to dstack (to enable interrupts)
                        B"1000_0000_1110_0000", // 81. Push IRQ-controller I/O address 0xE0
-                       B"0110_0000_0100_0000", // 82. Write data to I/O space
-                       B"0110_0000_0000_0000", // 83. NOP (wait state for I/O)
+                       B"0110_0000_0100_0011", // 82. Write data to I/O space
+                       B"0110_0000_0000_0011", // 83. NOP (wait state for I/O)
                        B"0000_0000_0101_0100", // 84. Jump 84
                        B"0110_0000_0000_0000", // 85. NOP
                        B"0110_0000_0000_0000", // 86. NOP
@@ -258,7 +258,7 @@ object J1Config {
     def returnStackIdxWidth    =  4
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
-    def adrWidth               =  9
+    def adrWidth               = 10
     def startAddress           =  0
 
     // IRQ controller parameters (disable all interrupts by default)
@@ -266,10 +266,10 @@ object J1Config {
 
     def bootCode() = isaTest() ++
                      List.fill((1 << adrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List.fill(1)(instrJMP50) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrJMP60) ++
-                     List.fill(1)(instrJMP50)
+                     List(instrJMP60) ++
+                     List(instrJMP60) ++
+                     List(instrJMP60) ++
+                     List(instrJMP60)
 
     // Set the configuration values for ISA debugging
     val config = J1Config(wordSize            = wordSize,

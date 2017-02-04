@@ -13,18 +13,30 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="795000000fs"></ZoomStartTime>
-      <ZoomEndTime time="1053000001fs"></ZoomEndTime>
-      <Cursor1Time time="1000000000fs"></Cursor1Time>
+      <ZoomStartTime time="990333333fs"></ZoomStartTime>
+      <ZoomEndTime time="1153133334fs"></ZoomEndTime>
+      <Cursor1Time time="1052500000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="127"></NameColumnWidth>
+      <NameColumnWidth column_width="160"></NameColumnWidth>
       <ValueColumnWidth column_width="63"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
-   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/extInt">
-      <obj_property name="ElementShortName">extInt[0:0]</obj_property>
-      <obj_property name="ObjectShortName">extInt[0:0]</obj_property>
+   <WVObjectSize size="24" />
+   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/clk100Mhz">
+      <obj_property name="ElementShortName">clk100Mhz</obj_property>
+      <obj_property name="ObjectShortName">clk100Mhz</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/core_clk">
+      <obj_property name="ElementShortName">core_clk</obj_property>
+      <obj_property name="ObjectShortName">core_clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/core_reset">
+      <obj_property name="ElementShortName">core_reset</obj_property>
+      <obj_property name="ObjectShortName">core_reset</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/rx">
       <obj_property name="ElementShortName">rx</obj_property>
@@ -46,20 +58,66 @@
       <obj_property name="ElementShortName">irq</obj_property>
       <obj_property name="ObjectShortName">irq</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/uut/coreArea_intCtrl/isEnabled">
+      <obj_property name="ElementShortName">isEnabled</obj_property>
+      <obj_property name="ObjectShortName">isEnabled</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_intCtrl/irqMaskState">
+      <obj_property name="ElementShortName">irqMaskState[15:0]</obj_property>
+      <obj_property name="ObjectShortName">irqMaskState[15:0]</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/J1SoC_IRQ_tb/leds">
       <obj_property name="ElementShortName">leds[15:0]</obj_property>
       <obj_property name="ObjectShortName">leds[15:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/clk100Mhz">
-      <obj_property name="ElementShortName">clk100Mhz</obj_property>
-      <obj_property name="ObjectShortName">clk100Mhz</obj_property>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/instrAdr">
+      <obj_property name="ElementShortName">instrAdr[9:0]</obj_property>
+      <obj_property name="ObjectShortName">instrAdr[9:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/reset">
-      <obj_property name="ElementShortName">reset</obj_property>
-      <obj_property name="ObjectShortName">reset</obj_property>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/memInstr">
+      <obj_property name="ElementShortName">memInstr[15:0]</obj_property>
+      <obj_property name="ObjectShortName">memInstr[15:0]</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/J1SoC_IRQ_tb/clk_period">
-      <obj_property name="ElementShortName">clk_period</obj_property>
-      <obj_property name="ObjectShortName">clk_period</obj_property>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/instr">
+      <obj_property name="ElementShortName">instr[15:0]</obj_property>
+      <obj_property name="ObjectShortName">instr[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/pc">
+      <obj_property name="ElementShortName">pc[9:0]</obj_property>
+      <obj_property name="ObjectShortName">pc[9:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/pcN">
+      <obj_property name="ElementShortName">pcN[9:0]</obj_property>
+      <obj_property name="ObjectShortName">pcN[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/dtos">
+      <obj_property name="ElementShortName">dtos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dtos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/dnos">
+      <obj_property name="ElementShortName">dnos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/dStackPtrInc">
+      <obj_property name="ElementShortName">dStackPtrInc[4:0]</obj_property>
+      <obj_property name="ObjectShortName">dStackPtrInc[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/rtos">
+      <obj_property name="ElementShortName">rtos[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rtos[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/rStackPtrInc">
+      <obj_property name="ElementShortName">rStackPtrInc[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rStackPtrInc[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/funcTtoN">
+      <obj_property name="ElementShortName">funcTtoN</obj_property>
+      <obj_property name="ObjectShortName">funcTtoN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_IRQ_tb/uut/coreArea_cpu/coreJ1CPU/funcTtoR">
+      <obj_property name="ElementShortName">funcTtoR</obj_property>
+      <obj_property name="ObjectShortName">funcTtoR</obj_property>
    </wvobject>
 </wave_config>
