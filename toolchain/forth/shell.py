@@ -42,7 +42,7 @@ class TetheredJ1a(swapforth.TetheredTarget):
             print("->: ", c)
             ser.write(c.encode('utf-8'))
             ser.flush()
-            time.sleep(0.001)
+            time.sleep(0.0001)
             ser.flushInput()
             print(repr(ser.read(ser.inWaiting())))
         ser.write(b'\r')
@@ -50,7 +50,7 @@ class TetheredJ1a(swapforth.TetheredTarget):
 
         while 1:
             c = ser.read(1)
-            #print(repr(c))
+            print(repr(c))
             if c == b'\x1e':
                 break
 
