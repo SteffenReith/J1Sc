@@ -359,7 +359,7 @@ object J1Config {
     def returnStackIdxWidth    =  5
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
-    def adrWidth               = 13
+    def adrWidth               = 12
     def startAddress           =  0
 
     // IRQ controller parameters (disable all interrupts by default)
