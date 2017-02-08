@@ -47,6 +47,8 @@ class J1Core(cfg : J1Config) extends Component {
   val pcPlusOne = pc + 1
   val pc2x = pc << 1
   pc2x.keep()
+  val pcMSB = pc.msb
+  pcMSB.keep()
 
   // Instruction to be executed (insert a call-instruction for an interrupt)
   val instr = Mux(io.irq, B"b010" ## (((1 << cfg.adrWidth) - 1) - io.intNo).resize(cfg.wordSize - 3), io.memInstr)
@@ -66,7 +68,7 @@ class J1Core(cfg : J1Config) extends Component {
   val dtos = RegNext(dtosN) init(0)
 
   // Data stack with read and write port
-  val dStack = Mem(Bits(cfg.wordSize bits), wordCount = 1 << cfg.dataStackIdxWidth)
+  val dStack = Mem(Bits(cfg.wordSize bits), wordCount = 1 << (cfg.dataStackIdxWidth))
   dStack.write(enable  = dStackWrite,
                address = dStackPtrN,
                data    = dtos)
@@ -76,14 +78,15 @@ class J1Core(cfg : J1Config) extends Component {
   val retPC = Mux(io.irq, pc.asBits, pcPlusOne.asBits)
 
   // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
-  val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC(retPC.high - 1  downto 0) ## B"b0").resized, dtos)
+  // val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC(retPC.high - 1  downto 0) ## B"b0").resized, dtos)
+  val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC ## B"b0").resized, dtos)
 
   // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
   val rStackPtr = RegNext(rStackPtrN) init((1 << cfg.returnStackIdxWidth) - 1)
 
   // Return stack with read and write port
-  val rStack = Mem(Bits(cfg.wordSize bits), wordCount = 1 << cfg.returnStackIdxWidth)
+  val rStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.returnStackIdxWidth))
   rStack.write(enable  = rStackWrite,
                address = rStackPtrN,
                data    = rtosN)
@@ -147,14 +150,14 @@ class J1Core(cfg : J1Config) extends Component {
   val funcWriteMem = (instr(6 downto 4).asUInt === 3) // Write to RAM
   val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O write operation
   val funcReadIO   = (instr(6 downto 4).asUInt === 5) // I/O read operation
-  val isALU        = !pc(cfg.adrWidth - 1) & (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
+  val isALU        = !pc.msb && (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Signals for handling external memory
   io.memWriteMode := !clrActive && isALU && funcWriteMem
-  io.ioWriteMode := !clrActive && isALU && funcWriteIO
-  io.ioReadMode := !clrActive && isALU && funcReadIO
-  io.extAdr := dtosN.asUInt
-  io.extToWrite := dnos
+  io.ioWriteMode  := !clrActive && isALU && funcWriteIO
+  io.ioReadMode   := !clrActive && isALU && funcReadIO
+  io.extAdr       := dtosN.asUInt
+  io.extToWrite   := dnos
 
   // Increment for data stack pointer
   val dStackPtrInc = SInt(cfg.dataStackIdxWidth bits)
@@ -209,10 +212,10 @@ class J1Core(cfg : J1Config) extends Component {
     is(M"1_-_---_-_-") {pcN := cfg.startAddress}
 
     // Check for jump, call instruction or conditional jump
-    is(M"0_0_000_-_-", M"0_0_010_-_-", M"0_0_001_-_0") {pcN := (B"0" ## instr(cfg.adrWidth - 1 downto 0)).asUInt}
+    is(M"0_0_000_-_-", M"0_0_010_-_-", M"0_0_001_-_0") {pcN := instr(cfg.adrWidth downto 0).asUInt}
 
-    // Check either for high address or R -> PC field of an ALU instruction
-    is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := (B"0" ## rtos(cfg.adrWidth downto 1)).asUInt}
+    // Check either for a high call or R -> PC field of an ALU instruction
+    is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := rtos(cfg.adrWidth + 1 downto 1).asUInt}
 
     // By default goto next instruction
     default {pcN := pcPlusOne}
