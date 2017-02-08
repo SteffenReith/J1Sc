@@ -56,14 +56,14 @@
 :: r>        rT    T->N      r-1 d+1 alu ;
 :: r@        rT    T->N          d+1 alu ;
 :: io@
-             T     _IORD_            alu
-             io[T]                   alu ;
+             io[T] _IORD_            alu
+             io[T] _IORD_            alu ;
 :: !         
              T     N->[T]        d-1 alu
              N                   d-1 alu ;
 :: io!       
              T     N->io[T]      d-1 alu
-             T     _IORD_        d-1 alu ;
+             N                   d-1 alu ;
      
 :: 2/        T2/                     alu ;
 :: 2*        T2*                     alu ;
