@@ -9,7 +9,7 @@
 \ image.
 \
 \ Modified by Steffen Reith (Steffen.Reith@hs-rm.de) at Tue Jan 3 16:20:00 GMT+1 2017
-\ for the Spinal HDL based implementation of J1 using another memory mapped layout
+\ for the Spinal HDL based implementation of J1 using a similar memory mapped layout
 \ and which has a simple interrupt system.
 \
 \ Some notes on idioms in this file:
@@ -83,14 +83,14 @@ header key ( -- c) \ note that 0x80 always set the high bit hence & 0xFF
 
 header emit
 : emit
-    begin
+    \ begin
 	\ h# 0086 io@ h# 00ff and 0<>
-	h# 0086 io@ h# 00ff and h# 0008 = 
-    until
+	\ h# 0086 io@ h# 00ff and h# 0008 = 
+    \ until
     h# 0080 _io!
-    begin
-	h# 0086 io@ h# 00ff and h# 0008 = 
-    until
+    \ begin
+    \ 	h# 0086 io@ h# 00ff and h# 0008 = 
+    \ until
 ;
 
 header space
@@ -1182,20 +1182,15 @@ header init :noname var:
 create init meta t' quit 2* target ,
 
 : main
-    \ init h# 0040 io!    
-    h# 0001 h# 0040 io!
-    \ drop
+    \ init @i execute
+    \ h# 0123 h# 0040 io!
     cr
     decimal
     tethered off
     h# 0002 h# 0040 io!
     key> drop
     h# 0004 h# 0040 io!
-    h# 0008 h# 0040 io!
-    h# 0010 h# 0040 io!
     init @i execute
-    h# 0020 h# 0040 io!
-    h# 0040 h# 0040 io!
 ;
 
 meta
