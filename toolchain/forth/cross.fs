@@ -403,8 +403,8 @@ decimal
 ;
 
 dumpbinall.16
+dumpall.16
 hex
 ." tdp " tdp @ .
 ." tcp " tcp @ .
-
 bye
