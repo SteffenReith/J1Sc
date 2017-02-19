@@ -33,15 +33,15 @@ class J1(cfg : J1Config) extends Component {
   val mainMem = new MainMemory(cfg)
 
   // Instruction port (read only)
-  mainMem.io.memInstrAdr <> coreJ1CPU.io.instrAdr
+  mainMem.io.memInstrAdr <> coreJ1CPU.io.nextInstrAdr
   coreJ1CPU.io.memInstr <> mainMem.io.memInstr
 
   // Select from which source the data should be read
   val coreMemRead = coreJ1CPU.io.ioReadMode ? io.cpuBus.readData | mainMem.io.memRead
 
-  // Connect the CPU core with the main memory
+  // Connect the CPU core with the main memory (convert the byte address to a cell address)
   mainMem.io.memWriteEnable <> coreJ1CPU.io.memWriteMode
-  mainMem.io.memAdr <> coreJ1CPU.io.extAdr
+  mainMem.io.memAdr <> coreJ1CPU.io.extAdr(coreJ1CPU.io.extAdr.high downto 1)
   mainMem.io.memWrite <> coreJ1CPU.io.extToWrite
 
   // Read port of CPU core (multiplexed)
