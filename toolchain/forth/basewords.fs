@@ -69,7 +69,8 @@
 :: 2*        T2*                     alu ;
 :: depth     status T->N         d+1 alu ;
 :: exit      T  RET              r-1 alu ;
-:: hack      T      N->io[T]         alu ;
+:: hack      T      N->io[T]         alu
+             N                       alu ;
 
 \ Elided words
 \ These words are supported by the hardware but are not
