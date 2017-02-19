@@ -52,7 +52,7 @@ class J1SoC (j1Cfg   : J1Config,
 
   }.setName("")
 
-  // Physical clock area
+  // Physical clock area (connected to a physical clock generator (e.g. crystal oscillator))
   val clkCtrl = new Area {
 
     // Create a new PLL and connect the input to 100Mhz
@@ -66,7 +66,7 @@ class J1SoC (j1Cfg   : J1Config,
     coreClockDomain.clock := pll.io.clkOut
     
     // Connect the new asynchron reset
-    coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert (
+    coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
       // Hold the reset as long as the PLL is not locked
       input = io.reset || ! pll.io.isLocked,
@@ -156,7 +156,8 @@ object J1SoC {
     //val j1Cfg = J1Config.debugIO
     //val j1Cfg = J1Config.debug
     val j1Cfg = J1Config.forth
-    val gpioCfg = GPIOConfig.default
+    //val gpioCfg = GPIOConfig.default
+    val gpioCfg = GPIOConfig.forth
 
     // Generate all VHDL files
     SpinalConfig(genVhdlPkg = true,
