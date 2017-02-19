@@ -67,7 +67,7 @@ header rshift
     drop
 ;
 
-header key? ( -- f ) \ true if character can be read 
+header key? ( -- f ) \ true if a character can be read 
 : key?
     h# 0086 io@ h# 0f00 and 0<>
 ;
@@ -83,14 +83,10 @@ header key ( -- c) \ note that 0x80 always set the high bit hence & 0xFF
 
 header emit
 : emit
-    \ begin
-	\ h# 0086 io@ h# 00ff and 0<>
-	\ h# 0086 io@ h# 00ff and h# 0008 = 
-    \ until
     h# 0080 _io!
-    \ begin
-    \ 	h# 0086 io@ h# 00ff and h# 0008 = 
-    \ until
+    begin
+     	h# 0086 io@ h# 000f and h# 0008 =
+    until
 ;
 
 header space
@@ -447,7 +443,6 @@ header align
     aligned
     dp _!
 ;
-
 
 header sfind
 : sfind
@@ -1104,11 +1099,13 @@ header char
 
 header accept
 : accept
+    	
     tethered @i if d# 30 emit then
-
+    
     >r d# 0  ( addr len R: maxlen )
 
     begin
+
         key    ( addr len key R: maxlen )
 
         d# 9 over= if drop d# 32 then
@@ -1127,7 +1124,7 @@ header accept
 
         d# 10 over= swap d# 13 = or
     until
-
+    
     rdrop nip
     space
 ;
@@ -1152,9 +1149,9 @@ header evaluate
 header quit
 : quit
     begin
-        refill drop
+	refill drop
         interpret
-        space
+	space
         [char] k
         [char] o 2emit
         cr
@@ -1178,18 +1175,25 @@ header delay
     drop
 ;
 
+header testIO
+: testIO
+    begin
+	key
+	dup
+	h# 0040 io!
+	dup 
+	emit emit
+    again
+;
+
 header init :noname var:
 create init meta t' quit 2* target ,
 
 : main
-    \ init @i execute
-    \ h# 0123 h# 0040 io!
     cr
     decimal
     tethered off
-    h# 0002 h# 0040 io!
     key> drop
-    h# 0004 h# 0040 io!
     init @i execute
 ;
 
