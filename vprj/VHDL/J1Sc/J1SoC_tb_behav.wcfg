@@ -13,15 +13,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="495500000fs"></ZoomStartTime>
-      <ZoomEndTime time="515800001fs"></ZoomEndTime>
-      <Cursor1Time time="527500000fs"></Cursor1Time>
+      <ZoomStartTime time="933500000fs"></ZoomStartTime>
+      <ZoomEndTime time="954400001fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="177"></NameColumnWidth>
-      <ValueColumnWidth column_width="68"></ValueColumnWidth>
+      <NameColumnWidth column_width="176"></NameColumnWidth>
+      <ValueColumnWidth column_width="63"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="29" />
+   <WVObjectSize size="31" />
    <wave_markers>
       <marker label="" time="590675000000" />
       <marker label="" time="17926920000" />
@@ -100,6 +100,10 @@
       <obj_property name="ElementShortName">rtos[15:0]</obj_property>
       <obj_property name="ObjectShortName">rtos[15:0]</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/rStackWrite">
+      <obj_property name="ElementShortName">rStackWrite</obj_property>
+      <obj_property name="ObjectShortName">rStackWrite</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/dStackPtr">
       <obj_property name="ElementShortName">dStackPtr[4:0]</obj_property>
       <obj_property name="ObjectShortName">dStackPtr[4:0]</obj_property>
@@ -119,6 +123,10 @@
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/dnos">
       <obj_property name="ElementShortName">dnos[15:0]</obj_property>
       <obj_property name="ObjectShortName">dnos[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/dStackWrite">
+      <obj_property name="ElementShortName">dStackWrite</obj_property>
+      <obj_property name="ObjectShortName">dStackWrite</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/pc">
       <obj_property name="ElementShortName">pc[12:0]</obj_property>
@@ -140,9 +148,9 @@
       <obj_property name="ElementShortName">pcMSB</obj_property>
       <obj_property name="ObjectShortName">pcMSB</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU_instrAdr">
-      <obj_property name="ElementShortName">coreJ1CPU_instrAdr[11:0]</obj_property>
-      <obj_property name="ObjectShortName">coreJ1CPU_instrAdr[11:0]</obj_property>
+   <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/nextInstrAdr">
+      <obj_property name="ElementShortName">nextInstrAdr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">nextInstrAdr[11:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1SoC_tb/uut/coreArea_cpu/coreJ1CPU/instr">
       <obj_property name="ElementShortName">instr[15:0]</obj_property>
