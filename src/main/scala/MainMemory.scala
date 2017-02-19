@@ -31,7 +31,7 @@ class MainMemory(cfg : J1Config) extends Component {
 
     // Memory port
     val memWriteEnable = in Bool
-    val memAdr         = in UInt(cfg.wordSize bits)
+    val memAdr         = in UInt(cfg.wordSize - 1 bits)
     val memWrite       = in Bits(cfg.wordSize bits)
     val memRead        = out Bits(cfg.wordSize bits)
 
@@ -44,7 +44,7 @@ class MainMemory(cfg : J1Config) extends Component {
   io.memInstr := lowMem.readSync(address = io.memInstrAdr, readUnderWrite = readFirst)
 
   // Calculate the number of needed rams
-  def noOfRAMs = (1 << (cfg.wordSize - cfg.adrWidth))
+  def noOfRAMs = (1 << (io.memAdr.getWidth - cfg.adrWidth))
 
   // Holds a complete list of memory blocks (start with first block)
   val ramList = if (noOfRAMs >= 1) {
@@ -64,9 +64,9 @@ class MainMemory(cfg : J1Config) extends Component {
 
     // Create the write port of the ith RAM
     ram.write(enable  = io.memWriteEnable &&
-                               (U(i) === io.memAdr(cfg.wordSize - 1 downto cfg.adrWidth)),
-                     address = io.memAdr(cfg.adrWidth - 1 downto 0),
-                     data    = io.memWrite)
+                               (U(i) === io.memAdr(io.memAdr.high downto cfg.adrWidth)),
+              address = io.memAdr(cfg.adrWidth - 1 downto 0),
+              data    = io.memWrite)
 
     // Create the read port of the ith RAM
     ram.readSync(address = io.memAdr(cfg.adrWidth - 1 downto 0),
@@ -75,6 +75,6 @@ class MainMemory(cfg : J1Config) extends Component {
   })
 
   // Multiplex the output
-  io.memRead := rPortsVec(RegNext(io.memAdr(cfg.wordSize - 1 downto cfg.adrWidth)))
+  io.memRead := rPortsVec(RegNext(io.memAdr(io.memAdr.high downto cfg.adrWidth)))
 
 }
