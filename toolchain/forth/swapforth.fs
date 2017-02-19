@@ -92,8 +92,13 @@ include core-ext.fs
         2@ forth 2! \ restore FORTH and DP
 ;
 
-: ms 0 do 5986 0 do loop loop ;
-: leds  4 io! ;
+( x -- ) \ wait x ms  
+: ms 0 do 9937 0 do loop loop ;
+
+( c -- ) \ push value to LED-register
+: leds
+    64 io!
+;
 
 : new
     s" | marker |" evaluate
