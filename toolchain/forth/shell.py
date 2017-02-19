@@ -6,7 +6,7 @@ import time
 import array
 import os
 
-sys.path.append("../shell")
+sys.path.append("shell")
 import swapforth
 
 class TetheredJ1a(swapforth.TetheredTarget):
@@ -18,39 +18,35 @@ class TetheredJ1a(swapforth.TetheredTarget):
         except:
             print("This tool needs PySerial, but it was not found")
             sys.exit(1)
-        self.ser = serial.Serial(port, 115200, timeout=None, rtscts=0)
+        self.ser = serial.Serial(port, 4 * 115200, timeout=None, rtscts=0)
 
     def reset(self, fullreset = True):
         ser = self.ser
         ser.setDTR(1)
+        if fullreset:
+            ser.setRTS(1)
+            ser.setRTS(0)
         ser.setDTR(0)
-        time.sleep(0.01)
         
         def waitcr():
             while ser.read(1) != chr(10):
                 pass
 
-        print("Vor waitcc")
         waitcr()
-        print("Nach waitcc 1")
         ser.write(b'\r')
         waitcr()
-        print("Nach waitcc 1")
 
-        print("For-Schleife")
         for c in ' 1 tth !':
-            print("->: ", c)
             ser.write(c.encode('utf-8'))
             ser.flush()
-            time.sleep(0.0001)
+            time.sleep(0.001)
             ser.flushInput()
-            print(repr(ser.read(ser.inWaiting())))
+            # print("In: ", c, "Out: ", repr(ser.read(ser.inWaiting())))
         ser.write(b'\r')
-        print("Nach For")
 
         while 1:
             c = ser.read(1)
-            print(repr(c))
+            # print(repr(c))
             if c == b'\x1e':
                 break
 
