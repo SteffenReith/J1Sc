@@ -8,8 +8,8 @@
  *
  * Remark: Initial code provided by Charles Papon (charles.papon.90@gmail.com)
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 7d1c8bdf1ebe82486ab1940129363eb697d41eeb
+ * Date: Tue Jan 3 02:22:52 2017 +0100
  */
 import spinal.core._
 import spinal.lib._
@@ -120,7 +120,7 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
             }
 
             // Execute the action which is registered to a write job on the actual address
-            case element : BusSlaveFactoryOnWrite => element.doThat()
+            case element : BusSlaveFactoryOnWriteAtAddress => element.doThat()
 
             // Ignore all other types of BusSlaveFactoryElements
             case _ =>
@@ -141,7 +141,7 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
             }
 
             // Execute the action which is registered to a read operation on the actual address
-            case element : BusSlaveFactoryOnRead => element.doThat()
+            case element : BusSlaveFactoryOnReadAtAddress => element.doThat()
 
             // Ignore all other types of BusSlaveFactoryElements
             case _ =>
