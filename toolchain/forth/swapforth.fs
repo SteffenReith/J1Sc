@@ -50,6 +50,7 @@
 ;
 
 include core.fs
+include peripheral.fs
 
 : /mod      >r s>d r> sm/rem ;
 : /         /mod nip ;
