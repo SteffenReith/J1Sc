@@ -1168,13 +1168,6 @@ header .s
     then
 ;
 
-header delay
-: delay
-    h# 0
-    begin h# 0001 + dup h# 1000 = until
-    drop
-;
-
 header testIO
 : testIO
     begin
