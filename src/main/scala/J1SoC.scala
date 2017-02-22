@@ -22,9 +22,7 @@ class PLL extends BlackBox {
     val clkOut = out Bool
     val isLocked = out Bool
 
-  }
-
-  noIoPrefix()
+  }.setName("")
 
 }
 
