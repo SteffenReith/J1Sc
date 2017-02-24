@@ -6,8 +6,8 @@
  * Module Name:    IOConfig - Holds the configuration of external IO components
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 36cbd51c6b3a17d79ab686c114992d30eba998a2
+ * Date: Tue Jan 3 09:58:51 2017 +0100
  */
 import spinal.lib.com.uart._
 
@@ -86,7 +86,7 @@ object J1UARTConfig {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
                               dataWidthMax = 8,
-                              baudrate = 4 * 115200,
+                              baudrate = 8 * 115200,
                               dataLength = 7,
                               parity = UartParityType.NONE,
                               stop = UartStopType.ONE,
