@@ -55,7 +55,7 @@ class J1Core(cfg : J1Config) extends Component {
 
   // Data stack pointer (set to first entry, which can be abitrary)
   val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)
-  val dStackPtr = RegNext(dStackPtrN) init((1 << cfg.dataStackIdxWidth) - 2)
+  val dStackPtr = RegNext(dStackPtrN) init(0)
 
   // Write enable signal for data stack
   val dStackWrite = Bool
@@ -83,7 +83,7 @@ class J1Core(cfg : J1Config) extends Component {
 
   // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
-  val rStackPtr = RegNext(rStackPtrN) init((1 << cfg.returnStackIdxWidth) - 1)
+  val rStackPtr = RegNext(rStackPtrN) init(0)
 
   // Return stack with read and write port
   val rStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.returnStackIdxWidth))
