@@ -7,9 +7,10 @@ How to build J1Sc
    (see https://github.com/SpinalHDL/SpinalHDL)
 
 2. setup Spinal HDL
-  (see http://spinalhdl.github.io/SpinalDoc/spinal_getting_started/)
+   (see http://spinalhdl.github.io/SpinalDoc/spinal_getting_started/)
 
-3. change directory to the clone and run "sbt publish-local" inside
+3. change directory to the new clone of SpinalHDL and run 
+   "sbt publish-local" inside
 
 4. change directory to J1Sc 
 
