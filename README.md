@@ -23,6 +23,7 @@
    found in "vprj/VHDL/J1Sc".
    Open the / create a project and add a PLL/MMCM IP using the
    ClockWizard. Use PLL as component name and create following ports:
+
        module PLL (
 
         // Clock out ports
@@ -35,6 +36,7 @@
         input         clkIn
 
        );
+
    Note that J1Sc runs fine with a 80Mhz Clock on a Nexys4 DDR from
    Digilent. Constraint files for the Nexys4 DDR can be found in
    "/src/main/xilinx/nexys4ddr"
