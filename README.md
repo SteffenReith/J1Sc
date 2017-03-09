@@ -11,12 +11,14 @@
 3. Change directory to the new clone of SpinalHDL and run 
    "sbt publish-local" inside
 
-4. Change directory to J1Sc 
+4. Change directory to J1Sc
 
-5. Run "cd toolchain/forth && make && cd ../.." to build the forth core
+5. Install gforth (e.g. sudo apt-get install gforth)
+
+6. Run "cd toolchain/forth && make && cd ../.." to build the forth core
    system
 
-6. Build J1Sc (either using the VHDL or the Verilog version). The
+7. Build J1Sc (either using the VHDL or the Verilog version) by "sbt run". The
    generated files can be found in "gen/src/vhdl/J1SoC.vhd" and
    "gen/src/verilog/J1SoC.v".
    The Xilinx Vivado project file "J1Sc.xpr" for the VHDL version can be
@@ -41,21 +43,20 @@
    Digilent. Constraint files for the Nexys4 DDR can be found in
    "/src/main/xilinx/nexys4ddr"
 
-7. Build J1Sc and send the .bit file to your FPGA
+8. Build J1Sc and send the .bit file to your FPGA
 
-8. "cd toolchain/forth"
+9. "cd toolchain/forth"
 
-9. Become root and run "bin/confs" (note that you have to set the serial
+10. Become root and run "bin/confs" (note that you have to set the serial
    port appropriately)
 
-10. Press the reset button (default is BTNC on the Nexys4 DDR). You should
+11. Press the reset button (default is BTNC on the Nexys4 DDR). You should
     see something like:
     `Contacting... established`
     `Loaded 143 words`
 
-11. Type "#include SwapForth.fs"
+12. Type "#include SwapForth.fs"
 
-12. turn on the leds by the command "hex ffff leds!"
+13. turn on the leds by the command "hex ffff leds!"
 
-13. Have fun with a working forth system
-
+14. Have fun with a working forth system
