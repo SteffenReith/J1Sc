@@ -6,8 +6,8 @@
  * Module Name:    IOConfig - Holds the configuration of external IO components
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 36cbd51c6b3a17d79ab686c114992d30eba998a2
- * Date: Tue Jan 3 09:58:51 2017 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.lib.com.uart._
 

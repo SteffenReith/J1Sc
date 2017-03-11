@@ -6,8 +6,8 @@
  * Module Name:    J1Config - Holds a complete CPU configuration
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 642e2856b75cc7772f789e4681fe66262b47ce7b
- * Date: Tue Jan 3 02:19:11 2017 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.core._
 import scala.io.Source

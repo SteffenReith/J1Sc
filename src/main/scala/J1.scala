@@ -6,8 +6,8 @@
  * Module Name:    J1 - Toplevel CPU (Core, Memory)
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 0a82e2997654f501bf8937447a1521127602ea03
- * Date: Tue Nov 1 15:35:55 2016 +0100
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
 import spinal.core._
 import spinal.lib._
