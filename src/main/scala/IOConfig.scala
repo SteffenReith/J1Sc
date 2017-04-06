@@ -11,6 +11,24 @@
  */
 import spinal.lib.com.uart._
 
+// Configuration of a PMod-interface
+case class GPIOConfig(width : Int)
+
+object GPIOConfig {
+
+  // Provide a default configuration
+  def default = {
+
+    // Default configuration values
+    val config = GPIOConfig(width = 8)
+
+    // Return the default configuration
+    config
+
+  }
+
+}
+
 // Configuration of a LED-array
 case class LEDArrayConfig(width : Int, lowActive : Boolean)
 
@@ -102,19 +120,21 @@ object J1UARTConfig {
 
 }
 
-// Configuration of all GPIO components
-case class GPIOConfig (ledBankConfig  : LEDArrayConfig,
-                       timerConfig    : TimerConfig,
-                       uartConfig     : J1UARTConfig,
-                       gpioWaitStates : Int)
+// Configuration of all IO components
+case class IOConfig(pmodConfig     : GPIOConfig,
+                    ledBankConfig  : LEDArrayConfig,
+                    timerConfig    : TimerConfig,
+                    uartConfig     : J1UARTConfig,
+                    gpioWaitStates : Int)
 
-object GPIOConfig {
+object IOConfig {
 
   // Provide a default configuration
   def default = {
 
     // Default configuration values
-    val config = GPIOConfig(ledBankConfig = LEDArrayConfig.default,
+    val config = IOConfig(pmodConfig      = GPIOConfig.default,
+                            ledBankConfig = LEDArrayConfig.default,
                             timerConfig   = TimerConfig.default,
                             uartConfig    = J1UARTConfig.default,
                             1)
@@ -128,7 +148,8 @@ object GPIOConfig {
   def forth = {
 
     // Default configuration values
-    val config = GPIOConfig(ledBankConfig = LEDArrayConfig.default,
+    val config = IOConfig(pmodConfig      = GPIOConfig.default,
+                            ledBankConfig = LEDArrayConfig.default,
                             timerConfig   = TimerConfig.default,
                             uartConfig    = J1UARTConfig.forth,
                             1)
