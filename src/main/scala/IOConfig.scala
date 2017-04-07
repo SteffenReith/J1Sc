@@ -6,8 +6,8 @@
  * Module Name:    IOConfig - Holds the configuration of external IO components
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 35106bb9e0e0410cda9cee1bc93e97d52a8e626a
+ * Date: Sat Mar 11 17:26:51 2017 +0100
  */
 import spinal.lib.com.uart._
 
@@ -121,7 +121,7 @@ object J1UARTConfig {
 }
 
 // Configuration of all IO components
-case class IOConfig(pmodConfig     : GPIOConfig,
+case class IOConfig(gpioConfig     : GPIOConfig,
                     ledBankConfig  : LEDArrayConfig,
                     timerConfig    : TimerConfig,
                     uartConfig     : J1UARTConfig,
@@ -133,11 +133,11 @@ object IOConfig {
   def default = {
 
     // Default configuration values
-    val config = IOConfig(pmodConfig      = GPIOConfig.default,
-                            ledBankConfig = LEDArrayConfig.default,
-                            timerConfig   = TimerConfig.default,
-                            uartConfig    = J1UARTConfig.default,
-                            1)
+    val config = IOConfig(gpioConfig    = GPIOConfig.default,
+                          ledBankConfig = LEDArrayConfig.default,
+                          timerConfig   = TimerConfig.default,
+                          uartConfig    = J1UARTConfig.default,
+                          1)
 
     // Return the default configuration
     config
@@ -148,11 +148,11 @@ object IOConfig {
   def forth = {
 
     // Default configuration values
-    val config = IOConfig(pmodConfig      = GPIOConfig.default,
-                            ledBankConfig = LEDArrayConfig.default,
-                            timerConfig   = TimerConfig.default,
-                            uartConfig    = J1UARTConfig.forth,
-                            1)
+    val config = IOConfig(gpioConfig    = GPIOConfig.default,
+                          ledBankConfig = LEDArrayConfig.default,
+                          timerConfig   = TimerConfig.default,
+                          uartConfig    = J1UARTConfig.forth,
+                          1)
 
     // Return the forth configuration
     config
