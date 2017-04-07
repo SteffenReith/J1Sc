@@ -31,16 +31,10 @@ end J1ScNexys4DDR;
 
 architecture Structural of J1ScNexys4DDR is
 
-  signal reset             : in  std_logic;
-  signal clk100Mhz         : in  std_logic;
-  signal extInt            : in  std_logic_vector(0 downto 0);
-  signal leds              : out std_logic_vector(15 downto 0);
-  signal pmodA_read        : in  std_logic_vector(7 downto 0);
-  signal pmodA_write       : out std_logic_vector(7 downto 0);
-  signal pmodA_writeEnable : out std_logic_vector(7 downto 0);
-  signal rx                : in  std_logic;
-  signal tx                : out std_logic
-
+  signal pmodA_read        : std_logic_vector(7 downto 0);
+  signal pmodA_write       : std_logic_vector(7 downto 0);
+  signal pmodA_writeEnable : std_logic_vector(7 downto 0);
+  
 begin
 
   -- Instantiate the JSoC created by Spinal
@@ -50,8 +44,8 @@ begin
               extInt            => extInt,
               leds              => leds,
               pmodA_read        => pmodA_read,
-              pmodA_write       => pmodA_write
-              pmodA_writeEnable => pmodB_write
+              pmodA_write       => pmodA_write,
+              pmodA_writeEnable => pmodA_writeEnable,
               rx                => rx,
               tx                => tx);
 
