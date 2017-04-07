@@ -6,12 +6,13 @@
  * Module Name:    J1SoC - A small but complete system based on the J1-core
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 35106bb9e0e0410cda9cee1bc93e97d52a8e626a
+ * Date: Sat Mar 11 17:26:51 2017 +0100
  */
 import spinal.core._
 import spinal.lib._
 import spinal.lib.com.uart._
+import spinal.lib.io._
 
 // Provide a PLL
 class PLL extends BlackBox {
@@ -41,8 +42,10 @@ class J1SoC (j1Cfg : J1Config,
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
 
     // The physical pins for the connected FPGAs
-    //val leds = out Bits(gpioCfg.ledBankConfig.width bits)
-    val leds = out Bits(16 bits)
+    val leds = out Bits(ioCfg.ledBankConfig.width bits)
+
+    // The physical pins for pmod A
+    val pmodA = master(TriStateArray(8 bits))
 
     // I/O pins for the UART
     val rx =  in Bool // UART input
@@ -90,6 +93,15 @@ class J1SoC (j1Cfg : J1Config,
 
     // Connect the physical LED pins to the outside world
     io.leds := ledArray.io.leds
+
+    // Create a PMOD at base address 0x60
+    val pmodA = new GPIO(ioCfg.gpioConfig)
+    val pmodABridge = pmodA.driveFrom(peripheralBusCtrl, 0x60)
+
+    // Connect the gpio register to pmodA
+    io.pmodA.write <> pmodA.io.dataOut
+    pmodA.io.dataIn <> io.pmodA.read
+    io.pmodA.writeEnable <> pmodA.io.directions
 
     // Create two timer and map it at 0xC0 and 0xD0
     val timerA = new Timer(ioCfg.timerConfig)

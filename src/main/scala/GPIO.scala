@@ -12,7 +12,7 @@
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
-class GPIO(j1Cfg : J1Config, gpioCfg : GPIOConfig) extends Component {
+class GPIO(gpioCfg : GPIOConfig) extends Component {
 
   // Give a warning if the GPIO-register is not used as a PMOD
   assert(Bool(gpioCfg.width != 8), "Warning: A PMod according to the digilent specification has width 8!", ERROR)
@@ -21,12 +21,12 @@ class GPIO(j1Cfg : J1Config, gpioCfg : GPIOConfig) extends Component {
 
     // Ports used for the direction register
     val dirEnable  = in Bool
-    val dirState   = in Bits(gpioCfg.width bits)
+    val dirValue   = in Bits (gpioCfg.width bits)
     val directions = out Bits(gpioCfg.width bits)
 
     // Ports used the the data register
     val dataEnable = in Bool
-    val dataState  = in Bits(gpioCfg.width bits)
+    val dataValue  = in Bits (gpioCfg.width bits)
     val dataIn     = in Bits(gpioCfg.width bits)
     val dataOut    = out Bits(gpioCfg.width bits)
 
@@ -34,22 +34,22 @@ class GPIO(j1Cfg : J1Config, gpioCfg : GPIOConfig) extends Component {
   }.setName("")
 
   // Register for holding the direction of the GPIO register
-  val dirReg = RegNextWhen(io.dirState, io.dirEnable) init(0)
+  val dirReg = RegNextWhen(io.dirValue, io.dirEnable) init (0)
 
   // Propagate the contents of the direction register to the interface
   io.directions := dirReg
 
   // Register for holding the IO data
+  val dataRegN = Bits(gpioCfg.width bits)
   val dataReg = RegNext(dataRegN) init(0)
 
   // Check if the register was addressed by a bus transfer
-  val dataRegN = Bits(gpioCfg.width bits)
   when (io.dataEnable) {
 
     // Select and update the bits to be read / written
-    dataRegN := (io.dataIn & (~io.directions)) | (io.dataState & io.directions)
+    dataRegN := (io.dataIn & (~io.directions)) | (io.dataValue & io.directions)
 
-  } .otherwise {
+  }.otherwise {
 
     // Update only bits to be read
     dataRegN := dataReg | (io.dataIn & (~io.directions))
@@ -64,12 +64,12 @@ class GPIO(j1Cfg : J1Config, gpioCfg : GPIOConfig) extends Component {
 
     // The direction register is mapped at address 0 and is of type r/w
     busCtrl.read(io.directions, baseAddress + 0, 0)
-    busCtrl.nonStopWrite(io.dirState, 0) // contents of direction register will be constantly driven by the bus
+    busCtrl.nonStopWrite(io.dirValue, 0) // contents of direction register will be constantly driven by the bus
     io.dirEnable := busCtrl.isWriting(baseAddress + 0)
 
     // The data register is mapped at address 4 and is of type r/w
     busCtrl.read(io.dataOut, baseAddress + 4, 0)
-    busCtrl.nonStopWrite(io.dataState, 0) // contents of direction register will be constantly driven by the bus
+    busCtrl.nonStopWrite(io.dataValue, 0) // contents of direction register will be constantly driven by the bus
     io.dataEnable := busCtrl.isWriting(baseAddress + 4)
 
   }
