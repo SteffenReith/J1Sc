@@ -1,4 +1,4 @@
-# J1Sc - A simple reimplementation of the J1 CPU in Scala using Spinal HDL
+# J1Sc - A simple reimplementation of the [J1 CPU](http://www.excamera.com/sphinx/fpga-j1.html) in Scala using Spinal HDL
 
 ## How to build J1Sc
 
@@ -8,14 +8,14 @@
 2. Setup Spinal HDL
    (see http://spinalhdl.github.io/SpinalDoc/spinal_getting_started/)
 
-3. Change directory to the new clone of SpinalHDL and run 
-   "sbt publish-local" inside
+3. Change directory to the new clone of SpinalHDL and run
+   `sbt publish-local` inside
 
 4. Change directory to J1Sc
 
-5. Install gforth (e.g. sudo apt-get install gforth)
+5. Install gforth (e.g. `sudo apt-get install gforth`)
 
-6. Run "cd toolchain/forth && make && cd ../.." to build the forth core
+6. Run `cd toolchain/forth && make && cd ../..` to build the forth core
    system
 
 7. Build J1Sc (either using the VHDL or the Verilog version) by "sbt run". The
@@ -43,9 +43,10 @@
    Digilent. Constraint files for the Nexys4 DDR can be found in
    "/src/main/xilinx/nexys4ddr"
 
-8. Build J1Sc and send the .bit file to your FPGA
+8. Build J1Sc (see "gen/src/vhdl" or "gen/src/verilog") and send the .bit
+   file to your FPGA/board (use e.g. "J1ScNexys4DDR.vhd" as toplevel module)
 
-9. "cd toolchain/forth"
+9. `cd toolchain/forth`
 
 10. Become root and run "bin/confs" (note that you have to set the serial
    port appropriately)
@@ -55,8 +56,8 @@
     `Contacting... established`
     `Loaded 143 words`
 
-12. Type "#include SwapForth.fs"
+12. Type `#include SwapForth.fs`
 
-13. turn on the leds by the command "hex ffff leds!"
+13. turn on the leds by the command `hex ffff leds!`
 
 14. Have fun with a working forth system

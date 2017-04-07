@@ -6,10 +6,28 @@
  * Module Name:    IOConfig - Holds the configuration of external IO components
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 35106bb9e0e0410cda9cee1bc93e97d52a8e626a
+ * Date: Sat Mar 11 17:26:51 2017 +0100
  */
 import spinal.lib.com.uart._
+
+// Configuration of a PMod-interface
+case class GPIOConfig(width : Int)
+
+object GPIOConfig {
+
+  // Provide a default configuration
+  def default = {
+
+    // Default configuration values
+    val config = GPIOConfig(width = 8)
+
+    // Return the default configuration
+    config
+
+  }
+
+}
 
 // Configuration of a LED-array
 case class LEDArrayConfig(width : Int, lowActive : Boolean)
@@ -102,22 +120,24 @@ object J1UARTConfig {
 
 }
 
-// Configuration of all GPIO components
-case class GPIOConfig (ledBankConfig  : LEDArrayConfig,
-                       timerConfig    : TimerConfig,
-                       uartConfig     : J1UARTConfig,
-                       gpioWaitStates : Int)
+// Configuration of all IO components
+case class IOConfig(gpioConfig    : GPIOConfig,
+                    ledBankConfig : LEDArrayConfig,
+                    timerConfig   : TimerConfig,
+                    uartConfig    : J1UARTConfig,
+                    ioWaitStates  : Int)
 
-object GPIOConfig {
+object IOConfig {
 
   // Provide a default configuration
   def default = {
 
     // Default configuration values
-    val config = GPIOConfig(ledBankConfig = LEDArrayConfig.default,
-                            timerConfig   = TimerConfig.default,
-                            uartConfig    = J1UARTConfig.default,
-                            1)
+    val config = IOConfig(gpioConfig    = GPIOConfig.default,
+                          ledBankConfig = LEDArrayConfig.default,
+                          timerConfig   = TimerConfig.default,
+                          uartConfig    = J1UARTConfig.default,
+                          1)
 
     // Return the default configuration
     config
@@ -128,10 +148,11 @@ object GPIOConfig {
   def forth = {
 
     // Default configuration values
-    val config = GPIOConfig(ledBankConfig = LEDArrayConfig.default,
-                            timerConfig   = TimerConfig.default,
-                            uartConfig    = J1UARTConfig.forth,
-                            1)
+    val config = IOConfig(gpioConfig    = GPIOConfig.default,
+                          ledBankConfig = LEDArrayConfig.default,
+                          timerConfig   = TimerConfig.default,
+                          uartConfig    = J1UARTConfig.forth,
+                          1)
 
     // Return the forth configuration
     config

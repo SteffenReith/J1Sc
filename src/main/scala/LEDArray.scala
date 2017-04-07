@@ -18,7 +18,7 @@ class LEDArray(cfg : LEDArrayConfig) extends Component {
 
     // I/O signals for memory data port
     val writeEnable = in Bool
-    val ledState    = in Bits(cfg.width bits)
+    val ledValue    = in Bits (cfg.width bits)
     val leds        = out Bits(cfg.width bits)
 
   }.setName("")
@@ -30,7 +30,7 @@ class LEDArray(cfg : LEDArrayConfig) extends Component {
   when(io.writeEnable) {
 
     // Set register value
-    ledReg := io.ledState
+    ledReg := io.ledValue
 
   }
 
@@ -52,7 +52,7 @@ class LEDArray(cfg : LEDArrayConfig) extends Component {
       busCtrl.read(io.leds, baseAddress + 0, 0)
 
     }
-    busCtrl.nonStopWrite(io.ledState, 0) // ledState will be constantly driven by the data of the memory bus
+    busCtrl.nonStopWrite(io.ledValue, 0) // ledState will be constantly driven by the data of the memory bus
     io.writeEnable := busCtrl.isWriting(baseAddress + 0)
 
   }

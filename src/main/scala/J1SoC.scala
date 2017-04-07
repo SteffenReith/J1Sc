@@ -6,12 +6,14 @@
  * Module Name:    J1SoC - A small but complete system based on the J1-core
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 4a634ab740f526235cc482e3cced0d13c45895e8
- * Date: Fri Apr 7 19:29:33 2017 +0200
+ * Hash: <COMMITHASH>
+ * Date: <AUTHORDATE>
  */
+
 import spinal.core._
 import spinal.lib._
 import spinal.lib.com.uart._
+import spinal.lib.io._
 
 // Provide a PLL
 class PLL extends BlackBox {
@@ -26,8 +28,8 @@ class PLL extends BlackBox {
 
 }
 
-class J1SoC (j1Cfg   : J1Config,
-             gpioCfg : GPIOConfig) extends Component {
+class J1SoC (j1Cfg : J1Config,
+             ioCfg : IOConfig) extends Component {
 
   val io = new Bundle {
 
@@ -41,8 +43,10 @@ class J1SoC (j1Cfg   : J1Config,
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
 
     // The physical pins for the connected FPGAs
-    //val leds = out Bits(gpioCfg.ledBankConfig.width bits)
-    val leds = out Bits(16 bits)
+    val leds = out Bits(ioCfg.ledBankConfig.width bits)
+
+    // The physical pins for pmod A
+    val pmodA = master(TriStateArray(ioCfg.gpioConfig.width bits))
 
     // I/O pins for the UART
     val rx =  in Bool // UART input
@@ -62,7 +66,7 @@ class J1SoC (j1Cfg   : J1Config,
 
     // Connect the synthesized clock
     coreClockDomain.clock := pll.io.clkOut
-    
+
     // Connect the new asynchron reset
     coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
@@ -81,38 +85,47 @@ class J1SoC (j1Cfg   : J1Config,
     val cpu = new J1(j1Cfg)
 
     // Create a delayed version of the cpu core interface to GPIO
-    val peripheralBus = cpu.io.cpuBus.delayed(gpioCfg.gpioWaitStates)
+    val peripheralBus = cpu.io.cpuBus.delayed(ioCfg.ioWaitStates)
     val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
     // Create a LED array at base address 0x40
-    val ledArray = new LEDArray(gpioCfg.ledBankConfig)
+    val ledArray = new LEDArray(ioCfg.ledBankConfig)
     val ledBridge = ledArray.driveFrom(peripheralBusCtrl, 0x40)
 
     // Connect the physical LED pins to the outside world
     io.leds := ledArray.io.leds
 
+    // Create a PMOD at base address 0x60
+    val pmodA = new GPIO(ioCfg.gpioConfig)
+    val pmodABridge = pmodA.driveFrom(peripheralBusCtrl, 0x60)
+
+    // Connect the gpio register to pmodA
+    io.pmodA.write <> pmodA.io.dataOut
+    pmodA.io.dataIn <> io.pmodA.read
+    io.pmodA.writeEnable <> pmodA.io.directions
+
     // Create two timer and map it at 0xC0 and 0xD0
-    val timerA = new Timer(gpioCfg.timerConfig)
+    val timerA = new Timer(ioCfg.timerConfig)
     val timerABridge = timerA.driveFrom(peripheralBusCtrl, 0xC0)
-    val timerB = new Timer(gpioCfg.timerConfig)
+    val timerB = new Timer(ioCfg.timerConfig)
     val timerBBridge = timerB.driveFrom(peripheralBusCtrl, 0xD0)
 
     // Create an UART interface with fixed capabilities
-    val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax = gpioCfg.uartConfig.dataWidthMax,
-      clockDividerWidth = gpioCfg.uartConfig.clockDividerWidth,
-      preSamplingSize = gpioCfg.uartConfig.preSamplingSize,
-      samplingSize = gpioCfg.uartConfig.samplingSize,
-      postSamplingSize = gpioCfg.uartConfig.postSamplingSize)
-    val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = gpioCfg.uartConfig.baudrate,
-      dataLength = gpioCfg.uartConfig.dataLength,
-      parity = gpioCfg.uartConfig.parity,
-      stop = gpioCfg.uartConfig.stop)
+    val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax = ioCfg.uartConfig.dataWidthMax,
+      clockDividerWidth = ioCfg.uartConfig.clockDividerWidth,
+      preSamplingSize = ioCfg.uartConfig.preSamplingSize,
+      samplingSize = ioCfg.uartConfig.samplingSize,
+      postSamplingSize = ioCfg.uartConfig.postSamplingSize)
+    val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = ioCfg.uartConfig.baudrate,
+      dataLength = ioCfg.uartConfig.dataLength,
+      parity = ioCfg.uartConfig.parity,
+      stop = ioCfg.uartConfig.stop)
     val uartCtrlMemoryMappedConfig = UartCtrlMemoryMappedConfig(uartCtrlConfig = uartCtrlGenerics,
       initConfig = uartCtrlInitConfig,
       busCanWriteClockDividerConfig = false,
       busCanWriteFrameConfig = false,
-      txFifoDepth = gpioCfg.uartConfig.fifoDepth,
-      rxFifoDepth = gpioCfg.uartConfig.fifoDepth)
+      txFifoDepth = ioCfg.uartConfig.fifoDepth,
+      rxFifoDepth = ioCfg.uartConfig.fifoDepth)
     val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
     // Map the UART to 0x80 and enable the generation of read interrupts
@@ -155,7 +168,7 @@ object J1SoC {
     //val j1Cfg = J1Config.debug
     val j1Cfg = J1Config.forth
     //val gpioCfg = GPIOConfig.default
-    val gpioCfg = GPIOConfig.forth
+    val gpioCfg = IOConfig.forth
 
     // Generate all VHDL files
     SpinalConfig(genVhdlPkg = true,
