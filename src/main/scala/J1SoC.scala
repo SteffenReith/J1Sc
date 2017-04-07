@@ -45,7 +45,7 @@ class J1SoC (j1Cfg : J1Config,
     val leds = out Bits(ioCfg.ledBankConfig.width bits)
 
     // The physical pins for pmod A
-    val pmodA = master(TriStateArray(8 bits))
+    val pmodA = master(TriStateArray(ioCfg.gpioConfig.width bits))
 
     // I/O pins for the UART
     val rx =  in Bool // UART input
@@ -84,7 +84,7 @@ class J1SoC (j1Cfg : J1Config,
     val cpu = new J1(j1Cfg)
 
     // Create a delayed version of the cpu core interface to GPIO
-    val peripheralBus = cpu.io.cpuBus.delayed(ioCfg.gpioWaitStates)
+    val peripheralBus = cpu.io.cpuBus.delayed(ioCfg.ioWaitStates)
     val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
     // Create a LED array at base address 0x40
