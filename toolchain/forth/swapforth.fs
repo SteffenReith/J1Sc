@@ -96,11 +96,6 @@ include core-ext.fs
 ( x -- ) \ wait x ms  
 : ms 0 do 9937 0 do loop loop ;
 
-( c -- ) \ push value to LED-register
-: leds
-    64 io!
-;
-
 : new
     s" | marker |" evaluate
 ;
