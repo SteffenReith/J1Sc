@@ -121,11 +121,11 @@ object J1UARTConfig {
 }
 
 // Configuration of all IO components
-case class IOConfig(gpioConfig     : GPIOConfig,
-                    ledBankConfig  : LEDArrayConfig,
-                    timerConfig    : TimerConfig,
-                    uartConfig     : J1UARTConfig,
-                    gpioWaitStates : Int)
+case class IOConfig(gpioConfig    : GPIOConfig,
+                    ledBankConfig : LEDArrayConfig,
+                    timerConfig   : TimerConfig,
+                    uartConfig    : J1UARTConfig,
+                    ioWaitStates  : Int)
 
 object IOConfig {
 
