@@ -11,7 +11,7 @@
 \ Date: <AUTHORDATE>
 \ \
 
-( c -- ) \  write value to LED-register
+( c -- ) \ write value to LED-register
 : leds!
     64 io!
 ;
@@ -19,5 +19,25 @@
 ( -- c) \ read the current value of the LED-register
 : leds@
     64 io@
+;
+
+( c -- ) \ write to the directions register of PModA
+: pmodADir!
+    96 io!
+;
+
+( -- c) \ read the directions register of PModA
+: pmodADir@
+    96 io@
+;
+
+( c -- ) \ write value to PModA (read pins are ignored)
+: pmodA!
+    100 io!
+;
+
+( -- c) \ read the value of PModA
+: pmodA@
+    100 io@
 ;
 
