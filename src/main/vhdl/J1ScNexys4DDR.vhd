@@ -37,7 +37,7 @@ architecture Structural of J1ScNexys4DDR is
   
 begin
 
-  -- Instantiate the JSoC created by Spinal
+  -- Instantiate the J1SoC core created by Spinal
   core : entity work.J1SoC
     port map (reset             => reset,
               clk100Mhz         => clk100Mhz,
