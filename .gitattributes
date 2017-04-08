@@ -2,4 +2,5 @@
 *.vhdl  filter=keywords
 *.vhd   filter=keywords
 *.fs    filter=keywords
+*.v     filter=keywords
 
