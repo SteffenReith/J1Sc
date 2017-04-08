@@ -84,7 +84,7 @@ class J1SoC (j1Cfg : J1Config,
     // Create a new CPU core
     val cpu = new J1(j1Cfg)
 
-    // Create a delayed version of the cpu core interface to GPIO
+    // Create a delayed version of the cpu core interface to IO-peripherals
     val peripheralBus = cpu.io.cpuBus.delayed(ioCfg.ioWaitStates)
     val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
