@@ -6,8 +6,8 @@
  * Module Name:    J1Config - Holds a complete CPU configuration
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 35106bb9e0e0410cda9cee1bc93e97d52a8e626a
+ * Date: Sat Mar 11 17:26:51 2017 +0100
  */
 import spinal.core._
 import scala.io.Source
@@ -41,6 +41,7 @@ case class J1Config (wordSize : Int,
                      returnStackIdxWidth : Int,
                      irqConfig : IRQCtrlConfig,
                      adrWidth : Int,
+                     numOfRAMs : Int,
                      startAddress : Int,
                      bootCode : () => List[Bits])
 
@@ -208,9 +209,6 @@ object J1Config {
     // Only use valid lines (so anything not matching a number is a comment)
     val filteredLines = lines.filter((s : String) => s.matches("[0-9A-F]+"))
 
-    // Write a message
-    println("[J1Sc] The Forth base system has " + filteredLines.length + " words")
-
     // Convert it to a list of Bits of width w
     filteredLines.map((s : String) => binToBits(s, w))
 
@@ -226,6 +224,7 @@ object J1Config {
     def noOfInterrupts         =  8
     def noOfInternalInterrupts =  1
     def adrWidth               = 13
+    def numOfRAMs              =  2
     def startAddress           =  0
 
     // IRQ controller parameters (disable all interrupts by default)
@@ -241,6 +240,7 @@ object J1Config {
                           returnStackIdxWidth = returnStackIdxWidth,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
+                          numOfRAMs           = numOfRAMs,
                           startAddress        = startAddress,
                           bootCode            = bootCode)
 
@@ -259,6 +259,7 @@ object J1Config {
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def adrWidth               = 10
+    def numOfRAMs              =  2
     def startAddress           =  0
 
     // IRQ controller parameters (disable all interrupts by default)
@@ -277,6 +278,7 @@ object J1Config {
                           returnStackIdxWidth = returnStackIdxWidth,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
+                          numOfRAMs           = numOfRAMs,
                           startAddress        = startAddress,
                           bootCode            = bootCode)
 
@@ -294,6 +296,7 @@ object J1Config {
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def adrWidth               = 13
+    def numOfRAMs              =  2
     def startAddress           =  0
 
     // IRQ controller parameters (disable all interrupts by default)
@@ -308,6 +311,7 @@ object J1Config {
                           returnStackIdxWidth = returnStackIdxWidth,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
+                          numOfRAMs           = numOfRAMs,
                           startAddress        = startAddress,
                           bootCode            = bootCode)
 
@@ -325,6 +329,7 @@ object J1Config {
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def adrWidth               =  9
+    def numOfRAMs              =  2
     def startAddress           =  0
 
     // IRQ controller parameters (enable all interrupts by default)
@@ -343,6 +348,7 @@ object J1Config {
                           returnStackIdxWidth = returnStackIdxWidth,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
+                          numOfRAMs           = numOfRAMs,
                           startAddress        = startAddress,
                           bootCode            = bootCode)
 
@@ -360,6 +366,7 @@ object J1Config {
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def adrWidth               = 12
+    def numOfRAMs              =  2
     def startAddress           =  0
 
     // IRQ controller parameters (disable all interrupts by default)
@@ -377,6 +384,7 @@ object J1Config {
                           returnStackIdxWidth = returnStackIdxWidth,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
+                          numOfRAMs           = numOfRAMs,
                           startAddress        = startAddress,
                           bootCode            = bootCode)
 

@@ -6,8 +6,8 @@
  * Module Name:    J1 - Toplevel CPU (Core, Memory)
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
+ * Hash: 35106bb9e0e0410cda9cee1bc93e97d52a8e626a
+ * Date: Sat Mar 11 17:26:51 2017 +0100
  */
 import spinal.core._
 import spinal.lib._
@@ -36,13 +36,13 @@ class J1(cfg : J1Config) extends Component {
   mainMem.io.memInstrAdr <> coreJ1CPU.io.nextInstrAdr
   coreJ1CPU.io.memInstr <> mainMem.io.memInstr
 
-  // Select from which source the data should be read
-  val coreMemRead = coreJ1CPU.io.ioReadMode ? io.cpuBus.readData | mainMem.io.memRead
-
   // Connect the CPU core with the main memory (convert the byte address to a cell address)
   mainMem.io.memWriteEnable <> coreJ1CPU.io.memWriteMode
-  mainMem.io.memAdr <> coreJ1CPU.io.extAdr(coreJ1CPU.io.extAdr.high downto 1)
+  mainMem.io.memAdr <> coreJ1CPU.io.extAdr(cfg.adrWidth downto 1)
   mainMem.io.memWrite <> coreJ1CPU.io.extToWrite
+
+  // Check whether data should be read for I/O space else provide a constant zero value
+  val coreMemRead = coreJ1CPU.io.ioReadMode ? io.cpuBus.readData | B(0, cfg.wordSize bits)
 
   // Read port of CPU core (multiplexed)
   coreJ1CPU.io.toRead <> coreMemRead

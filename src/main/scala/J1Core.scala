@@ -45,10 +45,6 @@ class J1Core(cfg : J1Config) extends Component {
   val pcN = UInt(cfg.adrWidth + 1 bits)
   val pc = RegNext(pcN) init(cfg.startAddress)
   val pcPlusOne = pc + 1
-  val pc2x = pc << 1
-  pc2x.keep()
-  val pcMSB = pc.msb
-  pcMSB.keep()
 
   // Instruction to be executed (insert a call-instruction for an interrupt)
   val instr = Mux(io.irq, B"b010" ## (((1 << cfg.adrWidth) - 1) - io.intNo).resize(cfg.wordSize - 3), io.memInstr)

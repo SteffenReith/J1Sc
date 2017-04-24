@@ -21,41 +21,41 @@ class MainMemory(cfg : J1Config) extends Component {
 
   // Check the generic parameters
   assert(Bool(cfg.wordSize >= cfg.adrWidth), "Error: The width of addresses are too large", FAILURE)
+  assert(Bool(isPow2(cfg.numOfRAMs) &&
+              (cfg.numOfRAMs >= 2)), "Error: Number of RAMs has to be a power of 2 and at least 2", FAILURE)
 
   // I/O ports
   val io = new Bundle {
 
-    // Instruction port
+    // Instruction port (read only)
     val memInstrAdr = in UInt(cfg.adrWidth bits)
     val memInstr    = out Bits(cfg.wordSize bits)
 
-    // Memory port
+    // Memory port (write only)
     val memWriteEnable = in Bool
-    val memAdr         = in UInt(cfg.wordSize - 1 bits)
+    val memAdr         = in UInt(cfg.adrWidth bits)
     val memWrite       = in Bits(cfg.wordSize bits)
-    val memRead        = out Bits(cfg.wordSize bits)
 
   }.setName("")
 
-  // Generate a list holding the lowest memory block (holding the instructions to be executed)
-  val lowMem = Mem(Bits(cfg.wordSize bits), cfg.bootCode())
+  // Calculate the number of bits needed to address the RAMs
+  def ramAdrWidth = log2Up(cfg.numOfRAMs)
 
-  // Create a read-only port for the instructions (J1 has Harvard-style but shares the data/instruction - memory)
-  io.memInstr := lowMem.readSync(address = io.memInstrAdr, readUnderWrite = readFirst)
+  // Number of cells of a RAM
+  def numOfCells = 1 << (cfg.adrWidth - ramAdrWidth)
+  
+  // Write a message
+  println("[J1Sc] Create " + cfg.numOfRAMs + " RAMs which have " + numOfCells + " cells each")
+  println("[J1Sc] Read " + cfg.bootCode().length + " words of the FORTH base system")
 
-  // Calculate the number of needed rams
-  def noOfRAMs = (1 << (io.memAdr.getWidth - cfg.adrWidth))
+  // Create a complete list of memory blocks (start with first block)
+  val ramList = for (i <- 0 to cfg.numOfRAMs - 1) yield {
 
-  // Holds a complete list of memory blocks (start with first block)
-  val ramList = if (noOfRAMs >= 1) {
+    // Write a message
+    println("[J1Sc] Fill RAM " + i + " ranging from " + (i * numOfCells) + " to " + (i * numOfCells + numOfCells - 1))
 
-    // Add the additional memory blocks into a list
-    List(lowMem) ++ List.fill(noOfRAMs - 1)(Mem(Bits(cfg.wordSize bits), 1 << cfg.adrWidth))
-
-  } else {
-
-    // We have only one memory block
-    List(lowMem)
+    // Create the ith RAM and fill it with the appropriate part of the bootcode
+    Mem(Bits(cfg.wordSize bits), cfg.bootCode().slice(i * numOfCells, i * numOfCells + numOfCells))
 
   }
 
@@ -64,17 +64,17 @@ class MainMemory(cfg : J1Config) extends Component {
 
     // Create the write port of the ith RAM
     ram.write(enable  = io.memWriteEnable &&
-                               (U(i) === io.memAdr(io.memAdr.high downto cfg.adrWidth)),
-              address = io.memAdr(cfg.adrWidth - 1 downto 0),
+                               (U(i) === io.memAdr(io.memAdr.high downto (io.memAdr.high - ramAdrWidth + 1))),
+              address = io.memAdr((cfg.adrWidth - ramAdrWidth - 1) downto 0),
               data    = io.memWrite)
 
     // Create the read port of the ith RAM
-    ram.readSync(address = io.memAdr(cfg.adrWidth - 1 downto 0),
+    ram.readSync(address        = io.memInstrAdr((cfg.adrWidth - ramAdrWidth - 1) downto 0),
                  readUnderWrite = readFirst)
 
   })
 
-  // Multiplex the output
-  io.memRead := rPortsVec(RegNext(io.memAdr(io.memAdr.high downto cfg.adrWidth)))
+  // Multiplex the read port
+  io.memInstr := rPortsVec(RegNext(io.memInstrAdr(io.memInstrAdr.high downto (io.memInstrAdr.high - ramAdrWidth + 1))))
 
 }
