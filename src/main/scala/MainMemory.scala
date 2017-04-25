@@ -28,13 +28,13 @@ class MainMemory(cfg : J1Config) extends Component {
   val io = new Bundle {
 
     // Instruction port (read only)
-    val memInstrAdr = in UInt(cfg.adrWidth bits)
-    val memInstr    = out Bits(cfg.wordSize bits)
+    val readDataAdr = in UInt (cfg.adrWidth bits)
+    val readData    = out Bits (cfg.wordSize bits)
 
     // Memory port (write only)
-    val memWriteEnable = in Bool
-    val memAdr         = in UInt(cfg.adrWidth bits)
-    val memWrite       = in Bits(cfg.wordSize bits)
+    val writeEnable  = in Bool
+    val writeDataAdr = in UInt (cfg.adrWidth bits)
+    val writeData    = in Bits (cfg.wordSize bits)
 
   }.setName("")
 
@@ -43,7 +43,7 @@ class MainMemory(cfg : J1Config) extends Component {
 
   // Number of cells of a RAM
   def numOfCells = 1 << (cfg.adrWidth - ramAdrWidth)
-  
+
   // Write a message
   println("[J1Sc] Create " + cfg.numOfRAMs + " RAMs which have " + numOfCells + " cells each")
   println("[J1Sc] Read " + cfg.bootCode().length + " words of the FORTH base system")
@@ -55,7 +55,7 @@ class MainMemory(cfg : J1Config) extends Component {
     println("[J1Sc] Fill RAM " + i + " ranging from " + (i * numOfCells) + " to " + (i * numOfCells + numOfCells - 1))
 
     // Create the ith RAM and fill it with the appropriate part of the bootcode
-    Mem(Bits(cfg.wordSize bits), cfg.bootCode().slice(i * numOfCells, i * numOfCells + numOfCells))
+    Mem(Bits(cfg.wordSize bits), cfg.bootCode().slice(i * numOfCells, (i + 1) * numOfCells))
 
   }
 
@@ -63,18 +63,18 @@ class MainMemory(cfg : J1Config) extends Component {
   val rPortsVec = Vec(for((ram,i) <- ramList.zipWithIndex) yield {
 
     // Create the write port of the ith RAM
-    ram.write(enable  = io.memWriteEnable &&
-                               (U(i) === io.memAdr(io.memAdr.high downto (io.memAdr.high - ramAdrWidth + 1))),
-              address = io.memAdr((cfg.adrWidth - ramAdrWidth - 1) downto 0),
-              data    = io.memWrite)
+    ram.write(enable  = io.writeEnable &&
+                        (U(i) === io.writeDataAdr(io.writeDataAdr.high downto (io.writeDataAdr.high - ramAdrWidth + 1))),
+              address = io.writeDataAdr((io.writeDataAdr.high - ramAdrWidth) downto 0),
+              data    = io.writeData)
 
     // Create the read port of the ith RAM
-    ram.readSync(address        = io.memInstrAdr((cfg.adrWidth - ramAdrWidth - 1) downto 0),
+    ram.readSync(address        = io.readDataAdr((io.readDataAdr.high - ramAdrWidth) downto 0),
                  readUnderWrite = readFirst)
 
   })
 
   // Multiplex the read port
-  io.memInstr := rPortsVec(RegNext(io.memInstrAdr(io.memInstrAdr.high downto (io.memInstrAdr.high - ramAdrWidth + 1))))
+  io.readData := rPortsVec(RegNext(io.readDataAdr(io.readDataAdr.high downto (io.readDataAdr.high - ramAdrWidth + 1))))
 
 }

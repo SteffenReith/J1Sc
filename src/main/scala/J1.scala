@@ -33,13 +33,13 @@ class J1(cfg : J1Config) extends Component {
   val mainMem = new MainMemory(cfg)
 
   // Instruction port (read only)
-  mainMem.io.memInstrAdr <> coreJ1CPU.io.nextInstrAdr
-  coreJ1CPU.io.memInstr <> mainMem.io.memInstr
+  mainMem.io.readDataAdr <> coreJ1CPU.io.nextInstrAdr
+  coreJ1CPU.io.memInstr  <> mainMem.io.readData
 
   // Connect the CPU core with the main memory (convert the byte address to a cell address)
-  mainMem.io.memWriteEnable <> coreJ1CPU.io.memWriteMode
-  mainMem.io.memAdr <> coreJ1CPU.io.extAdr(cfg.adrWidth downto 1)
-  mainMem.io.memWrite <> coreJ1CPU.io.extToWrite
+  mainMem.io.writeEnable  <> coreJ1CPU.io.memWriteMode
+  mainMem.io.writeDataAdr <> coreJ1CPU.io.extAdr(cfg.adrWidth downto 1)
+  mainMem.io.writeData    <> coreJ1CPU.io.extToWrite
 
   // Check whether data should be read for I/O space else provide a constant zero value
   val coreMemRead = coreJ1CPU.io.ioReadMode ? io.cpuBus.readData | B(0, cfg.wordSize bits)
@@ -55,6 +55,6 @@ class J1(cfg : J1Config) extends Component {
 
   // Connect the interrupts
   coreJ1CPU.io.intNo <> io.intNo
-  coreJ1CPU.io.irq <> io.irq
+  coreJ1CPU.io.irq   <> io.irq
 
 }
