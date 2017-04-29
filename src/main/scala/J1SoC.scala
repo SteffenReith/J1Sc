@@ -153,7 +153,7 @@ object J1SoC {
     // Generate all VHDL files
     SpinalConfig(genVhdlPkg = true,
                  defaultConfigForClockDomains = globalClockConfig,
-                 defaultClockDomainFrequency = FixedFrequency(100 MHz),
+                 defaultClockDomainFrequency = FixedFrequency(80 MHz),
                  targetDirectory="gen/src/vhdl").generateVhdl({
 
                    // A new system instance
@@ -163,7 +163,7 @@ object J1SoC {
 
     // Generate all Verilog files
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
-                 defaultClockDomainFrequency = FixedFrequency(100 MHz),
+                 defaultClockDomainFrequency = FixedFrequency(80 MHz),
                  targetDirectory="gen/src/verilog").generateVerilog({
 
                    // A new system instance
