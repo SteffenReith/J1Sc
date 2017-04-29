@@ -1,13 +1,10 @@
 /*
  * Author: <AUTHORNAME> (<AUTHOREMAIL>)
- * Committer: <COMMITTERNAME>
  *
  * Creation Date:  Sun Mar 12 00:53:59 GMT+1 2017
  * Module Name:    PMod - An interface to a Digilent PMOD interface
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: <COMMITHASH>
- * Date: <AUTHORDATE>
  */
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory

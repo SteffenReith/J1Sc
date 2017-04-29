@@ -1,6 +1,5 @@
 /*
  * Author: <AUTHORNAME> (<AUTHOREMAIL>)
- * Committer: <COMMITTERNAME>
  *
  * Creation Date:  Sat Nov 12 15:36:19 GMT+1 2016
  * Module Name:    SimpleBus - A simple bus which consists out of address / dataIn / dataOut / writeMode / enable
@@ -8,8 +7,6 @@
  *
  * Remark: Initial code provided by Charles Papon (charles.papon.90@gmail.com)
  *
- * Hash: 7d1c8bdf1ebe82486ab1940129363eb697d41eeb
- * Date: Tue Jan 3 02:22:52 2017 +0100
  */
 import spinal.core._
 import spinal.lib._

@@ -1,6 +1,5 @@
 /*
  * Author: <AUTHORNAME> (<AUTHOREMAIL>)
- * Committer: <COMMITTERNAME>
  *
  * Creation Date:  Sun Jan 22 12:51:03 GMT+1 2017
  * Module Name:    MainMemory - implementation of 64k words main memory
@@ -12,8 +11,6 @@
  * a value back). Warning: The simulation works, but the real hardware causes
  * pain
  *
- * Hash: 8469f68ac67bc74f6a39e8dd8dd35e6750c1bd48
- * Date: Sun Jan 22 13:10:06 2017 +0100
  */
 import spinal.core._
 

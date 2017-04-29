@@ -1,13 +1,10 @@
 /*
  * Author: <AUTHORNAME> (<AUTHOREMAIL>)
- * Committer: <COMMITTERNAME>
  *
  * Creation Date:  Tue Nov 15 17:04:09 GMT+1 2016
  * Module Name:    J1Config - Holds a complete CPU configuration
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: 35106bb9e0e0410cda9cee1bc93e97d52a8e626a
- * Date: Sat Mar 11 17:26:51 2017 +0100
  */
 import spinal.core._
 import scala.io.Source

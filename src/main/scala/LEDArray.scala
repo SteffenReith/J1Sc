@@ -1,13 +1,10 @@
 /*
  * Author: Steffen Reith (steffen.reith@hs-rm.de)
- * Committer: Steffen Reith
  *
  * Creation Date:  Tue Nov 1 00:19:43 GMT+1 2016
  * Module Name:    LEDBank - A simple LED bank
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
- * Hash: ec2c5c04988bb976040975bae0e46966d21cc9e9
- * Date: Tue Nov 1 15:34:51 2016 +0100
  */
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
