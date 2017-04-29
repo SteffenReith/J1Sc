@@ -22,29 +22,15 @@
    generated files can be found in "gen/src/vhdl/J1SoC.vhd" and
    "gen/src/verilog/J1SoC.v".
    The Xilinx Vivado project file "J1Sc.xpr" for the VHDL version can be
-   found in "vprj/VHDL/J1Sc".
-   Open the / create a project and add a PLL/MMCM IP using the
-   ClockWizard. Use PLL as component name and create following ports:
-
-       module PLL (
-
-        // Clock out ports
-        output        clkOut,
-
-        // Status and control signals
-        output        isLocked,
-
-        // Clock in ports
-        input         clkIn
-
-       );
-
+   found in "vprj/vhdl/J1Sc" and the Verilog version is in "vprj/verilog/J1Sc".
    Note that J1Sc runs fine with a 80Mhz Clock on a Nexys4 DDR from
    Digilent. Constraint files for the Nexys4 DDR can be found in
    "/src/main/xilinx/nexys4ddr"
 
 8. Build J1Sc (see "gen/src/vhdl" or "gen/src/verilog") and send the .bit
-   file to your FPGA/board (use e.g. "J1ScNexys4DDR.vhd" as toplevel module)
+   file to your FPGA/board (use either
+   "src/main/vhdl/arch/Nexys4DDR/BoardNexys4DDR.vhd" or 
+   "src/main/verilog/arch/Nexys4DDR/BoardNexys4DDR.v" as toplevel module)
 
 9. `cd toolchain/forth`
 
