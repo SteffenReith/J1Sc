@@ -80,12 +80,11 @@ begin
 
       DIVCLK_DIVIDE => 1,               -- Division ratio for output clocks
 
-      CLKFBOUT_MULT_F      => 8.000,    -- multiply feedback for 80Mhz 
-      --CLKFBOUT_MULT_F      => 10.000,   -- multiply feedback for 100Mhz 
+      CLKFBOUT_MULT_F      => 10.000,   -- set feedback base
       CLKFBOUT_PHASE       => 0.000,    -- phase of feedback output
       CLKFBOUT_USE_FINE_PS => false,    -- Don't enable fine shift
 
-      CLKOUT0_DIVIDE_F    => 10.000,    -- Scale clock 0 to 1.0
+      CLKOUT0_DIVIDE_F    => 12.500,    -- Scale clock to 80Mhz
       CLKOUT0_PHASE       => 0.000,     -- Phase of clock 0 (no shift)
       CLKOUT0_DUTY_CYCLE  => 0.500,     -- Duty cycle of clock 0
       CLKOUT0_USE_FINE_PS => false,     -- No fine shift for clock 0
@@ -146,7 +145,7 @@ begin
       PWRDWN       => '0',                  -- Don't power down MMCE
       RST          => '0');                 -- No reset after startup
 
-  -- synchron clock (not delayed) enable it when clock is stable
+  -- Scaled clock
   clk1Buf : BUFGCE
     port map (O  => clkOutI1,
               CE => locked,

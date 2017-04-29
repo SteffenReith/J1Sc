@@ -64,10 +64,10 @@ module PLL (clkIn,
      .COMPENSATION         ("ZHOLD"),     // Clk input compensation for feedback
      .STARTUP_WAIT         ("FALSE"),     // Not supported yet (set to default)
      .DIVCLK_DIVIDE        (1),           // Division ratio for output clocks
-     .CLKFBOUT_MULT_F      (8.000),       // Multiply feedback for 80Mhz
+     .CLKFBOUT_MULT_F      (10.000),      // Multiplication base
      .CLKFBOUT_PHASE       (0.000),       // phase of feedback output
      .CLKFBOUT_USE_FINE_PS ("FALSE"),     // Don't enable fine shift
-     .CLKOUT0_DIVIDE_F     (10.000),      // Scale clock 0 to 1.0
+     .CLKOUT0_DIVIDE_F     (12.500),      // Scale clock for 80Mhz
      .CLKOUT0_PHASE        (0.000),       // Phase of clock 0 (no shift)
      .CLKOUT0_DUTY_CYCLE   (0.500),       // Duty cycle of clock 0
      .CLKOUT0_USE_FINE_PS  ("FALSE"),     // No fine shift for clock 0
@@ -124,7 +124,7 @@ module PLL (clkIn,
      .PWRDWN       (1'b0),                // Don't power down MMCE
      .RST          (1'b0));               // No reset after startup
 		    
-   // Synchron clock (not delayed) enable it when clock is stable
+   // Scaled clock
    BUFGCE clk1Buf (.O  (clkOutI1),
 		           .CE (locked),
 		           .I  (clkI1));
