@@ -6,8 +6,8 @@
 // Module Name:    J1ScNexys4DDR - Behavioral
 // Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
 //
-// Hash: <COMMITHASH>
-// Date: <AUTHORDATE>
+// Hash: cdb4b0be86010c5e4974e73d21991d228877bcf6
+// Date: Sun Apr 9 00:40:10 2017 +0200
 //
 
 module J1ScNexys4DDR (reset,
@@ -57,4 +57,5 @@ module J1ScNexys4DDR (reset,
 	assign pmodA[i] = pmodA_writeEnable[i] ? pmodA_write[i] : 1'bZ;
   end
 
-endmodule // End of J1ScNexys4DDR
+endmodule // End of Board_Nexys4DDR
+
