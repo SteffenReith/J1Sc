@@ -11,19 +11,6 @@ import spinal.lib._
 import spinal.lib.com.uart._
 import spinal.lib.io._
 
-// Provide a PLL
-class PLL extends BlackBox {
-
-  val io = new Bundle {
-
-    val clkIn = in Bool
-    val clkOut = out Bool
-    val isLocked = out Bool
-
-  }.setName("")
-
-}
-
 class J1SoC (j1Cfg : J1Config,
              ioCfg : IOConfig) extends Component {
 
@@ -32,8 +19,9 @@ class J1SoC (j1Cfg : J1Config,
     // Asynchron reset
     val reset = in Bool
 
-    // A 100 Mhz clock
-    val clk100Mhz = in Bool
+    // A board clock
+    val boardClk       = in Bool
+    val boardClkLocked = in Bool
 
     // Asynchronous interrupts for the outside world
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
@@ -53,21 +41,17 @@ class J1SoC (j1Cfg : J1Config,
   // Physical clock area (connected to a physical clock generator (e.g. crystal oscillator))
   val clkCtrl = new Area {
 
-    // Create a new PLL and connect the input to 100Mhz
-    val pll = new PLL
-    pll.io.clkIn := io.clk100Mhz
-
     // Create a clock domain which is related to the synthesized clock
     val coreClockDomain = ClockDomain.internal("core", frequency = FixedFrequency(80 MHz))
 
     // Connect the synthesized clock
-    coreClockDomain.clock := pll.io.clkOut
+    coreClockDomain.clock := io.boardClk
 
     // Connect the new asynchron reset
     coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
       // Hold the reset as long as the PLL is not locked
-      input = io.reset || ! pll.io.isLocked,
+      input = io.reset || ! io.boardClkLocked,
       clockDomain = coreClockDomain
 
     )))

@@ -1,6 +1,4 @@
 --------------------------------------------------------------------------------
--- Author: <AUTHORNAME> (<AUTHOREMAIL>)
--- Committer: <COMMITTERNAME>
 --
 -- Creation Date:  Fri Apr 7 16:00:52 GMT+2 2017
 -- Creator:        Steffen Reith
@@ -10,14 +8,12 @@
 -- Remark: The pmod pins are renumberd as follows 1 -> 0, 2 -> 1, 3 -> 2,
 --         4 -> 3, 7 -> 4, 8 -> 5, 9 -> 6, 10 -> 7
 --
--- Hash: <COMMITHASH>
--- Date: <AUTHORDATE>
 --------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity J1ScNexys4DDR is
+entity Board_Nexys4DDR is
 
   port (reset     : in    std_logic;
         clk100Mhz : in    std_logic;
@@ -27,20 +23,32 @@ entity J1ScNexys4DDR is
         rx        : in    std_logic;
         tx        : out   std_logic);
 
-end J1ScNexys4DDR;
+end Board_Nexys4DDR;
 
-architecture Structural of J1ScNexys4DDR is
+architecture Structural of Board_Nexys4DDR is
 
+  -- Signals related to the board clk
+  signal boardClk       : std_logic;
+  signal boardClkLocked : std_logic;
+  
+  -- Interface for PModA
   signal pmodA_read        : std_logic_vector(7 downto 0);
   signal pmodA_write       : std_logic_vector(7 downto 0);
   signal pmodA_writeEnable : std_logic_vector(7 downto 0);
   
 begin
 
+  -- Instantiate a PLL/MMCM (makes a 80Mhz clock)
+  makeClk : entity work.PLL(Structural)
+    port map (clkIn    => clk100Mhz,
+              clkOut   => boardClk,
+              isLocked => boardClkLocked);
+  
   -- Instantiate the J1SoC core created by Spinal
   core : entity work.J1SoC
     port map (reset             => reset,
-              clk100Mhz         => clk100Mhz,
+              boardClk          => boardClk,
+              boardClkLocked    => boardClkLocked,
               extInt            => extInt,
               leds              => leds,
               pmodA_read        => pmodA_read,
