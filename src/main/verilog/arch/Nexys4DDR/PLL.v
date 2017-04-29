@@ -51,14 +51,14 @@ module PLL (clkIn,
 
   // Instantiate a input clock buffer
   IBUFG clkInBuffer (.O (clkInI),
-		     .I  (clkIn));
+		             .I (clkIn));
 
   // Instantiate a clock buffer for the internal feedback signal
   BUFG feedbackBuffer (.O (clkfbIBuf),
-		       .I (clkfbI));
+	                   .I (clkfbI));
  
   // Instantiate a clock manager
-  MMCME2_ADV clkgen (
+  MMCME2_ADV
    #(.BANDWIDTH            ("OPTIMIZED"), // MMCM programming affecting jitter
      .CLKOUT4_CASCADE      ("FALSE"),     // Don't divide output more than 128
      .COMPENSATION         ("ZHOLD"),     // Clk input compensation for feedback
@@ -71,13 +71,13 @@ module PLL (clkIn,
      .CLKOUT0_PHASE        (0.000),       // Phase of clock 0 (no shift)
      .CLKOUT0_DUTY_CYCLE   (0.500),       // Duty cycle of clock 0
      .CLKOUT0_USE_FINE_PS  ("FALSE"),     // No fine shift for clock 0
-     .CLKOUT1_DIVIDE_F     (10.000),      // Scale clock 1 to 1.0
-     .CLKOUT1_PHASE        (0.000),       // Phase of clock 1 (no shift)
+     .CLKOUT1_DIVIDE       (10),          // Scale clock 1 to 1.0
+     .CLKOUT1_PHASE        (270.000),     // Phase of clock 1 (no shift)
      .CLKOUT1_DUTY_CYCLE   (0.500),       // Duty cycle of clock 1
      .CLKOUT1_USE_FINE_PS  ("FALSE"),     // No fine shift for clock 1
      .CLKIN1_PERIOD        (10.0),        // 10ns input clock period -> 100Mhz
      .REF_JITTER1          (0.010))       // Set expected jitter to default
-   mmcm_adv_inst
+   clkgen
     (.CLKFBOUT  (clkfbI),
      .CLKFBOUTB (clkfbb_unused),       // Unused inverted feedback
 
@@ -115,23 +115,22 @@ module PLL (clkIn,
      .PSCLK    (1'b0),                    // No phase shift clock
      .PSEN     (1'b0),                    // Disable phase shift
      .PSINCDEC (1'b0),                    // No inc / dec of phase shift
-     .PSDONE   (psDone_unused,            // Dummy signal for phase shift done
+     .PSDONE   (psDone_unused),           // Dummy signal for phase shift done
 
      // Other control and status signals
-     .LOCKED       (locked,               // MMCE clock is stable
-     .CLKINSTOPPED (clkinstopped_unused,  // Input clock has stopped (not used)
-     .CLKFBSTOPPED (clkfbstopped_unused,  // Feedback clock has stopped (not used)
+     .LOCKED       (locked),              // MMCE clock is stable
+     .CLKINSTOPPED (clkinstopped_unused), // Input clock has stopped (not used)
+     .CLKFBSTOPPED (clkfbstopped_unused), // Feedback clock has stopped (not used)
      .PWRDWN       (1'b0),                // Don't power down MMCE
      .RST          (1'b0));               // No reset after startup
 		    
    // Synchron clock (not delayed) enable it when clock is stable
    BUFGCE clk1Buf (.O  (clkOutI1),
-		   .CE (locked),
-		   .I  (clkI1));
-   clkOut = clkOutI1;
+		           .CE (locked),
+		           .I  (clkI1));
+   assign clkOut = clkOutI1;
 
    // Provide the locked signal to the outside world
-   isLocked = locked;
+   assign isLocked = locked;
   
-endmodule
-
+endmodule // End of module PLL
