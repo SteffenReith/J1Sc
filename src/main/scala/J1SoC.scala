@@ -33,7 +33,7 @@ class J1SoC (j1Cfg    : J1Config,
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
     // I/O pins for the UART
-    val rx =  in Bool // UART input
+    val rx = in Bool // UART input
     val tx = out Bool // UART output
 
   }.setName("")
@@ -42,7 +42,7 @@ class J1SoC (j1Cfg    : J1Config,
   val clkCtrl = new Area {
 
     // Create a clock domain which is related to the synthesized clock
-    val coreClockDomain = ClockDomain.internal("core", frequency = FixedFrequency(80 MHz))
+    val coreClockDomain = ClockDomain.internal("core", frequency = boardCfg.boardFrequency)
 
     // Connect the synthesized clock
     coreClockDomain.clock := io.boardClk
@@ -65,51 +65,51 @@ class J1SoC (j1Cfg    : J1Config,
     val cpu = new J1(j1Cfg)
 
     // Create a delayed version of the cpu core interface to IO-peripherals
-    val peripheralBus = cpu.io.cpuBus.delayed(boardCfg.ioWaitStates)
+    val peripheralBus     = cpu.io.cpuBus.delayed(boardCfg.ioWaitStates)
     val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
     // Create a LED array at base address 0x40
-    val ledArray = new LEDArray(boardCfg.ledBankConfig)
+    val ledArray  = new LEDArray(boardCfg.ledBankConfig)
     val ledBridge = ledArray.driveFrom(peripheralBusCtrl, 0x40)
 
     // Connect the physical LED pins to the outside world
     io.leds := ledArray.io.leds
 
     // Create a PMOD at base address 0x60
-    val pmodA = new GPIO(boardCfg.gpioConfig)
+    val pmodA       = new GPIO(boardCfg.gpioConfig)
     val pmodABridge = pmodA.driveFrom(peripheralBusCtrl, 0x60)
 
     // Connect the gpio register to pmodA
-    io.pmodA.write <> pmodA.io.dataOut
-    pmodA.io.dataIn <> io.pmodA.read
+    io.pmodA.write       <> pmodA.io.dataOut
+    pmodA.io.dataIn      <> io.pmodA.read
     io.pmodA.writeEnable <> pmodA.io.directions
 
     // Create two timer and map it at 0xC0 and 0xD0
-    val timerA = new Timer(j1Cfg.timerConfig)
+    val timerA       = new Timer(j1Cfg.timerConfig)
     val timerABridge = timerA.driveFrom(peripheralBusCtrl, 0xC0)
-    val timerB = new Timer(j1Cfg.timerConfig)
+    val timerB       = new Timer(j1Cfg.timerConfig)
     val timerBBridge = timerB.driveFrom(peripheralBusCtrl, 0xD0)
 
     // Create an UART interface with fixed capabilities
-    val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax = boardCfg.uartConfig.dataWidthMax,
-      clockDividerWidth = boardCfg.uartConfig.clockDividerWidth,
-      preSamplingSize = boardCfg.uartConfig.preSamplingSize,
-      samplingSize = boardCfg.uartConfig.samplingSize,
-      postSamplingSize = boardCfg.uartConfig.postSamplingSize)
-    val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = boardCfg.uartConfig.baudrate,
-      dataLength = boardCfg.uartConfig.dataLength,
-      parity = boardCfg.uartConfig.parity,
-      stop = boardCfg.uartConfig.stop)
-    val uartCtrlMemoryMappedConfig = UartCtrlMemoryMappedConfig(uartCtrlConfig = uartCtrlGenerics,
-      initConfig = uartCtrlInitConfig,
-      busCanWriteClockDividerConfig = false,
-      busCanWriteFrameConfig = false,
-      txFifoDepth = boardCfg.uartConfig.fifoDepth,
-      rxFifoDepth = boardCfg.uartConfig.fifoDepth)
+    val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax      = boardCfg.uartConfig.dataWidthMax,
+                                            clockDividerWidth = boardCfg.uartConfig.clockDividerWidth,
+                                            preSamplingSize   = boardCfg.uartConfig.preSamplingSize,
+                                            samplingSize      = boardCfg.uartConfig.samplingSize,
+                                            postSamplingSize  = boardCfg.uartConfig.postSamplingSize)
+    val uartCtrlInitConfig = UartCtrlInitConfig(baudrate   = boardCfg.uartConfig.baudrate,
+                                                dataLength = boardCfg.uartConfig.dataLength,
+                                                parity     = boardCfg.uartConfig.parity,
+                                                stop       = boardCfg.uartConfig.stop)
+    val uartMemMapConfig = UartCtrlMemoryMappedConfig(uartCtrlConfig                = uartCtrlGenerics,
+                                                      initConfig                    = uartCtrlInitConfig,
+                                                      busCanWriteClockDividerConfig = false,
+                                                      busCanWriteFrameConfig        = false,
+                                                      txFifoDepth                   = boardCfg.uartConfig.fifoDepth,
+                                                      rxFifoDepth                   = boardCfg.uartConfig.fifoDepth)
     val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
     // Map the UART to 0x80 and enable the generation of read interrupts
-    val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartCtrlMemoryMappedConfig, baseAddress = 0x80)
+    val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartMemMapConfig, baseAddress = 0x80)
     uartBridge.interruptCtrl.readIntEnable := True
 
     // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
@@ -143,27 +143,27 @@ object J1SoC {
 
   def main(args : Array[String]) {
 
-    // Configuration of CPU-core and GPIO system
+    // Configuration of CPU-core
     val j1Cfg = J1Config.forth
-    val boardCfg = BoardConfig.forth
+
+    // Configuration of the used board
+    val boardCfg = BoardConfig.nexys4DDR
 
     // Generate all VHDL files
     SpinalConfig(genVhdlPkg = true,
                  defaultConfigForClockDomains = globalClockConfig,
-                 defaultClockDomainFrequency = FixedFrequency(80 MHz),
                  targetDirectory="gen/src/vhdl").generateVhdl({
 
-                   // A new system instance
+                   // Create a system instance
                    new J1SoC(j1Cfg, boardCfg)
 
                  }).printPruned()
 
     // Generate all Verilog files
     SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
-                 defaultClockDomainFrequency = FixedFrequency(80 MHz),
                  targetDirectory="gen/src/verilog").generateVerilog({
 
-                   // A new system instance
+                   // Create a system instance
                    new J1SoC(j1Cfg, boardCfg)
 
                  }).printPruned()
