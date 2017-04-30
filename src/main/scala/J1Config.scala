@@ -32,10 +32,31 @@ object IRQCtrlConfig {
 
 }
 
+//timerConfig   : TimerConfig,
+
+// Configuration of timer used for timer interrupts
+case class TimerConfig (width : Int)
+
+object TimerConfig {
+
+  // Provide a default configuration
+  def default = {
+
+    // Default configuration values
+    val config = TimerConfig(width = 32)
+
+    // Return the default configuration
+    config
+
+  }
+
+}
+
 // The configuration of a J1-CPU
 case class J1Config (wordSize : Int,
                      dataStackIdxWidth : Int,
                      returnStackIdxWidth : Int,
+                     timerConfig : TimerConfig,
                      irqConfig : IRQCtrlConfig,
                      adrWidth : Int,
                      numOfRAMs : Int,
@@ -224,6 +245,9 @@ object J1Config {
     def numOfRAMs              =  2
     def startAddress           =  0
 
+    // Default timer configuration
+    val timerConfig = TimerConfig.default
+
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
@@ -235,6 +259,7 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
                           numOfRAMs           = numOfRAMs,
@@ -259,6 +284,9 @@ object J1Config {
     def numOfRAMs              =  2
     def startAddress           =  0
 
+    // Default timer configuration
+    val timerConfig = TimerConfig.default
+
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
 
@@ -273,6 +301,7 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
                           numOfRAMs           = numOfRAMs,
@@ -296,6 +325,9 @@ object J1Config {
     def numOfRAMs              =  2
     def startAddress           =  0
 
+    // Default timer configuration
+    val timerConfig = TimerConfig.default
+
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
@@ -306,6 +338,7 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
                           numOfRAMs           = numOfRAMs,
@@ -329,6 +362,9 @@ object J1Config {
     def numOfRAMs              =  2
     def startAddress           =  0
 
+    // Default timer configuration
+    val timerConfig = TimerConfig.default
+
     // IRQ controller parameters (enable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
 
@@ -343,6 +379,7 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
                           numOfRAMs           = numOfRAMs,
@@ -366,6 +403,9 @@ object J1Config {
     def numOfRAMs              =  2
     def startAddress           =  0
 
+    // Default timer configuration
+    val timerConfig = TimerConfig.default
+
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
 
@@ -379,6 +419,7 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
                           numOfRAMs           = numOfRAMs,

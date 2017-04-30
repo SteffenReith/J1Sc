@@ -2,7 +2,7 @@
  * Author: Steffen Reith (steffen.reith@hs-rm.de)
  *
  * Creation Date:  Tue Nov 15 17:04:09 GMT+1 2016
- * Module Name:    IOConfig - Holds the configuration of external IO components
+ * Module Name:    BoardConfig - Holds the configuration of the used (development) board
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
@@ -26,7 +26,7 @@ object GPIOConfig {
 
 }
 
-// Configuration of a LED-array
+// Information about controllable LEDs on the board
 case class LEDArrayConfig(width : Int, lowActive : Boolean)
 
 object LEDArrayConfig {
@@ -37,24 +37,6 @@ object LEDArrayConfig {
     // Default configuration values
     val config = LEDArrayConfig(width = 16,
                                 lowActive = false)
-
-    // Return the default configuration
-    config
-
-  }
-
-}
-
-// Configuration of timer used for timer interrupts
-case class TimerConfig (width : Int)
-
-object TimerConfig {
-
-  // Provide a default configuration
-  def default = {
-
-    // Default configuration values
-    val config = TimerConfig(width = 32)
 
     // Return the default configuration
     config
@@ -120,7 +102,6 @@ object J1UARTConfig {
 // Configuration of all IO components
 case class BoardConfig(gpioConfig    : GPIOConfig,
                        ledBankConfig : LEDArrayConfig,
-                       timerConfig   : TimerConfig,
                        uartConfig    : J1UARTConfig,
                        ioWaitStates  : Int)
 
@@ -131,10 +112,9 @@ object BoardConfig {
 
     // Default configuration values
     val config = BoardConfig(gpioConfig    = GPIOConfig.default,
-                          ledBankConfig = LEDArrayConfig.default,
-                          timerConfig   = TimerConfig.default,
-                          uartConfig    = J1UARTConfig.default,
-                          1)
+                             ledBankConfig = LEDArrayConfig.default,
+                             uartConfig    = J1UARTConfig.default,
+                             1)
 
     // Return the default configuration
     config
@@ -146,10 +126,9 @@ object BoardConfig {
 
     // Default configuration values
     val config = BoardConfig(gpioConfig    = GPIOConfig.default,
-                          ledBankConfig = LEDArrayConfig.default,
-                          timerConfig   = TimerConfig.default,
-                          uartConfig    = J1UARTConfig.forth,
-                          1)
+                             ledBankConfig = LEDArrayConfig.default,
+                             uartConfig    = J1UARTConfig.forth,
+                             1)
 
     // Return the forth configuration
     config

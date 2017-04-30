@@ -11,8 +11,8 @@ import spinal.lib._
 import spinal.lib.com.uart._
 import spinal.lib.io._
 
-class J1SoC (j1Cfg : J1Config,
-             ioCfg : IOConfig) extends Component {
+class J1SoC (j1Cfg    : J1Config,
+             boardCfg : BoardConfig) extends Component {
 
   val io = new Bundle {
 
@@ -27,10 +27,10 @@ class J1SoC (j1Cfg : J1Config,
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
 
     // The physical pins for the connected FPGAs
-    val leds = out Bits(ioCfg.ledBankConfig.width bits)
+    val leds = out Bits(boardCfg.ledBankConfig.width bits)
 
     // The physical pins for pmod A
-    val pmodA = master(TriStateArray(ioCfg.gpioConfig.width bits))
+    val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
     // I/O pins for the UART
     val rx =  in Bool // UART input
@@ -65,18 +65,18 @@ class J1SoC (j1Cfg : J1Config,
     val cpu = new J1(j1Cfg)
 
     // Create a delayed version of the cpu core interface to IO-peripherals
-    val peripheralBus = cpu.io.cpuBus.delayed(ioCfg.ioWaitStates)
+    val peripheralBus = cpu.io.cpuBus.delayed(boardCfg.ioWaitStates)
     val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
     // Create a LED array at base address 0x40
-    val ledArray = new LEDArray(ioCfg.ledBankConfig)
+    val ledArray = new LEDArray(boardCfg.ledBankConfig)
     val ledBridge = ledArray.driveFrom(peripheralBusCtrl, 0x40)
 
     // Connect the physical LED pins to the outside world
     io.leds := ledArray.io.leds
 
     // Create a PMOD at base address 0x60
-    val pmodA = new GPIO(ioCfg.gpioConfig)
+    val pmodA = new GPIO(boardCfg.gpioConfig)
     val pmodABridge = pmodA.driveFrom(peripheralBusCtrl, 0x60)
 
     // Connect the gpio register to pmodA
@@ -85,27 +85,27 @@ class J1SoC (j1Cfg : J1Config,
     io.pmodA.writeEnable <> pmodA.io.directions
 
     // Create two timer and map it at 0xC0 and 0xD0
-    val timerA = new Timer(ioCfg.timerConfig)
+    val timerA = new Timer(j1Cfg.timerConfig)
     val timerABridge = timerA.driveFrom(peripheralBusCtrl, 0xC0)
-    val timerB = new Timer(ioCfg.timerConfig)
+    val timerB = new Timer(j1Cfg.timerConfig)
     val timerBBridge = timerB.driveFrom(peripheralBusCtrl, 0xD0)
 
     // Create an UART interface with fixed capabilities
-    val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax = ioCfg.uartConfig.dataWidthMax,
-      clockDividerWidth = ioCfg.uartConfig.clockDividerWidth,
-      preSamplingSize = ioCfg.uartConfig.preSamplingSize,
-      samplingSize = ioCfg.uartConfig.samplingSize,
-      postSamplingSize = ioCfg.uartConfig.postSamplingSize)
-    val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = ioCfg.uartConfig.baudrate,
-      dataLength = ioCfg.uartConfig.dataLength,
-      parity = ioCfg.uartConfig.parity,
-      stop = ioCfg.uartConfig.stop)
+    val uartCtrlGenerics = UartCtrlGenerics(dataWidthMax = boardCfg.uartConfig.dataWidthMax,
+      clockDividerWidth = boardCfg.uartConfig.clockDividerWidth,
+      preSamplingSize = boardCfg.uartConfig.preSamplingSize,
+      samplingSize = boardCfg.uartConfig.samplingSize,
+      postSamplingSize = boardCfg.uartConfig.postSamplingSize)
+    val uartCtrlInitConfig = UartCtrlInitConfig(baudrate = boardCfg.uartConfig.baudrate,
+      dataLength = boardCfg.uartConfig.dataLength,
+      parity = boardCfg.uartConfig.parity,
+      stop = boardCfg.uartConfig.stop)
     val uartCtrlMemoryMappedConfig = UartCtrlMemoryMappedConfig(uartCtrlConfig = uartCtrlGenerics,
       initConfig = uartCtrlInitConfig,
       busCanWriteClockDividerConfig = false,
       busCanWriteFrameConfig = false,
-      txFifoDepth = ioCfg.uartConfig.fifoDepth,
-      rxFifoDepth = ioCfg.uartConfig.fifoDepth)
+      txFifoDepth = boardCfg.uartConfig.fifoDepth,
+      rxFifoDepth = boardCfg.uartConfig.fifoDepth)
     val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
     // Map the UART to 0x80 and enable the generation of read interrupts
@@ -144,11 +144,8 @@ object J1SoC {
   def main(args : Array[String]) {
 
     // Configuration of CPU-core and GPIO system
-    //val j1Cfg = J1Config.debugIO
-    //val j1Cfg = J1Config.debug
     val j1Cfg = J1Config.forth
-    //val gpioCfg = GPIOConfig.default
-    val gpioCfg = IOConfig.forth
+    val boardCfg = BoardConfig.forth
 
     // Generate all VHDL files
     SpinalConfig(genVhdlPkg = true,
@@ -157,7 +154,7 @@ object J1SoC {
                  targetDirectory="gen/src/vhdl").generateVhdl({
 
                    // A new system instance
-                   new J1SoC(j1Cfg, gpioCfg)
+                   new J1SoC(j1Cfg, boardCfg)
 
                  }).printPruned()
 
@@ -167,7 +164,7 @@ object J1SoC {
                  targetDirectory="gen/src/verilog").generateVerilog({
 
                    // A new system instance
-                   new J1SoC(j1Cfg, gpioCfg)
+                   new J1SoC(j1Cfg, boardCfg)
 
                  }).printPruned()
 
