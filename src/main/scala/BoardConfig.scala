@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Author: Steffen Reith (steffen.reith@hs-rm.de)
  *
  * Creation Date:  Tue Nov 15 17:04:09 GMT+1 2016
  * Module Name:    IOConfig - Holds the configuration of external IO components
@@ -118,19 +118,19 @@ object J1UARTConfig {
 }
 
 // Configuration of all IO components
-case class IOConfig(gpioConfig    : GPIOConfig,
-                    ledBankConfig : LEDArrayConfig,
-                    timerConfig   : TimerConfig,
-                    uartConfig    : J1UARTConfig,
-                    ioWaitStates  : Int)
+case class BoardConfig(gpioConfig    : GPIOConfig,
+                       ledBankConfig : LEDArrayConfig,
+                       timerConfig   : TimerConfig,
+                       uartConfig    : J1UARTConfig,
+                       ioWaitStates  : Int)
 
-object IOConfig {
+object BoardConfig {
 
   // Provide a default configuration
   def default = {
 
     // Default configuration values
-    val config = IOConfig(gpioConfig    = GPIOConfig.default,
+    val config = BoardConfig(gpioConfig    = GPIOConfig.default,
                           ledBankConfig = LEDArrayConfig.default,
                           timerConfig   = TimerConfig.default,
                           uartConfig    = J1UARTConfig.default,
@@ -145,7 +145,7 @@ object IOConfig {
   def forth = {
 
     // Default configuration values
-    val config = IOConfig(gpioConfig    = GPIOConfig.default,
+    val config = BoardConfig(gpioConfig    = GPIOConfig.default,
                           ledBankConfig = LEDArrayConfig.default,
                           timerConfig   = TimerConfig.default,
                           uartConfig    = J1UARTConfig.forth,
