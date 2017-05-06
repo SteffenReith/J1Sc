@@ -80,6 +80,33 @@ set_property  IOSTANDARD LVCMOS33 [get_ports {rx}]
 set_property  PACKAGE_PIN T16 [get_ports {extInt[0]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {extInt[0]}]
 
+##Pmod Header JA
+
+set_property PACKAGE_PIN B13 [get_ports {pmodA[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[0]}]
+
+set_property PACKAGE_PIN F14 [get_ports {pmodA[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[1]}]
+
+set_property PACKAGE_PIN D17 [get_ports {pmodA[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[2]}]
+
+set_property PACKAGE_PIN E17 [get_ports {pmodA[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[3]}]
+
+set_property PACKAGE_PIN G13 [get_ports {pmodA[4]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[4]}]
+
+set_property PACKAGE_PIN C17 [get_ports {pmodA[5]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[5]}]
+
+set_property PACKAGE_PIN D18 [get_ports {pmodA[6]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[6]}]
+
+set_property PACKAGE_PIN E18 [get_ports {pmodA[7]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[7]}]
+
+
 #set_property  PACKAGE_PIN M1 [get_ports {sel[7]}]
 #set_property  IOSTANDARD LVCMOS33 [get_ports {sel[7]}]
 #set_property  SLEW FAST [get_ports {sel[7]}]
