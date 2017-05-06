@@ -131,10 +131,25 @@ object BoardConfig {
     val config = BoardConfig(gpioConfig     = GPIOConfig.default,
                              ledBankConfig  = LEDArrayConfig.default,
                              uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
-                             boardFrequency = FixedFrequency(80 MHz),
+                             boardFrequency = FixedFrequency(100 MHz),
                              1)
 
     // Return the Nexys4DDR configuration
+    config
+
+  }
+
+  // Provide a configuration for the Nexys4 board from Digilent
+  def nexys4 = {
+
+    // Default configuration values
+    val config = BoardConfig(gpioConfig     = GPIOConfig.default,
+      ledBankConfig  = LEDArrayConfig.default,
+      uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
+      boardFrequency = FixedFrequency(100 MHz),
+      1)
+
+    // Return the Nexys4 configuration
     config
 
   }
