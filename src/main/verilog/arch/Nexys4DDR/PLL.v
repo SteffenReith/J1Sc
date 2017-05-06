@@ -67,7 +67,8 @@ module PLL (clkIn,
      .CLKFBOUT_MULT_F      (10.000),      // Multiplication base
      .CLKFBOUT_PHASE       (0.000),       // phase of feedback output
      .CLKFBOUT_USE_FINE_PS ("FALSE"),     // Don't enable fine shift
-     .CLKOUT0_DIVIDE_F     (12.500),      // Scale clock for 80Mhz
+     //.CLKOUT0_DIVIDE_F     (12.500),      // Scale clock for 80Mhz
+     .CLKOUT0_DIVIDE_F     (10.000),      // Scale clock for 100MHz
      .CLKOUT0_PHASE        (0.000),       // Phase of clock 0 (no shift)
      .CLKOUT0_DUTY_CYCLE   (0.500),       // Duty cycle of clock 0
      .CLKOUT0_USE_FINE_PS  ("FALSE"),     // No fine shift for clock 0
