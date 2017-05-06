@@ -99,12 +99,12 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
     // Iterate over a map where the keys a addresses and the values are arrays of jobs to be done for that address
     when(bus.enable){
     
-      switch(bus.address){
+      switch(bus.address) {
       
         for((address, jobs) <- elementsPerAddress) {
 
           // Check whether the address matches and the bus is enabled
-          is(U(address)){
+          is(address) {
 
             // Check for write - mode
             when(bus.writeMode) {
