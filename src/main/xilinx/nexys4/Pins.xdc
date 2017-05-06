@@ -77,7 +77,7 @@ set_property  IOSTANDARD LVCMOS33 [get_ports {tx}]
 set_property  PACKAGE_PIN D4 [get_ports {rx}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {rx}]
 
-set_property  PACKAGE_PIN T16 [get_ports {extInt[0]}]
+set_property  PACKAGE_PIN F15 [get_ports {extInt[0]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {extInt[0]}]
 
 ##Pmod Header JA
