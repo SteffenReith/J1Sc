@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Author: Steffen Reith (steffen.reith@hs-rm.de)
  *
  * Creation Date:  Sat Nov 12 15:36:19 GMT+1 2016
  * Module Name:    SimpleBus - A simple bus which consists out of address / dataIn / dataOut / writeMode / enable
@@ -97,54 +97,62 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
     }
 
     // Iterate over a map where the keys a addresses and the values are arrays of jobs to be done for that address
-    for((address, jobs) <- elementsPerAddress) {
+    when(bus.enable){
+    
+      switch(bus.address){
+      
+        for((address, jobs) <- elementsPerAddress) {
 
-      // Check whether the address matches and the bus is enabled
-      when ((bus.address === address) && bus.enable) {
+          // Check whether the address matches and the bus is enabled
+          is(U(address)){
 
-        // Check for write - mode
-        when(bus.writeMode) {
+            // Check for write - mode
+            when(bus.writeMode) {
 
-          // For all jobs regarding the given address (write mode)
-          for (element <- jobs) element match {
+              // For all jobs regarding the given address (write mode)
+              for (element <- jobs) element match {
 
-            // Check of  write operation
-            case element : BusSlaveFactoryWrite => {
+                // Check of  write operation
+                case element : BusSlaveFactoryWrite => {
 
-                // Write payload of 'getBitsWidth' bits at 'bitOffset' to the BusSlaveFactoryElement
-                element.that.assignFromBits(bus.writeData(element.bitOffset, element.that.getBitsWidth bits))
+                    // Write payload of 'getBitsWidth' bits at 'bitOffset' to the BusSlaveFactoryElement
+                    element.that.assignFromBits(bus.writeData(element.bitOffset, element.that.getBitsWidth bits))
+
+                }
+
+                // Execute the action which is registered to a write job on the actual address
+                case element : BusSlaveFactoryOnWriteAtAddress => element.doThat()
+
+                // Ignore all other types of BusSlaveFactoryElements
+                case _ =>
+
+              }
+
+            } otherwise {
+
+              // For all jobs regarding the given address (read mode)
+              for (element <- jobs) element match {
+
+                // Check of a Read job
+                case element : BusSlaveFactoryRead => {
+
+                    // Read data on the bus
+                    bus.readData(element.bitOffset, element.that.getBitsWidth bits) := element.that.asBits
+
+                }
+
+                // Execute the action which is registered to a read operation on the actual address
+                case element : BusSlaveFactoryOnReadAtAddress => element.doThat()
+
+                // Ignore all other types of BusSlaveFactoryElements
+                case _ =>
+
+              }
 
             }
 
-            // Execute the action which is registered to a write job on the actual address
-            case element : BusSlaveFactoryOnWriteAtAddress => element.doThat()
-
-            // Ignore all other types of BusSlaveFactoryElements
-            case _ =>
-
           }
-
-        } otherwise {
-
-          // For all jobs regarding the given address (read mode)
-          for (element <- jobs) element match {
-
-            // Check of a Read job
-            case element : BusSlaveFactoryRead => {
-
-                // Read data on the bus
-                bus.readData(element.bitOffset, element.that.getBitsWidth bits) := element.that.asBits
-
-            }
-
-            // Execute the action which is registered to a read operation on the actual address
-            case element : BusSlaveFactoryOnReadAtAddress => element.doThat()
-
-            // Ignore all other types of BusSlaveFactoryElements
-            case _ =>
-
-          }
-
+          
         }
 
       }
