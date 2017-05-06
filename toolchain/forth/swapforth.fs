@@ -93,8 +93,8 @@ include core-ext.fs
         2@ forth 2! \ restore FORTH and DP
 ;
 
-( x -- ) \ wait x ms  
-: ms 0 do 9937 0 do loop loop ;
+( x -- ) \ wait x ms 9937 equals 80MHz core clock  
+: ms 0 do 12421 0 do loop loop ;
 
 : new
     s" | marker |" evaluate
