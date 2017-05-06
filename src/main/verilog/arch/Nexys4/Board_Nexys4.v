@@ -8,13 +8,13 @@
 //
 //
 
-module Board_Nexys4DDR (reset,
-		                clk100Mhz, 
- 		                extInt,
-		                leds,   
-           		        pmodA,
-		                rx,    
-		                tx);
+module Board_Nexys4 (reset,
+		     clk100Mhz, 
+ 		     extInt,
+		     leds,   
+           	     pmodA,
+		     rx,    
+		     tx);
 		                
  // Input ports
  input reset;
@@ -67,3 +67,4 @@ module Board_Nexys4DDR (reset,
   endgenerate
   
 endmodule
+

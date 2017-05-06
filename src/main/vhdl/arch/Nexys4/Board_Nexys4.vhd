@@ -13,7 +13,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity Board_Nexys4DDR is
+entity Board_Nexys4 is
 
   port (reset     : in    std_logic;
         clk100Mhz : in    std_logic;
@@ -23,9 +23,9 @@ entity Board_Nexys4DDR is
         rx        : in    std_logic;
         tx        : out   std_logic);
 
-end Board_Nexys4DDR;
+end Board_Nexys4;
 
-architecture Structural of Board_Nexys4DDR is
+architecture Structural of Board_Nexys4 is
 
   -- Signals related to the board clk
   signal boardClk       : std_logic;
