@@ -20,12 +20,16 @@
 
 7. Build J1Sc (either using the VHDL or the Verilog version) by "sbt run". The
    generated files can be found in "gen/src/vhdl/J1SoC.vhd" and
-   "gen/src/verilog/J1SoC.v".
-   The Xilinx Vivado project file "J1Sc.xpr" for the VHDL version can be
+   "gen/src/verilog/J1SoC.v". You need "Board_<BOARDNAME>.vhd" and "PLL.vhd" in 
+   "src/main/vhdl/arch" or the corresponding Verilog versions in "src/main/verilog/arch" 
+   as toplevel for synthesis.
+   
+   A Xilinx Vivado project file "J1Sc.xpr" for the VHDL version can be
    found in "vprj/vhdl/J1Sc" and the Verilog version is in "vprj/verilog/J1Sc".
-   Note that J1Sc runs fine with a 80Mhz Clock on a Nexys4 DDR from
+   Note that J1Sc runs fine with a 100Mhz Clock on a Nexys4 DDR from
    Digilent. Constraint files for the Nexys4 DDR can be found in
-   "/src/main/xilinx/nexys4ddr"
+   "/src/main/xilinx/nexys4ddr" the corresponding files for the Nexys4 can be found
+   in "/src/main/xilinx/nexys4".
 
 8. Build J1Sc (see "gen/src/vhdl" or "gen/src/verilog") and send the .bit
    file to your FPGA/board (use either
@@ -42,8 +46,8 @@
     `Contacting... established`
     `Loaded 143 words`
 
-12. Type `#include SwapForth.fs`
+12. Type `#include SwapForth.fs` to load the complete FORTH system
 
-13. turn on the leds by the command `hex ffff leds!`
+13. Turn the leds on by `hex ffff leds!`
 
 14. Have fun with a working forth system
