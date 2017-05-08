@@ -86,6 +86,7 @@ begin
 
       --CLKOUT0_DIVIDE_F    => 12.500,    -- Scale clock to 80Mhz
       CLKOUT0_DIVIDE_F    => 10.000,    -- Scale to 100Mhz
+      --CLKOUT0_DIVIDE_F    => 8.000,     -- Scale to 125Mhz
       CLKOUT0_PHASE       => 0.000,     -- Phase of clock 0 (no shift)
       CLKOUT0_DUTY_CYCLE  => 0.500,     -- Duty cycle of clock 0
       CLKOUT0_USE_FINE_PS => false,     -- No fine shift for clock 0
