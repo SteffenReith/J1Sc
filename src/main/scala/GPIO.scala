@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
  *
  * Creation Date:  Sun Mar 12 00:53:59 GMT+1 2017
  * Module Name:    PMod - An interface to a Digilent PMOD interface

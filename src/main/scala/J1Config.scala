@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
  *
  * Creation Date:  Tue Nov 15 17:04:09 GMT+1 2016
  * Module Name:    J1Config - Holds a complete CPU configuration

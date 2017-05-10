@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
  *
  * Creation Date:  Tue Nov 1 14:34:09 GMT+1 2016
  * Module Name:    J1SoC - A small but complete system based on the J1-core

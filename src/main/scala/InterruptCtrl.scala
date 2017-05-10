@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Author: Steffen Reith (Steffen.Reith@hs-rm.de) 
  *
  * Creation Date:  Fri Nov 25 13:04:23 GMT+1 2016
  * Module Name:    InterruptCtrl - A small interrupt controller for the J1 CPU

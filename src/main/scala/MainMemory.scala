@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
  *
  * Creation Date:  Sun Jan 22 12:51:03 GMT+1 2017
  * Module Name:    MainMemory - implementation of 64k words main memory

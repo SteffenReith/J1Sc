@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME>
+ * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
  *
  * Create Date:    Tue Sep 20 15:07:10 CEST 2016 
  * Module Name:    J1 - Toplevel CPU (Core, Memory)

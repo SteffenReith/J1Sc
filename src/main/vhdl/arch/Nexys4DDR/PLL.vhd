@@ -1,5 +1,4 @@
 --------------------------------------------------------------------------------
--- Author: <AUTHORNAME> (<AUTHOREMAIL>)
 --
 -- Creation Date:  Tue Jan 17 19:29:25 GMT+1 2017
 -- Creator:        Steffen Reith

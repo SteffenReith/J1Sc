@@ -1,5 +1,5 @@
 /*
- * Author: <AUTHORNAME> (<AUTHOREMAIL>)
+ * Author: Steffen Reith (Steffen.Reith@hs-rm.de) 
  *
  * Creation Date:  Sat Dec 3 17:33:06 GMT+1 2016
  * Module Name:    Timer16 - A programmable timer which generates interrupts for a 16 bit bus interface
