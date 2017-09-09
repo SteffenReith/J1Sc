@@ -15,60 +15,83 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   // Check the number of interrupts
   assert(isPow2(cfg.irqConfig.numOfInterrupts), "Warning: Specify a power of 2 as number of interrupts")
 
-  var io = new Bundle {
+  val io = new Bundle {
 
-    val accessMaskWrite = in Bool
+    val enableWriteNewMask = in Bool
+    val enableWriteIrqVec  = in Bits (cfg.irqConfig.numOfInterrupts bits)
 
-    val irqMask      = in Bits(cfg.wordSize bits)
-    val irqMaskState = out Bits(cfg.wordSize bits)
+    val irqSetData = in Bits (cfg.wordSize bits)
 
-    val intsE = in Bits(cfg.irqConfig.numOfInterrupts bits)
+    val irqGetMask = out Bits (cfg.wordSize bits)
+    val irqVectors = out Vec(Bits(cfg.wordSize bits), cfg.irqConfig.numOfInterrupts)
 
-    val intNo = out UInt(log2Up(cfg.irqConfig.numOfInterrupts) bits)
-    val irq   = out Bool
+    val irqReqs = in Bits (cfg.irqConfig.numOfInterrupts bits)
+
+    val intVec = out Bits(cfg.wordSize bits)
+    val irq    = out Bool
 
   }.setName("")
 
-  // Register the irq mask (adapt the width for the 1 bit register)
-  val maskNotAllZero : Bool = io.irqMask.orR
-  val isEnabled = RegNextWhen(maskNotAllZero, io.accessMaskWrite)
-
-  // Check parameter which indicates whether the interrupts are active after reset
-  if (cfg.irqConfig.interruptsDefaultActive) {
-
-    // Enable all interrupts after reset
-    isEnabled.init(True)
-
-  } else {
-
-    // Disable all interrupts after reset
-    isEnabled.init(False)
-
-  }
+  // Register the irq mask (disable all interrupts after reset)
+  val irqMask = RegNextWhen(io.irqSetData.resize(cfg.irqConfig.numOfInterrupts),
+                            io.enableWriteNewMask,
+                            B(cfg.irqConfig.numOfInterrupts bits, default -> False))
 
   // Generate an output version of the current mask
-  io.irqMaskState := (default -> isEnabled)
+  io.irqGetMask := irqMask.resize(cfg.wordSize)
 
-  // All interrupts are asynchronous, hence make them synchronous
-  val interrupts = BufferCC(io.intsE,
-                            init = B(0, cfg.irqConfig.numOfInterrupts bits),
-                            bufferDepth = 3)
+  // Enable signals for the interrupt vectors
+  val irqVecWriteEnable = Bits(cfg.irqConfig.numOfInterrupts bits)
+  irqVecWriteEnable := io.enableWriteIrqVec.resize(cfg.irqConfig.numOfInterrupts)
 
-  // Check all interrupts (priority from 0 (high) to noOfInterrupts - 1 (low))
-  io.intNo := OHToUInt(OHMasking.first(interrupts))
+  // Create a register file for storing the interrupt vectors
+  val irqVectors = Vec(for(i <- 0 to cfg.irqConfig.numOfInterrupts - 1) yield {
 
-  // Generate a rising edge when an interrupt has happened (init value is false) and the interrupts are enabled
-  io.irq := interrupts.orR.rise(False) & isEnabled
+    // Create the ith register and truncate data read from the bus
+    RegNextWhen(io.irqSetData.resize(cfg.adrWidth),
+                irqVecWriteEnable(i),
+                B(cfg.adrWidth bits, default -> False))
+
+  })
+
+  // Wire all interrupt vectors to an IO-port
+  (io.irqVectors, irqVectors).zipped.foreach(_ := _.resize(cfg.wordSize))
+
+  // All interrupts are asynchronous, hence make them synchron with latency of 3 clocks
+  val irqSync = BufferCC(io.irqReqs,
+                         init = B(0, cfg.irqConfig.numOfInterrupts bits),
+                         bufferDepth = cfg.irqConfig.irqLatency)
+
+  // Check all interrupts with priority from 0 (high) to noOfInterrupts - 1 (low)
+  val intNo = OHToUInt(OHMasking.first(irqSync))
+
+  // Provide the corresponding interrupt vector
+  io.intVec := irqVectors(intNo).resize(cfg.wordSize)
+
+  // Generate a rising edge when an interrupt has happened (init value is false)
+  io.irq := (irqSync & irqMask).orR.rise(False)
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
-    // A r/w register for enabling the timer (anything != 0 means true)
-    busCtrl.read(io.irqMaskState, baseAddress + 0, 0)
-    busCtrl.nonStopWrite(io.irqMask, 0) // the enable signal is constantly driven by the data of the memory bus
+    // A read port for the interrupt mask
+    busCtrl.read(io.irqGetMask, baseAddress + cfg.irqConfig.numOfInterrupts, 0)
+
+    busCtrl.nonStopWrite(io.irqSetData, 0) // the enable signal is constantly driven by the data of the memory bus
 
     // Generate the write enable signal for the interrupt mask
-    io.accessMaskWrite := busCtrl.isWriting(baseAddress + 0)
+    io.enableWriteNewMask := busCtrl.isWriting(baseAddress + cfg.irqConfig.numOfInterrupts)
+
+    // r/w-registers for all irq-vectors
+    for (i <- 0 to cfg.irqConfig.numOfInterrupts - 1) {
+
+      // A r/w register access for the ith interrupt vector
+      busCtrl.read(io.irqVectors(i), baseAddress + i, 0)
+
+      // Generate the write enable signal for the ith interrupt vector
+      io.enableWriteIrqVec(i) := busCtrl.isWriting(baseAddress + i)
+
+    }
 
   }
 

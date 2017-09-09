@@ -27,7 +27,7 @@ class J1Core(cfg : J1Config) extends Component {
 
     // Interface for the interrupt system
     val irq   = in Bool
-    val intNo = in UInt(log2Up(cfg.irqConfig.numOfInterrupts) bits)
+    val intVec = in Bits (cfg.adrWidth bits)
 
     // I/O port for instructions
     val nextInstrAdr = out (UInt(cfg.adrWidth bits))
@@ -43,8 +43,8 @@ class J1Core(cfg : J1Config) extends Component {
   val pc = RegNext(pcN) init(cfg.startAddress)
   val pcPlusOne = pc + 1
 
-  // Instruction to be executed (insert a call-instruction for an interrupt)
-  val instr = Mux(io.irq, B"b010" ## (((1 << cfg.adrWidth) - 1) - io.intNo).resize(cfg.wordSize - 3), io.memInstr)
+  // Instruction to be executed (insert a call-instruction for handling an interrupt)
+  val instr = Mux(io.irq, B"b010" ## io.intVec.resize(cfg.wordSize - 3), io.memInstr)
 
   // Data stack pointer (set to first entry, which can be abitrary)
   val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)

@@ -16,7 +16,7 @@ class J1(cfg : J1Config) extends Component {
 
     // Interface for the interrupt system
     val irq   = in Bool
-    val intNo = in UInt(log2Up(cfg.irqConfig.numOfInterrupts) bits)
+    val intVec = in Bits(cfg.adrWidth bits)
 
     // I/O signals for peripheral data port
     val cpuBus = master(SimpleBus(cfg))
@@ -51,7 +51,7 @@ class J1(cfg : J1Config) extends Component {
   io.cpuBus.writeData <> coreJ1CPU.io.extToWrite
 
   // Connect the interrupts
-  coreJ1CPU.io.intNo <> io.intNo
+  coreJ1CPU.io.intVec <> io.intVec
   coreJ1CPU.io.irq   <> io.irq
 
 }

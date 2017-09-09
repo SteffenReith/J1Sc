@@ -8,12 +8,11 @@
  */
 import spinal.core._
 import scala.io.Source
-import scala.util.matching.Regex
 
 // Configuration of the IRQ controller
 case class IRQCtrlConfig (numOfInterrupts         : Int,
                           numOfInternalInterrupts : Int,
-                          interruptsDefaultActive : Boolean)
+                          irqLatency              : Int)
 
 object IRQCtrlConfig {
 
@@ -23,7 +22,7 @@ object IRQCtrlConfig {
     // Default configuration values
     val config = IRQCtrlConfig(numOfInterrupts         = 4,
                                numOfInternalInterrupts = 3,
-                               interruptsDefaultActive = false)
+                               irqLatency              = 3)
 
     // Return the default configuration
     config
@@ -31,8 +30,6 @@ object IRQCtrlConfig {
   }
 
 }
-
-//timerConfig   : TimerConfig,
 
 // Configuration of timer used for timer interrupts
 case class TimerConfig (width : Int)
@@ -241,6 +238,7 @@ object J1Config {
     def returnStackIdxWidth    =  4
     def noOfInterrupts         =  8
     def noOfInternalInterrupts =  1
+    def irqLatency             =  3
     def adrWidth               = 13
     def numOfRAMs              =  2
     def startAddress           =  0
@@ -249,7 +247,7 @@ object J1Config {
     val timerConfig = TimerConfig.default
 
     // IRQ controller parameters (disable all interrupts by default)
-    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     // Relevant content of all generated memory blocks
     def bootCode() = endlessLoop() ++
@@ -280,6 +278,7 @@ object J1Config {
     def returnStackIdxWidth    =  4
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
+    def irqLatency             =  3
     def adrWidth               = 10
     def numOfRAMs              =  2
     def startAddress           =  0
@@ -288,7 +287,7 @@ object J1Config {
     val timerConfig = TimerConfig.default
 
     // IRQ controller parameters (disable all interrupts by default)
-    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     def bootCode() = isaTest() ++
                      List.fill((1 << adrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
@@ -321,6 +320,7 @@ object J1Config {
     def returnStackIdxWidth    =  4
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
+    def irqLatency             =  3
     def adrWidth               = 13
     def numOfRAMs              =  2
     def startAddress           =  0
@@ -329,7 +329,7 @@ object J1Config {
     val timerConfig = TimerConfig.default
 
     // IRQ controller parameters (disable all interrupts by default)
-    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     // Relevant content of all generated memories
     def bootCode() = ioTest() ++ List.fill((1 << adrWidth) - ioTest.length)(B(0, wordSize bits))
@@ -358,6 +358,7 @@ object J1Config {
     def returnStackIdxWidth    =  4
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
+    def irqLatency             =  3
     def adrWidth               =  9
     def numOfRAMs              =  2
     def startAddress           =  0
@@ -366,7 +367,7 @@ object J1Config {
     val timerConfig = TimerConfig.default
 
     // IRQ controller parameters (enable all interrupts by default)
-    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, true)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     def bootCode() = simpleIRQTest() ++
                      List.fill((1 << adrWidth) - simpleIRQTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
@@ -399,6 +400,7 @@ object J1Config {
     def returnStackIdxWidth    =  5
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
+    def irqLatency             =  3
     def adrWidth               = 12
     def numOfRAMs              =  2
     def startAddress           =  0
@@ -407,7 +409,7 @@ object J1Config {
     val timerConfig = TimerConfig.default
 
     // IRQ controller parameters (disable all interrupts by default)
-    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, false)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     // Take the base system and cut the interrupt vectors at the end
     def baseSystem = forthBase(wordSize).take((1 << adrWidth) - noOfInterrupts)

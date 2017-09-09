@@ -23,7 +23,7 @@ class J1SoC (j1Cfg    : J1Config,
     val boardClk       = in Bool
     val boardClkLocked = in Bool
 
-    // Asynchronous interrupts for the outside world
+    // Asynchronous interrupts from the outside world
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
 
     // The physical pins for the connected FPGAs
@@ -119,11 +119,11 @@ class J1SoC (j1Cfg    : J1Config,
     // Create an interrupt controller, map it to 0xE0 and connect all interrupts
     val intCtrl = new InterruptCtrl(j1Cfg)
     val intCtrlBridge = intCtrl.driveFrom(peripheralBusCtrl, 0xE0)
-    intCtrl.io.intsE(intCtrl.io.intsE.high downto j1Cfg.irqConfig.numOfInternalInterrupts) <> io.extInt
-    intCtrl.io.intsE(0) <> uartBridge.interruptCtrl.readInt
-    intCtrl.io.intsE(1) <> timerA.io.interrupt
-    intCtrl.io.intsE(2) <> timerB.io.interrupt
-    cpu.io.intNo <> intCtrl.io.intNo
+    intCtrl.io.irqReqs(intCtrl.io.irqReqs.high downto j1Cfg.irqConfig.numOfInternalInterrupts) <> io.extInt
+    intCtrl.io.irqReqs(0) <> uartBridge.interruptCtrl.readInt
+    intCtrl.io.irqReqs(1) <> timerA.io.interrupt
+    intCtrl.io.irqReqs(2) <> timerB.io.interrupt
+    cpu.io.intVec <> intCtrl.io.intVec.resize(j1Cfg.adrWidth)
     cpu.io.irq <> intCtrl.io.irq
 
     // Connect the physical UART pins to the outside world
