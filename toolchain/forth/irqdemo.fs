@@ -65,7 +65,7 @@
     1000 htA!
     \ Use word isr as isr for interrupt 1
     ['] isr
-    2/ 1 ivec!
+    1 ivec!
     \ Enable interrupt 1 by setting the correct mask
     2 imask!
     \ Start timerA

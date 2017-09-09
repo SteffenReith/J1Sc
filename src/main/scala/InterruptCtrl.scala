@@ -48,7 +48,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   val irqVectors = Vec(for(i <- 0 to cfg.irqConfig.numOfInterrupts - 1) yield {
 
     // Create the ith register and truncate data read from the bus
-    RegNextWhen(io.irqSetData.resize(cfg.adrWidth),
+    RegNextWhen((io.irqSetData >> 1).resize(cfg.adrWidth),
                 irqVecWriteEnable(i),
                 B(cfg.adrWidth bits, default -> False))
 
