@@ -12,7 +12,20 @@
 
 : blink leds@ invert leds! ;
 
-: isr blink ;
+: rotate
+    leds@
+    dup
+    1 and if
+	2/
+	32767 and
+	32768 or
+    else
+	2/ 32767 and
+    then
+    leds!
+;
+
+: isr rotate ;
 
 ( -- c ) \ push the base address of timer A
 : tABase
@@ -60,9 +73,11 @@
 ;
 
 : iDemo \ Simple interrupt demo
-    \ Set timerA to 1000 * 2^16 ticks
+    \ Init leds
+    32768 leds!
+    \ Set timerA to 250 * 2^16 ticks
     0 ltA!
-    1000 htA!
+    250 htA!
     \ Use word isr as isr for interrupt 1
     ['] isr
     1 ivec!
