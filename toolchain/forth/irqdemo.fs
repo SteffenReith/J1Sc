@@ -1,13 +1,11 @@
 \ \
-\ Author: <AUTHORNAME> (<AUTHOREMAIL>)
-\ Committer: <COMMITTERNAME>
+\
+\ Author: Steffen Reith (Steffen.Reith@hs-rm.de)
 \ 
 \ Creation Date:  Sat Sep 9 16:21:25 GMT+2 2017 
 \ Module Name:    irqdemo - A simple demo of the interruptsystem of J1Sc
 \ Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL 
 \ 
-\ Hash: <COMMITHASH>
-\ Date: <AUTHORDATE>
 \ \
 
 : blink leds@ invert leds! ;
@@ -17,10 +15,10 @@
     dup
     1 and if
 	2/
-	32767 and
-	32768 or
+	$7fff and
+	$8000 or
     else
-	2/ 32767 and
+	2/ $7fff and
     then
     leds!
 ;
