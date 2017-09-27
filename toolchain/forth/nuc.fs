@@ -1168,17 +1168,6 @@ header .s
     then
 ;
 
-header testIO
-: testIO
-    begin
-	key
-	dup
-	h# 0040 io!
-	dup 
-	emit emit
-    again
-;
-
 header init :noname var:
 create init meta t' quit 2* target ,
 
