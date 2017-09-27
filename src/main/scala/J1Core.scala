@@ -86,7 +86,7 @@ class J1Core(cfg : J1Config) extends Component {
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
   // Calculate difference (- dtos + dnos) and sign to be reused multiple times
-  val difference = (B"b1" ## ~dtos).asUInt + dnos.asUInt.resized + 1
+  val difference = dnos.resize(cfg.wordSize + 1).asSInt - dtos.resize(cfg.wordSize + 1).asSInt
   val nosIsLess = (dtos.msb ^ dnos.msb) ? dnos.msb | difference.msb
 
   // Instruction decoder (including ALU operations)
@@ -110,7 +110,7 @@ class J1Core(cfg : J1Config) extends Component {
 
     // Arithmetic and logical operations (ALU)
     is(M"0_011-0010") {dtosN := (dtos.asUInt + dnos.asUInt).asBits}
-    is(M"0_011-1100") {dtosN := difference(difference.high - 1 downto 0).asBits}
+    is(M"0_011-1100") {dtosN := difference.resize(cfg.wordSize).asBits}
     is(M"0_011-0011") {dtosN := dtos & dnos}
     is(M"0_011-0100") {dtosN := dtos | dnos}
     is(M"0_011-0101") {dtosN := dtos ^ dnos}
