@@ -1,6 +1,5 @@
 --------------------------------------------------------------------------------
--- Author: <AUTHORNAME> (<AUTHOREMAIL>)
--- Committer: <COMMITTERNAME>
+-- Author: Steffen Reith (Steffen.Reith@hs-rm.de)
 --
 -- Creation Date:  Sun Dec 11 11:46:48 GMT+1 2016
 -- Creator:        Steffen Reith
@@ -8,8 +7,6 @@
 --                                of the J1 SoC
 -- Project Name:   J1Sc - A simple J1 implementation in scala
 --
--- Hash: <COMMITHASH>
--- Date: <AUTHORDATE>
 --------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -29,6 +26,11 @@ architecture Behavioral of J1SoC_IRQ_tb is
   -- Interrupts
   signal extInt : std_logic_vector(0 downto 0) := "0";
 
+  -- PModA-Interface
+  signal pmodA_read        : std_logic_vector(7 downto 0);
+  signal pmodA_write       : std_logic_vector(7 downto 0);
+  signal pmodA_writeEnable : std_logic_vector(7 downto 0);
+
   -- UART signals
   signal rx : std_logic := '0';
   signal tx : std_logic;
@@ -36,46 +38,37 @@ architecture Behavioral of J1SoC_IRQ_tb is
   -- I/O signals 
   signal leds : std_logic_vector(15 downto 0);
 
-  -- Clock and reset 
-    signal clk100Mhz : std_logic;
-    signal reset     : std_logic;
+  -- Clock and reset
+  signal boardClkLocked : std_logic;
+  signal boardClk       : std_logic;
+  signal reset          : std_logic;
 
 begin
 
   uut : entity work.J1SoC
-    port map (clk100Mhz => clk100Mhz,
-              reset     => reset,
-              extInt    => extInt,
-              rx        => rx,
-              tx        => tx,
-              leds      => leds);
+    port map (boardClk          => boardClk,
+              boardClkLocked    => boardClkLocked,
+              reset             => reset,
+              extInt            => extInt,
+              pmodA_read        => pmodA_read,
+              pmodA_write       => pmodA_write,
+              pmodA_writeEnable => pmodA_writeEnable,
+              rx                => rx,
+              tx                => tx,
+              leds              => leds);
 
   -- Clock process definitions
   clk_process : process
   begin
-    clk100Mhz <= '0';
+
+    -- Tell that the clock is stable
+    boardClkLocked <= '1';
+
+    boardClk <= '0';
     wait for clk_period/2;
-    clk100Mhz <= '1';
+
+    boardClk <= '1';
     wait for clk_period/2;
-  end process;
-
-  interrup_proc : process
-  begin
-
-    --Wait 1003ns
-    wait for 1003 ns;
-
-    -- Activate an interrupt (asynchronous)
-    extInt(0) <= '1';
-
-    --Wait some clocks
-    wait for 33 ns;
-    
-    -- Revoke the the interrupt (asynchronous)
-    extInt(0) <= '0';
-
-    -- wait forever
-    wait;
 
   end process;
 

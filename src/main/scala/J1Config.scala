@@ -402,7 +402,7 @@ object J1Config {
     def noOfInternalInterrupts =  3
     def irqLatency             =  3
     def adrWidth               = 12
-    def numOfRAMs              =  2
+    def numOfRAMs              =  4
     def startAddress           =  0
 
     // Default timer configuration

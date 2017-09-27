@@ -49,7 +49,13 @@ class MainMemory(cfg : J1Config) extends Component {
   val ramList = for (i <- 0 to cfg.numOfRAMs - 1) yield {
 
     // Write a message
-    println("[J1Sc] Fill RAM " + i + " ranging from " + (i * numOfCells) + " to " + (i * numOfCells + numOfCells - 1))
+    println("[J1Sc] Filling RAM " +
+            i +
+            " (Range from " +
+            (i * numOfCells) +
+            " to " +
+            (i * numOfCells + numOfCells - 1) +
+            ")")
 
     // Create the ith RAM and fill it with the appropriate part of the bootcode
     Mem(Bits(cfg.wordSize bits), cfg.bootCode().slice(i * numOfCells, (i + 1) * numOfCells))
