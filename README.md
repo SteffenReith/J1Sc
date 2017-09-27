@@ -44,7 +44,7 @@
 11. Press the reset button (default is BTNC on the Nexys4 DDR). You should
     see something like:
     `Contacting... established`
-    `Loaded 143 words`
+    `Loaded 142 words`
 
 12. Type `#include SwapForth.fs` to load the complete FORTH system
 
