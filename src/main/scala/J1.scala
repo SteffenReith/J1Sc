@@ -15,7 +15,7 @@ class J1(cfg : J1Config) extends Component {
   val io = new Bundle {
 
     // Interface for the interrupt system
-    val irq   = in Bool
+    val irq    = in Bool
     val intVec = in Bits(cfg.adrWidth bits)
 
     // I/O signals for peripheral data port
