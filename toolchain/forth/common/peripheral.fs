@@ -19,6 +19,28 @@
     $40 io@
 ;
 
+: rgbbase ( -- c) \ push the base address of RGB leds
+    $50
+;
+    
+: rgbled! ( r g b n -- ) \ write the rgb value to the n-th rgb-led
+    dup 2* + rgbbase +   \ calculate the base address of n-th rgb-led
+    dup -rot             \ duplicate base address and save it for later use
+    2 + io!              \ write blue 
+    dup -rot             \ duplicate base address and save it for later use
+    1 + io!              \ write green
+    io!                  \ write red
+;
+
+: rgbled@ ( n -- r g b ) \ read the rgb value of the n-th rgb-led
+    dup 2* + rgbbase +   \ calculate the base addresse of the n-th rgb-led
+    dup io@              \ read the red value
+    swap                 \ get the base address again
+    dup 1 + io@          \ read the green value
+    swap                 \ get the base address again
+    2 + io@              \ read the blue value
+;
+
 ( c -- ) \ write to the directions register of PModA
 : pmodADir!
     $60 io!
