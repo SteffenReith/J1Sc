@@ -77,7 +77,8 @@ class InterruptCtrl(cfg : J1Config) extends Component {
     // A read port for the interrupt mask
     busCtrl.read(io.irqGetMask, baseAddress + cfg.irqConfig.numOfInterrupts, 0)
 
-    busCtrl.nonStopWrite(io.irqSetData, 0) // the enable signal is constantly driven by the data of the memory bus
+    // The enable signal is constantly driven by the data of the memory bus
+    busCtrl.nonStopWrite(io.irqSetData, 0)
 
     // Generate the write enable signal for the interrupt mask
     io.enableWriteNewMask := busCtrl.isWriting(baseAddress + cfg.irqConfig.numOfInterrupts)
