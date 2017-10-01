@@ -40,7 +40,7 @@ class Timer(cfg : TimerConfig) extends Component {
 
   // Split the compare register into high and low part
   io.highState := cmp(cmp.high downto cfg.width / 2)
-  io.lowState := cmp(cfg.width / 2 - 1 downto 0)
+  io.lowState  := cmp(cfg.width / 2 - 1 downto 0)
 
   // Register the enable flag (adapt the width for the 1 bit register)
   val isEnabled = RegNextWhen(io.enable.orR, io.accessEnableWrite) init(False)
