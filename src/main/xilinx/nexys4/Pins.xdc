@@ -71,6 +71,30 @@ set_property  PACKAGE_PIN P2 [get_ports {leds[15]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {leds[15]}]
 set_property  SLEW FAST [get_ports {leds[15]}]
 
+set_property  PACKAGE_PIN K6 [get_ports {rgbLeds[0]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {rgbLeds[0]}]
+set_property  SLEW FAST [get_ports {rgbLeds[0]}]
+
+set_property  PACKAGE_PIN H6 [get_ports {rgbLeds[1]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {rgbLeds[1]}]
+set_property  SLEW FAST [get_ports {rgbLeds[1]}]
+
+set_property  PACKAGE_PIN L16 [get_ports {rgbLeds[2]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {rgbLeds[2]}]
+set_property  SLEW FAST [get_ports {rgbLeds[2]}]
+
+set_property  PACKAGE_PIN K5 [get_ports {rgbLeds[3]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {rgbLeds[3]}]
+set_property  SLEW FAST [get_ports {rgbLeds[3]}]
+
+set_property  PACKAGE_PIN F13 [get_ports {rgbLeds[4]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {rgbLeds[4]}]
+set_property  SLEW FAST [get_ports {rgbLeds[4]}]
+
+set_property  PACKAGE_PIN F6 [get_ports {rgbLeds[5]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {rgbLeds[5]}]
+set_property  SLEW FAST [get_ports {rgbLeds[5]}]
+
 set_property  PACKAGE_PIN C4 [get_ports {rx}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {rx}]
 

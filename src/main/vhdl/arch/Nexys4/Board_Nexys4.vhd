@@ -19,6 +19,7 @@ entity Board_Nexys4 is
         clk100Mhz : in    std_logic;
         extInt    : in    std_logic_vector(0 downto 0);
         leds      : out   std_logic_vector(15 downto 0);
+        rgbLeds   : out   std_logic_vector(5 downto 0);
         pmodA     : inout std_logic_vector(7 downto 0);
         rx        : in    std_logic;
         tx        : out   std_logic);
@@ -30,12 +31,12 @@ architecture Structural of Board_Nexys4 is
   -- Signals related to the board clk
   signal boardClk       : std_logic;
   signal boardClkLocked : std_logic;
-  
+
   -- Interface for PModA
   signal pmodA_read        : std_logic_vector(7 downto 0);
   signal pmodA_write       : std_logic_vector(7 downto 0);
   signal pmodA_writeEnable : std_logic_vector(7 downto 0);
-  
+
 begin
 
   -- Instantiate a PLL/MMCM (makes a 80Mhz clock)
@@ -43,7 +44,7 @@ begin
     port map (clkIn    => clk100Mhz,
               clkOut   => boardClk,
               isLocked => boardClkLocked);
-  
+
   -- Instantiate the J1SoC core created by Spinal
   core : entity work.J1SoC
     port map (reset             => reset,
@@ -51,6 +52,7 @@ begin
               boardClkLocked    => boardClkLocked,
               extInt            => extInt,
               leds              => leds,
+              rgbLeds           => rgbLeds,
               pmodA_read        => pmodA_read,
               pmodA_write       => pmodA_write,
               pmodA_writeEnable => pmodA_writeEnable,

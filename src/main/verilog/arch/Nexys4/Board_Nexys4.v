@@ -1,6 +1,5 @@
 //
 // Author: Steffen Reith (steffen.reith@hs-rm.de)
-// Committer: Steffen Reith
 //
 // Creation Date:  Sat May 6 16:32:24 GMT+2 2017 
 // Module Name:    Board_Nexys - Behavioral
@@ -11,7 +10,8 @@
 module Board_Nexys4 (reset,
 		     clk100Mhz, 
  		     extInt,
-		     leds,   
+		     leds,
+                     rgbLeds,   
            	     pmodA,
 		     rx,    
 		     tx);
@@ -49,6 +49,7 @@ module Board_Nexys4 (reset,
              .boardClkLocked     (boardClkLocked),
              .extInt             (extInt),
              .leds               (leds),
+             .rgbLeds            (rgbLeds),
              .pmodA_read         (pmodA_read),
              .pmodA_write        (pmodA_write),
              .pmodA_writeEnable  (pmodA_writeEnable),

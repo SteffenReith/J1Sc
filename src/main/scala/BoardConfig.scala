@@ -46,6 +46,29 @@ object LEDArrayConfig {
 
 }
 
+// Configuration of the PWM component
+case class PWMConfig (frequency       : HertzNumber,
+                      numOfDutyCycles : Int,
+                      numOfChannels   : Int)
+
+// Some configurations used for the PWM
+object PWMConfig {
+
+  // Provide the default configuration
+  def default = {
+
+    // Create a PWMConfig instance
+    val config = PWMConfig(frequency       = 200 Hz,
+                           numOfDutyCycles = 256,
+                           numOfChannels   = 6)
+
+    // Return the default configuration
+    config
+
+  }
+
+}
+
 // Configuration of the UART
 case class J1UARTConfig (clockDividerWidth : Int,
                          dataWidthMax : Int,
@@ -103,6 +126,7 @@ object J1UARTConfig {
 // Configuration of all IO components
 case class BoardConfig(gpioConfig     : GPIOConfig,
                        ledBankConfig  : LEDArrayConfig,
+                       pwmConfig      : PWMConfig,
                        uartConfig     : J1UARTConfig,
                        boardFrequency : IClockDomainFrequency,
                        ioWaitStates   : Int)
@@ -115,6 +139,7 @@ object BoardConfig {
     // Default configuration values
     val config = BoardConfig(gpioConfig     = GPIOConfig.default,
                              ledBankConfig  = LEDArrayConfig.default,
+                             pwmConfig      = PWMConfig.default,
                              uartConfig     = J1UARTConfig.default,
                              boardFrequency = FixedFrequency(80 MHz),
                              1)
@@ -130,6 +155,7 @@ object BoardConfig {
     // Default configuration values
     val config = BoardConfig(gpioConfig     = GPIOConfig.default,
                              ledBankConfig  = LEDArrayConfig.default,
+                             pwmConfig      = PWMConfig.default,
                              uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
                              boardFrequency = FixedFrequency(100 MHz),
                              1)
@@ -144,10 +170,11 @@ object BoardConfig {
 
     // Default configuration values
     val config = BoardConfig(gpioConfig     = GPIOConfig.default,
-      ledBankConfig  = LEDArrayConfig.default,
-      uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
-      boardFrequency = FixedFrequency(100 MHz),
-      1)
+                             ledBankConfig  = LEDArrayConfig.default,
+                             pwmConfig      = PWMConfig.default,
+                             uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
+                             boardFrequency = FixedFrequency(100 MHz),
+                             1)
 
     // Return the Nexys4 configuration
     config

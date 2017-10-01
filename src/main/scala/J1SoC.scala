@@ -26,8 +26,11 @@ class J1SoC (j1Cfg    : J1Config,
     // Asynchronous interrupts from the outside world
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
 
-    // The physical pins for the connected FPGAs
+    // The physical pins for the connected LEDs
     val leds = out Bits(boardCfg.ledBankConfig.width bits)
+
+    // The physical pins for the connected RGB-LEDs
+    val rgbLeds = out Bits(boardCfg.pwmConfig.numOfChannels bits)
 
     // The physical pins for pmod A
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
@@ -74,6 +77,13 @@ class J1SoC (j1Cfg    : J1Config,
 
     // Connect the physical LED pins to the outside world
     io.leds := ledArray.io.leds
+
+    // Create the PWMs fpr the RGB-leds at 0x50
+    val pwmArray = new PWM(j1Cfg, boardCfg.pwmConfig)
+    val pwmBridge = pwmArray.driveFrom(peripheralBusCtrl, 0x50)
+
+    // Connect the pwms physically
+    io.rgbLeds := pwmArray.io.pwmChannels
 
     // Create a PMOD at base address 0x60
     val pmodA       = new GPIO(boardCfg.gpioConfig)

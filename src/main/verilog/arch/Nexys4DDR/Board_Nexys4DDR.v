@@ -1,6 +1,5 @@
 //
-// Author: <AUTHORNAME> (<AUTHOREMAIL>)
-// Committer: <COMMITTERNAME>
+// Author: Steffen Reith (Steffen.Reith@hs-rm.de)
 //
 // Creation Date:  Sat Apr 8 21:13:17 GMT+2 2017
 // Module Name:    Board_Nexys4DDR - Behavioral
@@ -9,12 +8,13 @@
 //
 
 module Board_Nexys4DDR (reset,
-		                clk100Mhz, 
- 		                extInt,
-		                leds,   
-           		        pmodA,
-		                rx,    
-		                tx);
+	                clk100Mhz, 
+	                extInt,
+	                leds,
+                        rgbLeds,
+   		        pmodA,
+	                rx,    
+	                tx);
 		                
  // Input ports
  input reset;
@@ -49,6 +49,7 @@ module Board_Nexys4DDR (reset,
              .boardClkLocked     (boardClkLocked),
              .extInt             (extInt),
              .leds               (leds),
+             .rgbLeds            (rgbLeds),
              .pmodA_read         (pmodA_read),
              .pmodA_write        (pmodA_write),
              .pmodA_writeEnable  (pmodA_writeEnable),
