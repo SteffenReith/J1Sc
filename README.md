@@ -48,6 +48,6 @@
 
 12. Type `#include SwapForth.fs` to load the complete FORTH system
 
-13. Turn the leds on by `hex ffff leds!`
+13. Turn the leds on by `$ffff leds!`
 
 14. Have fun with a working forth system
