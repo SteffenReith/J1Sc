@@ -9,14 +9,18 @@
 \ 
 \ \
 
+: ledsbase ( -- c) \ push the base address of the LED array
+    $40
+;
+
 ( c -- ) \ write value to LED-register
 : leds!
-    $40 io!
+    ledsbase io!
 ;
 
 ( -- c) \ read the current value of the LED-register
 : leds@
-    $40 io@
+    ledsbase io@
 ;
 
 : rgbbase ( -- c) \ push the base address of RGB leds
@@ -41,24 +45,29 @@
     2 + io@              \ read the blue value
 ;
 
+: pmodAbase ( -- c) \ push the base address of the PMODA port
+    $60
+;
+
+
 ( c -- ) \ write to the directions register of PModA
 : pmodADir!
-    $60 io!
+    pmodAbase io!
 ;
 
 ( -- c) \ read the directions register of PModA
 : pmodADir@
-    $60 io@
+    pmodAbase io@
 ;
 
 ( c -- ) \ write value to PModA (read pins are ignored)
 : pmodA!
-    $64 io!
+    pmodAbase 4 + io!
 ;
 
 ( -- c) \ read the value of PModA
 : pmodA@
-    $64 io@
+    pmodAbase 4 + io@
 ;
 
 ( -- c ) \ push the base address of timer A
