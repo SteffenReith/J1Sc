@@ -26,36 +26,20 @@ class PWM(j1Cfg  : J1Config,
 
   }.setName("")
 
-  // Get the frequency of the current clock domain
-  val currentFreq = ClockDomain.current.frequency.getValue
-
-  // Calculate the divider value
-  val dividerValue = (currentFreq / (pwmCfg.frequency * pwmCfg.numOfDutyCycles)).toInt
-
   // Write a message
-  println("[J1Sc] PWM-frequency is " + pwmCfg.frequency.toBigDecimal + "Hz (Clock will be divided " + dividerValue + " times)")
+  println("[J1Sc] PWM-frequency is " + pwmCfg.frequency.toBigDecimal + "Hz")
 
-  // Create the divider counter
-  val divider = Reg(UInt(log2Up(dividerValue) bits)) init(0)
+  // Create a slowed down clock domain for the PWM
+  val pwmClockDomain = ClockDomain.current.newSlowedClockDomain(pwmCfg.frequency * pwmCfg.numOfDutyCycles)
 
-  // Decrement the divider
-  divider := divider - 1
+  // Create an area for the slowed down duty cycle counter
+  val pwmArea = new ClockingArea(pwmClockDomain) {
 
-  // Generate a tick signal
-  val dividerTick = (divider === 0)
-
-  // Check if the divider has to be reloaded
-  when(dividerTick) {
-
-    // Reload the divider counter
-    divider := dividerValue
+    // Create a free running duty cycle counter
+    val cycle = Reg(UInt(log2Up(pwmCfg.numOfDutyCycles) bits))
+    cycle := cycle + 1
 
   }
-
-  // Create a free running duty cycle counter
-  val cycleN = UInt(log2Up(pwmCfg.numOfDutyCycles) bits)
-  val cycle = RegNextWhen(cycleN, dividerTick)
-  cycleN := cycle + 1
 
   // Create all compare registers
   val compareRegs = Vec(for(i <- 0 to pwmCfg.numOfChannels - 1) yield {
@@ -69,7 +53,7 @@ class PWM(j1Cfg  : J1Config,
   (io.compareRegs, compareRegs).zipped.foreach(_ := _.asBits)
 
   // Create the compare logic for all channels
-  compareRegs.zipWithIndex.foreach{case (reg, i) => (io.pwmChannels(i) := (reg > cycle))}
+  compareRegs.zipWithIndex.foreach{case (reg, i) => (io.pwmChannels(i) := (reg > pwmArea.cycle))}
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
