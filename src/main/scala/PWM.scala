@@ -27,10 +27,10 @@ class PWM(j1Cfg  : J1Config,
   }.setName("")
 
   // Write a message
-  println("[J1Sc] PWM-frequency is " + pwmCfg.frequency.toBigDecimal + "Hz")
+  println("[J1Sc] PWM-frequency is " + pwmCfg.pwmFrequency.toBigDecimal + "Hz")
 
   // Create a slowed down clock domain for the PWM
-  val pwmClockDomain = ClockDomain.current.newSlowedClockDomain(pwmCfg.frequency * pwmCfg.numOfDutyCycles)
+  val pwmClockDomain = ClockDomain.current.newSlowedClockDomain(pwmCfg.pwmFrequency * pwmCfg.numOfDutyCycles)
 
   // Create an area for the slowed down duty cycle counter
   val pwmArea = new ClockingArea(pwmClockDomain) {
@@ -64,10 +64,10 @@ class PWM(j1Cfg  : J1Config,
     // Make the compare register R/W
     for (i <- 0 to pwmCfg.numOfChannels - 1) {
 
-      // A r/w register access for the ith interrupt vector
+      // A r/w register access for the ith compare register
       busCtrl.read(io.compareRegs(i), baseAddress + i, 0)
 
-      // Generate the write enable signal for the ith interrupt vector
+      // Generate the write enable signal for the ith compare register
       io.writeEnable(i) := busCtrl.isWriting(baseAddress + i)
 
     }
