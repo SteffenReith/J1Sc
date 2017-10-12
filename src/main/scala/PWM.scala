@@ -14,6 +14,7 @@ class PWM(j1Cfg  : J1Config,
 
   // Check the generic parameters
   assert(Bool(isPow2(pwmCfg.numOfDutyCycles)), "Error: The number of duty cycles has to be a power of 2!", FAILURE)
+  assert(Bool(pwmCfg.numOfChannels <= j1Cfg.wordSize), "Error: Too many pwm channels!", FAILURE)
 
   val io = new Bundle {
 
