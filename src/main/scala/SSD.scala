@@ -80,6 +80,8 @@ class SSD(j1Cfg  : J1Config,
                 B((nibbleWidth + 1) bits, default -> false))
 
   })
+
+  // Rearrange the packed register format for the databus
   data.zipWithIndex.foreach{case (reg, i) => (io.data(i) := reg.msb ##
                                                             reg(nibbleWidth - 1 downto 0).resize(j1Cfg.wordSize - 1))}
 
