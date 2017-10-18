@@ -46,7 +46,7 @@
 ;
 
 : pmodAbase ( -- c) \ push the base address of the PMODA port
-    $60
+    $70
 ;
 
 

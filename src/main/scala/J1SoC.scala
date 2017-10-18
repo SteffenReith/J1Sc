@@ -32,6 +32,11 @@ class J1SoC (j1Cfg    : J1Config,
     // The physical pins for the connected RGB-LEDs
     val rgbLeds = out Bits(boardCfg.pwmConfig.numOfChannels bits)
 
+    // The physical pins for the multiplexed seven-segment display
+    val segments = out (Seg7())
+    val dot =      out Bool
+    val selector = out Bits(boardCfg.ssdConfig.numOfDisplays bits)
+
     // The physical pins for pmod A
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
@@ -79,15 +84,24 @@ class J1SoC (j1Cfg    : J1Config,
     io.leds := ledArray.io.leds
 
     // Create the PWMs fpr the RGB-leds at 0x50
-    val pwmArray = new PWM(j1Cfg, boardCfg.pwmConfig)
-    val pwmBridge = pwmArray.driveFrom(peripheralBusCtrl, 0x50)
+    val pwm = new PWM(j1Cfg, boardCfg.pwmConfig)
+    val pwmBridge = pwm.driveFrom(peripheralBusCtrl, 0x50)
 
-    // Connect the pwms physically
-    io.rgbLeds := pwmArray.io.pwmChannels
+    // Connect the pwm channels physically
+    io.rgbLeds := pwm.io.pwmChannels
+
+    // Create the seven-segment display at 0x60
+    val ssd = new SSD(j1Cfg, boardCfg.ssdConfig)
+    val ssdBridge = ssd.driveFrom(peripheralBusCtrl, 0x60)
+
+    // Connect the signal for the seven segment displays physically
+    io.segments := ssd.io.segments
+    io.dot      := ssd.io.dot
+    io.selector := ssd.io.selector
 
     // Create a PMOD at base address 0x60
     val pmodA       = new GPIO(boardCfg.gpioConfig)
-    val pmodABridge = pmodA.driveFrom(peripheralBusCtrl, 0x60)
+    val pmodABridge = pmodA.driveFrom(peripheralBusCtrl, 0x70)
 
     // Connect the gpio register to pmodA
     io.pmodA.write       <> pmodA.io.dataOut

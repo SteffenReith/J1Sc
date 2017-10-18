@@ -2,7 +2,7 @@
 // Author: Steffen Reith (steffen.reith@hs-rm.de)
 //
 // Creation Date:  Sat May 6 16:32:24 GMT+2 2017 
-// Module Name:    Board_Nexys - Behavioral
+// Module Name:    Board_Nexys4 - Behavioral
 // Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
 //
 //
@@ -11,7 +11,16 @@ module Board_Nexys4 (reset,
 		     clk100Mhz, 
  		     extInt,
 		     leds,
-                     rgbLeds,   
+                     rgbLeds,
+                     segments_a,
+                     segments_b,
+                     segments_c,
+                     segments_d,
+                     segments_e,
+                     segments_f,		     
+                     segments_g,
+                     dot,
+                     selector,   
            	     pmodA,
 		     rx,    
 		     tx);
@@ -25,6 +34,15 @@ module Board_Nexys4 (reset,
  // Output ports
  output [15:0] leds;
  output tx;
+ output segments_a;  
+ output segments_b;  
+ output segments_c; 
+ output segments_d;  
+ output segments_e;  
+ output segments_f;  
+ output segments_g;  
+ output dot; 
+ output [7:0] selector;
 
  // Bidirectional port
  inout [7:0] pmodA;
@@ -50,6 +68,15 @@ module Board_Nexys4 (reset,
              .extInt             (extInt),
              .leds               (leds),
              .rgbLeds            (rgbLeds),
+             .segments_a         (segments_a),
+             .segments_b         (segments_b),
+             .segments_c         (segments_c),
+             .segments_d         (segments_d),
+             .segments_e         (segments_e),
+             .segments_f         (segments_f),
+             .segments_g         (segments_g),
+	     .dot                (dot),
+	     .selector           (selector),
              .pmodA_read         (pmodA_read),
              .pmodA_write        (pmodA_write),
              .pmodA_writeEnable  (pmodA_writeEnable),

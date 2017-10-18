@@ -95,6 +95,70 @@ set_property  PACKAGE_PIN R12 [get_ports {rgbLeds[5]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {rgbLeds[5]}]
 set_property  SLEW FAST [get_ports {rgbLeds[5]}]
 
+set_property  PACKAGE_PIN T10 [get_ports segments_a]
+set_property  IOSTANDARD LVCMOS33 [get_ports segments_a]
+set_property  SLEW FAST [get_ports segments_a]
+
+set_property  PACKAGE_PIN R10 [get_ports segments_b]
+set_property  IOSTANDARD LVCMOS33 [get_ports segments_b]
+set_property  SLEW FAST [get_ports segments_b]
+
+set_property  PACKAGE_PIN K16 [get_ports segments_c]
+set_property  IOSTANDARD LVCMOS33 [get_ports segments_c]
+set_property  SLEW FAST [get_ports segments_c]
+
+set_property  PACKAGE_PIN K13 [get_ports segments_d]
+set_property  IOSTANDARD LVCMOS33 [get_ports segments_d]
+set_property  SLEW FAST [get_ports segments_d]
+
+set_property  PACKAGE_PIN P15 [get_ports segments_e]
+set_property  IOSTANDARD LVCMOS33 [get_ports segments_e]
+set_property  SLEW FAST [get_ports segments_e]
+
+set_property  PACKAGE_PIN T11 [get_ports segments_f]
+set_property  IOSTANDARD LVCMOS33 [get_ports segments_f]
+set_property  SLEW FAST [get_ports segments_f]
+
+set_property  PACKAGE_PIN L18 [get_ports segments_g]
+set_property  IOSTANDARD LVCMOS33 [get_ports segments_g]
+set_property  SLEW FAST [get_ports segments_g]
+
+set_property  PACKAGE_PIN H15 [get_ports dot]
+set_property  IOSTANDARD LVCMOS33 [get_ports dot]
+set_property  SLEW FAST [get_ports dot]
+
+set_property  PACKAGE_PIN U13 [get_ports {selector[7]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {selector[7]}]
+set_property  SLEW FAST [get_ports {selector[7]}]
+
+set_property  PACKAGE_PIN K2 [get_ports {selector[6]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {selector[6]}]
+set_property  SLEW FAST [get_ports {selector[6]}]
+
+set_property  PACKAGE_PIN T14 [get_ports {selector[5]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {selector[5]}]
+set_property  SLEW FAST [get_ports {selector[5]}]
+
+set_property  PACKAGE_PIN P14 [get_ports {selector[4]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {selector[4]}]
+set_property  SLEW FAST [get_ports {selector[4]}]
+
+set_property  PACKAGE_PIN J14 [get_ports {selector[3]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {selector[3]}]
+set_property  SLEW FAST [get_ports {selector[3]}]
+
+set_property  PACKAGE_PIN T9 [get_ports {selector[2]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {selector[2]}]
+set_property  SLEW FAST [get_ports {selector[2]}]
+
+set_property  PACKAGE_PIN J18 [get_ports {selector[1]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {selector[1]}]
+set_property  SLEW FAST [get_ports {selector[1]}]
+
+set_property  PACKAGE_PIN J17 [get_ports {selector[0]}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {selector[0]}]
+set_property  SLEW FAST [get_ports {selector[0]}]
+
 set_property PACKAGE_PIN C4 [get_ports rx]
 set_property IOSTANDARD LVCMOS33 [get_ports rx]
 
@@ -129,72 +193,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[6]}]
 
 set_property PACKAGE_PIN G18 [get_ports {pmodA[7]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pmodA[7]}]
-
-#set_property  PACKAGE_PIN U13 [get_ports {sel[7]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {sel[7]}]
-#set_property  SLEW FAST [get_ports {sel[7]}]
-
-#set_property  PACKAGE_PIN K2 [get_ports {sel[6]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {sel[6]}]
-#set_property  SLEW FAST [get_ports {sel[6]}]
-
-#set_property  PACKAGE_PIN T14 [get_ports {sel[5]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {sel[5]}]
-#set_property  SLEW FAST [get_ports {sel[5]}]
-
-#set_property  PACKAGE_PIN P14 [get_ports {sel[4]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {sel[4]}]
-#set_property  SLEW FAST [get_ports {sel[4]}]
-
-#set_property  PACKAGE_PIN J14 [get_ports {sel[3]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {sel[3]}]
-#set_property  SLEW FAST [get_ports {sel[3]}]
-
-#set_property  PACKAGE_PIN T9 [get_ports {sel[2]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {sel[2]}]
-#set_property  SLEW FAST [get_ports {sel[2]}]
-
-#set_property  PACKAGE_PIN J18 [get_ports {sel[1]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {sel[1]}]
-#set_property  SLEW FAST [get_ports {sel[1]}]
-
-#set_property  PACKAGE_PIN J17 [get_ports {sel[0]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {sel[0]}]
-#set_property  SLEW FAST [get_ports {sel[0]}]
-
-
-#set_property  PACKAGE_PIN H15 [get_ports {segs[7]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {segs[7]}]
-#set_property  SLEW FAST [get_ports {segs[7]}]
-
-#set_property  PACKAGE_PIN T10 [get_ports {segs[0]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {segs[0]}]
-#set_property  SLEW FAST [get_ports {segs[0]}]
-
-#set_property  PACKAGE_PIN R10 [get_ports {segs[1]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {segs[1]}]
-#set_property  SLEW FAST [get_ports {segs[1]}]
-
-#set_property  PACKAGE_PIN K16 [get_ports {segs[2]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {segs[2]}]
-#set_property  SLEW FAST [get_ports {segs[2]}]
-
-#set_property  PACKAGE_PIN K13 [get_ports {segs[3]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {segs[3]}]
-#set_property  SLEW FAST [get_ports {segs[3]}]
-
-#set_property  PACKAGE_PIN P15 [get_ports {segs[4]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {segs[4]}]
-#set_property  SLEW FAST [get_ports {segs[4]}]
-
-#set_property  PACKAGE_PIN T11 [get_ports {segs[5]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {segs[5]}]
-#set_property  SLEW FAST [get_ports {segs[5]}]
-
-#set_property  PACKAGE_PIN L18 [get_ports {segs[6]}]
-#set_property  IOSTANDARD LVCMOS33 [get_ports {segs[6]}]
-#set_property  SLEW FAST [get_ports {segs[6]}]
-
 
 #set_property  PACKAGE_PIN J15 [get_ports {btn[0]}]
 #set_property  IOSTANDARD LVCMOS33 [get_ports {btn[0]}]

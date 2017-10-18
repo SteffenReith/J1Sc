@@ -2,7 +2,7 @@
 --
 -- Creation Date:  Fri Apr 7 16:00:52 GMT+2 2017
 -- Creator:        Steffen Reith
--- Module Name:    J1ScNexys4DDR - Behavioral
+-- Module Name:    Board_Nexys4DDR - Behavioral
 -- Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
 --
 -- Remark: The pmod pins are renumberd as follows 1 -> 0, 2 -> 1, 3 -> 2,
@@ -15,14 +15,23 @@ use ieee.std_logic_1164.all;
 
 entity Board_Nexys4DDR is
 
-  port (reset     : in    std_logic;
-        clk100Mhz : in    std_logic;
-        extInt    : in    std_logic_vector(0 downto 0);
-        leds      : out   std_logic_vector(15 downto 0);
-        rgbLeds   : out   std_logic_vector(5 downto 0);
-        pmodA     : inout std_logic_vector(7 downto 0);
-        rx        : in    std_logic;
-        tx        : out   std_logic);
+  port (reset      : in    std_logic;
+        clk100Mhz  : in    std_logic;
+        extInt     : in    std_logic_vector(0 downto 0);
+        leds       : out   std_logic_vector(15 downto 0);
+        rgbLeds    : out   std_logic_vector(5 downto 0);
+        segments_a : out   std_logic;
+        segments_b : out   std_logic;
+        segments_c : out   std_logic;
+        segments_d : out   std_logic;
+        segments_e : out   std_logic;
+        segments_f : out   std_logic;
+        segments_g : out   std_logic;
+        dot        : out   std_logic;
+        selector   : out   std_logic_vector(7 downto 0);
+        pmodA      : inout std_logic_vector(7 downto 0);
+        rx         : in    std_logic;
+        tx         : out   std_logic);
 
 end Board_Nexys4DDR;
 
@@ -53,6 +62,15 @@ begin
               extInt            => extInt,
               leds              => leds,
               rgbLeds           => rgbLeds,
+              segments_a        => segments_a,
+              segments_b        => segments_b,
+              segments_c        => segments_c,
+              segments_d        => segments_d,
+              segments_e        => segments_e,
+              segments_f        => segments_f,
+              segments_g        => segments_g,
+              dot               => dot,
+              selector          => selector,
               pmodA_read        => pmodA_read,
               pmodA_write       => pmodA_write,
               pmodA_writeEnable => pmodA_writeEnable,

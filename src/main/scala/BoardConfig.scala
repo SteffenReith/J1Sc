@@ -36,7 +36,7 @@ object LEDArrayConfig {
   def default = {
 
     // Default configuration values
-    val config = LEDArrayConfig(width = 16,
+    val config = LEDArrayConfig(width     = 16,
                                 lowActive = false)
 
     // Return the default configuration
@@ -47,7 +47,7 @@ object LEDArrayConfig {
 }
 
 // Configuration of the PWM component
-case class PWMConfig (frequency       : HertzNumber,
+case class PWMConfig (pwmFrequency    : HertzNumber,
                       numOfDutyCycles : Int,
                       numOfChannels   : Int)
 
@@ -58,9 +58,34 @@ object PWMConfig {
   def default = {
 
     // Create a PWMConfig instance
-    val config = PWMConfig(frequency       = 200 Hz,
+    val config = PWMConfig(pwmFrequency    = 200 Hz,
                            numOfDutyCycles = 256,
                            numOfChannels   = 6)
+
+    // Return the default configuration
+    config
+
+  }
+
+}
+
+// Configuration of the seven-segment display component
+case class SSDConfig (mplxFrequency  : HertzNumber,
+                      numOfDisplays  : Int,
+                      invertSelector : Boolean,
+                      invertSegments : Boolean)
+
+// Some standard configurations unsed for the seven-segment display component
+object SSDConfig {
+
+  // Provide a default configuration
+  def default = {
+
+    // Create the default instance
+    val config = SSDConfig(mplxFrequency  = 200 Hz,
+                           numOfDisplays  = 8,
+                           invertSelector = true,
+                           invertSegments = true)
 
     // Return the default configuration
     config
@@ -127,6 +152,7 @@ object J1UARTConfig {
 case class BoardConfig(gpioConfig     : GPIOConfig,
                        ledBankConfig  : LEDArrayConfig,
                        pwmConfig      : PWMConfig,
+                       ssdConfig      : SSDConfig,
                        uartConfig     : J1UARTConfig,
                        boardFrequency : IClockDomainFrequency,
                        ioWaitStates   : Int)
@@ -140,6 +166,7 @@ object BoardConfig {
     val config = BoardConfig(gpioConfig     = GPIOConfig.default,
                              ledBankConfig  = LEDArrayConfig.default,
                              pwmConfig      = PWMConfig.default,
+                             ssdConfig      = SSDConfig.default,
                              uartConfig     = J1UARTConfig.default,
                              boardFrequency = FixedFrequency(80 MHz),
                              1)
@@ -156,6 +183,7 @@ object BoardConfig {
     val config = BoardConfig(gpioConfig     = GPIOConfig.default,
                              ledBankConfig  = LEDArrayConfig.default,
                              pwmConfig      = PWMConfig.default,
+                             ssdConfig      = SSDConfig.default,
                              uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
                              boardFrequency = FixedFrequency(100 MHz),
                              1)
@@ -172,6 +200,7 @@ object BoardConfig {
     val config = BoardConfig(gpioConfig     = GPIOConfig.default,
                              ledBankConfig  = LEDArrayConfig.default,
                              pwmConfig      = PWMConfig.default,
+                             ssdConfig      = SSDConfig.default,
                              uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
                              boardFrequency = FixedFrequency(100 MHz),
                              1)

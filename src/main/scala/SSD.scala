@@ -7,11 +7,8 @@
  *
  */
 import spinal.core._
-import spinal.lib.bus.misc.BusSlaveFactory
 import spinal.lib._
-
-// Number of segments (without the dot) of a seven segment display
-val numOfSegs : Int = 7
+import spinal.lib.bus.misc.BusSlaveFactory
 
 case class Seg7() extends Bundle {
 
@@ -23,6 +20,12 @@ case class Seg7() extends Bundle {
 class SSD(j1Cfg  : J1Config,
           ssdCfg : SSDConfig) extends Component {
 
+  // Number of segments (without the dot) of a seven segment display
+  val numOfSegs : Int = 7
+
+  // Number of bits in a nibble
+  val nibbleWidth : Int = 4
+
   // Check the generic parameters
   assert(Bool(ssdCfg.numOfDisplays <= j1Cfg.wordSize), "Error: Too many seven-segment displays!", FAILURE)
 
@@ -31,7 +34,7 @@ class SSD(j1Cfg  : J1Config,
     val newValue = in Bits(j1Cfg.wordSize bits)
     val writeEnableValue = in Bits(ssdCfg.numOfDisplays bits)
 
-    val data = out Vec(Bits(numOfSegs + 1 bits), ssdCfg.numOfDisplays)
+    val data = out Vec(Bits(j1Cfg.wordSize bits), ssdCfg.numOfDisplays)
 
     // The physical signals for the segments and the dot
     val segments = out (Seg7())
@@ -63,8 +66,8 @@ class SSD(j1Cfg  : J1Config,
   val ssdArea = new ClockingArea(ssdClockDomain) {
 
     // Create a free running selector (one-hot)
-    val selector = RegInit(B(ssdCfg.numOfDisplays bits, 1 -> 1, default -> false))
-    selector := selector(selector.high downto 0) ## selector.msb
+    val selector = RegInit(B(ssdCfg.numOfDisplays bits, 0 -> true, default -> false))
+    selector := selector(selector.high - 1 downto 0) ## selector.msb
 
   }
 
@@ -72,18 +75,20 @@ class SSD(j1Cfg  : J1Config,
   val data = Vec(for(i <- 0 to ssdCfg.numOfDisplays - 1) yield {
 
     // Create the ith register
-    RegNextWhen(io.newValue.msb ## io.newValue(numOfSegs - 1 downto 0),
+    RegNextWhen(io.newValue.msb ## io.newValue(nibbleWidth - 1 downto 0),
                 io.writeEnableValue(i),
-                B((numOfSegs + 1) bits, default -> false))
+                B((nibbleWidth + 1) bits, default -> false))
 
   })
-  (io.data, data).zipped.foreach(_ := _)
+  data.zipWithIndex.foreach{case (reg, i) => (io.data(i) := reg.msb ##
+                                                            reg(nibbleWidth - 1 downto 0).resize(j1Cfg.wordSize - 1))}
 
-  // Copy the segments, dots and the selector to the output signals
+  // Copy the segments, dots and the selector to the output signals and make them low - active (if configured)
   val selData = data(OHToUInt(ssdArea.selector))
-  io.segments.assignFromBits(convToSegs(selData(numOfSegs - 1 downto 0)))
-  io.dot := selData.msb
-  io.selector := ssdArea.selector
+  val selSegs = convToSegs(selData(selData.high - 1 downto 0))
+  io.segments.assignFromBits(if (ssdCfg.invertSegments) ~selSegs else selSegs)
+  io.dot := (if (ssdCfg.invertSegments) ~selData.msb else selData.msb)
+  io.selector := (if (ssdCfg.invertSelector) ~ssdArea.selector else ssdArea.selector)
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
