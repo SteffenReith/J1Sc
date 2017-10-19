@@ -70,10 +70,11 @@ object PWMConfig {
 }
 
 // Configuration of the seven-segment display component
-case class SSDConfig (mplxFrequency  : HertzNumber,
-                      numOfDisplays  : Int,
-                      invertSelector : Boolean,
-                      invertSegments : Boolean)
+case class SSDConfig (mplxFrequency        : HertzNumber,
+                      numOfDisplays        : Int,
+                      invertSelector       : Boolean,
+                      invertSegments       : Boolean,
+                      displayDefaultActive : Boolean)
 
 // Some standard configurations unsed for the seven-segment display component
 object SSDConfig {
@@ -85,7 +86,8 @@ object SSDConfig {
     val config = SSDConfig(mplxFrequency  = 200 Hz,
                            numOfDisplays  = 8,
                            invertSelector = true,
-                           invertSegments = true)
+                           invertSegments = true,
+                           displayDefaultActive = true)
 
     // Return the default configuration
     config
