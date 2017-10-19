@@ -49,7 +49,7 @@ class MainMemory(cfg : J1Config) extends Component {
   val ramList = for (i <- 0 to cfg.numOfRAMs - 1) yield {
 
     // Write a message
-    println("[J1Sc] Filling RAM " +
+    println("[J1Sc]   Filling RAM " +
             i +
             " (Range from " +
             (i * numOfCells) +
