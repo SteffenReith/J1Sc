@@ -68,6 +68,7 @@ class SSD(j1Cfg  : J1Config,
   println("[J1Sc] SSD-frequency is " + ssdCfg.mplxFrequency.toBigDecimal + "Hz")
   println("[J1Sc]   Segments low-active: " + ssdCfg.invertSegments)
   println("[J1Sc]   Selector low-active: " + ssdCfg.invertSelector)
+  println("[J1Sc]   Display mask default: " + ssdCfg.displayDefaultActive)
 
   // Create a slowed down clock domain for multiplexing the displays
   val ssdClockDomain = ClockDomain.current.newSlowedClockDomain(ssdCfg.mplxFrequency * ssdCfg.numOfDisplays)
