@@ -31,6 +31,11 @@ class SSD(j1Cfg  : J1Config,
 
   val io = new Bundle {
 
+    // Handle the mask for activating / deactivating a display
+    val newMask       = in Bits(j1Cfg.wordSize bits)
+    val enableNewMask = in Bool
+    val mask          = out Bits(j1Cfg.wordSize bits)
+
     // Handle the data to be stored for the displays
     val newData       = in Bits (j1Cfg.wordSize bits)
     val enableNewData = in Bits (ssdCfg.numOfDisplays bits)
@@ -76,7 +81,13 @@ class SSD(j1Cfg  : J1Config,
 
   }
 
-  // Create all registers holding the nibbles to be display (including the dot)
+  // Create the mask register for activating / deactivating a single display
+  val mask = RegNextWhen(io.newMask(ssdCfg.numOfDisplays - 1 downto 0),
+                         io.enableNewMask,
+                         B(ssdCfg.numOfDisplays bits, default -> ssdCfg.displayDefaultActive))
+  io.mask := mask.resize(j1Cfg.wordSize)
+
+  // Create all registers holding the nibbles to be displayed (including the dot)
   val data = Vec(for(i <- 0 to ssdCfg.numOfDisplays - 1) yield {
 
     // Create the ith register and pack the provided data
@@ -90,17 +101,31 @@ class SSD(j1Cfg  : J1Config,
   data.zipWithIndex.foreach{case (reg, i) => (io.data(i) := reg.msb ##
                                                             reg(nibbleWidth - 1 downto 0).resize(j1Cfg.wordSize - 1))}
 
+  // Get the data addressed by the actual selector value (convert one-hot to binary)
+  val selIdx = OHToUInt(ssdArea.selector)
+  val selData = data(selIdx)
+
   // Copy the segments, dots and the selector to the output signals and make them low - active (if configured)
-  val selData = data(OHToUInt(ssdArea.selector))
-  val selSegs = convToSegmentVector(selData(selData.high - 1 downto 0))
-  io.segments.assignFromBits(if (ssdCfg.invertSegments) ~selSegs else selSegs)
-  io.dot := (if (ssdCfg.invertSegments) ~selData.msb else selData.msb)
+  val selSegs = convToSegmentVector(selData.resize(nibbleWidth))
+  val maskedSegs = selSegs & B(selSegs.getWidth bits, default -> mask(selIdx))
+  io.segments.assignFromBits(if (ssdCfg.invertSegments) ~maskedSegs else maskedSegs)
+  val maskedDot = selData.msb & mask(selIdx)
+  io.dot := (if (ssdCfg.invertSegments) ~maskedDot else maskedDot)
   io.selector := (if (ssdCfg.invertSelector) ~ssdArea.selector else ssdArea.selector)
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
-    // The value to be used as a new compare value is constantly driven by the bus
+    // The mask is constantly driven by the bus
+    busCtrl.nonStopWrite(io.newMask, 0)
+
+    // Make the mask register r/w
+    busCtrl.read(io.mask, baseAddress + ssdCfg.numOfDisplays)
+
+    // Generate an enable signal for the mask register
+    io.enableNewMask := busCtrl.isWriting(baseAddress + ssdCfg.numOfDisplays)
+
+    // The value to be used as a new register content constantly driven by the bus
     busCtrl.nonStopWrite(io.newData, 0)
 
     // Make the compare register R/W
