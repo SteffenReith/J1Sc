@@ -45,10 +45,45 @@
     2 + io@              \ read the blue value
 ;
 
-: pmodAbase ( -- c) \ push the base address of the PMODA port
-    $70
+: ssdbase ( -- c) \ push the base address for the seven segment displays
+    $60
 ;
 
+: ssd@ (n -- v) \ read the value of the n-th display
+    ssdbase +   \ calulate the address of the n-th display
+    io@         \ push the value
+;
+
+: ssd! (v n -- ) \ write the value v to the n-th display
+    ssdbase +     \ calculate address of n-th display
+    io!          \ write the value
+;
+
+: ssdMask@ ( -- v) \ read the current ssd mask
+    ssdbase 8 +    \ get address of ssd mask register
+    io@            \ push the value
+;
+
+: ssdMask! (v -- ) \ write value to the ssd mask register
+    ssdbase 8 +    \ get address of ssd mask register
+    io!            \ write the value
+;
+
+: setDot (n -- ) \ set dot of n-th display
+    dup          \ save display number
+    ssd@         \ get value of display
+    $8000 or     \ set the dot
+    swap         \ get display number on stack top
+    ssd!         \ write the new value
+;
+
+: clearDot (n -- ) \ clear dot of n-th display
+    dup            \ save display number
+    ssd@           \ get value of display
+    $7fff and      \ clear the dot
+    swap           \ get display number on stack top
+    ssd!           \ write the new value
+;
 
 ( c -- ) \ write to the directions register of PModA
 : pmodADir!
