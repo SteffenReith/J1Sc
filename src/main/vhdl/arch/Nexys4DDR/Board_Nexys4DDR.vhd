@@ -15,7 +15,7 @@ use ieee.std_logic_1164.all;
 
 entity Board_Nexys4DDR is
 
-  port (reset      : in    std_logic;
+  port (nreset     : in    std_logic;
         clk100Mhz  : in    std_logic;
         extInt     : in    std_logic_vector(0 downto 0);
         leds       : out   std_logic_vector(15 downto 0);
@@ -37,6 +37,9 @@ end Board_Nexys4DDR;
 
 architecture Structural of Board_Nexys4DDR is
 
+  -- Positive reset signal
+  signal reset : std_logic;
+
   -- Signals related to the board clk
   signal boardClk       : std_logic;
   signal boardClkLocked : std_logic;
@@ -53,6 +56,9 @@ begin
     port map (clkIn    => clk100Mhz,
               clkOut   => boardClk,
               isLocked => boardClkLocked);
+
+ -- Make the reset positive
+ reset <= not nreset;
 
   -- Instantiate the J1SoC core created by Spinal
   core : entity work.J1SoC

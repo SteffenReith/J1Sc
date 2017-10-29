@@ -4,8 +4,8 @@ set_property CONFIG_VOLTAGE 3.3 [current_design]
 set_property PACKAGE_PIN E3 [get_ports clk100Mhz]
 set_property IOSTANDARD LVCMOS33 [get_ports clk100Mhz]
 
-set_property PACKAGE_PIN C12 [get_ports reset]
-set_property IOSTANDARD LVCMOS33 [get_ports reset]
+set_property PACKAGE_PIN C12 [get_ports nreset]
+set_property IOSTANDARD LVCMOS33 [get_ports nreset]
 
 set_property  PACKAGE_PIN T8 [get_ports {leds[0]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {leds[0]}]
