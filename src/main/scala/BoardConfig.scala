@@ -148,6 +148,25 @@ object J1UARTConfig {
 
   }
 
+  // Provide a configuration for the Nexys4DDR board from Digilent
+  def nexys4DDRSlowUartConfig = {
+
+    val config = J1UARTConfig(clockDividerWidth = 20,
+                              dataWidthMax = 8,
+                              baudrate = 115200,
+                              dataLength = 7,
+                              parity = UartParityType.NONE,
+                              stop = UartStopType.ONE,
+                              preSamplingSize = 1,
+                              samplingSize = 5,
+                              postSamplingSize = 2,
+                              fifoDepth = 8)
+
+    // Return the Nexys4DDR configuration
+    config
+
+  }
+
 }
 
 // Configuration of all IO components
@@ -186,7 +205,7 @@ object BoardConfig {
                              ledBankConfig  = LEDArrayConfig.default,
                              pwmConfig      = PWMConfig.default,
                              ssdConfig      = SSDConfig.default,
-                             uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
+                             uartConfig     = J1UARTConfig.nexys4DDRSlowUartConfig,
                              boardFrequency = FixedFrequency(100 MHz),
                              1)
 
