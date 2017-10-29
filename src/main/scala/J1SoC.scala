@@ -59,7 +59,7 @@ class J1SoC (j1Cfg    : J1Config,
     coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
       // Hold the reset as long as the PLL is not locked
-      input = io.reset || ! io.boardClkLocked,
+      input = io.reset || (! io.boardClkLocked),
       clockDomain = coreClockDomain
 
     )))
