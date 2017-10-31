@@ -22,6 +22,8 @@ module Board_Nexys4DDR (reset,
                         dot,
                         selector,   
    		        pmodA,
+			sSwitches,
+			pButtons,
 	                rx,    
 	                tx);
 		                
@@ -29,6 +31,8 @@ module Board_Nexys4DDR (reset,
  input reset;
  input clk100Mhz;
  input [0:0] extInt;
+ input [15:0] sSwitches;  
+ input [4:0] pButtons;
  input rx;
 
  // Output ports
@@ -81,6 +85,8 @@ module Board_Nexys4DDR (reset,
              .pmodA_read         (pmodA_read),
              .pmodA_write        (pmodA_write),
              .pmodA_writeEnable  (pmodA_writeEnable),
+	     .sSwitches          (sSwitches),
+	     .pButtons           (pButtons),
              .rx                 (rx),
              .tx                 (tx));
 

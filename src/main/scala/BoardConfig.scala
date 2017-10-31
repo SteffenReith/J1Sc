@@ -76,7 +76,7 @@ case class SSDConfig (mplxFrequency        : HertzNumber,
                       invertSegments       : Boolean,
                       displayDefaultActive : Boolean)
 
-// Some standard configurations unsed for the seven-segment display component
+// Some standard configurations used for the seven-segment display component
 object SSDConfig {
 
   // Provide a default configuration
@@ -93,6 +93,35 @@ object SSDConfig {
     config
 
   }
+
+}
+
+// Configuration for an array of debounced pins
+case class DBPinArrayConfig (waitTime  : TimeNumber,
+                             numOfPins : Int)
+
+// Come standard configurations used of debounced input pins
+object DBPinArrayConfig {
+
+  // Provide a default configuration
+  def default = {
+
+    // Create the default instance
+    val config = DBPinArrayConfig(waitTime  = 1 ms,
+                                  numOfPins = 16)
+
+    // Return the default configuration
+    config
+
+  }
+
+  // A configuration for an array of slider switches
+  val sliderSwitch = DBPinArrayConfig(waitTime  = 1 ms,
+                                      numOfPins = 16)
+
+  // A configuration for an array of push buttons
+  val pushButton = DBPinArrayConfig(waitTime  = 5 ms,
+                                    numOfPins = 5)
 
 }
 
@@ -174,6 +203,8 @@ case class BoardConfig(gpioConfig     : GPIOConfig,
                        ledBankConfig  : LEDArrayConfig,
                        pwmConfig      : PWMConfig,
                        ssdConfig      : SSDConfig,
+                       sSwitchConfig  : DBPinArrayConfig,
+                       pButtonConfig  : DBPinArrayConfig,
                        uartConfig     : J1UARTConfig,
                        boardFrequency : IClockDomainFrequency,
                        ioWaitStates   : Int)
@@ -188,6 +219,8 @@ object BoardConfig {
                              ledBankConfig  = LEDArrayConfig.default,
                              pwmConfig      = PWMConfig.default,
                              ssdConfig      = SSDConfig.default,
+                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch,
+                             pButtonConfig  = DBPinArrayConfig.pushButton,
                              uartConfig     = J1UARTConfig.default,
                              boardFrequency = FixedFrequency(80 MHz),
                              1)
@@ -205,6 +238,8 @@ object BoardConfig {
                              ledBankConfig  = LEDArrayConfig.default,
                              pwmConfig      = PWMConfig.default,
                              ssdConfig      = SSDConfig.default,
+                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch,
+                             pButtonConfig  = DBPinArrayConfig.pushButton,
                              uartConfig     = J1UARTConfig.nexys4DDRSlowUartConfig,
                              boardFrequency = FixedFrequency(100 MHz),
                              1)
@@ -222,6 +257,8 @@ object BoardConfig {
                              ledBankConfig  = LEDArrayConfig.default,
                              pwmConfig      = PWMConfig.default,
                              ssdConfig      = SSDConfig.default,
+                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch,
+                             pButtonConfig  = DBPinArrayConfig.pushButton,
                              uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
                              boardFrequency = FixedFrequency(100 MHz),
                              1)

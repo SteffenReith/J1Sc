@@ -69,7 +69,7 @@ header rshift
 
 header key? ( -- f ) \ true if a character can be read 
 : key?
-    h# 0086 io@ h# 0f00 and 0<>
+    h# 00f6 io@ h# 0f00 and 0<>
 ;
 
 header key ( -- c) \ note that 0x80 always set the high bit hence & 0xFF 
@@ -78,14 +78,14 @@ header key ( -- c) \ note that 0x80 always set the high bit hence & 0xFF
         key?
     until
 : key>
-    h# 0080 io@ h# 00ff and
+    h# 00f0 io@ h# 00ff and
 ;
 
 header emit
 : emit
-    h# 0080 _io!
+    h# 00f0 _io!
     begin
-     	h# 0086 io@ h# 000f and h# 0008 =
+     	h# 00f6 io@ h# 000f and h# 0008 =
     until
 ;
 

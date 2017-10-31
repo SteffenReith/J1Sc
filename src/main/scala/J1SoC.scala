@@ -40,6 +40,10 @@ class J1SoC (j1Cfg    : J1Config,
     // The physical pins for pmod A
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
+    // The physical pins for slider switches and push buttons
+    val sSwitches = in Bits(boardCfg.sSwitchConfig.numOfPins bits)
+    val pButtons = in Bits(boardCfg.pButtonConfig.numOfPins bits)
+
     // I/O pins for the UART
     val rx = in Bool // UART input
     val tx = out Bool // UART output
@@ -108,6 +112,16 @@ class J1SoC (j1Cfg    : J1Config,
     pmodA.io.dataIn      <> io.pmodA.read
     io.pmodA.writeEnable <> pmodA.io.directions
 
+    // Create the sliding switches array
+    val sSwitches = new DBPinArray(j1Cfg, boardCfg.sSwitchConfig)
+    val sSwitchesBridge = sSwitches.driveFrom(peripheralBusCtrl, 0x80)
+    sSwitches.io.inputPins := io.sSwitches
+
+    // Create the push button array
+    val pButtons = new DBPinArray(j1Cfg, boardCfg.pButtonConfig)
+    val pButtonsBridge = pButtons.driveFrom(peripheralBusCtrl, 0x90)
+    pButtons.io.inputPins := io.pButtons
+
     // Create two timer and map it at 0xC0 and 0xD0
     val timerA       = new Timer(j1Cfg.timerConfig)
     val timerABridge = timerA.driveFrom(peripheralBusCtrl, 0xC0)
@@ -132,13 +146,17 @@ class J1SoC (j1Cfg    : J1Config,
                                                       rxFifoDepth                   = boardCfg.uartConfig.fifoDepth)
     val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
-    // Map the UART to 0x80 and enable the generation of read interrupts
-    val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartMemMapConfig, baseAddress = 0x80)
+    // Map the UART to 0xF0 and enable the generation of read interrupts
+    val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartMemMapConfig, baseAddress = 0xF0)
     uartBridge.interruptCtrl.readIntEnable := True
 
     // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
     uartBridge.interruptCtrl.interrupt.allowPruning()
     uartBridge.write.streamUnbuffered.ready.allowPruning()
+
+    // Connect the physical UART pins to the outside world
+    io.tx := uartCtrl.io.uart.txd
+    uartCtrl.io.uart.rxd := io.rx
 
     // Create an interrupt controller, map it to 0xE0 and connect all interrupts
     val intCtrl = new InterruptCtrl(j1Cfg)
@@ -149,10 +167,6 @@ class J1SoC (j1Cfg    : J1Config,
     intCtrl.io.irqReqs(2) <> timerB.io.interrupt
     cpu.io.intVec <> intCtrl.io.intVec.resize(j1Cfg.adrWidth)
     cpu.io.irq <> intCtrl.io.irq
-
-    // Connect the physical UART pins to the outside world
-    io.tx := uartCtrl.io.uart.txd
-    uartCtrl.io.uart.rxd := io.rx
 
   }
 
