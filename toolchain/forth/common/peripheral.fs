@@ -105,6 +105,26 @@
     pmodAbase 4 + io@
 ;
 
+( -- c ) \ push the base address of slider switch array
+: sSwitchBase
+    $80
+;
+
+( -- c) \ read the debounced value from the slider switch array
+: sSw@
+    sSwitchBase io@
+;
+
+( -- c ) \ push the base address of push button array
+: pBtnBase
+    $90
+;
+
+( -- c) \ read the debounced value from the push button array
+: pBtn@
+    pBtnBase io@
+;
+
 ( -- c ) \ push the base address of timer A
 : tABase
     $c0
