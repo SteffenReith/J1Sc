@@ -22,7 +22,7 @@ class MainMemory(cfg : J1Config) extends Component {
               (cfg.numOfRAMs >= 2)), "Error: Number of RAMs has to be a power of 2 and at least 2", FAILURE)
 
   // I/O ports
-  val io = new Bundle {
+  val internal = new Bundle {
 
     // Instruction port (read only)
     val readDataAdr = in UInt (cfg.adrWidth bits)
@@ -66,18 +66,20 @@ class MainMemory(cfg : J1Config) extends Component {
   val rPortsVec = Vec(for((ram,i) <- ramList.zipWithIndex) yield {
 
     // Create the write port of the ith RAM
-    ram.write(enable  = io.writeEnable &&
-                        (U(i) === io.writeDataAdr(io.writeDataAdr.high downto (io.writeDataAdr.high - ramAdrWidth + 1))),
-              address = io.writeDataAdr((io.writeDataAdr.high - ramAdrWidth) downto 0),
-              data    = io.writeData)
+    ram.write(enable  = internal.writeEnable &&
+                        (U(i) === internal.writeDataAdr(internal.writeDataAdr.high downto
+                                                        internal.writeDataAdr.high - ramAdrWidth + 1)),
+              address = internal.writeDataAdr((internal.writeDataAdr.high - ramAdrWidth) downto 0),
+              data    = internal.writeData)
 
     // Create the read port of the ith RAM
-    ram.readSync(address        = io.readDataAdr((io.readDataAdr.high - ramAdrWidth) downto 0),
+    ram.readSync(address        = internal.readDataAdr((internal.readDataAdr.high - ramAdrWidth) downto 0),
                  readUnderWrite = readFirst)
 
   })
 
   // Multiplex the read port
-  io.readData := rPortsVec(RegNext(io.readDataAdr(io.readDataAdr.high downto (io.readDataAdr.high - ramAdrWidth + 1))))
+  internal.readData := rPortsVec(RegNext(internal.readDataAdr(internal.readDataAdr.high downto
+                                                              internal.readDataAdr.high - ramAdrWidth + 1)))
 
 }

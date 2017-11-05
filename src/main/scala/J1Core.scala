@@ -14,8 +14,8 @@ class J1Core(cfg : J1Config) extends Component {
   assert(Bool(cfg.wordSize == 16), "Warning: Only wordsize 16 was tested!", ERROR)
   assert(Bool(cfg.wordSize - 3 >= cfg.adrWidth), "Error: The width of an address is too large", FAILURE)
 
-  // I/O ports
-  val io = new Bundle {
+  // Internally used signals
+  val internal = new Bundle {
 
     // Signals for memory and io port
     val memWriteMode = out Bool
@@ -44,7 +44,7 @@ class J1Core(cfg : J1Config) extends Component {
   val pcPlusOne = pc + 1
 
   // Instruction to be executed (insert a call-instruction for handling an interrupt)
-  val instr = Mux(io.irq, B"b010" ## io.intVec.resize(cfg.wordSize - 3), io.memInstr)
+  val instr = Mux(internal.irq, B"b010" ## internal.intVec.resize(cfg.wordSize - 3), internal.memInstr)
 
   // Data stack pointer (set to first entry, which can be abitrary)
   val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)
@@ -68,7 +68,7 @@ class J1Core(cfg : J1Config) extends Component {
   val dnos = dStack.readAsync(address = dStackPtr, readUnderWrite = writeFirst)
 
   // Check for interrupt mode, because afterwards the current instruction has to be executed
-  val retPC = Mux(io.irq, pc.asBits, pcPlusOne.asBits)
+  val retPC = Mux(internal.irq, pc.asBits, pcPlusOne.asBits)
 
   // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
   // val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC(retPC.high - 1  downto 0) ## B"b0").resized, dtos)
@@ -127,7 +127,7 @@ class J1Core(cfg : J1Config) extends Component {
     is(M"0_011-1111") {dtosN := (default -> difference.msb)}
 
     // Memory / IO read operations
-    is(M"0_011-1101") {dtosN := io.toRead}
+    is(M"0_011-1101") {dtosN := internal.toRead}
 
     // Misc operations
     is(M"0_011-1110") {dtosN := dStackPtr.asBits.resized}
@@ -151,11 +151,11 @@ class J1Core(cfg : J1Config) extends Component {
   isHighCall.keep()
 
   // Signals for handling external memory
-  io.memWriteMode := !clrActive && isALU && funcWriteMem
-  io.ioWriteMode  := !clrActive && isALU && funcWriteIO
-  io.ioReadMode   := !clrActive && isALU && funcReadIO
-  io.extAdr       := dtosN.asUInt
-  io.extToWrite   := dnos
+  internal.memWriteMode := !clrActive && isALU && funcWriteMem
+  internal.ioWriteMode := !clrActive && isALU && funcWriteIO
+  internal.ioReadMode := !clrActive && isALU && funcReadIO
+  internal.extAdr := dtosN.asUInt
+  internal.extToWrite := dnos
 
   // Increment for data stack pointer
   val dStackPtrInc = SInt(cfg.dataStackIdxWidth bits)
@@ -221,6 +221,6 @@ class J1Core(cfg : J1Config) extends Component {
   }
 
   // Use next PC as address of instruction memory (do not use the MSB)
-  io.nextInstrAdr := pcN(pcN.high - 1 downto 0)
+  internal.nextInstrAdr := pcN(pcN.high - 1 downto 0)
 
 }

@@ -77,11 +77,11 @@ class J1SoC (j1Cfg    : J1Config,
     val cpu = new J1(j1Cfg)
 
     // Create a delayed version of the cpu core interface to IO-peripherals
-    val peripheralBus     = cpu.io.cpuBus.delayed(boardCfg.ioWaitStates)
+    val peripheralBus     = cpu.bus.cpuBus.delayed(boardCfg.ioWaitStates)
     val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
 
     // Create a LED array at base address 0x40
-    val ledArray  = new LEDArray(boardCfg.ledBankConfig)
+    val ledArray  = new LEDArray(j1Cfg, boardCfg.ledBankConfig)
     val ledBridge = ledArray.driveFrom(peripheralBusCtrl, 0x40)
 
     // Connect the physical LED pins to the outside world
@@ -165,8 +165,8 @@ class J1SoC (j1Cfg    : J1Config,
     intCtrl.io.irqReqs(0) <> uartBridge.interruptCtrl.readInt
     intCtrl.io.irqReqs(1) <> timerA.io.interrupt
     intCtrl.io.irqReqs(2) <> timerB.io.interrupt
-    cpu.io.intVec <> intCtrl.io.intVec.resize(j1Cfg.adrWidth)
-    cpu.io.irq <> intCtrl.io.irq
+    cpu.internal.intVec <> intCtrl.internal.intVec.resize(j1Cfg.adrWidth)
+    cpu.internal.irq <> intCtrl.internal.irq
 
   }
 

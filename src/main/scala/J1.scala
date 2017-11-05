@@ -11,8 +11,17 @@ import spinal.lib._
 
 class J1(cfg : J1Config) extends Component {
 
-  // I/O ports
-  val io = new Bundle {
+  // Internal signals
+  val internal = new Bundle {
+
+    // Interface for the interrupt system
+    val irq    = in Bool
+    val intVec = in Bits(cfg.adrWidth bits)
+
+  }.setName("")
+
+  // Peripheral bus
+  val bus = new Bundle {
 
     // Interface for the interrupt system
     val irq    = in Bool
@@ -30,28 +39,28 @@ class J1(cfg : J1Config) extends Component {
   val mainMem = new MainMemory(cfg)
 
   // Instruction port (read only)
-  mainMem.io.readDataAdr <> coreJ1CPU.io.nextInstrAdr
-  coreJ1CPU.io.memInstr  <> mainMem.io.readData
+  mainMem.internal.readDataAdr <> coreJ1CPU.internal.nextInstrAdr
+  coreJ1CPU.internal.memInstr <> mainMem.internal.readData
 
   // Connect the CPU core with the main memory (convert the byte address to a cell address)
-  mainMem.io.writeEnable  <> coreJ1CPU.io.memWriteMode
-  mainMem.io.writeDataAdr <> coreJ1CPU.io.extAdr(cfg.adrWidth downto 1)
-  mainMem.io.writeData    <> coreJ1CPU.io.extToWrite
+  mainMem.internal.writeEnable <> coreJ1CPU.internal.memWriteMode
+  mainMem.internal.writeDataAdr <> coreJ1CPU.internal.extAdr(cfg.adrWidth downto 1)
+  mainMem.internal.writeData <> coreJ1CPU.internal.extToWrite
 
   // Check whether data should be read for I/O space else provide a constant zero value
-  val coreMemRead = coreJ1CPU.io.ioReadMode ? io.cpuBus.readData | B(0, cfg.wordSize bits)
+  val coreMemRead = coreJ1CPU.internal.ioReadMode ? bus.cpuBus.readData | B(0, cfg.wordSize bits)
 
   // Read port of CPU core (multiplexed)
-  coreJ1CPU.io.toRead <> coreMemRead
+  coreJ1CPU.internal.toRead <> coreMemRead
 
   // Connect the external bus to the core (remember coreJ1CPU.io.extAdr is one clock too early)
-  io.cpuBus.enable    := coreJ1CPU.io.ioWriteMode || coreJ1CPU.io.ioReadMode
-  io.cpuBus.writeMode <> coreJ1CPU.io.ioWriteMode
-  io.cpuBus.address   <> Delay(coreJ1CPU.io.extAdr, 1)
-  io.cpuBus.writeData <> coreJ1CPU.io.extToWrite
+  bus.cpuBus.enable    := coreJ1CPU.internal.ioWriteMode || coreJ1CPU.internal.ioReadMode
+  bus.cpuBus.writeMode <> coreJ1CPU.internal.ioWriteMode
+  bus.cpuBus.address   <> Delay(coreJ1CPU.internal.extAdr, 1)
+  bus.cpuBus.writeData <> coreJ1CPU.internal.extToWrite
 
   // Connect the interrupts
-  coreJ1CPU.io.intVec <> io.intVec
-  coreJ1CPU.io.irq   <> io.irq
+  coreJ1CPU.internal.intVec <> internal.intVec
+  coreJ1CPU.internal.irq <> internal.irq
 
 }

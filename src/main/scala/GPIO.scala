@@ -14,24 +14,31 @@ class GPIO(gpioCfg : GPIOConfig) extends Component {
   // Give a warning if the GPIO-register is not used as a PMOD
   assert(Bool(gpioCfg.width != 8), "Warning: A PMod according to the digilent specification has width 8!", ERROR)
 
-  val io = new Bundle {
+  // Signal used for the internal bus
+  val bus = new Bundle {
 
     // Ports used for the direction register
     val dirEnable  = in Bool
     val dirValue   = in Bits (gpioCfg.width bits)
-    val directions = out Bits(gpioCfg.width bits)
 
     // Ports used the the data register
     val dataEnable = in Bool
     val dataValue  = in Bits (gpioCfg.width bits)
     val dataIn     = in Bits(gpioCfg.width bits)
-    val dataOut    = out Bits(gpioCfg.width bits)
 
+  }.setName("")
+
+  // Physically connected signals
+  val io = new Bundle {
+
+    val directions = out Bits(gpioCfg.width bits)
+    val dataIn     = in Bits(gpioCfg.width bits)
+    val dataOut    = out Bits(gpioCfg.width bits)
 
   }.setName("")
 
   // Register for holding the direction of the GPIO register
-  val dirReg = RegNextWhen(io.dirValue, io.dirEnable) init (0)
+  val dirReg = RegNextWhen(bus.dirValue, bus.dirEnable) init (0)
 
   // Propagate the contents of the direction register to the interface
   io.directions := dirReg
@@ -41,10 +48,10 @@ class GPIO(gpioCfg : GPIOConfig) extends Component {
   val dataReg = RegNext(dataRegN) init(0)
 
   // Check if the register was addressed by a bus transfer
-  when (io.dataEnable) {
+  when (bus.dataEnable) {
 
     // Select and update the bits to be read / written
-    dataRegN := (io.dataIn & (~io.directions)) | (io.dataValue & io.directions)
+    dataRegN := (io.dataIn & (~io.directions)) | (bus.dataValue & io.directions)
 
   }.otherwise {
 
@@ -61,13 +68,13 @@ class GPIO(gpioCfg : GPIOConfig) extends Component {
 
     // The direction register is mapped at address 0 and is of type r/w
     busCtrl.read(io.directions, baseAddress + 0, 0)
-    busCtrl.nonStopWrite(io.dirValue, 0) // contents of direction register will be constantly driven by the bus
-    io.dirEnable := busCtrl.isWriting(baseAddress + 0)
+    busCtrl.nonStopWrite(bus.dirValue, 0) // contents of direction register will be constantly driven by the bus
+    bus.dirEnable := busCtrl.isWriting(baseAddress + 0)
 
     // The data register is mapped at address 4 and is of type r/w
     busCtrl.read(io.dataOut, baseAddress + 4, 0)
-    busCtrl.nonStopWrite(io.dataValue, 0) // contents of direction register will be constantly driven by the bus
-    io.dataEnable := busCtrl.isWriting(baseAddress + 4)
+    busCtrl.nonStopWrite(bus.dataValue, 0) // contents of direction register will be constantly driven by the bus
+    bus.dataEnable := busCtrl.isWriting(baseAddress + 4)
 
   }
 

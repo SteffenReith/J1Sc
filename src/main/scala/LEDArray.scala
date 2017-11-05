@@ -9,36 +9,46 @@
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
-class LEDArray(cfg : LEDArrayConfig) extends Component {
+class LEDArray(j1Cfg  : J1Config,
+               ledCfg : LEDArrayConfig) extends Component {
+
+  // Check the generic parameters
+  assert(Bool(ledCfg.width <= j1Cfg.wordSize), "Error: Too many pwm channels!", FAILURE)
+
+  val bus = new Bundle {
+
+    // Bus signals for the internal register
+    val writeEnable = in Bool
+    val ledValue    = in Bits (ledCfg.width bits)
+
+  }.setName("")
 
   val io = new Bundle {
 
-    // I/O signals for memory data port
-    val writeEnable = in Bool
-    val ledValue    = in Bits (cfg.width bits)
-    val leds        = out Bits(cfg.width bits)
+    // The physical led registers
+    val leds        = out Bits(ledCfg.width bits)
 
   }.setName("")
 
   // Register for holding the bit-vector storing the LED states
-  val ledReg = Reg(Bits(cfg.width bits)) init (0)
+  val ledReg = Reg(Bits(ledCfg.width bits)) init (0)
 
   // Check for write mode
-  when(io.writeEnable) {
+  when(bus.writeEnable) {
 
     // Set register value
-    ledReg := io.ledValue
+    ledReg := bus.ledValue
 
   }
 
   // Set output for the leds (invert it if asked for by the generic parameter)
-  if (cfg.lowActive) io.leds := ~ledReg else io.leds := ledReg;
+  if (ledCfg.lowActive) io.leds := ~ledReg else io.leds := ledReg;
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
     // The register is mapped at address 0 and is of type r/w
-    if (cfg.lowActive) {
+    if (ledCfg.lowActive) {
 
       // Negate to get the register content
       busCtrl.read(~io.leds, baseAddress + 0, 0)
@@ -49,8 +59,8 @@ class LEDArray(cfg : LEDArrayConfig) extends Component {
       busCtrl.read(io.leds, baseAddress + 0, 0)
 
     }
-    busCtrl.nonStopWrite(io.ledValue, 0) // ledState will be constantly driven by the data of the memory bus
-    io.writeEnable := busCtrl.isWriting(baseAddress + 0)
+    busCtrl.nonStopWrite(bus.ledValue, 0) // ledState will be constantly driven by the data of the memory bus
+    bus.writeEnable := busCtrl.isWriting(baseAddress + 0)
 
   }
 

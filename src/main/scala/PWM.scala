@@ -16,13 +16,22 @@ class PWM(j1Cfg  : J1Config,
   assert(Bool(isPow2(pwmCfg.numOfDutyCycles)), "Error: The number of duty cycles has to be a power of 2!", FAILURE)
   assert(Bool(pwmCfg.numOfChannels <= j1Cfg.wordSize), "Error: Too many pwm channels!", FAILURE)
 
-  val io = new Bundle {
+  // Signals used for the internal bus
+  val bus = new Bundle {
 
+    // A new value for the compare register
     val newCompareValue = in Bits(j1Cfg.wordSize bits)
 
+    // The write enable signals and the mapped compare registers
     val writeEnable = in Bits(pwmCfg.numOfChannels bits)
     val compareRegs = out Vec(Bits(log2Up(pwmCfg.numOfDutyCycles) bits), pwmCfg.numOfChannels)
 
+  }.setName("")
+
+  // Signals for a physical connection
+  val io = new Bundle {
+
+    // The physical pwm signal
     val pwmChannels = out Bits(pwmCfg.numOfChannels bits)
 
   }.setName("")
@@ -46,12 +55,12 @@ class PWM(j1Cfg  : J1Config,
   val compareRegs = Vec(for(i <- 0 to pwmCfg.numOfChannels - 1) yield {
 
     // Create the ith register
-    RegNextWhen(io.newCompareValue.resize(log2Up(pwmCfg.numOfDutyCycles)).asUInt,
-                io.writeEnable(i),
+    RegNextWhen(bus.newCompareValue.resize(log2Up(pwmCfg.numOfDutyCycles)).asUInt,
+                bus.writeEnable(i),
                 U(log2Up(pwmCfg.numOfDutyCycles) bits, default -> false))
 
   })
-  (io.compareRegs, compareRegs).zipped.foreach(_ := _.asBits)
+  (bus.compareRegs, compareRegs).zipped.foreach(_ := _.asBits)
 
   // Create the compare logic for all channels
   compareRegs.zipWithIndex.foreach{case (reg, i) => (io.pwmChannels(i) := (reg > pwmArea.cycle))}
@@ -60,16 +69,16 @@ class PWM(j1Cfg  : J1Config,
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
     // The value to be used as a new compare value is constantly driven by the bus
-    busCtrl.nonStopWrite(io.newCompareValue, 0)
+    busCtrl.nonStopWrite(bus.newCompareValue, 0)
 
     // Make the compare register R/W
     for (i <- 0 to pwmCfg.numOfChannels - 1) {
 
       // A r/w register access for the ith compare register
-      busCtrl.read(io.compareRegs(i), baseAddress + i, 0)
+      busCtrl.read(bus.compareRegs(i), baseAddress + i, 0)
 
       // Generate the write enable signal for the ith compare register
-      io.writeEnable(i) := busCtrl.isWriting(baseAddress + i)
+      bus.writeEnable(i) := busCtrl.isWriting(baseAddress + i)
 
     }
 

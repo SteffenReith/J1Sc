@@ -15,7 +15,15 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   // Check the number of interrupts
   assert(isPow2(cfg.irqConfig.numOfInterrupts), "Warning: Specify a power of 2 as number of interrupts")
 
+  // Physical interrupt request signals
   val io = new Bundle {
+
+    val irqReqs = in Bits (cfg.irqConfig.numOfInterrupts bits)
+
+  }.setName("")
+
+  // Signals used for the internal bus
+  val bus = new Bundle {
 
     val enableWriteNewMask = in Bool
     val enableWriteIrqVec  = in Bits (cfg.irqConfig.numOfInterrupts bits)
@@ -25,7 +33,10 @@ class InterruptCtrl(cfg : J1Config) extends Component {
     val irqGetMask = out Bits (cfg.wordSize bits)
     val irqVectors = out Vec(Bits(cfg.wordSize bits), cfg.irqConfig.numOfInterrupts)
 
-    val irqReqs = in Bits (cfg.irqConfig.numOfInterrupts bits)
+  }.setName("")
+
+  // Internally used signals
+  val internal = new Bundle {
 
     val intVec = out Bits(cfg.wordSize bits)
     val irq    = out Bool
@@ -33,29 +44,29 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   }.setName("")
 
   // Register the irq mask (disable all interrupts after reset)
-  val irqMask = RegNextWhen(io.irqSetData.resize(cfg.irqConfig.numOfInterrupts),
-                            io.enableWriteNewMask,
+  val irqMask = RegNextWhen(bus.irqSetData.resize(cfg.irqConfig.numOfInterrupts),
+                            bus.enableWriteNewMask,
                             B(cfg.irqConfig.numOfInterrupts bits, default -> False))
 
   // Generate an output version of the current mask
-  io.irqGetMask := irqMask.resize(cfg.wordSize)
+  bus.irqGetMask := irqMask.resize(cfg.wordSize)
 
   // Enable signals for the interrupt vectors
   val irqVecWriteEnable = Bits(cfg.irqConfig.numOfInterrupts bits)
-  irqVecWriteEnable := io.enableWriteIrqVec.resize(cfg.irqConfig.numOfInterrupts)
+  irqVecWriteEnable := bus.enableWriteIrqVec.resize(cfg.irqConfig.numOfInterrupts)
 
   // Create a register file for storing the interrupt vectors
   val irqVectors = Vec(for(i <- 0 to cfg.irqConfig.numOfInterrupts - 1) yield {
 
     // Create the ith register and truncate data read from the bus
-    RegNextWhen((io.irqSetData >> 1).resize(cfg.adrWidth),
+    RegNextWhen((bus.irqSetData >> 1).resize(cfg.adrWidth),
                 irqVecWriteEnable(i),
                 B(cfg.adrWidth bits, default -> False))
 
   })
 
   // Wire all interrupt vectors to an IO-port
-  (io.irqVectors, irqVectors).zipped.foreach(_ := _.resize(cfg.wordSize))
+  (bus.irqVectors, irqVectors).zipped.foreach(_ := _.resize(cfg.wordSize))
 
   // All interrupts are asynchronous, hence make them synchron with latency of 3 clocks
   val irqSync = BufferCC(io.irqReqs,
@@ -66,31 +77,31 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   val intNo = OHToUInt(OHMasking.first(irqSync))
 
   // Provide the corresponding interrupt vector
-  io.intVec := irqVectors(intNo).resize(cfg.wordSize)
+  internal.intVec := irqVectors(intNo).resize(cfg.wordSize)
 
   // Generate a rising edge when an interrupt has happened (init value is false)
-  io.irq := (irqSync & irqMask).orR.rise(False)
+  internal.irq := (irqSync & irqMask).orR.rise(False)
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
 
     // A read port for the interrupt mask
-    busCtrl.read(io.irqGetMask, baseAddress + cfg.irqConfig.numOfInterrupts, 0)
+    busCtrl.read(bus.irqGetMask, baseAddress + cfg.irqConfig.numOfInterrupts, 0)
 
     // The enable signal is constantly driven by the data of the memory bus
-    busCtrl.nonStopWrite(io.irqSetData, 0)
+    busCtrl.nonStopWrite(bus.irqSetData, 0)
 
     // Generate the write enable signal for the interrupt mask
-    io.enableWriteNewMask := busCtrl.isWriting(baseAddress + cfg.irqConfig.numOfInterrupts)
+    bus.enableWriteNewMask := busCtrl.isWriting(baseAddress + cfg.irqConfig.numOfInterrupts)
 
     // r/w-registers for all irq-vectors
     for (i <- 0 to cfg.irqConfig.numOfInterrupts - 1) {
 
       // A r/w register access for the ith interrupt vector
-      busCtrl.read(io.irqVectors(i), baseAddress + i, 0)
+      busCtrl.read(bus.irqVectors(i), baseAddress + i, 0)
 
       // Generate the write enable signal for the ith interrupt vector
-      io.enableWriteIrqVec(i) := busCtrl.isWriting(baseAddress + i)
+      bus.enableWriteIrqVec(i) := busCtrl.isWriting(baseAddress + i)
 
     }
 
