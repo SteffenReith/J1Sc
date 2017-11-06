@@ -23,10 +23,6 @@ class J1(cfg : J1Config) extends Component {
   // Peripheral bus
   val bus = new Bundle {
 
-    // Interface for the interrupt system
-    val irq    = in Bool
-    val intVec = in Bits(cfg.adrWidth bits)
-
     // I/O signals for peripheral data port
     val cpuBus = master(SimpleBus(cfg))
 

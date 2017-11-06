@@ -24,8 +24,7 @@ class GPIO(gpioCfg : GPIOConfig) extends Component {
     // Ports used the the data register
     val dataEnable = in Bool
     val dataValue  = in Bits (gpioCfg.width bits)
-    val dataIn     = in Bits(gpioCfg.width bits)
-
+    
   }.setName("")
 
   // Physically connected signals
