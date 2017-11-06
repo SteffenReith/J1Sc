@@ -39,7 +39,7 @@ class DBPinArray(j1Cfg         : J1Config,
   // Create an alarm timer for the timeout
   val timeOut = Timeout(dbPinArrayCfg.waitTime)
 
-  // Clear the timeout if nothing has chanced
+  // Clear the timeout if the input data has not changed
   when (debounced === io.inputPins ) {timeOut.clear()}
 
   // When the alarm is active the new input is taken
