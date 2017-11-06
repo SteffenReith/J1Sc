@@ -1,7 +1,7 @@
 /*
  * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
  *
- * Creation Date:  Tue Oct 31 11:11:13 GMT+1 201  Tue Oct 31 11:11:13 GMT+1 20177 
+ * Creation Date:  Tue Oct 31 11:11:13 GMT+1 2017
  * Module Name:    DBPinArray - Provides an array of debounced input pins
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
