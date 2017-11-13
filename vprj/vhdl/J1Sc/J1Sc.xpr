@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="32" Path="/media/psf/Home/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.xpr">
+<Project Version="7" Minor="32" Path="/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="4f102a1953584b99a398d6d78d77e46e"/>
