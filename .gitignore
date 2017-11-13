@@ -21,4 +21,6 @@ vprj/verilog/J1Sc/J1Sc.runs/
 vprj/verilog/J1Sc/J1Sc.sim/
 vprj/verilog/J1Sc/J1Sc.srcs/
 toolchain/forth/shell/__pycache__/
+toolchain/forth/shell/dpansf.pyc
+toolchain/forth/shell/swapforth.pyc
 
