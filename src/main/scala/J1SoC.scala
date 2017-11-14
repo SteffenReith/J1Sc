@@ -181,30 +181,29 @@ object J1SoC {
 
   def main(args : Array[String]) {
 
-    // Configuration of CPU-core
-    val j1Cfg = J1Config.forth
+    def elaborate = {
 
-    // Configuration of the used board
-    val boardCfg = BoardConfig.nexys4DDR
+      // Configuration of CPU-core
+      val j1Cfg = J1Config.forth
 
-    // Generate all VHDL files
-    SpinalConfig(genVhdlPkg = true,
+      // Configuration of the used board
+      val boardCfg = BoardConfig.nexys4DDR
+
+      // Create a system instance
+      new J1SoC(j1Cfg, boardCfg)
+
+    }
+
+    // Generate VHDL
+    SpinalConfig(mergeAsyncProcess = true,
+                 genVhdlPkg = true,
                  defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/vhdl").generateVhdl({
+                 targetDirectory="gen/src/vhdl").generateVhdl(elaborate).printPruned()
 
-                   // Create a system instance
-                   new J1SoC(j1Cfg, boardCfg)
-
-                 }).printPruned()
-
-    // Generate all Verilog files
-    SpinalConfig(defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/verilog").generateVerilog({
-
-                   // Create a system instance
-                   new J1SoC(j1Cfg, boardCfg)
-
-                 }).printPruned()
+    // Generate Verilog / Maybe mergeAsyncProcess = false helps verilator to avoid wrongly detected combinatorial loops
+    SpinalConfig(mergeAsyncProcess = true,
+                 defaultConfigForClockDomains = globalClockConfig,
+                 targetDirectory="gen/src/verilog").generateVerilog(elaborate).printPruned()
 
   }
 
