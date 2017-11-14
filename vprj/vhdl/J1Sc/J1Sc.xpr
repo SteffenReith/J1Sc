@@ -205,9 +205,7 @@
   <Runs Version="1" Minor="10">
     <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xa7a100tcsg324-1I" ConstrsSet="Nexys4DDR" Description="Vivado Synthesis Defaults" WriteIncrSynthDcp="false" Dir="$PRUNDIR/synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2017">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2017"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -216,9 +214,7 @@
     </Run>
     <Run Id="synth_2" Type="Ft3:Synth" SrcSet="sources_1" Part="xa7a100tcsg324-1I" ConstrsSet="Nexys4DDR" Description="Vivado Synthesis Defaults" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_2" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2017">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2017"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -235,9 +231,7 @@
     </Run>
     <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xa7a100tcsg324-1I" ConstrsSet="Nexys4DDR" Description="Default settings for Implementation." WriteIncrSynthDcp="false" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2017">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2017"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -254,9 +248,7 @@
     </Run>
     <Run Id="impl_2" Type="Ft2:EntireDesign" Part="xa7a100tcsg324-1I" ConstrsSet="Nexys4DDR" Description="Default settings for Implementation." WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_2" SynthRun="synth_2" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2017">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2017"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>

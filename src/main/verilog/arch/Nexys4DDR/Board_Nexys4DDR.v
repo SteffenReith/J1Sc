@@ -7,12 +7,12 @@
 //
 //
 
-module Board_Nexys4DDR (reset,
-	                clk100Mhz, 
-	                extInt,
-	                leds,
+module Board_Nexys4DDR (nreset,
+                        clk100Mhz, 
+                        extInt,
+                        leds,
                         rgbLeds,
-			segments_a,
+                        segments_a,
                         segments_b,
                         segments_c,
                         segments_d,
@@ -21,14 +21,14 @@ module Board_Nexys4DDR (reset,
                         segments_g,
                         dot,
                         selector,   
-   		        pmodA,
-			sSwitches,
-			pButtons,
-	                rx,    
-	                tx);
-		                
+                        pmodA,
+                        sSwitches,
+                        pButtons,
+                        rx,    
+                        tx);
+	                
  // Input ports
- input reset;
+ input nreset;
  input clk100Mhz;
  input [0:0] extInt;
  input [15:0] sSwitches;  
@@ -37,6 +37,7 @@ module Board_Nexys4DDR (reset,
 
  // Output ports
  output [15:0] leds;
+ output [5:0] rgbLeds;
  output tx;
  output segments_a;  
  output segments_b;  
@@ -48,10 +49,12 @@ module Board_Nexys4DDR (reset,
  output dot; 
  output [7:0] selector;
 
-
  // Bidirectional port
  inout [7:0] pmodA;
 
+ // Internal reset
+ wire      reset;
+  
  // Clock generation
  wire boardClk;
  wire boardClkLocked;
@@ -60,7 +63,7 @@ module Board_Nexys4DDR (reset,
  wire [7:0] pmodA_read;
  wire [7:0] pmodA_write;
  wire [7:0] pmodA_writeEnable;
-
+   
  // Instantiate a PLL/MMCM (makes a 80Mhz clock)
  PLL makeClk (.clkIn    (clk100Mhz),
               .clkOut   (boardClk),
@@ -90,6 +93,9 @@ module Board_Nexys4DDR (reset,
              .rx                 (rx),
              .tx                 (tx));
 
+  // Make the reset high active
+  assign reset = !nreset;
+   
   // Connect the pmodA read port
   assign pmodA_read = pmodA;
 
