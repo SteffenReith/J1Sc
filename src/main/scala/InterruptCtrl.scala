@@ -68,7 +68,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   // Wire all interrupt vectors to an IO-port
   (bus.irqVectors, irqVectors).zipped.foreach(_ := _.resize(cfg.wordSize))
 
-  // All interrupts are asynchronous, hence make them synchron with latency of 3 clocks
+  // All interrupts are asynchronous, hence make them synchron
   val irqSync = BufferCC(io.irqReqs,
                          init = B(0, cfg.irqConfig.numOfInterrupts bits),
                          bufferDepth = cfg.irqConfig.irqLatency)
