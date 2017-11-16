@@ -85,7 +85,7 @@ case class SimpleBusSlaveFactory(bus : SimpleBus) extends BusSlaveFactoryDelayed
     // The bus consists out of different BusSlaveFactoryElement's (iterate over the internal list of them)
     for(element <- elements) element match {
 
-      // Only non-stop write mode is implement (can be e.g. used to send data of a Flow)
+      // Only non-stop write mode is implemented (can be e.g. used to send data of a Flow)
       case element : BusSlaveFactoryNonStopWrite =>
 
         // Write payload of 'getBitsWidth' bits at 'bitOffset' to the BusSlaveFactoryElement
