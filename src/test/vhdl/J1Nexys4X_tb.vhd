@@ -14,10 +14,10 @@ use ieee.numeric_std.all;
 library std;
 use std.textio.all;
 
-entity J1SoC_tb is
-end J1SoC_tb;
+entity J1Nexys4X_tb is
+end J1Nexys4X_tb;
 
-architecture Behavioral of J1SoC_tb is
+architecture Behavioral of J1Nexys4X_tb is
 
   -- Clock period definition (100Mhz)
   constant clk_period : time := 10 ns;
@@ -44,7 +44,7 @@ architecture Behavioral of J1SoC_tb is
 
 begin
 
-  uut : entity work.J1SoC
+  uut : entity work.J1Nexys4X
     port map (boardClk          => boardClk,
               boardClkLocked    => boardClkLocked,
               reset             => reset,

@@ -11,8 +11,8 @@ import spinal.lib._
 import spinal.lib.com.uart._
 import spinal.lib.io._
 
-class J1SoC (j1Cfg    : J1Config,
-             boardCfg : BoardConfig) extends Component {
+class J1Nexys4X(j1Cfg    : J1Config,
+                boardCfg : BoardConfig) extends Component {
 
   val io = new Bundle {
 
@@ -172,7 +172,7 @@ class J1SoC (j1Cfg    : J1Config,
 
 }
 
-object J1SoC {
+object J1Nexys4X {
 
   // Make the reset synchron and use the rising edge
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
@@ -190,7 +190,7 @@ object J1SoC {
       val boardCfg = BoardConfig.nexys4DDR
 
       // Create a system instance
-      new J1SoC(j1Cfg, boardCfg)
+      new J1Nexys4X(j1Cfg, boardCfg)
 
     }
 

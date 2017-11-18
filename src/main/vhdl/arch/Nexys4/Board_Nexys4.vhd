@@ -63,7 +63,7 @@ begin
   reset <= not nreset;
 
   -- Instantiate the J1SoC core created by Spinal
-  core : entity work.J1SoC
+  core : entity work.J1Nexys4X
     port map (reset             => reset,
               boardClk          => boardClk,
               boardClkLocked    => boardClkLocked,
