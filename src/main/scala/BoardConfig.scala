@@ -25,6 +25,17 @@ object GPIOConfig {
 
   }
 
+  // Provide a configuration for Digilent's pmods
+  def pmod = {
+
+    // Create a configuration suitable for pmods
+    val config = GPIOConfig(width = 8)
+
+    // Return the configuration
+    config
+
+  }
+
 }
 
 // Information about controllable LEDs on the board
@@ -44,6 +55,29 @@ object LEDArrayConfig {
 
   }
 
+  // Provide a configuration for Nexys4X boards
+  def nexys4X = {
+
+    // Create a configuration for a Nexys4 board
+    val config = LEDArrayConfig(width     = 16,
+                                lowActive = false)
+
+    // Return the configuration
+    config
+
+  }
+
+  // Provide a smaller number of LEDs for a PMod
+  def pmodLEDs = {
+
+    // Configure a bank of eight LEDs on a PMod
+    val config = LEDArrayConfig(width = 8,
+                                lowActive = false)
+
+    // Return the configuration for a LED array on a Pmod
+    config
+  }
+
 }
 
 // Configuration of the PWM component
@@ -57,12 +91,39 @@ object PWMConfig {
   // Provide the default configuration
   def default = {
 
-    // Create a PWMConfig instance
+    // Create a default PWMConfig instance
     val config = PWMConfig(pwmFrequency    = 200 Hz,
                            numOfDutyCycles = 256,
                            numOfChannels   = 6)
 
     // Return the default configuration
+    config
+
+  }
+
+  // Provide the default configuration
+  def nexys4X = {
+
+    // Create a PWMConfig instance
+    val config = PWMConfig(pwmFrequency    = 200 Hz,
+                           numOfDutyCycles = 256,
+                           numOfChannels   = 6)
+
+    // Return a configuration suitable for a Nexys4X
+    config
+
+  }
+
+
+  // Provide a configuration for an IcoBoard
+  def icoPWM = {
+
+    // Create a config for the three LEDs on an IcoBoard
+    val config = PWMConfig(pwmFrequency    = 200 Hz,
+                           numOfDutyCycles = 256,
+                           numOfChannels   = 3)
+
+    // Return the configuration
     config
 
   }
@@ -94,6 +155,21 @@ object SSDConfig {
 
   }
 
+  // Provide a configuration for a Nexys4X board
+  def nexys4X = {
+
+    // Create the default instance
+    val config = SSDConfig(mplxFrequency  = 200 Hz,
+                           numOfDisplays  = 8,
+                           invertSelector = true,
+                           invertSegments = true,
+                           displayDefaultActive = true)
+
+    // Return the configuration for a Nexys4X board
+    config
+
+  }
+
 }
 
 // Configuration for an array of debounced pins
@@ -116,12 +192,28 @@ object DBPinArrayConfig {
   }
 
   // A configuration for an array of slider switches
-  val sliderSwitch = DBPinArrayConfig(waitTime  = 1 ms,
-                                      numOfPins = 16)
+  def sliderSwitch16 = {
 
-  // A configuration for an array of push buttons
-  val pushButton = DBPinArrayConfig(waitTime  = 5 ms,
-                                    numOfPins = 5)
+    // Debounce 16 switches with 1ms (e.g. Nexys4X)
+    val config = DBPinArrayConfig(waitTime  = 1 ms,
+                                  numOfPins = 16)
+
+    // Return the configuration
+    config
+
+  }
+
+  // A configuration for push buttons
+  def pushButton5 = {
+
+    // Debounce 5 push butting with 5ms (e.g. Nexys4X)
+    val config = DBPinArrayConfig(waitTime  = 5 ms,
+                                  numOfPins = 5)
+
+    // Return the configuration
+    config
+
+  }
 
 }
 
@@ -158,8 +250,8 @@ object J1UARTConfig {
 
   }
 
-  // Provide a configuration for the Nexys4DDR board from Digilent
-  def nexys4DDRUartConfig = {
+  // Provide a fast configuration with 8N1 @ 921600
+  def fastUartConfig = {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
                               dataWidthMax = 8,
@@ -172,13 +264,13 @@ object J1UARTConfig {
                               postSamplingSize = 2,
                               fifoDepth = 8)
 
-    // Return the Nexys4DDR configuration
+    // Return the fast configuration
     config
 
   }
 
-  // Provide a configuration for the Nexys4DDR board from Digilent
-  def nexys4DDRSlowUartConfig = {
+  // Provide a slow UART configuration 8N1 @ 11520
+  def slowUartConfig = {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
                               dataWidthMax = 8,
@@ -191,7 +283,7 @@ object J1UARTConfig {
                               postSamplingSize = 2,
                               fifoDepth = 8)
 
-    // Return the Nexys4DDR configuration
+    // Return the slow configuration
     config
 
   }
@@ -219,8 +311,8 @@ object BoardConfig {
                              ledBankConfig  = LEDArrayConfig.default,
                              pwmConfig      = PWMConfig.default,
                              ssdConfig      = SSDConfig.default,
-                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch,
-                             pButtonConfig  = DBPinArrayConfig.pushButton,
+                             sSwitchConfig  = DBPinArrayConfig.default,
+                             pButtonConfig  = DBPinArrayConfig.default,
                              uartConfig     = J1UARTConfig.default,
                              boardFrequency = FixedFrequency(80 MHz),
                              1)
@@ -233,18 +325,18 @@ object BoardConfig {
   // Provide a configuration for the Nexys4DDR board from Digilent
   def nexys4DDR = {
 
-    // Default configuration values
-    val config = BoardConfig(gpioConfig     = GPIOConfig.default,
-                             ledBankConfig  = LEDArrayConfig.default,
-                             pwmConfig      = PWMConfig.default,
-                             ssdConfig      = SSDConfig.default,
-                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch,
-                             pButtonConfig  = DBPinArrayConfig.pushButton,
-                             uartConfig     = J1UARTConfig.nexys4DDRSlowUartConfig,
+    // Configuration values for a Nexys4DDR
+    val config = BoardConfig(gpioConfig     = GPIOConfig.pmod,
+                             ledBankConfig  = LEDArrayConfig.nexys4X,
+                             pwmConfig      = PWMConfig.nexys4X,
+                             ssdConfig      = SSDConfig.nexys4X,
+                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch16,
+                             pButtonConfig  = DBPinArrayConfig.pushButton5,
+                             uartConfig     = J1UARTConfig.slowUartConfig,
                              boardFrequency = FixedFrequency(100 MHz),
                              1)
 
-    // Return the Nexys4DDR configuration
+    // Return the configuration
     config
 
   }
@@ -252,18 +344,37 @@ object BoardConfig {
   // Provide a configuration for the Nexys4 board from Digilent
   def nexys4 = {
 
-    // Default configuration values
-    val config = BoardConfig(gpioConfig     = GPIOConfig.default,
-                             ledBankConfig  = LEDArrayConfig.default,
-                             pwmConfig      = PWMConfig.default,
-                             ssdConfig      = SSDConfig.default,
-                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch,
-                             pButtonConfig  = DBPinArrayConfig.pushButton,
-                             uartConfig     = J1UARTConfig.nexys4DDRUartConfig,
+    // Configuration values for a Nexys4
+    val config = BoardConfig(gpioConfig     = GPIOConfig.pmod,
+                             ledBankConfig  = LEDArrayConfig.nexys4X,
+                             pwmConfig      = PWMConfig.nexys4X,
+                             ssdConfig      = SSDConfig.nexys4X,
+                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch16,
+                             pButtonConfig  = DBPinArrayConfig.pushButton5,
+                             uartConfig     = J1UARTConfig.fastUartConfig,
                              boardFrequency = FixedFrequency(100 MHz),
                              1)
 
-    // Return the Nexys4 configuration
+    // Return the configuration
+    config
+
+  }
+
+  // Provide a configuration for the IcoBoard
+  def icoBoard = {
+
+    // Configuration values for an IcoBoard
+    val config = BoardConfig(gpioConfig     = GPIOConfig.pmod,
+                             ledBankConfig  = LEDArrayConfig.pmodLEDs,
+                             pwmConfig      = PWMConfig.icoPWM,
+                             ssdConfig      = SSDConfig.default,
+                             sSwitchConfig  = DBPinArrayConfig.default,
+                             pButtonConfig  = DBPinArrayConfig.default,
+                             uartConfig     = J1UARTConfig.slowUartConfig,
+                             boardFrequency = FixedFrequency(25 MHz),
+                             1)
+
+    // Return the configuration
     config
 
   }

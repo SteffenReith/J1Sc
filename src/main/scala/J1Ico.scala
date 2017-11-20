@@ -11,8 +11,8 @@ import spinal.lib._
 import spinal.lib.com.uart._
 import spinal.lib.io._
 
-class J1Nexys4X(j1Cfg    : J1Config,
-                boardCfg : BoardConfig) extends Component {
+class J1Ico(j1Cfg    : J1Config,
+            boardCfg : BoardConfig) extends Component {
 
   val io = new Bundle {
 
@@ -29,20 +29,11 @@ class J1Nexys4X(j1Cfg    : J1Config,
     // The physical pins for the connected LEDs
     val leds = out Bits(boardCfg.ledBankConfig.width bits)
 
-    // The physical pins for the connected RGB-LEDs
-    val rgbLeds = out Bits(boardCfg.pwmConfig.numOfChannels bits)
-
-    // The physical pins for the multiplexed seven-segment display
-    val segments = out (Seg7())
-    val dot      = out Bool
-    val selector = out Bits(boardCfg.ssdConfig.numOfDisplays bits)
+    // The physical pins for the LEDs that support PWM
+    val pwmLeds = out Bits(boardCfg.pwmConfig.numOfChannels bits)
 
     // The physical pins for pmod A
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
-
-    // The physical pins for slider switches and push buttons
-    val sSwitches = in Bits(boardCfg.sSwitchConfig.numOfPins bits)
-    val pButtons = in Bits(boardCfg.pButtonConfig.numOfPins bits)
 
     // I/O pins for the UART
     val rx = in Bool // UART input
@@ -92,16 +83,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
     val pwmBridge = pwm.driveFrom(peripheralBusCtrl, 0x50)
 
     // Connect the pwm channels physically
-    io.rgbLeds := pwm.io.pwmChannels
-
-    // Create the seven-segment display at 0x60
-    val ssd = new SSD(j1Cfg, boardCfg.ssdConfig)
-    val ssdBridge = ssd.driveFrom(peripheralBusCtrl, 0x60)
-
-    // Connect the signal for the seven segment displays physically
-    io.segments := ssd.io.segments
-    io.dot      := ssd.io.dot
-    io.selector := ssd.io.selector
+    io.pwmLeds := pwm.io.pwmChannels
 
     // Create a PMOD at base address 0x60
     val pmodA       = new GPIO(boardCfg.gpioConfig)
@@ -111,16 +93,6 @@ class J1Nexys4X(j1Cfg    : J1Config,
     io.pmodA.write       <> pmodA.io.dataOut
     pmodA.io.dataIn      <> io.pmodA.read
     io.pmodA.writeEnable <> pmodA.io.directions
-
-    // Create the sliding switches array
-    val sSwitches = new DBPinArray(j1Cfg, boardCfg.sSwitchConfig)
-    val sSwitchesBridge = sSwitches.driveFrom(peripheralBusCtrl, 0x80)
-    sSwitches.io.inputPins := io.sSwitches
-
-    // Create the push button array
-    val pButtons = new DBPinArray(j1Cfg, boardCfg.pButtonConfig)
-    val pButtonsBridge = pButtons.driveFrom(peripheralBusCtrl, 0x90)
-    pButtons.io.inputPins := io.pButtons
 
     // Create two timer and map it at 0xC0 and 0xD0
     val timerA       = new Timer(j1Cfg.timerConfig)
@@ -172,7 +144,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
 
 }
 
-object J1Nexys4X {
+object J1Ico {
 
   // Make the reset synchron and use the rising edge
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
@@ -187,12 +159,15 @@ object J1Nexys4X {
       val j1Cfg = J1Config.forth
 
       // Configuration of the used board
-      val boardCfg = BoardConfig.nexys4DDR
+      val boardCfg = BoardConfig.icoBoard
 
       // Create a system instance
-      new J1Nexys4X(j1Cfg, boardCfg)
+      new J1Ico(j1Cfg, boardCfg)
 
     }
+
+    // Write a message
+    println("[J1Sc] Create the J1 for an IcoBoard")
 
     // Generate VHDL
     SpinalConfig(mergeAsyncProcess = true,

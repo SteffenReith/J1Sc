@@ -194,6 +194,9 @@ object J1Nexys4X {
 
     }
 
+    // Write a message
+    println("[J1Sc] Create the J1 for a Nexys4X board")
+
     // Generate VHDL
     SpinalConfig(mergeAsyncProcess = true,
                  genVhdlPkg = true,
