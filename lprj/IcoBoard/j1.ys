@@ -1,0 +1,5 @@
+read_verilog ../../src/main/verilog/arch/IcoBoard/PLL.v ../../gen/src/verilog/J1Ico.v  ../../src/main/verilog/arch/IcoBoard/Board_IcoBoard.v 
+
+synth -top J1Ico
+ 
+
