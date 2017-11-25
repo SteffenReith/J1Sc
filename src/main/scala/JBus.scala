@@ -28,12 +28,12 @@ case class JBus(cfg : J1Config) extends Bundle with IMasterSlave {
   def delayIt(ticks : Int = 1) : JBus = {
 
     // Check for proper parameter
-    require (ticks >= 0, "Error: delayCnt has to be at least 0")
+    require (ticks >= 0, "Error: ticks has to be at least 0")
 
     // Make a copy
     val retVal = cloneOf(this)
 
-    // Don't delay the data to be read hence we have one wait state for read operation
+    // Don't delay the data to be read hence we have one wait state for a read operation
     this.readData := retVal.readData
 
     // Delay all other signals and wire them

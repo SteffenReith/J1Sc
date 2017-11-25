@@ -13,7 +13,7 @@ import spinal.lib.bus.misc._
 
 object JBusSlaveFactory {
 
-  // Make a factory
+  // Make a factory for the JBus
   def apply(bus : JBus) = new JBusSlaveFactory(bus)
 
 }
@@ -21,7 +21,7 @@ object JBusSlaveFactory {
 class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
 
   // Get read/write address used on the bus
-  def readAdress()   : UInt = bus.address
+  def readAddress()  : UInt = bus.address
   def writeAddress() : UInt = bus.address
 
   // Peripherals cannot stop bus cycles
@@ -42,6 +42,7 @@ class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
   // Build the bridging logic between master and slave
   override def build() : Unit = {
 
+    // Write permanently to the bus
     super.doNonStopWrite(bus.writeData)
 
     def doMappedElements(jobs : Seq[BusSlaveFactoryElement]) = super.doMappedElements(
@@ -70,9 +71,9 @@ class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
 
     }
 
-    for ((address, address) <- elementsPerAddress if !address.isInstanceOf[SingleMapping]) {
+    for ((address, jobs) <- elementsPerAddress if !address.isInstanceOf[SingleMapping]) {
 
-      when(address.hit(bus.PADDR)){
+      when(address.hit(bus.address)){
 
         doMappedElements(jobs)
 
