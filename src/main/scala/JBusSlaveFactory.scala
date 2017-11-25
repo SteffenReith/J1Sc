@@ -42,10 +42,14 @@ class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
   // Build the bridging logic between master and slave
   override def build() : Unit = {
 
+    // Init the read data wire to avoid a latch
+    bus.readData := 0
+
     // Write permanently to the bus
     super.doNonStopWrite(bus.writeData)
 
-    def doMappedElements(jobs : Seq[BusSlaveFactoryElement]) = super.doMappedElements(
+    // Describe one data package transfered on the bus
+    def doMappedElements(jobs : Seq[BusSlaveFactoryElement]) = super.doMappedElements (
 
       jobs = jobs,
       askWrite = askWrite,
