@@ -77,7 +77,7 @@ class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
 
     for ((address, jobs) <- elementsPerAddress if !address.isInstanceOf[SingleMapping]) {
 
-      when(address.hit(bus.address)){
+      when(address.hit(bus.address)) {
 
         doMappedElements(jobs)
 
