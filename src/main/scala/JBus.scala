@@ -2,7 +2,7 @@
  * Author: Steffen Reith (steffen.reith@hs-rm.de)
  *
  * Creation Date:  Sat Nov 12 15:36:19 GMT+1 2016
- * Module Name:    SimpleBus - A simple bus which consists out of address / dataIn / dataOut / writeMode / enable
+ * Module Name:    JBus - A simple bus used for the components of the J1 ecosystem
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  * Remark: Initial code provided by Charles Papon (charles.papon.90@gmail.com)
@@ -10,9 +10,8 @@
  */
 import spinal.core._
 import spinal.lib._
-import spinal.lib.bus.misc._
 
-case class J1Bus(cfg : J1Config) extends Bundle with IMasterSlave {
+case class JBus(cfg : J1Config) extends Bundle with IMasterSlave {
 
   // Width of addresses and data
   def adrWidth  = cfg.wordSize
@@ -26,7 +25,7 @@ case class J1Bus(cfg : J1Config) extends Bundle with IMasterSlave {
   val readData  = Bits(dataWidth bits)
 
   // Created a copy of the current bus which signals are delayed by 'delayCnt' ticks
-  def delayIt(ticks : Int = 1) : J1Bus = {
+  def delayIt(ticks : Int = 1) : JBus = {
 
     // Check for proper parameter
     require (ticks >= 0, "Error: delayCnt has to be at least 0")
@@ -49,7 +48,7 @@ case class J1Bus(cfg : J1Config) extends Bundle with IMasterSlave {
   }
 
   // Methods to connect SimpleBus objects
-  def << (that : J1Bus) : Unit = {
+  def << (that : JBus) : Unit = {
 
     // Simply wire the signals of 'this' and 'that'
     that.enable    := this.enable
@@ -59,7 +58,7 @@ case class J1Bus(cfg : J1Config) extends Bundle with IMasterSlave {
     this.readData  := that.readData
 
   }
-  def >>(that : J1Bus) : Unit = that << this
+  def >>(that : JBus) : Unit = that << this
 
   // This is called by 'apply' when the master-object is called with data (-> side effect write/read data)
   override def asMaster() : Unit = {
@@ -69,72 +68,6 @@ case class J1Bus(cfg : J1Config) extends Bundle with IMasterSlave {
 
     // Read data from the bus
     in(readData)
-
-  }
-
-}
-
-class J1BusSlaveFactory(bus : J1Bus) extends BusSlaveFactoryDelayed {
-
-  // Get read/write address used on the bus
-  def readAdress()   : UInt = bus.address
-  def writeAddress() : UInt = bus.address
-
-  // Peripherals cannot stop bus cycles
-  def readHalt()  : Unit = throw new Exception("Unsupported feature")
-  def writeHalt() : Unit = throw new Exception("Unsupported feature")
-
-  // Ask for read/write access
-  val askWrite = bus.enable &&  bus.writeMode
-  val askRead  = bus.enable && !bus.writeMode
-
-  // Simple bus has no halting signal, hence do read/write means ask for read/write
-  def doWrite = askWrite
-  def doRead  = askRead
-
-  // Tell the width of the data bus
-  override def busDataWidth : Int = bus.dataWidth
-
-  // Build the bridging logic between master and slave
-  override def build() : Unit = {
-
-    super.doNonStopWrite(bus.writeData)
-
-    def doMappedElements(jobs : Seq[BusSlaveFactoryElement]) = super.doMappedElements(
-
-      jobs = jobs,
-      askWrite = askWrite,
-      askRead = askRead,
-      doWrite = doWrite,
-      doRead = doRead,
-      writeData = bus.writeData,
-      readData = bus.readData
-
-    )
-
-    switch(bus.address) {
-
-      for ((address, jobs) <- elementsPerAddress if address.isInstanceOf[SingleMapping]) {
-
-        is(address.asInstanceOf[SingleMapping].address) {
-
-          doMappedElements(jobs)
-
-        }
-
-      }
-
-    }
-
-    for ((address, address) <- elementsPerAddress if !address.isInstanceOf[SingleMapping]) {
-
-      when(address.hit(bus.PADDR)){
-
-        doMappedElements(jobs)
-
-      }
-
-    }
 
   }
 
