@@ -32,7 +32,7 @@
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSAVendor" Val="xilinx"/>
     <Option Name="DSANumComputeUnits" Val="16"/>
-    <Option Name="WTXSimLaunchSim" Val="217"/>
+    <Option Name="WTXSimLaunchSim" Val="220"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -135,14 +135,15 @@
     </FileSet>
     <FileSet Name="IRQTest" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/IRQTest">
       <Filter Type="Srcs"/>
-      <File Path="$PPRDIR/../../../src/test/vhdl/J1SoC_IRQ_tb.vhd">
+      <File Path="$PPRDIR/J1SoC_IRQ_tb_behav.wcfg">
         <FileInfo>
-          <Attr Name="Library" Val="work"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/J1SoC_IRQ_tb_behav.wcfg">
+      <File Path="$PPRDIR/../../../src/test/vhdl/J1Nexys4X_IRQ_tb.vhd">
         <FileInfo>
+          <Attr Name="Library" Val="work"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -159,14 +160,15 @@
     </FileSet>
     <FileSet Name="ISATest" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/ISATest">
       <Filter Type="Srcs"/>
-      <File Path="$PPRDIR/../../../src/test/vhdl/J1SoC_tb.vhd">
+      <File Path="$PPRDIR/J1SoC_tb_behav.wcfg">
         <FileInfo>
-          <Attr Name="Library" Val="work"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/J1SoC_tb_behav.wcfg">
+      <File Path="$PPRDIR/../../../src/test/vhdl/J1Nexys4X_tb.vhd">
         <FileInfo>
+          <Attr Name="Library" Val="work"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
