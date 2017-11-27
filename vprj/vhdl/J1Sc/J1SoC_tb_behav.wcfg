@@ -12,9 +12,9 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="182228308fs"></ZoomEndTime>
-      <Cursor1Time time="95000000fs"></Cursor1Time>
+      <ZoomStartTime time="81370000fs"></ZoomStartTime>
+      <ZoomEndTime time="233870001fs"></ZoomEndTime>
+      <Cursor1Time time="37800000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="219"></NameColumnWidth>
@@ -34,8 +34,8 @@
       <obj_property name="ObjectShortName">core_reset</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1Nexys4X_tb/uut/coreArea_cpu/coreJ1CPU/pc">
-      <obj_property name="ElementShortName">pc[13:0]</obj_property>
-      <obj_property name="ObjectShortName">pc[13:0]</obj_property>
+      <obj_property name="ElementShortName">pc[12:0]</obj_property>
+      <obj_property name="ObjectShortName">pc[12:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/J1Nexys4X_tb/uut/coreArea_cpu/coreJ1CPU/memInstr">
       <obj_property name="ElementShortName">memInstr[15:0]</obj_property>
