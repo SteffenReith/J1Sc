@@ -144,12 +144,7 @@ class J1Core(cfg : J1Config) extends Component {
   val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O write operation
   val funcReadIO   = (instr(6 downto 4).asUInt === 5) // I/O read operation
   val isALU        = !pc.msb && (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
-  val isCall       = (instr(instr.high downto (instr.high - 3) + 1) === B"b010")
-
-  // Used for debugging
-  val isHighCall   = isCall && instr(cfg.adrWidth)
-  isHighCall.keep()
-
+  
   // Signals for handling external memory
   internal.memWriteMode := !clrActive && isALU && funcWriteMem
   internal.ioWriteMode := !clrActive && isALU && funcWriteIO
