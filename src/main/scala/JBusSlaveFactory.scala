@@ -51,6 +51,7 @@ class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
     // Describe one data package transfered on the bus
     def doMappedElements(jobs : Seq[BusSlaveFactoryElement]) = super.doMappedElements (
 
+      // Do the mapping of all bus signals
       jobs = jobs,
       askWrite = askWrite,
       askRead = askRead,
@@ -61,12 +62,15 @@ class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
 
     )
 
+    // Check the current address on the bus (address decoder)
     switch(bus.address) {
 
+      // For all jobs (e.g. registers) having a single address
       for ((address, jobs) <- elementsPerAddress if address.isInstanceOf[SingleMapping]) {
 
         is(address.asInstanceOf[SingleMapping].address) {
 
+          // Wire the single address object to the bus
           doMappedElements(jobs)
 
         }
@@ -75,10 +79,13 @@ class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
 
     }
 
+    // For all addresses that are not a single address (but a range) like RAMs etc.
     for ((address, jobs) <- elementsPerAddress if !address.isInstanceOf[SingleMapping]) {
 
+      // Check if the current address on the bus is in the range
       when(address.hit(bus.address)) {
 
+        // Handle the job by wiring the actual device to the bus
         doMappedElements(jobs)
 
       }
