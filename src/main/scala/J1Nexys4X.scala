@@ -77,8 +77,8 @@ class J1Nexys4X(j1Cfg    : J1Config,
     val cpu = new J1(j1Cfg)
 
     // Create a delayed version of the cpu core interface to IO-peripherals
-    val peripheralBus     = cpu.bus.cpuBus.delayed(boardCfg.ioWaitStates)
-    val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
+    val peripheralBus     = cpu.bus.cpuBus.delayIt(boardCfg.ioWaitStates)
+    val peripheralBusCtrl = JBusSlaveFactory(peripheralBus)
 
     // Create a LED array at base address 0x40
     val ledArray  = new LEDArray(j1Cfg, boardCfg.ledBankConfig)
@@ -184,7 +184,8 @@ object J1Nexys4X {
     def elaborate = {
 
       // Configuration of CPU-core
-      val j1Cfg = J1Config.forth
+      //val j1Cfg = J1Config.forth
+      val j1Cfg = J1Config.debugIO
 
       // Configuration of the used board
       val boardCfg = BoardConfig.nexys4DDR

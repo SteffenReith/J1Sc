@@ -68,8 +68,8 @@ class J1Ico(j1Cfg    : J1Config,
     val cpu = new J1(j1Cfg)
 
     // Create a delayed version of the cpu core interface to IO-peripherals
-    val peripheralBus     = cpu.bus.cpuBus.delayed(boardCfg.ioWaitStates)
-    val peripheralBusCtrl = SimpleBusSlaveFactory(peripheralBus)
+    val peripheralBus     = cpu.bus.cpuBus.delayIt(boardCfg.ioWaitStates)
+    val peripheralBusCtrl = JBusSlaveFactory(peripheralBus)
 
     // Create a LED array at base address 0x40
     val ledArray  = new LEDArray(j1Cfg, boardCfg.ledBankConfig)

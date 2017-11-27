@@ -35,7 +35,19 @@ architecture Behavioral of J1Nexys4X_tb is
   signal tx : std_logic;
 
   -- I/O signals 
-  signal leds : std_logic_vector(15 downto 0);
+  signal leds       : std_logic_vector(15 downto 0);
+  signal rgbLeds    : std_logic_vector(5 downto 0);
+  signal segments_a : std_logic;
+  signal segments_b : std_logic;
+  signal segments_c : std_logic;
+  signal segments_d : std_logic;
+  signal segments_e : std_logic;
+  signal segments_f : std_logic;
+  signal segments_g : std_logic;
+  signal dot        : std_logic;
+  signal selector   : std_logic_vector(7 downto 0);
+  signal sSwitches  : std_logic_vector(15 downto 0) := (others => '0');
+  signal pButtons   : std_logic_vector(4 downto 0)  := (others => '0');
 
   -- Clock and reset 
   signal boardClkLocked : std_logic;
@@ -52,6 +64,18 @@ begin
               pmodA_read        => pmodA_read,
               pmodA_write       => pmodA_write,
               pmodA_writeEnable => pmodA_writeEnable,
+              rgbLeds           => rgbLeds,
+              segments_a        => segments_a,
+              segments_b        => segments_b,
+              segments_c        => segments_c,
+              segments_d        => segments_d,
+              segments_e        => segments_e,
+              segments_f        => segments_f,
+              segments_g        => segments_g,
+              dot               => dot,
+              selector          => selector,
+              sSwitches         => sSwitches,
+              pButtons          => pButtons,
               rx                => rx,
               tx                => tx,
               leds              => leds);
