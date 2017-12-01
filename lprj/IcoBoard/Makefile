@@ -17,13 +17,13 @@ $(BUILDPATH)/$(TOPLEVEL).asc: $(LATPATH)/J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif
 	arachne-pnr -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(TOPLEVEL).blif 
 
 $(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
-	mkdir -p build 
+	mkdir -p $(BUILDPATH) 
 	yosys -q J1Sc.ys 
 
 prog: $(BUILDPATH)/$(TOPLEVEL).bin 
 	iceprog $(BUILDPATH)/$(TOPLEVEL).bin
 
 clean:  
-	rm build/*
+	rm $(BUILDPATH)/*
 
 .PHONY: prog clean
