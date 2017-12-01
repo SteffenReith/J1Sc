@@ -1,21 +1,16 @@
-set_io clk 21
-set_io clkin 44
-set_io clkout 45
-set_io lock 95
-
 # External clock
-set_io --warn-no-port clk100Mhz 
+set_io --warn-no-port clk100Mhz R9
 
 # Use button S1 as reset
 set_io --warn-no-port reset K11
 
-# Use button S3 as interrupt
-set_io --warn-no-port reset P13
+# Use button S3 as external interrupt
+set_io --warn-no-port extInt P13
 
 # The IcoBoard has 3 LEDs on the PCB. Connect them via PWM
-set_io --warn-no-port rgbLeds[0] C8
-set_io --warn-no-port rgbLeds[1] F7
-set_io --warn-no-port rgbLeds[2] K9
+set_io --warn-no-port pwmLeds[0] C8
+set_io --warn-no-port pwmLeds[1] F7
+set_io --warn-no-port pwmLeds[2] K9
 
 # PmodA connected to P1
 set_io --warn-no-port pmodA[0] B4

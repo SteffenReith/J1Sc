@@ -5,7 +5,7 @@ BUILDPATH = build
 
 VERILOGSRC = $(VERGENPATH)/J1Ico.v $(VERSRCPATH)/PLL.v $(VERSRCPATH)/Board_IcoBoard.v  
 
-TOPLEVEL = J1Sc
+TOPLEVEL = J1Ico
 
 
 all: $(BUILDPATH)/$(TOPLEVEL).bin
@@ -14,7 +14,7 @@ $(BUILDPATH)/$(TOPLEVEL).bin: $(BUILDPATH)/$(TOPLEVEL).asc
 	icepack $(BUILDPATH)/$(TOPLEVEL).asc $(BUILDPATH)/$(TOPLEVEL).bin
 
 $(BUILDPATH)/$(TOPLEVEL).asc: $(LATPATH)/J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif  
-	arachne-pnr -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(TOPLEVEL).blif 
+	arachne-pnr -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(BUILDPATH)/$(TOPLEVEL).blif 
 
 $(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
 	mkdir -p $(BUILDPATH) 

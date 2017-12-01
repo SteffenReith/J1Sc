@@ -11,7 +11,7 @@ module IcoBoard (reset,
                  clk100Mhz, 
                  extInt,
                  leds,
-                 rgbLeds,
+                 pwmLeds,
                  pmodA,
                  rx,    
                  tx);
@@ -24,7 +24,7 @@ module IcoBoard (reset,
 
  // Output ports
  output [7:0] leds;
- output [2:0] rgbLeds;
+ output [2:0] pwmLeds;
  output tx;
 
  // Bidirectional port
@@ -50,7 +50,7 @@ module IcoBoard (reset,
              .boardClkLocked     (boardClkLocked),
              .extInt             (extInt),
              .leds               (leds),
-             .rgbLeds            (rgbLeds),
+             .pwmLeds            (pwmLeds),
              .pmodA_read         (pmodA_read),
              .pmodA_write        (pmodA_write),
              .pmodA_writeEnable  (pmodA_writeEnable),
