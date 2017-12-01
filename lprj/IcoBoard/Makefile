@@ -8,22 +8,22 @@ VERILOGSRC = $(VERGENPATH)/J1Ico.v $(VERSRCPATH)/PLL.v $(VERSRCPATH)/Board_IcoBo
 TOPLEVEL = J1Sc
 
 
-all: build/blinky.bin
+all: $(BUILDPATH)/$(TOPLEVEL).bin
 
-build/blinky.bin: build/blinky.asc  
-	icepack $< $@
+$(BUILDPATH)/$(TOPLEVEL).bin: $(BUILDPATH)/$(TOPLEVEL).asc  
+	icepack $(BUILDPATH)/$(TOPLEVEL).asc $(BUILDPATH)/$(TOPLEVEL).bin
 
-$(BUILDPATH)/$(TOPLEVEL).asc: J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif  
+$(BUILDPATH)/$(TOPLEVEL).asc: $(LATPATH)/J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif  
 	arachne-pnr -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(TOPLEVEL).blif 
 
-$(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC) 
+$(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
+	mkdir -p build 
 	yosys -q J1Sc.ys 
 
-prog: build/blinky.bin  
-	iceprog build/blinky.bin
+prog: $(BUILDPATH)/$(TOPLEVEL).bin 
+	iceprog $(BUILDPATH)/$(TOPLEVEL).bin
 
 clean:  
 	rm build/*
 
 .PHONY: prog clean
-
