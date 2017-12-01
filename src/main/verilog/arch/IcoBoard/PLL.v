@@ -9,7 +9,7 @@
 module PLL(clkIn, clkOut, isLocked);
 
    // Input ports
-    input clkIn;
+   input clkIn;
 
    // Output ports
    output clkOut;
