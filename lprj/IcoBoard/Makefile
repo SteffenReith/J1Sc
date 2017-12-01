@@ -24,6 +24,6 @@ prog: $(BUILDPATH)/$(TOPLEVEL).bin
 	iceprog $(BUILDPATH)/$(TOPLEVEL).bin
 
 clean:  
-	rm $(BUILDPATH)/*
+	rm -f $(BUILDPATH)/*
 
 .PHONY: prog clean
