@@ -3,3 +3,40 @@ set_io clkin 44
 set_io clkout 45
 set_io lock 95
 
+# External clock
+set_io --warn-no-port clk100Mhz 
+
+# Use button S1 as reset
+set_io --warn-no-port reset K11
+
+# Use button S3 as interrupt
+set_io --warn-no-port reset P13
+
+# The IcoBoard has 3 LEDs on the PCB. Connect them via PWM
+set_io --warn-no-port rgbLeds[0] C8
+set_io --warn-no-port rgbLeds[1] F7
+set_io --warn-no-port rgbLeds[2] K9
+
+# PmodA connected to P1
+set_io --warn-no-port pmodA[0] B4
+set_io --warn-no-port pmodA[1] C3
+set_io --warn-no-port pmodA[2] A2
+set_io --warn-no-port pmodA[3] A5
+set_io --warn-no-port pmodA[4] B5
+set_io --warn-no-port pmodA[5] B3
+set_io --warn-no-port pmodA[6] B6
+set_io --warn-no-port pmodA[7] B7
+
+# Pmod8LD connected to P2
+set_io --warn-no-port leds[0] B11
+set_io --warn-no-port leds[1] B10
+set_io --warn-no-port leds[2] B9
+set_io --warn-no-port leds[3] D8
+set_io --warn-no-port leds[4] A11
+set_io --warn-no-port leds[5] A10
+set_io --warn-no-port leds[6] A9
+set_io --warn-no-port leds[7] B8
+
+# PmodUSBUART connected to P3 (upper row of P3)
+set_io --warn-no-port rx L7
+set_io --warn-no-port tx G5

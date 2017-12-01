@@ -1,4 +1,5 @@
 VERSRCPATH = ../../src/main/verilog/arch/IcoBoard
+LATPATH = ../../src/main/lattice/IcoBoard
 VERGENPATH = ../../gen/src/verilog
 BUILDPATH = build
 
@@ -12,8 +13,8 @@ all: build/blinky.bin
 build/blinky.bin: build/blinky.asc  
 	icepack $< $@
 
-build/blinky.asc: blinky.pcf build/blinky.blif  
-	arachne-pnr -d 1k -P tq144 -o $@ -p $^
+$(BUILDPATH)/$(TOPLEVEL).asc: J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif  
+	arachne-pnr -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(TOPLEVEL).blif 
 
 $(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC) 
 	yosys -q J1Sc.ys 
