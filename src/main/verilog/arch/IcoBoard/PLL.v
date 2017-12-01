@@ -15,6 +15,7 @@ module PLL(clkIn, clkOut, isLocked);
    output clkOut;
    output isLocked;
 
+   // In: 100Mhz / Out: 25Mhz
    SB_PLL40_CORE #(
        .FEEDBACK_PATH("SIMPLE"),
        .PLLOUT_SELECT("GENCLK"),
