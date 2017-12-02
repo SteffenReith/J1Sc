@@ -15,14 +15,14 @@ module PLL(clkIn, clkOut, isLocked);
    output clkOut;
    output isLocked;
 
-   // In: 100Mhz / Out: 25Mhz
+   // In: 100Mhz / Out: 30Mhz
    SB_PLL40_CORE #(
        .FEEDBACK_PATH("SIMPLE"),
        .PLLOUT_SELECT("GENCLK"),
-       .DIVR(4'b0000),
-       .DIVF(7'b0000111),
+       .DIVR(4'b0100),
+       .DIVF(7'b0101111),
        .DIVQ(3'b101),
-       .FILTER_RANGE(3'b101)
+       .FILTER_RANGE(3'b010)
    ) uut (
        .LOCK(isLocked),
        .RESETB(1'b1),

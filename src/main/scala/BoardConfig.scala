@@ -371,7 +371,7 @@ object BoardConfig {
                              sSwitchConfig  = DBPinArrayConfig.default,
                              pButtonConfig  = DBPinArrayConfig.default,
                              uartConfig     = J1UARTConfig.slowUartConfig,
-                             boardFrequency = FixedFrequency(25 MHz),
+                             boardFrequency = FixedFrequency(30 MHz),
                              1)
 
     // Return the configuration
