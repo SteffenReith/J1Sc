@@ -10,7 +10,7 @@
 
 : blink leds@ invert leds! ;
 
-: rotate
+: rotate16
     leds@
     dup
     1 and if
@@ -18,16 +18,30 @@
 	$7fff and
 	$8000 or
     else
-	2/ $7fff and
+	2/
+	$7fff and
     then
     leds!
 ;
 
-: isr rotate ;
+: rotate8
+    leds@
+    dup
+    1 and if
+	2/
+	$7f and
+	$80 or
+    else
+	2/ $7f and
+    then
+    leds!
+;
+
+: isr rotate8 ;
 
 : iDemo \ Simple interrupt demo
     \ Init leds
-    $8000 leds!
+    $80 leds!
     \ Set timerA to 250 * 2^16 ticks
     0 ltA!
     250 htA!
