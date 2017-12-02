@@ -24,7 +24,7 @@ time: $(BUILDPATH)/$(TOPLEVEL).asc
 	icetime -d hx8k $(BUILDPATH)/J1Ico.asc
 
 prog: $(BUILDPATH)/$(TOPLEVEL).bin 
-	iceprog $(BUILDPATH)/$(TOPLEVEL).bin
+	icoprog -p < $(BUILDPATH)/$(TOPLEVEL).bin
 
 clean:  
 	rm -f $(BUILDPATH)/*
