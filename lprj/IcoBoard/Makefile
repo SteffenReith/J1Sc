@@ -7,7 +7,6 @@ VERILOGSRC = $(VERGENPATH)/J1Ico.v $(VERSRCPATH)/PLL.v $(VERSRCPATH)/Board_IcoBo
 
 TOPLEVEL = J1Ico
 
-
 all: $(BUILDPATH)/$(TOPLEVEL).bin
 
 $(BUILDPATH)/$(TOPLEVEL).bin: $(BUILDPATH)/$(TOPLEVEL).asc  
@@ -19,7 +18,7 @@ $(BUILDPATH)/$(TOPLEVEL).asc: $(LATPATH)/J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif
 
 $(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
 	mkdir -p $(BUILDPATH) 
-	yosys -q J1Sc.ys
+	yosys -q $(LATPATH)/J1Sc.ys
 
 time: $(BUILDPATH)/$(TOPLEVEL).asc
 	icetime -d hx8k $(BUILDPATH)/J1Ico.asc
@@ -31,3 +30,4 @@ clean:
 	rm -f $(BUILDPATH)/*
 
 .PHONY: prog clean time
+
