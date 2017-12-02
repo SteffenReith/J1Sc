@@ -12,7 +12,7 @@ import spinal.lib.com.uart._
 import spinal.lib.io._
 
 class J1Nexys4X(j1Cfg    : J1Config,
-                boardCfg : BoardConfig) extends Component {
+                boardCfg : CoreConfig) extends Component {
 
   val io = new Bundle {
 
@@ -54,7 +54,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
   val clkCtrl = new Area {
 
     // Create a clock domain which is related to the synthesized clock
-    val coreClockDomain = ClockDomain.internal("core", frequency = boardCfg.boardFrequency)
+    val coreClockDomain = ClockDomain.internal("core", frequency = boardCfg.coreFrequency)
 
     // Connect the synthesized clock
     coreClockDomain.clock := io.boardClk
@@ -187,7 +187,7 @@ object J1Nexys4X {
       val j1Cfg = J1Config.forth
 
       // Configuration of the used board
-      val boardCfg = BoardConfig.nexys4DDR
+      val boardCfg = CoreConfig.nexys4DDR
 
       // Create a system instance
       new J1Nexys4X(j1Cfg, boardCfg)

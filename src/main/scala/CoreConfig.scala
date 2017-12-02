@@ -291,30 +291,30 @@ object J1UARTConfig {
 }
 
 // Configuration of all IO components
-case class BoardConfig(gpioConfig     : GPIOConfig,
-                       ledBankConfig  : LEDArrayConfig,
-                       pwmConfig      : PWMConfig,
-                       ssdConfig      : SSDConfig,
-                       sSwitchConfig  : DBPinArrayConfig,
-                       pButtonConfig  : DBPinArrayConfig,
-                       uartConfig     : J1UARTConfig,
-                       boardFrequency : IClockDomainFrequency,
-                       ioWaitStates   : Int)
+case class CoreConfig(gpioConfig    : GPIOConfig,
+                      ledBankConfig : LEDArrayConfig,
+                      pwmConfig     : PWMConfig,
+                      ssdConfig     : SSDConfig,
+                      sSwitchConfig : DBPinArrayConfig,
+                      pButtonConfig : DBPinArrayConfig,
+                      uartConfig    : J1UARTConfig,
+                      coreFrequency : IClockDomainFrequency,
+                      ioWaitStates  : Int)
 
-object BoardConfig {
+object CoreConfig {
 
   // Provide a default configuration
   def default = {
 
     // Default configuration values
-    val config = BoardConfig(gpioConfig     = GPIOConfig.default,
-                             ledBankConfig  = LEDArrayConfig.default,
-                             pwmConfig      = PWMConfig.default,
-                             ssdConfig      = SSDConfig.default,
-                             sSwitchConfig  = DBPinArrayConfig.default,
-                             pButtonConfig  = DBPinArrayConfig.default,
-                             uartConfig     = J1UARTConfig.default,
-                             boardFrequency = FixedFrequency(80 MHz),
+    val config = CoreConfig(gpioConfig     = GPIOConfig.default,
+                             ledBankConfig = LEDArrayConfig.default,
+                             pwmConfig     = PWMConfig.default,
+                             ssdConfig     = SSDConfig.default,
+                             sSwitchConfig = DBPinArrayConfig.default,
+                             pButtonConfig = DBPinArrayConfig.default,
+                             uartConfig    = J1UARTConfig.default,
+                             coreFrequency = FixedFrequency(80 MHz),
                              1)
 
     // Return the default configuration
@@ -326,14 +326,14 @@ object BoardConfig {
   def nexys4DDR = {
 
     // Configuration values for a Nexys4DDR
-    val config = BoardConfig(gpioConfig     = GPIOConfig.pmod,
-                             ledBankConfig  = LEDArrayConfig.nexys4X,
-                             pwmConfig      = PWMConfig.nexys4X,
-                             ssdConfig      = SSDConfig.nexys4X,
-                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch16,
-                             pButtonConfig  = DBPinArrayConfig.pushButton5,
-                             uartConfig     = J1UARTConfig.slowUartConfig,
-                             boardFrequency = FixedFrequency(100 MHz),
+    val config = CoreConfig(gpioConfig     = GPIOConfig.pmod,
+                             ledBankConfig = LEDArrayConfig.nexys4X,
+                             pwmConfig     = PWMConfig.nexys4X,
+                             ssdConfig     = SSDConfig.nexys4X,
+                             sSwitchConfig = DBPinArrayConfig.sliderSwitch16,
+                             pButtonConfig = DBPinArrayConfig.pushButton5,
+                             uartConfig    = J1UARTConfig.slowUartConfig,
+                             coreFrequency = FixedFrequency(100 MHz),
                              1)
 
     // Return the configuration
@@ -345,14 +345,14 @@ object BoardConfig {
   def nexys4 = {
 
     // Configuration values for a Nexys4
-    val config = BoardConfig(gpioConfig     = GPIOConfig.pmod,
-                             ledBankConfig  = LEDArrayConfig.nexys4X,
-                             pwmConfig      = PWMConfig.nexys4X,
-                             ssdConfig      = SSDConfig.nexys4X,
-                             sSwitchConfig  = DBPinArrayConfig.sliderSwitch16,
-                             pButtonConfig  = DBPinArrayConfig.pushButton5,
-                             uartConfig     = J1UARTConfig.fastUartConfig,
-                             boardFrequency = FixedFrequency(100 MHz),
+    val config = CoreConfig(gpioConfig     = GPIOConfig.pmod,
+                             ledBankConfig = LEDArrayConfig.nexys4X,
+                             pwmConfig     = PWMConfig.nexys4X,
+                             ssdConfig     = SSDConfig.nexys4X,
+                             sSwitchConfig = DBPinArrayConfig.sliderSwitch16,
+                             pButtonConfig = DBPinArrayConfig.pushButton5,
+                             uartConfig    = J1UARTConfig.fastUartConfig,
+                             coreFrequency = FixedFrequency(100 MHz),
                              1)
 
     // Return the configuration
@@ -364,14 +364,14 @@ object BoardConfig {
   def icoBoard = {
 
     // Configuration values for an IcoBoard
-    val config = BoardConfig(gpioConfig     = GPIOConfig.pmod,
-                             ledBankConfig  = LEDArrayConfig.pmodLEDs,
-                             pwmConfig      = PWMConfig.icoPWM,
-                             ssdConfig      = SSDConfig.default,
-                             sSwitchConfig  = DBPinArrayConfig.default,
-                             pButtonConfig  = DBPinArrayConfig.default,
-                             uartConfig     = J1UARTConfig.slowUartConfig,
-                             boardFrequency = FixedFrequency(35 MHz),
+    val config = CoreConfig(gpioConfig     = GPIOConfig.pmod,
+                             ledBankConfig = LEDArrayConfig.pmodLEDs,
+                             pwmConfig     = PWMConfig.icoPWM,
+                             ssdConfig     = SSDConfig.default,
+                             sSwitchConfig = DBPinArrayConfig.default,
+                             pButtonConfig = DBPinArrayConfig.default,
+                             uartConfig    = J1UARTConfig.slowUartConfig,
+                             coreFrequency = FixedFrequency(35 MHz),
                              1)
 
     // Return the configuration
