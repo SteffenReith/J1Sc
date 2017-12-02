@@ -20,10 +20,13 @@ $(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
 	mkdir -p $(BUILDPATH) 
 	yosys -q J1Sc.ys 
 
+time: $(BUILDPATH)/$(TOPLEVEL).asc
+	icetime -d hx8k $(BUILDPATH)/J1Ico.asc
+
 prog: $(BUILDPATH)/$(TOPLEVEL).bin 
 	iceprog $(BUILDPATH)/$(TOPLEVEL).bin
 
 clean:  
 	rm -f $(BUILDPATH)/*
 
-.PHONY: prog clean
+.PHONY: prog clean time
