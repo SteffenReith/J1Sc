@@ -22,15 +22,15 @@ set_io --warn-no-port pmodA[5] B3
 set_io --warn-no-port pmodA[6] B6
 set_io --warn-no-port pmodA[7] B7
 
-# Pmod8LD connected to P2
-set_io --warn-no-port leds[0] B11
-set_io --warn-no-port leds[1] B10
-set_io --warn-no-port leds[2] B9
-set_io --warn-no-port leds[3] D8
-set_io --warn-no-port leds[4] A11
-set_io --warn-no-port leds[5] A10
-set_io --warn-no-port leds[6] A9
-set_io --warn-no-port leds[7] B8
+# Pmod8LD connected to P1
+set_io --warn-no-port leds[0] D8
+set_io --warn-no-port leds[1] B9
+set_io --warn-no-port leds[2] B10
+set_io --warn-no-port leds[3] B11
+set_io --warn-no-port leds[4] B8
+set_io --warn-no-port leds[5] A9
+set_io --warn-no-port leds[6] A10
+set_io --warn-no-port leds[7] A11
 
 # PmodUSBUART connected to P3 (upper row of P3)
 set_io --warn-no-port rx L7
