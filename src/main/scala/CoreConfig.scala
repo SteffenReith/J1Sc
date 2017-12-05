@@ -371,7 +371,7 @@ object CoreConfig {
                              sSwitchConfig = DBPinArrayConfig.default,
                              pButtonConfig = DBPinArrayConfig.default,
                              uartConfig    = J1UARTConfig.slowUartConfig,
-                             coreFrequency = FixedFrequency(35 MHz),
+                             coreFrequency = FixedFrequency(40 MHz),
                              1)
 
     // Return the configuration

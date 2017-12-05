@@ -6,7 +6,7 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
-import spinal.core._
+import spinal.core.{Bits, _}
 
 class J1Core(cfg : J1Config) extends Component {
 
@@ -89,48 +89,54 @@ class J1Core(cfg : J1Config) extends Component {
   val difference = dnos.resize(cfg.wordSize + 1).asSInt - dtos.resize(cfg.wordSize + 1).asSInt
   val nosIsLess = (dtos.msb ^ dnos.msb) ? dnos.msb | difference.msb
 
-  // Instruction decoder (including ALU operations)
-  switch(pc.msb ## instr(instr.high downto (instr.high - 8) + 1)) {
+  // Slice the ALU code out of the instruction
+  val aluOp = instr((instr.high - 4) downto ((instr.high - 8) + 1))
+
+  // Calculate the ALU result (mux all possible cases)
+  val aluResult = aluOp.mux(B"0000" -> dtos,
+                            B"0001" -> dnos,
+
+                            // Arithmetic and logical operations
+                            B"0010" -> (dtos.asUInt + dnos.asUInt).asBits,
+                            B"1100" -> difference.resize(cfg.wordSize).asBits,
+                            B"0011" -> (dtos & dnos),
+                            B"0100" -> (dtos | dnos),
+                            B"0101" -> (dtos ^ dnos),
+                            B"0110" -> (~dtos),
+                            B"1001" -> (dtos(dtos.high) ## dtos(dtos.high downto 1).asUInt),
+                            B"1010" -> (dtos(dtos.high - 1 downto 0) ## B"b0"),
+
+                            // Push rtos to dtos
+                            B"1011" -> rtos,
+
+                            // Compare operations (equal, dtos > dnos, signed and unsigned)
+                            B"0111" -> B(cfg.wordSize bits, default -> (difference === 0)),
+                            B"1000" -> B(cfg.wordSize bits, default -> nosIsLess),
+                            B"1111" -> B(cfg.wordSize bits, default -> difference.msb),
+
+                            // Memory / IO read operations
+                            B"1101" -> internal.toRead,
+
+                            // Misc operations (depth of dstack)
+                            B"1110" -> dStackPtr.resize(cfg.wordSize bits).asBits)
+
+  // Instruction decoder
+  switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
 
     // Push instruction to dstack
-    is(M"1_--------") {dtosN := instr}
+    is(M"1_---") {dtosN := instr}
 
     // Literal instruction (Push value)
-    is(M"0_1-------") {dtosN := instr(instr.high - 1 downto 0).resized}
+    is(M"0_1--") {dtosN := instr(instr.high - 1 downto 0).resized}
 
     // Jump and call instruction (do not change dtos)
-    is(M"0_000-----", M"0_010-----") {dtosN := dtos}
+    is(M"0_000", M"0_010") {dtosN := dtos}
 
     // Conditional jump (pop a 0 at dtos by adjusting the dstack pointer)
-    is(M"0_001-----") {dtosN := dnos}
+    is(M"0_001") {dtosN := dnos}
 
-    // ALU operations using dtos and dnos
-    is(M"0_011-0000") {dtosN := dtos}
-    is(M"0_011-0001") {dtosN := dnos}
-
-    // Arithmetic and logical operations (ALU)
-    is(M"0_011-0010") {dtosN := (dtos.asUInt + dnos.asUInt).asBits}
-    is(M"0_011-1100") {dtosN := difference.resize(cfg.wordSize).asBits}
-    is(M"0_011-0011") {dtosN := dtos & dnos}
-    is(M"0_011-0100") {dtosN := dtos | dnos}
-    is(M"0_011-0101") {dtosN := dtos ^ dnos}
-    is(M"0_011-0110") {dtosN := ~dtos}
-    is(M"0_011-1001") {dtosN := dtos(dtos.high) ## dtos(dtos.high downto 1).asUInt}
-    is(M"0_011-1010") {dtosN := dtos(dtos.high - 1 downto 0) ## B"b0"}
-
-    // ALU operations using rtos
-    is(M"0_011-1011") {dtosN := rtos}
-
-    // Compare operations (equal, dtos > dnos, signed and unsigned)
-    is(M"0_011-0111") {dtosN := (default -> (difference === 0))}
-    is(M"0_011-1000") {dtosN := (default -> nosIsLess)}
-    is(M"0_011-1111") {dtosN := (default -> difference.msb)}
-
-    // Memory / IO read operations
-    is(M"0_011-1101") {dtosN := internal.toRead}
-
-    // Misc operations
-    is(M"0_011-1110") {dtosN := dStackPtr.asBits.resized}
+    // Check for ALU operation
+    is(M"0_011") {dtosN := aluResult}
 
     // Set all bits of top of stack to true by default
     default {dtosN := (default -> True)}
