@@ -11,7 +11,7 @@ all: $(BUILDPATH)/$(TOPLEVEL).bin
 
 $(BUILDPATH)/$(TOPLEVEL).bin: $(BUILDPATH)/$(TOPLEVEL).asc  
 	icepack $(BUILDPATH)/$(TOPLEVEL).asc $(BUILDPATH)/$(TOPLEVEL).bin
-	icetime -d hx8k -c 35 $(BUILDPATH)/J1Ico.asc
+	icetime -d hx8k -c 40 $(BUILDPATH)/J1Ico.asc
 
 $(BUILDPATH)/$(TOPLEVEL).asc: $(LATPATH)/J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif  
 	arachne-pnr -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(BUILDPATH)/$(TOPLEVEL).blif 
