@@ -87,7 +87,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
     // Connect the physical LED pins to the outside world
     io.leds := ledArray.io.leds
 
-    // Create the PWMs fpr the RGB-leds at 0x50
+    // Create digital PWM-outputs at 0x50
     val pwm = new PWM(j1Cfg, boardCfg.pwmConfig)
     val pwmBridge = pwm.driveFrom(peripheralBusCtrl, 0x50)
 
