@@ -3,7 +3,8 @@ LATPATH = ../../src/main/lattice/IcoBoard
 VERGENPATH = ../../gen/src/verilog
 BUILDPATH = build
 
-VERILOGSRC = $(VERGENPATH)/J1Ico.v $(VERSRCPATH)/PLL.v $(VERSRCPATH)/Board_IcoBoard.v  
+VERILOGGENSRC = $(VERGENPATH)/J1Ico.v  
+VERILOGSRC = $(VERILOGGENSRC) $(VERSRCPATH)/PLL.v $(VERSRCPATH)/Board_IcoBoard.v
 
 TOPLEVEL = J1Ico
 
@@ -16,7 +17,10 @@ $(BUILDPATH)/$(TOPLEVEL).bin: $(BUILDPATH)/$(TOPLEVEL).asc
 $(BUILDPATH)/$(TOPLEVEL).asc: $(LATPATH)/J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif  
 	arachne-pnr -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(BUILDPATH)/$(TOPLEVEL).blif 
 
-$(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
+fixit:
+	sed -i -E "s/(ramList_[0-9]\[.+\])( = )/\1 <= /" $(VERILOGGENSRC)
+
+$(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC) fixit
 	mkdir -p $(BUILDPATH) 
 	yosys -q $(LATPATH)/J1Sc.ys
 
