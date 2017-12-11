@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PYTHONPATH=shell:$PYTHONPATH
+python shell.py -h /dev/ttyUSB3 -p common/
+

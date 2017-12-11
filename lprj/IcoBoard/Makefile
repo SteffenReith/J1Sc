@@ -33,5 +33,5 @@ prog: $(BUILDPATH)/$(TOPLEVEL).bin
 clean:  
 	rm -f $(BUILDPATH)/*
 
-.PHONY: prog clean time
+.PHONY: prog clean time fixit
 
