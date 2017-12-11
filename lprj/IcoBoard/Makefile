@@ -20,7 +20,7 @@ $(BUILDPATH)/$(TOPLEVEL).asc: $(LATPATH)/J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif
 fixit:
 	sed -i -E "s/(ramList_[0-9]\[.+\])( = )/\1 <= /" $(VERILOGGENSRC)
 
-$(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC) fixit
+$(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
 	mkdir -p $(BUILDPATH) 
 	yosys -q $(LATPATH)/J1Sc.ys
 
@@ -33,5 +33,5 @@ prog: $(BUILDPATH)/$(TOPLEVEL).bin
 clean:  
 	rm -f $(BUILDPATH)/*
 
-.PHONY: prog clean time
+.PHONY: prog clean time fixit
 
