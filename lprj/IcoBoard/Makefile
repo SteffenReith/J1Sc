@@ -15,12 +15,12 @@ $(BUILDPATH)/$(TOPLEVEL).bin: $(BUILDPATH)/$(TOPLEVEL).asc
 	icetime -d hx8k -c 40 $(BUILDPATH)/J1Ico.asc
 
 $(BUILDPATH)/$(TOPLEVEL).asc: $(LATPATH)/J1Sc.pcf $(BUILDPATH)/$(TOPLEVEL).blif  
-	arachne-pnr -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(BUILDPATH)/$(TOPLEVEL).blif 
+	arachne-pnr -m 400 -d 8k -p $(LATPATH)/J1Sc.pcf -o $(BUILDPATH)/$(TOPLEVEL).asc $(BUILDPATH)/$(TOPLEVEL).blif 
 
 fixit:
 	sed -i -E "s/(ramList_[0-9]\[.+\])( = )/\1 <= /" $(VERILOGGENSRC)
 
-$(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC) fixit
+$(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
 	mkdir -p $(BUILDPATH) 
 	yosys -q $(LATPATH)/J1Sc.ys
 
