@@ -181,7 +181,7 @@ class J1Core(cfg : J1Config) extends Component {
   // Update the data stack pointer
   dStackPtrN := (dStackPtr.asSInt + dStackPtrInc).asUInt
 
-  // Increment for data stack pointer
+  // Increment for return stack pointer
   val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
 
   // Handle the update of return stack
