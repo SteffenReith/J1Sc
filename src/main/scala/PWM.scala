@@ -13,8 +13,8 @@ class PWM(j1Cfg  : J1Config,
           pwmCfg : PWMConfig) extends Component {
 
   // Check the generic parameters
-  assert(Bool(isPow2(pwmCfg.numOfDutyCycles)), "Error: The number of duty cycles has to be a power of 2!", FAILURE)
-  assert(Bool(pwmCfg.numOfChannels <= j1Cfg.wordSize), "Error: Too many pwm channels!", FAILURE)
+  assert(isPow2(pwmCfg.numOfDutyCycles), "ERROR: The number of duty cycles has to be a power of 2!")
+  assert(pwmCfg.numOfChannels <= j1Cfg.wordSize, "ERROR: Too many pwm channels!")
 
   // Signals used for the internal bus
   val bus = new Bundle {

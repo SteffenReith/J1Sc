@@ -11,8 +11,8 @@ import spinal.core.{Bits, _}
 class J1Core(cfg : J1Config) extends Component {
 
   // Check the generic parameters
-  assert(Bool(cfg.wordSize == 16), "Warning: Only wordsize 16 was tested!", ERROR)
-  assert(Bool(cfg.wordSize - 3 >= cfg.adrWidth), "Error: The width of an address is too large", FAILURE)
+  assert(cfg.wordSize == 16, "ERROR: Only wordsize 16 was tested!")
+  assert((cfg.wordSize - 3) >= cfg.adrWidth, "ERROR: The width of an address is too large")
 
   // Internally used signals
   val internal = new Bundle {

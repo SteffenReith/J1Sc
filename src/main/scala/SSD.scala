@@ -27,7 +27,7 @@ class SSD(j1Cfg  : J1Config,
   val nibbleWidth : Int = 4
 
   // Check the generic parameters
-  assert(Bool(ssdCfg.numOfDisplays <= j1Cfg.wordSize), "Error: Too many seven-segment displays!", FAILURE)
+  assert(ssdCfg.numOfDisplays <= j1Cfg.wordSize, "ERROR: Too many seven-segment displays!")
 
   // Signals used for the internal bus
   val bus = new Bundle {

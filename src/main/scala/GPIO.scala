@@ -11,8 +11,13 @@ import spinal.lib.bus.misc.BusSlaveFactory
 
 class GPIO(gpioCfg : GPIOConfig) extends Component {
 
-  // Give a warning if the GPIO-register is not used as a PMOD
-  assert(Bool(gpioCfg.width != 8), "Warning: A PMod according to the digilent specification has width 8!", ERROR)
+  // Check for the typical PMOD width
+  if (gpioCfg.width != 8) {
+
+    // Give a warning
+    println("[J1Sc] WARNING: A PMod according to the digilent specification has width 8!")
+
+  }
 
   // Signal used for the internal bus
   val bus = new Bundle {

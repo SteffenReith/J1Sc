@@ -13,7 +13,7 @@ import spinal.lib.bus.misc.BusSlaveFactory
 class InterruptCtrl(cfg : J1Config) extends Component {
 
   // Check the number of interrupts
-  assert(isPow2(cfg.irqConfig.numOfInterrupts), "Warning: Specify a power of 2 as number of interrupts")
+  assert(isPow2(cfg.irqConfig.numOfInterrupts), "WARNING: Specify a power of 2 as number of interrupts")
 
   // Physical interrupt request signals
   val io = new Bundle {

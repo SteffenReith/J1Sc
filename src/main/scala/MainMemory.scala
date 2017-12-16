@@ -17,9 +17,9 @@ import spinal.core._
 class MainMemory(cfg : J1Config) extends Component {
 
   // Check the generic parameters
-  assert(Bool(cfg.wordSize >= cfg.adrWidth), "Error: The width of addresses are too large", FAILURE)
-  assert(Bool(isPow2(cfg.numOfRAMs) &&
-              (cfg.numOfRAMs >= 2)), "Error: Number of RAMs has to be a power of 2 and at least 2", FAILURE)
+  assert(cfg.wordSize >= cfg.adrWidth, "ERROR: The width of addresses are too large")
+  assert(isPow2(cfg.numOfRAMs), "ERROR: Number of RAMs has to be a power of 2")
+  assert(cfg.numOfRAMs >= 2, "ERROR: Number of RAMs has to be at least 2")
 
   // I/O ports
   val internal = new Bundle {
