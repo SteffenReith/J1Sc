@@ -71,7 +71,6 @@ class J1Core(cfg : J1Config) extends Component {
   val retPC = Mux(internal.irq, pc.asBits, pcPlusOne.asBits)
 
   // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
-  // val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC(retPC.high - 1  downto 0) ## B"b0").resized, dtos)
   val rtosN = Mux(!instr(instr.high - 3 + 1), (retPC ## B"b0").resized, dtos)
 
   // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
@@ -123,7 +122,7 @@ class J1Core(cfg : J1Config) extends Component {
   // Instruction decoder
   switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
 
-    // Push instruction to dstack
+    // If there is a high call then push the instruction (== memory access) to the data stack
     is(M"1_---") {dtosN := instr}
 
     // Literal instruction (Push value)
@@ -164,7 +163,7 @@ class J1Core(cfg : J1Config) extends Component {
   // Handle update of data stack
   switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
 
-    // Either push instruction to stack or literal (push value to data stack)
+    // For a high call push the instruction (== memory access) and for a literal push the value to the data stack
     is(M"1_---", M"0_1--") {dStackWrite := True; dStackPtrInc := 1}
 
     // Conditional jump (pop DTOS from data stack)
@@ -184,10 +183,10 @@ class J1Core(cfg : J1Config) extends Component {
   // Increment for return stack pointer
   val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
 
-  // Handle the update of return stack
+  // Handle the update of the return stack
   switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
 
-    // Pseudo pop of return address when msb of PC is set
+    // When we do a high call (the msb of the PC is set) do a pop of return address
     is(M"1_---") {rStackWrite := False; rStackPtrInc := -1}
 
     // Call instruction or interrupt (push return address to stack)
@@ -213,7 +212,7 @@ class J1Core(cfg : J1Config) extends Component {
     // Check for jump, call instruction or conditional jump
     is(M"0_0_000_-_-", M"0_0_010_-_-", M"0_0_001_-_0") {pcN := instr(cfg.adrWidth downto 0).asUInt}
 
-    // Check either for a high call or R -> PC field of an ALU instruction
+    // Check either for a high call or R -> PC field of an ALU instruction and load PC from return stack
     is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := rtos(cfg.adrWidth + 1 downto 1).asUInt}
 
     // By default goto next instruction
