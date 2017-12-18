@@ -84,7 +84,9 @@ class SSD(j1Cfg  : J1Config,
 
     // Create a free running selector (one-hot)
     val selector = RegInit(B(ssdCfg.numOfDisplays bits, 0 -> true, default -> false))
-    selector := selector(selector.high - 1 downto 0) ## selector.msb
+
+    // Rotate the selector left to multiplex all displays
+    selector := selector.rotateLeft(1)
 
   }
 
