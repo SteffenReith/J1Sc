@@ -23,7 +23,9 @@ object J1IcoSim {
     // Configuration of the used board
     val boardCfg = CoreConfig.icoBoard
 
-    SimConfig(rtl = new J1Ico(j1Cfg, boardCfg)).allOptimisation.doManagedSim{dut =>
+    SimConfig(rtl = new J1Ico(j1Cfg, boardCfg)).workspacePath("gen/sim")
+                                               .allOptimisation
+                                               .doManagedSim{dut =>
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
