@@ -17,13 +17,13 @@ object J1IcoSim {
     // Configuration of the used board
     val boardCfg = CoreConfig.icoBoard
 
-    SimConfig(new J1Ico(j1Cfg, boardCfg)).allOptimisation.doManagedSim{dut =>
+    SimConfig(rtl = new J1Ico(j1Cfg, boardCfg)).allOptimisation.doManagedSim{dut =>
 
       val mainClkPeriod = (1e12 / boardCfg.coreFrequency.getValue.toDouble).toLong
       val uartBaudPeriod = (1e12 / boardCfg.uartConfig.baudrate).toLong
 
       // Create the global system - clock
-      val genClock = fork{
+      val genClock = fork {
 
         // Pretend that the clock is already locked
         dut.io.boardClkLocked #= true
