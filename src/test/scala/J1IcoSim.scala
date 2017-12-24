@@ -11,6 +11,12 @@ object J1IcoSim {
 
   def main(args: Array[String]): Unit = {
 
+    // Time resolution of the simulation is 1ps
+    val simTimeRes = 1e12
+
+    // Number of CPU cycles between some status information
+    val simCycles = 10000000l
+
     // Configuration of CPU-core
     val j1Cfg = J1Config.forth
 
@@ -19,8 +25,9 @@ object J1IcoSim {
 
     SimConfig(rtl = new J1Ico(j1Cfg, boardCfg)).allOptimisation.doManagedSim{dut =>
 
-      val mainClkPeriod = (1e12 / boardCfg.coreFrequency.getValue.toDouble).toLong
-      val uartBaudPeriod = (1e12 / boardCfg.uartConfig.baudrate).toLong
+      // Calculate the number of verilog ticks relative to the given time resolution
+      val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
+      val uartBaudPeriod = (simTimeRes / boardCfg.uartConfig.baudrate.toDouble).toLong
 
       // Create the global system - clock
       val genClock = fork {
@@ -31,7 +38,7 @@ object J1IcoSim {
         // Make the reset active
         dut.io.reset #= true
 
-        // Release the reset which clock is low
+        // Release the reset with clock is low
         dut.io.boardClk #= false
         sleep(mainClkPeriod)
         dut.io.reset #= false
@@ -56,15 +63,18 @@ object J1IcoSim {
           cycleCounter += 1
 
           // Check if we should write some information
-          if(cycleCounter == 100000){
+          if(cycleCounter == simCycles){
 
             // Get current system time
             val currentTime = System.nanoTime()
 
-            // Write some information about simulation speed
-            println(f"${cycleCounter / ((currentTime - lastTime) * 1e-9) * 1e-3}%4.0f kHz")
+            // Write information about simulation speed
+            val deltaTime = (currentTime - lastTime) * 1e-9
+            val speedUp   = (simCycles.toDouble /
+                             boardCfg.coreFrequency.getValue.toDouble) / deltaTime
+            println(f"$simCycles cycles in $deltaTime%4.2f real seconds (Speedup: $speedUp%4.3f)")
 
-            // Store that current system time and reset the cycle counter
+            // Store the current system time for the next round and reset the cycle counter
             lastTime = currentTime
             cycleCounter = 0
 
@@ -78,7 +88,7 @@ object J1IcoSim {
       val uartTx = UartDecoder(uartPin = dut.io.tx,
                                baudPeriod = uartBaudPeriod)
 
-      // Create an UART transiver
+      // Create an UART transceiver
       val uartRx = UartEncoder(uartPin = dut.io.rx,
                                baudPeriod = uartBaudPeriod)
 
