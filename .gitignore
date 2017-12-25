@@ -7,7 +7,7 @@ build/
 .idea/
 gen/
 lib/
-project/
+project/target
 target/
 tmp/
 simWorkspace/
