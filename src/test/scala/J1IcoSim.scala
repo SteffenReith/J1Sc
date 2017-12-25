@@ -2,17 +2,117 @@ import spinal.sim._
 import spinal.core._
 import spinal.core.sim._
 
-import spinal.lib.com.uart.sim.{UartDecoder, UartEncoder}
+import java.io._
 
 import java.awt.Graphics
+import javax.annotation.Resource
+import javax.print.attribute.standard.Destination
 import javax.swing.{JFrame, JPanel}
+
+object UARTReceiver {
+
+  // Create an receiver which gets data from the simulation
+  def apply(output : OutputStream, uartPin : Bool, baudPeriod : Long) = fork {
+
+    // An UART is high inactive -> wait until simulation starts
+    waitUntil(uartPin.toBoolean == true)
+
+    // Simulate the Receiver forever
+    while (true) {
+
+      // Look for the rising start bit and wait a half bit time
+      waitUntil(uartPin.toBoolean == false)
+      sleep(baudPeriod / 2)
+
+      // Check if start bit is still active and wait for first data bit
+      assert(uartPin.toBoolean == false)
+      sleep(baudPeriod)
+
+      // Hold the received byte
+      var buffer = 0
+
+      // Read all 8 data bits
+      (0 to 7).suspendable.foreach { bitIdx =>
+
+        // Check the actual data bit
+        if (uartPin.toBoolean) {
+
+          // Add a 1 to the received byte
+          buffer |= 1 << bitIdx
+
+        }
+
+        // Wait for the next data bit
+        sleep(baudPeriod)
+
+      }
+
+      // Check for the stop bit
+      assert(uartPin.toBoolean == true)
+
+      // Write character and flush
+      output.write(buffer.toChar)
+      output.flush()
+
+    }
+
+  }
+
+}
+
+object UARTTransceiver {
+
+  // Create an transceiver which sends data to the simulation
+  def apply(input : InputStream, uartPin : Bool, baudPeriod : Long) = fork {
+
+    // Make the line inactive (high)
+    uartPin #= true
+
+    // Simulate the data transmission forever
+    while(true) {
+
+      // Check if there is data send by the host
+      if(input.available() != 0){
+
+        // get one byte from the host
+        val buffer = input.read()
+
+        // Create the start bit
+        uartPin #= false
+        sleep(baudPeriod)
+
+        // Send 8 data bits
+        (0 to 7).suspendable.foreach{ bitIdx=>
+
+          // Send bit at position "bitIdx"
+          uartPin #= ((buffer >> bitIdx) & 1) != 0
+          sleep(baudPeriod)
+
+        }
+
+        // Create stop bit
+        uartPin #= true
+        sleep(baudPeriod)
+
+      } else {
+
+        // Sleep 10 bit times since no data is available
+        sleep(baudPeriod * 10)
+
+      }
+
+    }
+
+  }
+
+}
 
 object J1IcoSim {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]) : Unit = {
 
-    // Time resolution of the simulation is 1ps
-    val simTimeRes = 1e12
+    // Time resolution of the simulation is 1ns
+    val simTimeRes = 1e9
 
     // Number of CPU cycles between some status information
     val simCycles = 10000000l
@@ -24,12 +124,42 @@ object J1IcoSim {
     val boardCfg = CoreConfig.icoBoard
 
     SimConfig(rtl = new J1Ico(j1Cfg, boardCfg)).workspacePath("gen/sim")
+                                               //.withWave
                                                .allOptimisation
                                                .doManagedSim {dut =>
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
       val uartBaudPeriod = (simTimeRes / boardCfg.uartConfig.baudrate.toDouble).toLong
+
+      // Print some information about the simulation
+      println("[J1Sc] Start the simulation of a J1Sc on an IcoBoard")
+      println("[J1Sc]  Board frequency is " + boardCfg.coreFrequency.getValue.toDouble + " Hz")
+      println("[J1Sc]  UART transmission rate " + boardCfg.uartConfig.baudrate.toLong + " bits/sec")
+      println("[J1Sc]  Time resolution is " + 1.0 / simTimeRes + " sec")
+      println("[J1Sc]  One clock period in ticks is " + mainClkPeriod + " ticks")
+      println("[J1Sc]  Bit time (UART) in ticks is " + uartBaudPeriod + " ticks")
+
+      // Create the I/O streams
+      val output = new FileOutputStream("/tmp/sim")
+      val input = new FileInputStream("/tmp/sim")
+
+      // Simulate the reset button after some time
+      val resetIt = fork {
+
+        // Wait 101 CPU clocks
+        sleep(101 * mainClkPeriod)
+
+        // Reset the CPU
+        dut.io.reset #= true
+        sleep(10 * mainClkPeriod)
+        dut.io.reset #= false
+        sleep(10 * mainClkPeriod)
+
+        // Wait some time
+        sleep(simCycles)
+
+      }
 
       // Create the global system - clock
       val genClock = fork {
@@ -86,16 +216,18 @@ object J1IcoSim {
 
       }
 
-      // Create an UART receiver
-      val uartTx = UartDecoder(uartPin = dut.io.tx,
-                               baudPeriod = uartBaudPeriod)
+      // Transmit data from the simulation into the host OS
+      UARTReceiver(output = output, uartPin = dut.io.tx, baudPeriod = uartBaudPeriod)
 
-      // Create an UART transceiver
-      val uartRx = UartEncoder(uartPin = dut.io.rx,
-                               baudPeriod = uartBaudPeriod)
+      // Receive data from the host OS and send it into the simulation
+      UARTTransceiver(input = input, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
 
       // Start the simulation
       genClock.join()
+
+      // Close the I/O streams (never reached)
+      output.close()
+      input.close()
 
     }
 

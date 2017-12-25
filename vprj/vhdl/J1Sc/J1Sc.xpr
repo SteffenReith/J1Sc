@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="32" Path="/media/psf/Home/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.xpr">
+<Project Version="7" Minor="32" Path="/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="4f102a1953584b99a398d6d78d77e46e"/>
@@ -23,12 +23,12 @@
     <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
     <Option Name="ActiveSimSet" Val="ISATest"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
-    <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
+    <Option Name="IPOutputRepo" Val="$PPRDIR/../../../../../../../../media/psf/Home/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.cache/ip"/>
     <Option Name="IPCachePermission" Val="read"/>
     <Option Name="IPCachePermission" Val="write"/>
     <Option Name="EnableCoreContainer" Val="FALSE"/>
     <Option Name="CreateRefXciForCoreContainers" Val="FALSE"/>
-    <Option Name="IPUserFilesDir" Val="$PIPUSERFILESDIR"/>
+    <Option Name="IPUserFilesDir" Val="$PPRDIR/../../../../../../../../media/psf/Home/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.ip_user_files"/>
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSAVendor" Val="xilinx"/>

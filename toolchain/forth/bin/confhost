@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PYTHONPATH=shell:$PYTHONPATH
+python shell.py -h /tmp/host -p common/
+
