@@ -4,6 +4,10 @@ import spinal.core.sim._
 
 import java.io._
 
+import gnu.io.CommPort
+import gnu.io.CommPortIdentifier
+import gnu.io.SerialPort
+
 import java.awt.Graphics
 import javax.annotation.Resource
 import javax.print.attribute.standard.Destination
@@ -140,9 +144,16 @@ object J1IcoSim {
       println("[J1Sc]  One clock period in ticks is " + mainClkPeriod + " ticks")
       println("[J1Sc]  Bit time (UART) in ticks is " + uartBaudPeriod + " ticks")
 
+      // Open the (pseudo) serial connection
+      System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/tnt1");
+      val comPortIdent = CommPortIdentifier.getPortIdentifier("/dev/tnt1")
+      //assert(comPortIdent.isCurrentlyOwned == false)
+      val comPort = comPortIdent.open(this.getClass.getName, 2000).asInstanceOf[SerialPort]
+      comPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE)
+
       // Create the I/O streams
-      val output = new FileOutputStream("/tmp/sim")
-      val input = new FileInputStream("/tmp/sim")
+      val output = comPort.getOutputStream()
+      val input = comPort.getInputStream()
 
       // Simulate the reset button after some time
       val resetIt = fork {
