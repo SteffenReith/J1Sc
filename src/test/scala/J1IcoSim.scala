@@ -4,9 +4,7 @@ import spinal.core.sim._
 
 import java.io._
 
-import gnu.io.CommPort
-import gnu.io.CommPortIdentifier
-import gnu.io.SerialPort
+import jssc._
 
 import java.awt.Graphics
 import javax.annotation.Resource
@@ -16,7 +14,7 @@ import javax.swing.{JFrame, JPanel}
 object UARTReceiver {
 
   // Create an receiver which gets data from the simulation
-  def apply(output : OutputStream, uartPin : Bool, baudPeriod : Long) = fork {
+  def apply(output : SerialPort, uartPin : Bool, baudPeriod : Long) = fork {
 
     // An UART is high inactive -> wait until simulation starts
     waitUntil(uartPin.toBoolean == true)
@@ -55,8 +53,7 @@ object UARTReceiver {
       assert(uartPin.toBoolean == true)
 
       // Write character and flush
-      output.write(buffer.toChar)
-      output.flush()
+      output.writeByte(buffer.toByte)
 
     }
 
@@ -67,7 +64,7 @@ object UARTReceiver {
 object UARTTransceiver {
 
   // Create an transceiver which sends data to the simulation
-  def apply(input : InputStream, uartPin : Bool, baudPeriod : Long) = fork {
+  def apply(input : SerialPort, uartPin : Bool, baudPeriod : Long) = fork {
 
     // Make the line inactive (high)
     uartPin #= true
@@ -76,10 +73,10 @@ object UARTTransceiver {
     while(true) {
 
       // Check if there is data send by the host
-      if(input.available() != 0){
+      if(input.getInputBufferBytesCount > 0){
 
         // get one byte from the host
-        val buffer = input.read()
+        val buffer = input.readBytes(1)(0)
 
         // Create the start bit
         uartPin #= false
@@ -145,15 +142,12 @@ object J1IcoSim {
       println("[J1Sc]  Bit time (UART) in ticks is " + uartBaudPeriod + " ticks")
 
       // Open the (pseudo) serial connection
-      System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/tnt1");
-      val comPortIdent = CommPortIdentifier.getPortIdentifier("/dev/tnt1")
-      //assert(comPortIdent.isCurrentlyOwned == false)
-      val comPort = comPortIdent.open(this.getClass.getName, 2000).asInstanceOf[SerialPort]
-      comPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE)
-
-      // Create the I/O streams
-      val output = comPort.getOutputStream()
-      val input = comPort.getInputStream()
+      val comPort = new SerialPort("/dev/tnt1")
+      comPort.openPort()
+      comPort.setParams(SerialPort.BAUDRATE_38400,
+                        SerialPort.DATABITS_8,
+                        SerialPort.STOPBITS_1,
+                        SerialPort.PARITY_NONE)
 
       // Simulate the reset button after some time
       val resetIt = fork {
@@ -228,17 +222,16 @@ object J1IcoSim {
       }
 
       // Transmit data from the simulation into the host OS
-      UARTReceiver(output = output, uartPin = dut.io.tx, baudPeriod = uartBaudPeriod)
+      UARTReceiver(output = comPort, uartPin = dut.io.tx, baudPeriod = uartBaudPeriod)
 
       // Receive data from the host OS and send it into the simulation
-      UARTTransceiver(input = input, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
+      UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
 
       // Start the simulation
       genClock.join()
 
-      // Close the I/O streams (never reached)
-      output.close()
-      input.close()
+      // Close the serial port (never reached)
+      assert(comPort.closePort())
 
     }
 
