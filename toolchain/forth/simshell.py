@@ -21,15 +21,12 @@ class TetheredJ1a(swapforth.TetheredTarget):
         self.ser = serial.Serial(port, 9600, timeout=None, rtscts=0)
 
     def reset(self, fullreset = True):
-        print("A")
         ser = self.ser
         ser.setDTR(1)
-        print("B")
         if fullreset:
             ser.setRTS(1)
             ser.setRTS(0)
         ser.setDTR(0)
-        print("C")
         
         def waitcr():
             while ser.read(1) != chr(10):
@@ -44,7 +41,7 @@ class TetheredJ1a(swapforth.TetheredTarget):
             ser.flush()
             time.sleep(0.001)
             ser.flushInput()
-            # print("In: ", c, "Out: ", repr(ser.read(ser.inWaiting())))
+            #print("In: ", c, "Out: ", repr(ser.read(ser.inWaiting())))
         ser.write(b'\r')
 
         while 1:

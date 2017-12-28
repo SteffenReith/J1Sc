@@ -236,7 +236,7 @@ object J1UARTConfig {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
                               dataWidthMax = 8,
-                              baudrate = 115200,
+                              baudrate = 9600,
                               dataLength = 7,
                               parity = UartParityType.NONE,
                               stop = UartStopType.ONE,
@@ -373,6 +373,25 @@ object CoreConfig {
                              uartConfig    = J1UARTConfig.slowUartConfig,
                              coreFrequency = FixedFrequency(40 MHz),
                              1)
+
+    // Return the configuration
+    config
+
+  }
+
+  // Provide a configuration for the simulation of an IcoBoard
+  def icoBoardSim = {
+
+    // Configuration values for an IcoBoard
+    val config = CoreConfig(gpioConfig     = GPIOConfig.pmod,
+      ledBankConfig = LEDArrayConfig.pmodLEDs,
+      pwmConfig     = PWMConfig.icoPWM,
+      ssdConfig     = SSDConfig.default,
+      sSwitchConfig = DBPinArrayConfig.default,
+      pButtonConfig = DBPinArrayConfig.default,
+      uartConfig    = J1UARTConfig.default,
+      coreFrequency = FixedFrequency(40 MHz),
+      1)
 
     // Return the configuration
     config

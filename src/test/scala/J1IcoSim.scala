@@ -52,7 +52,7 @@ object UARTReceiver {
       // Check for the stop bit
       assert(uartPin.toBoolean == true)
 
-      // Write character and flush
+      // Write character
       output.writeByte(buffer.toByte)
 
     }
@@ -122,7 +122,7 @@ object J1IcoSim {
     val j1Cfg = J1Config.forth
 
     // Configuration of the used board
-    val boardCfg = CoreConfig.icoBoard
+    val boardCfg = CoreConfig.icoBoardSim
 
     SimConfig(rtl = new J1Ico(j1Cfg, boardCfg)).workspacePath("gen/sim")
                                                //.withWave
@@ -144,7 +144,7 @@ object J1IcoSim {
       // Open the (pseudo) serial connection
       val comPort = new SerialPort("/dev/tnt1")
       comPort.openPort()
-      comPort.setParams(SerialPort.BAUDRATE_38400,
+      comPort.setParams(SerialPort.BAUDRATE_9600,
                         SerialPort.DATABITS_8,
                         SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE)
@@ -153,7 +153,7 @@ object J1IcoSim {
       val resetIt = fork {
 
         // Wait 101 CPU clocks
-        sleep(101 * mainClkPeriod)
+        sleep(1000000 * mainClkPeriod)
 
         // Reset the CPU
         dut.io.reset #= true
