@@ -7,8 +7,10 @@ build/
 .idea/
 gen/
 lib/
-project/
+project/target
 target/
+tmp/
+simWorkspace/
 toolchain/forth/nuc.fs.orig
 vprj/vhdl/J1Sc/J1Sc.cache/
 vprj/vhdl/J1Sc/J1Sc.hw/

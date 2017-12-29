@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PYTHONPATH=shell:$PYTHONPATH
+python simshell.py -h /dev/tnt0 -p common/
+
