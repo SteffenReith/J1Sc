@@ -27,7 +27,7 @@ object UARTReceiver {
       sleep(baudPeriod / 2)
 
       // Check if start bit is still active and wait for first data bit
-      assert(uartPin.toBoolean == false)
+      //assert(uartPin.toBoolean == false)
       sleep(baudPeriod)
 
       // Hold the received byte
@@ -50,7 +50,7 @@ object UARTReceiver {
       }
 
       // Check for the stop bit
-      assert(uartPin.toBoolean == true)
+      //assert(uartPin.toBoolean == true)
 
       // Write character
       output.writeByte(buffer.toByte)
@@ -124,10 +124,10 @@ object J1IcoSim {
     // Configuration of the used board
     val boardCfg = CoreConfig.icoBoardSim
 
-    SimConfig(rtl = new J1Ico(j1Cfg, boardCfg)).workspacePath("gen/sim")
-                                               //.withWave
-                                               .allOptimisation
-                                               .doManagedSim {dut =>
+    SimConfig.workspacePath("gen/sim")
+             .allOptimisation
+             //.withWave
+             .compile(new J1Ico(j1Cfg, boardCfg)).doSim{dut =>
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
@@ -156,9 +156,9 @@ object J1IcoSim {
         sleep(1000000 * mainClkPeriod)
 
         // Reset the CPU
-        dut.io.reset #= true
+        //dut.io.reset #= true
         sleep(10 * mainClkPeriod)
-        dut.io.reset #= false
+        //dut.io.reset #= false
         sleep(10 * mainClkPeriod)
 
         // Wait some time
