@@ -27,7 +27,6 @@ object UARTReceiver {
       sleep(baudPeriod / 2)
 
       // Check if start bit is still active and wait for first data bit
-      //assert(uartPin.toBoolean == false)
       sleep(baudPeriod)
 
       // Hold the received byte
@@ -48,9 +47,6 @@ object UARTReceiver {
         sleep(baudPeriod)
 
       }
-
-      // Check for the stop bit
-      //assert(uartPin.toBoolean == true)
 
       // Write character
       output.writeByte(buffer.toByte)
