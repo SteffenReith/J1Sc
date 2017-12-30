@@ -7,9 +7,9 @@ version := "1.0"
 scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
-  "com.github.spinalhdl" % "spinalhdl-core_2.11" % "1.1.1",
-  "com.github.spinalhdl" % "spinalhdl-lib_2.11" % "1.1.1",
-  "com.github.spinalhdl" % "spinalhdl-sim_2.11" % "1.1.1",
+  "com.github.spinalhdl" % "spinalhdl-core_2.11" % "1.1.2",
+  "com.github.spinalhdl" % "spinalhdl-lib_2.11" % "1.1.2",
+  "com.github.spinalhdl" % "spinalhdl-sim_2.11" % "1.1.2",
   "org.scream3r" % "jssc" % "2.8.0"
 )
 
