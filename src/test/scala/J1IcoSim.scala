@@ -145,23 +145,6 @@ object J1IcoSim {
                         SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE)
 
-      // Simulate the reset button after some time
-      val resetIt = fork {
-
-        // Wait 101 CPU clocks
-        sleep(1000000 * mainClkPeriod)
-
-        // Reset the CPU
-        //dut.io.reset #= true
-        sleep(10 * mainClkPeriod)
-        //dut.io.reset #= false
-        sleep(10 * mainClkPeriod)
-
-        // Wait some time
-        sleep(simCycles)
-
-      }
-
       // Create the global system - clock
       val genClock = fork {
 
