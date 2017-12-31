@@ -1,0 +1,3 @@
+KERNEL=="tnt0", SUBSYSTEM=="tty", GROUP="dialout", MODE="666"
+KERNEL=="tnt1", SUBSYSTEM=="tty", GROUP="dialout", MODE="666"
+
