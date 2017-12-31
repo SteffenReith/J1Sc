@@ -236,7 +236,7 @@ object J1UARTConfig {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
                               dataWidthMax = 8,
-                              baudrate = 9600,
+                              baudrate = 38400,
                               dataLength = 7,
                               parity = UartParityType.NONE,
                               stop = UartStopType.ONE,
