@@ -200,13 +200,67 @@ object J1IcoSim {
 
       }
 
+      // Simulate the leds array
+      val leds = fork {
+
+        // Holds the value represented by the leds array
+        var ledsValue = 0l
+
+        // Create a graphical frame using Java
+        val ledsFrame = new JFrame("J1Sc Components") {
+
+          // Create and configure a pane to draw the graphical elements
+          setContentPane(new DrawPane())
+          setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+          setSize(400, 400)
+          setVisible(true)
+
+          //Create a component that you can actually draw on
+          class DrawPane extends JPanel {
+
+            // Implement the paint method for repainting the component
+            override def paintComponent(g : Graphics) : Unit = {
+
+              // Draw all leds of the led array
+              for(i <- 0 to boardCfg.ledBankConfig.width - 1) {
+
+                // Check for the ith led
+                if (((ledsValue >> i) & 1) != 0) {
+
+                  // Fill the the ith area
+                  g.fillRect(20*i, 20, 20, 20)
+
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+
+        // Simulate forever
+        while(true) {
+
+          // Wait for 100000 CPU cycles
+          sleep(mainClkPeriod * 100000)
+
+          // Get the new leds value and repaint it
+          ledsValue = dut.io.leds.toLong
+          ledsFrame.repaint()
+
+        }
+
+      }
+
       // Transmit data from the simulation into the host OS
       UARTReceiver(output = comPort, uartPin = dut.io.tx, baudPeriod = uartBaudPeriod)
 
       // Receive data from the host OS and send it into the simulation
       UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
 
-      // Start the simulation
+      // Do the simulation
       genClock.join()
 
       // Close the serial port (never reached)
