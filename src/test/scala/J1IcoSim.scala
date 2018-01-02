@@ -1,12 +1,10 @@
 import spinal.sim._
 import spinal.core._
 import spinal.core.sim._
-
 import java.io._
 
 import jssc._
-
-import java.awt.Graphics
+import java.awt.{Color, Graphics}
 import javax.annotation.Resource
 import javax.print.attribute.standard.Destination
 import javax.swing.{JFrame, JPanel}
@@ -218,19 +216,49 @@ object J1IcoSim {
           //Create a component that you can actually draw on
           class DrawPane extends JPanel {
 
+            // Dimensions of the simulated leds
+            val ledBorderWidth = 2
+            val ledDiameter = 20
+
+            // Create the colors for a led in either on or off state
+            val ledOnColor = Color.green.brighter()
+            val ledOffColor = Color.green.darker()
+
             // Implement the paint method for repainting the component
             override def paintComponent(g : Graphics) : Unit = {
 
-              // Draw all leds of the led array
+              // Set the color for the outer ring
+              g.setColor(Color.BLACK)
+
+              // Draw some ovals as a decoration
+              for(i <- 0 to boardCfg.ledBankConfig.width - 1) {
+
+                // Fill the the ith area
+                g.fillOval(ledDiameter * i, ledDiameter, ledDiameter, ledDiameter)
+
+
+              }
+
+              // Now draw all leds of the led array
               for(i <- 0 to boardCfg.ledBankConfig.width - 1) {
 
                 // Check for the ith led
                 if (((ledsValue >> i) & 1) != 0) {
 
-                  // Fill the the ith area
-                  g.fillRect(20*i, 20, 20, 20)
+                  // Set the color to led on
+                  g.setColor(ledOnColor)
+
+
+                } else {
+
+                  // Set the color to led off
+                  g.setColor(ledOffColor)
 
                 }
+
+                // Fill the the ith led
+                g.fillOval(ledDiameter * i + ledBorderWidth, ledDiameter + ledBorderWidth,
+                           ledDiameter - 2 * ledBorderWidth, ledDiameter - 2 * ledBorderWidth)
 
               }
 
