@@ -103,7 +103,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
     io.dot      := ssd.io.dot
     io.selector := ssd.io.selector
 
-    // Create a PMOD at base address 0x60
+    // Create a PMOD at base address 0x70
     val pmodA       = new GPIO(boardCfg.gpioConfig)
     val pmodABridge = pmodA.driveFrom(peripheralBusCtrl, 0x70)
 
