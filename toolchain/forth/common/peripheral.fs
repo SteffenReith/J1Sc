@@ -36,27 +36,27 @@
     io!                  \ write red
 ;
 
-: rgbled@ ( n -- r g b ) \ read the rgb value of the n-th rgb-led
-    dup 2* + rgbbase +   \ calculate the base addresse of the n-th rgb-led
-    dup io@              \ read the red value
-    swap                 \ get the base address again
-    dup 1 + io@          \ read the green value
-    swap                 \ get the base address again
-    2 + io@              \ read the blue value
+: rgbled@ ( n -- r g b) \ read the rgb value of the n-th rgb-led
+    dup 2* + rgbbase +  \ calculate the base addresse of the n-th rgb-led
+    dup io@             \ read the red value
+    swap                \ get the base address again
+    dup 1 + io@         \ read the green value
+    swap                \ get the base address again
+    2 + io@             \ read the blue value
 ;
 
 : ssdbase ( -- c) \ push the base address for the seven segment displays
     $60
 ;
 
-: ssd@ (n -- v) \ read the value of the n-th display
-    ssdbase +   \ calulate the address of the n-th display
-    io@         \ push the value
+: ssd@ ( n -- v) \ read the value of the nth display
+    ssdbase +    \ calulate the address of the nth display
+    io@          \ push the value
 ;
 
-: ssd! (v n -- ) \ write the value v to the n-th display
+: ssd! ( v n -- ) \ write the value v to the n-th display
     ssdbase +     \ calculate address of n-th display
-    io!          \ write the value
+    io!           \ write the value
 ;
 
 : ssdMask@ ( -- v) \ read the current ssd mask
@@ -64,108 +64,95 @@
     io@            \ push the value
 ;
 
-: ssdMask! (v -- ) \ write value to the ssd mask register
-    ssdbase 8 +    \ get address of ssd mask register
-    io!            \ write the value
+: ssdMask! ( v -- ) \ write value to the ssd mask register
+    ssdbase 8 +     \ get address of ssd mask register
+    io!             \ write the value
 ;
 
-: setDot (n -- ) \ set dot of n-th display
-    dup          \ save display number
-    ssd@         \ get value of display
-    $8000 or     \ set the dot
-    swap         \ get display number on stack top
-    ssd!         \ write the new value
+: setDot ( n -- ) \ set dot of n-th display
+    dup           \ save display number
+    ssd@          \ get value of display
+    $8000 or      \ set the dot
+    swap          \ get display number on stack top
+    ssd!          \ write the new value
 ;
 
-: clearDot (n -- ) \ clear dot of n-th display
-    dup            \ save display number
-    ssd@           \ get value of display
-    $7fff and      \ clear the dot
-    swap           \ get display number on stack top
-    ssd!           \ write the new value
+: clearDot ( n -- ) \ clear dot of n-th display
+    dup             \ save display number
+    ssd@            \ get value of display
+    $7fff and       \ clear the dot
+    swap            \ get display number on stack top
+    ssd!            \ write the new value
 ;
 
-( c -- ) \ write to the directions register of PModA
-: pmodADir!
+: pmodAbase ( -- c) \ push the base address of port A
+    $70
+;
+
+: pmodADir! ( c -- ) \ write to the directions register of port A
     pmodAbase io!
 ;
 
-( -- c) \ read the directions register of PModA
-: pmodADir@
+: pmodADir@ ( -- c) \ read from the directions register of port A
     pmodAbase io@
 ;
 
-( c -- ) \ write value to PModA (read pins are ignored)
-: pmodA!
+: pmodA! ( c -- ) \ write value to port A
     pmodAbase 4 + io!
 ;
 
-( -- c) \ read the value of PModA
-: pmodA@
+: pmodA@ ( -- c) \ read the value from port A
     pmodAbase 4 + io@
 ;
 
-( -- c ) \ push the base address of slider switch array
-: sSwitchBase
+: sSwitchBase ( -- c) \ push the base address of slider switch array
     $80
 ;
 
-( -- c) \ read the debounced value from the slider switch array
-: sSw@
+: sSw@ ( -- c) \ read the debounced value from the slider switch array
     sSwitchBase io@
 ;
 
-( -- c ) \ push the base address of push button array
-: pBtnBase
+: pBtnBase ( -- c ) \ push the base address of push button array
     $90
 ;
 
-( -- c) \ read the debounced value from the push button array
-: pBtn@
+: pBtn@ ( -- c) \ read the debounced value from the push button array
     pBtnBase io@
 ;
 
-( -- c ) \ push the base address of timer A
-: tABase
+: tABase ( -- c ) \ push the base address of timer A
     $c0
 ;
 
-( c -- ) \ write the value on tos to the low part of timer A
-: ltA!
+: ltA! ( c -- ) \ write the value on tos to the low part of timer A
     tABase 0 + io!
 ;
 
-( c -- ) \ write the value on tos to the high part of timer A
-: htA!
+: htA! ( c -- ) \ write the value on tos to the high part of timer A
     tABase 1 + io!
 ;
 
-( -- ) \ enable timer A
-: entA
+: entA ( -- ) \ enable timer A
     1 tABase 2 + io!
 ;
 
-( -- ) \ disable timer A
-: distA
+: distA ( -- ) \ disable timer A
     0 tABase 2 + io!
 ;
 
-( -- c ) \ push the interrupt controller base address
-: iBase
+: iBase ( -- c ) \ push the interrupt controller base address
     $e0
 ;
 
-( a c -- ) \ write address a to interrupt vector c
-: ivec!
+: ivec! ( a c -- ) \ write address a to interrupt vector c
     iBase + io!
 ;
 
-( c -- ) \ write interrupt mask
-: imask!
+: imask! ( c -- ) \ write interrupt mask
     iBase 4 + io!
 ;
 
-( -- c ) \ get interrupt mask
-: imask@
+: imask@ ( -- c) \ get interrupt mask
     iBase 4 + io@
 ;
