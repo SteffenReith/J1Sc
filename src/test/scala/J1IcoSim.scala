@@ -138,7 +138,7 @@ object J1IcoSim {
       // Open the (pseudo) serial connection
       val comPort = new SerialPort("/dev/tnt1")
       comPort.openPort()
-      comPort.setParams(SerialPort.BAUDRATE_9600,
+      comPort.setParams(SerialPort.BAUDRATE_38400,
                         SerialPort.DATABITS_8,
                         SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE)
