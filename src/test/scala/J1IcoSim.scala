@@ -243,7 +243,7 @@ object J1IcoSim {
               for(i <- 0 to boardCfg.ledBankConfig.width - 1) {
 
                 // Check for the ith led
-                if (((ledsValue >> i) & 1) != 0) {
+                if (((ledsValue >> (boardCfg.ledBankConfig.width - (i + 1))) & 1) != 0) {
 
                   // Set the color to led on
                   g.setColor(ledOnColor)
