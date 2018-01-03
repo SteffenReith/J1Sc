@@ -194,7 +194,7 @@ object J1Nexys4X {
 
     }
 
-    // Write a message
+    // Write a message for better checking the build of J1 for the Nexys4X
     println("[J1Sc] Create the J1 for a Nexys4X board")
 
     // Generate VHDL
