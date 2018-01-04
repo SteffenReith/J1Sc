@@ -4,10 +4,10 @@ import spinal.core.sim._
 import java.io._
 
 import jssc._
-import java.awt.{Color, Graphics}
-import javax.annotation.Resource
-import javax.print.attribute.standard.Destination
-import javax.swing.{JFrame, JPanel}
+import java.awt.{BorderLayout, Color, Graphics}
+import javax.swing.{JButton, JFrame, JPanel}
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 
 object UARTReceiver {
 
@@ -123,6 +123,9 @@ object J1IcoSim {
              //.withWave
              .compile(new J1Ico(j1Cfg, boardCfg)).doSim{dut =>
 
+      // Flag the indicates that a reset should be performed
+      var doReset = false
+
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
       val uartBaudPeriod = (simTimeRes / boardCfg.uartConfig.baudrate.toDouble).toLong
@@ -198,6 +201,30 @@ object J1IcoSim {
 
       }
 
+      // Handle a reset request
+      val resetHandler = fork {
+
+        // Simulate forever
+        while(true){
+
+          // Wait until we should do a reset
+          waitUntil(doReset)
+
+          // Give a short message about the reset
+          println("[J1Sc] Reset CPU")
+
+          // Make reset active for some cycles
+          dut.io.reset #= true
+          sleep(1000)
+          dut.io.reset #= false
+
+          // Clear the reset flag
+          doReset = false
+
+        }
+
+      }
+
       // Simulate the leds array
       val leds = fork {
 
@@ -207,18 +234,56 @@ object J1IcoSim {
         // Create a graphical frame using Java
         val ledsFrame = new JFrame("J1Sc Components") {
 
-          // Create and configure a pane to draw the graphical elements
-          setContentPane(new DrawPane())
+          // Dimensions of the simulated leds
+          val ledBorderWidth = 2
+          val ledDiameter = 20
+
+          // Create a new contents panel
+          val mainPanel = new JPanel(new BorderLayout())
+          setContentPane(mainPanel)
+
+          // Create the led panel
+          val ledPanel = new LEDPanel()
+          ledPanel.setSize(boardCfg.ledBankConfig.width * ledDiameter, ledDiameter + 5)
+
+          // Add the led panel to the main panel
+          mainPanel.add(ledPanel)
+
+          // Create a panel and a reset push button
+          val resetPanel = new JPanel()
+          val resetButton = new JButton("Reset CPU")
+          resetButton.addActionListener(new ResetButtonHandler())
+          resetPanel.add(resetButton)
+
+          // Add the button panel to the main panel
+          mainPanel.add(resetPanel, BorderLayout.SOUTH)
+
+          // Terminate program when close button is used
           setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-          setSize(400, 400)
+
+          // Set a useful frame size and make is visible
+          setSize(300, 100)
           setVisible(true)
 
-          //Create a component that you can actually draw on
-          class DrawPane extends JPanel {
+          // Create an event handler for checking the reset button
+          class ResetButtonHandler extends ActionListener {
 
-            // Dimensions of the simulated leds
-            val ledBorderWidth = 2
-            val ledDiameter = 20
+            override def actionPerformed(event : ActionEvent): Unit = {
+
+              // Check if the event source was the reset button
+              if (event.getSource == resetButton) {
+
+                // Set the reset flag
+                doReset = true
+
+              }
+
+            }
+
+          }
+
+          //Create a component that you can actually draw on
+          class LEDPanel extends JPanel {
 
             // Create the colors for a led in either on or off state
             val ledOnColor = Color.green.brighter()
