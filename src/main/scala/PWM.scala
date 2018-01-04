@@ -36,7 +36,7 @@ class PWM(j1Cfg  : J1Config,
 
   }.setName("")
 
-  // Write a message
+  // Write a message about the PWM-frequency (given by a generic parameter)
   println("[J1Sc] PWM-frequency is " + pwmCfg.pwmFrequency.toBigDecimal + "Hz")
 
   // Create a slowed down clock domain for the PWM
