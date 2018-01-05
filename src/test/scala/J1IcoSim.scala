@@ -189,7 +189,7 @@ object J1IcoSim {
             val deltaTime = (currentTime - lastTime) * 1e-9
             val speedUp   = (simCycles.toDouble /
                              boardCfg.coreFrequency.getValue.toDouble) / deltaTime
-            println(f"$simCycles cycles in $deltaTime%4.2f real seconds (Speedup: $speedUp%4.3f)")
+            println(f"[J1Sc] $simCycles cycles in $deltaTime%4.2f real seconds (Speedup: $speedUp%4.3f)")
 
             // Store the current system time for the next round and reset the cycle counter
             lastTime = currentTime
