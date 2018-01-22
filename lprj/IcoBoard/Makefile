@@ -1,5 +1,6 @@
 VERSRCPATH = ../../src/main/verilog/arch/IcoBoard
 LATPATH = ../../src/main/lattice/IcoBoard
+YOPATH =  ../../../src/main/lattice/IcoBoard
 VERGENPATH = ../../gen/src/verilog
 BUILDPATH = build
 
@@ -7,6 +8,8 @@ VERILOGGENSRC = $(VERGENPATH)/J1Ico.v
 VERILOGSRC = $(VERILOGGENSRC) $(VERSRCPATH)/PLL.v $(VERSRCPATH)/Board_IcoBoard.v
 
 TOPLEVEL = J1Ico
+
+export ROOT_DIR=${PWD}
 
 all: $(BUILDPATH)/$(TOPLEVEL).bin
 
@@ -21,8 +24,8 @@ fixit:
 	sed -i -E "s/(ramList_[0-9]\[.+\])( = )/\1 <= /" $(VERILOGGENSRC)
 
 $(BUILDPATH)/$(TOPLEVEL).blif: $(VERILOGSRC)
-	mkdir -p $(BUILDPATH) 
-	yosys -q $(LATPATH)/J1Sc.ys
+	mkdir -p $(BUILDPATH)
+	cd $(VERGENPATH) && yosys -q $(YOPATH)/J1Sc.ys
 
 time: $(BUILDPATH)/$(TOPLEVEL).asc
 	icetime -d hx8k $(BUILDPATH)/J1Ico.asc
