@@ -43,7 +43,7 @@ class MainMemory(cfg : J1Config) extends Component {
 
   // Write a message
   println("[J1Sc] Create " + cfg.numOfRAMs + " RAMs which have " + numOfCells + " cells each")
-  println("[J1Sc] Read " + cfg.bootCode().length + " words of the FORTH base system")
+  println("[J1Sc] Total size is " + cfg.numOfRAMs * numOfCells + " cells")
 
   // Create a complete list of memory blocks (start with first block)
   val ramList = for (i <- 0 to cfg.numOfRAMs - 1) yield {
