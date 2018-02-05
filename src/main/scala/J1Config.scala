@@ -414,7 +414,7 @@ object J1Config {
     // Take the base system and cut the interrupt vectors at the end
     def baseSystem = forthBase(wordSize).take((1 << adrWidth) - noOfInterrupts)
 
-    // Generate the complete memory layout of the system (without valid interrupt vectors)
+    // Generate the complete memory layout of the system (using invalid interrupt vectors)
     def bootCode() = baseSystem ++ List.fill((1 << adrWidth) - baseSystem.length)(B(0, wordSize bits))
 
     // Set the configuration values for the forth system
