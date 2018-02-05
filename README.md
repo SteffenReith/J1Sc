@@ -50,7 +50,7 @@ At the moment only one hardware configuration is supported
 - Pmod USBUART (second FTDI interface for serial connection)
 - Pmod 8LD (simply eight leds)
 
-Attach the icoUSBBaseBoard to the icoBoard and connect the Pmods as shown [here](https://github.com/SteffenReith/J1Sc/blob/master/doc/misc/J1Sc_AES_IcoBoard.jpg). Hence use PMod P1 for the leds and the *upper row* (!) of PMod P3 for the UART.
+Attach the [icoUSBBaseBoard](https://shop.trenz-electronic.de/en/TE0889-02-icoUSBaseboard-FTDI-Interfacebasis-fuer-das-icoBoard) to the icoBoard and connect the Pmods as shown [here](https://github.com/SteffenReith/J1Sc/blob/master/doc/misc/J1Sc_AES_IcoBoard.jpg). Hence use PMod P1 for the leds and the *upper row* (!) of PMod P3 for the UART.
 
 Clone and install the latest version of
 
