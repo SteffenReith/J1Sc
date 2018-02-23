@@ -42,7 +42,7 @@ class LEDArray(j1Cfg  : J1Config,
   }
 
   // Set output for the leds (invert it if asked for by the generic parameter)
-  if (ledCfg.lowActive) io.leds := ~ledReg else io.leds := ledReg;
+  if (ledCfg.lowActive) io.leds := ~ledReg else io.leds := ledReg
 
   // Implement the bus interface
   def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {

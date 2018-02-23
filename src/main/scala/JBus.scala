@@ -43,7 +43,7 @@ case class JBus(cfg : J1Config) extends Bundle with IMasterSlave {
     retVal.writeData := Delay(this.writeData,  ticks)
 
     // Return the delayed version of the actual SimpleBus object
-    return retVal
+    retVal
 
   }
 
