@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Product Version: Vivado v2017.3 (64-bit)              -->
+<!-- Product Version: Vivado v2017.4 (64-bit)              -->
 <!--                                                         -->
 <!-- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="32" Path="/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.xpr">
+<Project Version="7" Minor="35" Path="/media/psf/Home/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="4f102a1953584b99a398d6d78d77e46e"/>
@@ -23,12 +23,13 @@
     <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
     <Option Name="ActiveSimSet" Val="ISATest"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
-    <Option Name="IPOutputRepo" Val="$PPRDIR/../../../../../../../../media/psf/Home/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.cache/ip"/>
+    <Option Name="ProjectType" Val="Default"/>
+    <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
     <Option Name="IPCachePermission" Val="read"/>
     <Option Name="IPCachePermission" Val="write"/>
     <Option Name="EnableCoreContainer" Val="FALSE"/>
     <Option Name="CreateRefXciForCoreContainers" Val="FALSE"/>
-    <Option Name="IPUserFilesDir" Val="$PPRDIR/../../../../../../../../media/psf/Home/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc.ip_user_files"/>
+    <Option Name="IPUserFilesDir" Val="$PIPUSERFILESDIR"/>
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSAVendor" Val="xilinx"/>
@@ -210,7 +211,7 @@
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2017">
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2017" CtrlBit="true">
         <ReportConfig Name="synth_2_synth_report_utilization_0" Spec="report_utilization" RunStep="synth_design" ReportFile="Board_Nexys4DDR_utilization_synth.rpt" Version="1" Minor="0">
           <ReportConfigOption Name="dummy_option" Type="string"/>
           <ReportConfigOutputOption Name="pb" Type="string" Value="Board_Nexys4DDR_utilization_synth.pb"/>
@@ -235,7 +236,7 @@
         <Step Id="write_bitstream"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2017">
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2017" CtrlBit="true">
         <ReportConfig Name="impl_2_init_report_timing_summary_0" Spec="report_timing_summary" RunStep="init_design" Version="1" Minor="0" IsDisabled="true">
           <ReportConfigOption Name="dummy_option" Type="string"/>
           <ReportConfigOutputOption Name="rpx" Type="string" Value=""/>
