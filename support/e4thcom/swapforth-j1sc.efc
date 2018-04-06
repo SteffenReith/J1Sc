@@ -1,0 +1,78 @@
+e4thcom: 0.6.3 \ swapforth-j1sc.efc                                    MM-180213
+\ ------------------------------------------------------------------------------
+\ Plugin for SwapForth on J1Sc targets. Written for and tested by Steffen Reith.
+\
+\                   (C) 2018 manfred.mahlow@forth-ev.de
+\
+\ ------------------------------------------------------------------------------
+cr
+<brown ." * Loading Plugin for SwapForth on J1Sc (swapforth-j1sc.efc)" normal>
+cr
+."    Use the " <bright ." TAB " normal> ." key to cancel an upload process."
+
+
+here  bl c, char o c, char k c, ^CR c, ^NL c, 0 c, constant $_ok^CR^NL
+
+__e4thcom definitions decimal
+
+\ Protocol handler
+  :noname ( oid -- flag ) \ stm8ef
+     \ Wait while the target evalutes a line of uploaded source code. Return 
+     \ a true flag on error or if the [TAB] key was pressed. Otherwise return
+     \ a false flag.
+     >self  self rx-buf erase  white bright letters
+     begin
+       self rx?break ( c f ) if drop true exit then  \ exit on break
+       ( c ) dup self rx-buf append  dup self ?emit
+       dup ^NL =
+       if
+         drop $_ok^CR^NL 5 0 self rx-buf compare$ 0= if false exit then
+       else
+         [char] ? =
+         if
+           s"  ?" 0 self rx-buf compare$ 0= 
+           if 
+             500 self timeout ! self rx?timeout ( c f )
+             if drop cr true exit then ( c ) dup self rx-buf append  self ?emit
+           then
+         then
+       then
+     again ;
+
+terminal plugin !
+terminal upper-case off
+warning off
+ 
+\ Last Revision: MM-180213 Plugin created
+
+\\
+
+Results of test file with e4thcom -t test option :
+
+drop|>  ok^0D^0A
+
+cr|> ^0D^0A ok^0D^0A
+
+' base drop|>  ok^0D^0A
+
+' x|> ?
+
+x|> ?
+
+quit|> 
+
+abort|> ?
+
+
+Results of uploading code with e4thcom -t anyforth :
+
+: [']  ok
+    ' postpone literal  ok
+; immediate  ok
+
+
+: new  ok
+    s" | marker |" evaluate ?
+;  ok
+
+
