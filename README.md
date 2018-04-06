@@ -84,7 +84,7 @@ Now change to the cloned directory of J1Sc
 
 * Have fun with a running FORTH system on your icoBoard!
 
-In principle it is possible to use the icoBoard together with a Raspberry PI to run J1Sc. In the case you do this, please send me (EMail: streit@streit.cc) the needed steps, because I don´t have / use this configuration.
+In principle it is possible to use the IcoBoard together with a Raspberry PI to run J1Sc. In the case you do this, please send me (EMail: streit@streit.cc) the needed steps, because I don´t have / use this configuration.
 
 ## Gatelevel simulation of J1Sc
 The latest versions for SpinalHDL (you need at least version 1.1.2) offer a complete gatelevel simulation of the generated designs. In the background SpinalHDL uses Verilator as a simulation framework and hide all the C++ stuff by another Scala library called *SpinalSim*. Moreover to connect the simulation to the host a virtual null-model cable is used. Hence
