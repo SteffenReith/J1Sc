@@ -68,7 +68,7 @@ Now change to the cloned directory of J1Sc
 
 * go to the IcoBoard project directory by `cd lprj/IcoBoard`
 
-* type `make fixit` (not necessarily needed, but avoids a lot of warnings)
+* type `make fixit` (not necessarily needed, but avoids a lot of warnings). Not needed for the latest version of Spinal.
 
 * build everything by `make`. The last line should by similar to `Checking 25.00 ns (40.00 MHz) clock constraint: PASSED.`
 
