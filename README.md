@@ -23,7 +23,7 @@ To build the J1Sc you need first to create the VDHL / Verilog sources. The imple
 ## J1Sc for a Digilent Nexys4 and Nexys4DDR board
 
 * Build J1Sc (either using the VHDL or the Verilog version) by `sbt run` (select the Nexys4X configuration to be generated). The generated files can be found in `gen/src/vhdl/J1SoC.vhd` and `gen/src/verilog/J1SoC.v`. You need `Board_<BOARDNAME>.vhd` and `PLL.vhd` in `src/main/vhdl/arch` or the corresponding Verilog versions in `src/main/verilog/arch` as toplevel for synthesis.
-A Xilinx Vivado project file `J1Sc.xpr` for the VHDL version can be found in `vprj/vhdl/J1Sc` and the Verilog version is in `vprj/verilog/J1Sc`. Note that J1Sc runs fine with a 100Mhz Clock on a Nexys4 DDR from Digilent. Constraint files for the Nexys4 DDR can be found in `/src/main/xilinx/nexys4ddr` the corresponding files for the Nexys4 can be found in `/src/main/xilinx/nexys4`.
+A Xilinx Vivado project file `J1Sc.xpr` for the VHDL version can be found in `vprj/vhdl/J1Sc` and the Verilog version is in `vprj/verilog/J1Sc`. Note that J1Sc runs fine with a 100Mhz clock on a Nexys4 DDR from Digilent. Constraint files for the Nexys4 DDR can be found in `/src/main/xilinx/nexys4ddr` the corresponding files for the Nexys4 can be found in `/src/main/xilinx/nexys4`.
 
 * Build J1Sc (see `gen/src/vhdl` or `gen/src/verilog`) and send the .bit file to your FPGA/board (use either `src/main/vhdl/arch/Nexys4DDR/BoardNexys4DDR.vhd` or `src/main/verilog/arch/Nexys4DDR/BoardNexys4DDR.v` as toplevel module)
 
@@ -94,9 +94,9 @@ The latest versions for SpinalHDL (you need at least version 1.1.2) offer a comp
 * Clone and install the latest version of tty0tty from https://github.com/freemed/tty0tty.git. Load the kernel module by `insmod tty0tty.ko`. You have to set the permission of `/dev/tnt0` and `/dev/tnt1` such that they are user read- and writeable.
 To make the installation permanently, install the kernel module according to your distribution (for Ubuntu 16.04.3 LTS ``cp tty0tty.ko /lib/modules/`uname -r`/kernel/drivers/misc`` and `depmod -a`). You can set the permissions of ´/dev/tnt0´ and ´/dev/tnt1´ by udev after every reboot automatically. For this see the udev-rule `55-tty-tnt.rules` in the directory `doc/udev`, modify it to your needs (e.g. the dialout group) and copy it e.g. to `/etc/udev/rules.d`.
 
-* Go to you cloned J1Sc copy and type `cd toolchain/forth`
+* Go to your cloned J1Sc copy and type `cd toolchain/forth`
 
-* start your terminal by `bin/confhost`
+* start a terminal by `bin/confhost`
 
 * open another shell window go to your copy of J1Sc and type `sbt test:run` to compile and run the simulation. If everything went well a small gui with some leds and a reset button will occur.
 
@@ -113,4 +113,4 @@ Manfred Mahlow offers a really great terminal for embedded FORTH systems, which 
 
 Simply download e4thcom (https://wiki.forth-ev.de/doku.php/en:projects:e4thcom) and install (simply copy it to the installation directory) the e4thcom-plugin swapforth-j1sc.efc from support/e4thcom/.
 
-Start enjoying e4thcom by the following command-line by `e4thcom-0.6.3.1 -d ttyUSB1 -b B115200 -t swapforth-j1sc`. In case anything does not work, please check for the correct transmission rate (B11520 for the Nexys4 and B38400 for the simulation) and the serial device (e.g. `/dev/tnt0` for the simulation). Make sure that the PATH-variable is set correctly and your J1Sc instance is connected to `/dev/ttyUSB1` or modify the command-line accordingly to your situation.
+Start enjoying e4thcom by the following command-line by `e4thcom-0.6.3.1 -d ttyUSB1 -b B115200 -t swapforth-j1sc`. In case anything does not work, please check for the correct transmission rate (B115200 for the Nexys4 and B38400 for the simulation) and the serial device (e.g. `/dev/tnt0` for the simulation). Make sure that the PATH-variable is set correctly and your J1Sc instance is connected to `/dev/ttyUSB1` or modify the command-line accordingly to your situation.
