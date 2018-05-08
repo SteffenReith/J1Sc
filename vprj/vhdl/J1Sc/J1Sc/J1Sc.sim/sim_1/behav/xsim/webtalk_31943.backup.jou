@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Webtalk v2018.1 (64-bit)
+# SW Build 2188600 on Wed Apr  4 18:39:19 MDT 2018
+# IP Build 2185939 on Wed Apr  4 20:55:05 MDT 2018
+# Start of session at: Fri May  4 01:47:59 2018
+# Process ID: 31943
+# Current directory: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.sim/sim_1/behav/xsim
+# Command line: wbtcv -mode batch -source /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.sim/sim_1/behav/xsim/xsim.dir/Board_Nexys4DDR_behav/webtalk/xsim_webtalk.tcl -notrace
+# Log file: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.sim/sim_1/behav/xsim/webtalk.log
+# Journal file: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.sim/sim_1/behav/xsim/webtalk.jou
+#-----------------------------------------------------------
+source /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.sim/sim_1/behav/xsim/xsim.dir/Board_Nexys4DDR_behav/webtalk/xsim_webtalk.tcl -notrace

@@ -1,0 +1,7 @@
+0.6
+2018.1
+Apr  4 2018
+18:43:17
+/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd,1521724658,vhdl,/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd,,,buffercc;buffercc_1;buffercc_2;dbpinarray;dbpinarray_1;gpio;interruptctrl;j1;j1core;j1nexys4x;ledarray;mainmemory;pkg_enum;pkg_scala2hdl;pwm;ssd;streamfifo;timer;uartctrl;uartctrlrx;uartctrltx,,,,,,,,
+/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd,1514110635,vhdl,,,,board_nexys4ddr,,,,,,,,
+/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd,1514110635,vhdl,/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd,,,pll,,,,,,,,

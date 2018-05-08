@@ -1,0 +1,1 @@
+-wto "28d8c42bf4ea4dbdaf7c1c1f04676d10" --incr --debug "typical" --relax --mt "8" -L "work" -L "secureip" --snapshot "Board_Nexys4DDR_behav" "work.Board_Nexys4DDR" -log "elaborate.log" 

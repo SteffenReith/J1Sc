@@ -1,0 +1,24 @@
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd" into library work
+INFO: [VRFC 10-307] analyzing entity PLL
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd" into library work
+INFO: [VRFC 10-307] analyzing entity BufferCC
+INFO: [VRFC 10-307] analyzing entity J1Core
+INFO: [VRFC 10-307] analyzing entity MainMemory
+INFO: [VRFC 10-307] analyzing entity UartCtrlTx
+INFO: [VRFC 10-307] analyzing entity UartCtrlRx
+INFO: [VRFC 10-307] analyzing entity BufferCC_1
+INFO: [VRFC 10-307] analyzing entity BufferCC_2
+INFO: [VRFC 10-307] analyzing entity J1
+INFO: [VRFC 10-307] analyzing entity LEDArray
+INFO: [VRFC 10-307] analyzing entity PWM
+INFO: [VRFC 10-307] analyzing entity SSD
+INFO: [VRFC 10-307] analyzing entity GPIO
+INFO: [VRFC 10-307] analyzing entity DBPinArray
+INFO: [VRFC 10-307] analyzing entity DBPinArray_1
+INFO: [VRFC 10-307] analyzing entity Timer
+INFO: [VRFC 10-307] analyzing entity UartCtrl
+INFO: [VRFC 10-307] analyzing entity StreamFifo
+INFO: [VRFC 10-307] analyzing entity InterruptCtrl
+INFO: [VRFC 10-307] analyzing entity J1Nexys4X
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd" into library work
+INFO: [VRFC 10-307] analyzing entity Board_Nexys4DDR

@@ -1,0 +1,781 @@
+#-----------------------------------------------------------
+# Vivado v2018.1 (64-bit)
+# SW Build 2188600 on Wed Apr  4 18:39:19 MDT 2018
+# IP Build 2185939 on Wed Apr  4 20:55:05 MDT 2018
+# Start of session at: Sat May  5 11:39:57 2018
+# Process ID: 32652
+# Current directory: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1
+# Command line: vivado -log Board_Nexys4DDR.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source Board_Nexys4DDR.tcl
+# Log file: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/Board_Nexys4DDR.vds
+# Journal file: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source Board_Nexys4DDR.tcl -notrace
+Command: synth_design -top Board_Nexys4DDR -part xc7a100tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 32767 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 1258.246 ; gain = 78.902 ; free physical = 479 ; free virtual = 5856
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'Board_Nexys4DDR' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd:40]
+INFO: [Synth 8-638] synthesizing module 'PLL' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd:23]
+	Parameter CAPACITANCE bound to: DONT_CARE - type: string 
+	Parameter IBUF_DELAY_VALUE bound to: 0 - type: string 
+	Parameter IBUF_LOW_PWR bound to: 1 - type: bool 
+	Parameter IOSTANDARD bound to: DEFAULT - type: string 
+INFO: [Synth 8-113] binding component instance 'clkInBuffer' to cell 'IBUFG' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd:59]
+INFO: [Synth 8-113] binding component instance 'feedbackBuffer' to cell 'BUFG' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd:64]
+	Parameter BANDWIDTH bound to: OPTIMIZED - type: string 
+	Parameter CLKFBOUT_MULT_F bound to: 10.000000 - type: float 
+	Parameter CLKFBOUT_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKFBOUT_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKIN1_PERIOD bound to: 10.000000 - type: float 
+	Parameter CLKIN2_PERIOD bound to: 0.000000 - type: float 
+	Parameter CLKOUT0_DIVIDE_F bound to: 10.000000 - type: float 
+	Parameter CLKOUT0_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT0_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT0_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT1_DIVIDE bound to: 10 - type: integer 
+	Parameter CLKOUT1_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT1_PHASE bound to: 270.000000 - type: float 
+	Parameter CLKOUT1_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT2_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT2_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT2_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT2_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT3_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT3_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT3_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT3_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT4_CASCADE bound to: 0 - type: bool 
+	Parameter CLKOUT4_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT4_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT4_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT4_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT5_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT5_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT5_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT5_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT6_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT6_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT6_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT6_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter COMPENSATION bound to: ZHOLD - type: string 
+	Parameter DIVCLK_DIVIDE bound to: 1 - type: integer 
+	Parameter IS_CLKINSEL_INVERTED bound to: 1'b0 
+	Parameter IS_PSEN_INVERTED bound to: 1'b0 
+	Parameter IS_PSINCDEC_INVERTED bound to: 1'b0 
+	Parameter IS_PWRDWN_INVERTED bound to: 1'b0 
+	Parameter IS_RST_INVERTED bound to: 1'b0 
+	Parameter REF_JITTER1 bound to: 0.010000 - type: float 
+	Parameter REF_JITTER2 bound to: 0.000000 - type: float 
+	Parameter SS_EN bound to: FALSE - type: string 
+	Parameter SS_MODE bound to: CENTER_HIGH - type: string 
+	Parameter SS_MOD_PERIOD bound to: 10000 - type: integer 
+	Parameter STARTUP_WAIT bound to: 0 - type: bool 
+INFO: [Synth 8-113] binding component instance 'clkgen' to cell 'MMCME2_ADV' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd:69]
+	Parameter CE_TYPE bound to: SYNC - type: string 
+	Parameter IS_CE_INVERTED bound to: 1'b0 
+	Parameter IS_I_INVERTED bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'clk1Buf' to cell 'BUFGCE' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd:151]
+INFO: [Synth 8-256] done synthesizing module 'PLL' (1#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd:23]
+INFO: [Synth 8-638] synthesizing module 'J1Nexys4X' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2728]
+INFO: [Synth 8-638] synthesizing module 'BufferCC_2' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1521]
+WARNING: [Synth 8-614] signal 'io_initial' is read in the process but is not in the sensitivity list [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1527]
+INFO: [Synth 8-256] done synthesizing module 'BufferCC_2' (2#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1521]
+INFO: [Synth 8-638] synthesizing module 'J1' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1564]
+INFO: [Synth 8-638] synthesizing module 'J1Core' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:533]
+INFO: [Synth 8-226] default block is never used [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:605]
+INFO: [Synth 8-256] done synthesizing module 'J1Core' (3#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:533]
+INFO: [Synth 8-638] synthesizing module 'MainMemory' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:765]
+INFO: [Synth 8-256] done synthesizing module 'MainMemory' (4#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:765]
+INFO: [Synth 8-256] done synthesizing module 'J1' (5#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1564]
+INFO: [Synth 8-638] synthesizing module 'LEDArray' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1637]
+INFO: [Synth 8-256] done synthesizing module 'LEDArray' (6#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1637]
+INFO: [Synth 8-638] synthesizing module 'PWM' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1683]
+INFO: [Synth 8-256] done synthesizing module 'PWM' (7#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1683]
+INFO: [Synth 8-638] synthesizing module 'SSD' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1803]
+INFO: [Synth 8-256] done synthesizing module 'SSD' (8#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1803]
+INFO: [Synth 8-638] synthesizing module 'GPIO' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2028]
+INFO: [Synth 8-256] done synthesizing module 'GPIO' (9#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2028]
+INFO: [Synth 8-638] synthesizing module 'DBPinArray' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2083]
+INFO: [Synth 8-256] done synthesizing module 'DBPinArray' (10#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2083]
+INFO: [Synth 8-638] synthesizing module 'DBPinArray_1' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2175]
+INFO: [Synth 8-256] done synthesizing module 'DBPinArray_1' (11#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2175]
+INFO: [Synth 8-638] synthesizing module 'Timer' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2275]
+INFO: [Synth 8-256] done synthesizing module 'Timer' (12#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2275]
+INFO: [Synth 8-638] synthesizing module 'UartCtrl' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2352]
+INFO: [Synth 8-638] synthesizing module 'UartCtrlTx' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1121]
+INFO: [Synth 8-256] done synthesizing module 'UartCtrlTx' (13#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1121]
+INFO: [Synth 8-638] synthesizing module 'UartCtrlRx' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1279]
+INFO: [Synth 8-638] synthesizing module 'BufferCC' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:485]
+INFO: [Synth 8-256] done synthesizing module 'BufferCC' (14#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:485]
+INFO: [Synth 8-256] done synthesizing module 'UartCtrlRx' (15#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1279]
+INFO: [Synth 8-256] done synthesizing module 'UartCtrl' (16#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2352]
+INFO: [Synth 8-638] synthesizing module 'StreamFifo' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2433]
+INFO: [Synth 8-256] done synthesizing module 'StreamFifo' (17#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2433]
+INFO: [Synth 8-638] synthesizing module 'InterruptCtrl' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2598]
+INFO: [Synth 8-638] synthesizing module 'BufferCC_1' [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1477]
+INFO: [Synth 8-256] done synthesizing module 'BufferCC_1' (18#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:1477]
+INFO: [Synth 8-256] done synthesizing module 'InterruptCtrl' (19#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2598]
+INFO: [Synth 8-256] done synthesizing module 'J1Nexys4X' (20#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd:2728]
+INFO: [Synth 8-256] done synthesizing module 'Board_Nexys4DDR' (21#1) [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd:40]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[15]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[14]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[13]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[12]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[11]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[10]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[9]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[8]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[14]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[13]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[12]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[11]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[10]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[9]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[8]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[7]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[6]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[5]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[4]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[15]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[14]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[13]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[12]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[11]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[10]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[9]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[8]
+WARNING: [Synth 8-3331] design MainMemory has unconnected port core_reset
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1309.855 ; gain = 130.512 ; free physical = 481 ; free virtual = 5860
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1309.855 ; gain = 130.512 ; free physical = 483 ; free virtual = 5862
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1309.855 ; gain = 130.512 ; free physical = 483 ; free virtual = 5862
+---------------------------------------------------------------------------------
+INFO: [Netlist 29-17] Analyzing 3 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Clocks.xdc]
+Finished Parsing XDC File [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Clocks.xdc]
+Parsing XDC File [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Debug.xdc]
+Finished Parsing XDC File [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Debug.xdc]
+Parsing XDC File [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Pins.xdc]
+Finished Parsing XDC File [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Pins.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Pins.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/Board_Nexys4DDR_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/Board_Nexys4DDR_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+INFO: [Timing 38-2] Deriving generated clocks
+Completed Processing XDC Constraints
+
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 2 instances were transformed.
+  BUFGCE => BUFGCTRL: 1 instances
+  IBUFG => IBUF: 1 instances
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1635.613 ; gain = 0.000 ; free physical = 212 ; free virtual = 5592
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:24 ; elapsed = 00:00:41 . Memory (MB): peak = 1635.613 ; gain = 456.270 ; free physical = 290 ; free virtual = 5670
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:24 ; elapsed = 00:00:41 . Memory (MB): peak = 1635.613 ; gain = 456.270 ; free physical = 290 ; free virtual = 5670
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:24 ; elapsed = 00:00:41 . Memory (MB): peak = 1635.613 ; gain = 456.270 ; free physical = 292 ; free virtual = 5672
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'stateMachine_state_reg' in module 'UartCtrlTx'
+INFO: [Synth 8-5544] ROM "stateMachine_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-802] inferred FSM for state register 'stateMachine_state_reg' in module 'UartCtrlRx'
+INFO: [Synth 8-5544] ROM "stateMachine_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "stateMachine_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "stateMachine_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                              000 |                              000
+                   start |                              001 |                              001
+                    data |                              010 |                              010
+                  parity |                              011 |                              011
+                  iSTATE |                              100 |                              100
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'stateMachine_state_reg' using encoding 'sequential' in module 'UartCtrlTx'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                              000 |                              000
+                   start |                              001 |                              001
+                    data |                              010 |                              010
+                  parity |                              011 |                              011
+                  iSTATE |                              100 |                              100
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'stateMachine_state_reg' using encoding 'sequential' in module 'UartCtrlRx'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:25 ; elapsed = 00:00:42 . Memory (MB): peak = 1635.613 ; gain = 456.270 ; free physical = 285 ; free virtual = 5665
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 2     
+	   3 Input     17 Bit       Adders := 1     
+	   2 Input     16 Bit       Adders := 1     
+	   2 Input     13 Bit       Adders := 1     
+	   2 Input     11 Bit       Adders := 1     
+	   2 Input      8 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 4     
+	   2 Input      4 Bit       Adders := 2     
+	   2 Input      3 Bit       Adders := 8     
+	   3 Input      3 Bit       Adders := 4     
++---XORs : 
+	   2 Input     16 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 3     
++---Registers : 
+	               32 Bit    Registers := 2     
+	               16 Bit    Registers := 6     
+	               13 Bit    Registers := 1     
+	               12 Bit    Registers := 4     
+	               11 Bit    Registers := 1     
+	                8 Bit    Registers := 14    
+	                5 Bit    Registers := 11    
+	                4 Bit    Registers := 4     
+	                3 Bit    Registers := 8     
+	                1 Bit    Registers := 31    
++---RAMs : 
+	              32K Bit         RAMs := 2     
+	              512 Bit         RAMs := 2     
+	               64 Bit         RAMs := 2     
++---Muxes : 
+	   2 Input     16 Bit        Muxes := 5     
+	  16 Input     16 Bit        Muxes := 1     
+	  35 Input     16 Bit        Muxes := 1     
+	   2 Input     13 Bit        Muxes := 3     
+	   4 Input     12 Bit        Muxes := 1     
+	   2 Input      8 Bit        Muxes := 2     
+	   5 Input      8 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 6     
+	   2 Input      4 Bit        Muxes := 3     
+	   2 Input      3 Bit        Muxes := 10    
+	   5 Input      3 Bit        Muxes := 5     
+	   2 Input      1 Bit        Muxes := 71    
+	   5 Input      1 Bit        Muxes := 12    
+	  35 Input      1 Bit        Muxes := 33    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module BufferCC_2 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 2     
+Module J1Core 
+Detailed RTL Component Info : 
++---Adders : 
+	   3 Input     17 Bit       Adders := 1     
+	   2 Input     16 Bit       Adders := 1     
+	   2 Input     13 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 4     
++---XORs : 
+	   2 Input     16 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 1     
++---Registers : 
+	               13 Bit    Registers := 1     
+	                5 Bit    Registers := 2     
++---RAMs : 
+	              512 Bit         RAMs := 2     
++---Muxes : 
+	   2 Input     16 Bit        Muxes := 2     
+	  16 Input     16 Bit        Muxes := 1     
+	   2 Input     13 Bit        Muxes := 3     
+	   2 Input      5 Bit        Muxes := 6     
+	   2 Input      1 Bit        Muxes := 3     
+Module MainMemory 
+Detailed RTL Component Info : 
++---Registers : 
+	               16 Bit    Registers := 2     
+	                1 Bit    Registers := 1     
++---RAMs : 
+	              32K Bit         RAMs := 2     
++---Muxes : 
+	   2 Input     16 Bit        Muxes := 1     
+Module J1 
+Detailed RTL Component Info : 
++---Registers : 
+	               16 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     16 Bit        Muxes := 1     
+Module LEDArray 
+Detailed RTL Component Info : 
++---Registers : 
+	               16 Bit    Registers := 1     
+Module PWM 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     11 Bit       Adders := 1     
+	   2 Input      8 Bit       Adders := 1     
++---Registers : 
+	               11 Bit    Registers := 1     
+	                8 Bit    Registers := 7     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 1     
+Module SSD 
+Detailed RTL Component Info : 
++---Registers : 
+	                8 Bit    Registers := 2     
+	                5 Bit    Registers := 8     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 1     
+Module GPIO 
+Detailed RTL Component Info : 
++---Registers : 
+	                8 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 1     
+Module DBPinArray 
+Detailed RTL Component Info : 
++---Registers : 
+	               16 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 3     
+Module DBPinArray_1 
+Detailed RTL Component Info : 
++---Registers : 
+	                5 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 3     
+Module Timer 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 5     
+Module UartCtrlTx 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      3 Bit       Adders := 2     
++---XORs : 
+	   2 Input      1 Bit         XORs := 1     
++---Registers : 
+	                3 Bit    Registers := 2     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      3 Bit        Muxes := 4     
+	   5 Input      3 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 3     
+	   5 Input      1 Bit        Muxes := 6     
+Module BufferCC 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 2     
+Module UartCtrlRx 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      3 Bit       Adders := 2     
++---XORs : 
+	   2 Input      1 Bit         XORs := 1     
++---Registers : 
+	                8 Bit    Registers := 1     
+	                3 Bit    Registers := 2     
+	                1 Bit    Registers := 8     
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 1     
+	   5 Input      8 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 6     
+	   5 Input      3 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 5     
+	   5 Input      1 Bit        Muxes := 6     
+Module StreamFifo 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      3 Bit       Adders := 2     
+	   3 Input      3 Bit       Adders := 2     
++---Registers : 
+	                8 Bit    Registers := 1     
+	                3 Bit    Registers := 2     
+	                1 Bit    Registers := 2     
++---RAMs : 
+	               64 Bit         RAMs := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 2     
+Module BufferCC_1 
+Detailed RTL Component Info : 
++---Registers : 
+	                4 Bit    Registers := 3     
++---Muxes : 
+	   2 Input      4 Bit        Muxes := 3     
+Module InterruptCtrl 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      4 Bit       Adders := 1     
++---Registers : 
+	               12 Bit    Registers := 4     
+	                4 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   4 Input     12 Bit        Muxes := 1     
+Module J1Nexys4X 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      4 Bit       Adders := 1     
++---Registers : 
+	               16 Bit    Registers := 1     
+	                1 Bit    Registers := 5     
++---Muxes : 
+	  35 Input     16 Bit        Muxes := 1     
+	   2 Input     16 Bit        Muxes := 1     
+	  35 Input      1 Bit        Muxes := 33    
+	   2 Input      1 Bit        Muxes := 34    
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+Warning: Parallel synthesis criteria is not met 
+WARNING: [Synth 8-3331] design InterruptCtrl has unconnected port irqSetData[15]
+WARNING: [Synth 8-3331] design InterruptCtrl has unconnected port irqSetData[14]
+WARNING: [Synth 8-3331] design InterruptCtrl has unconnected port irqSetData[13]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[15]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[14]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[13]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[12]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[11]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[10]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[9]
+WARNING: [Synth 8-3331] design SSD has unconnected port newMask[8]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[14]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[13]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[12]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[11]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[10]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[9]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[8]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[7]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[6]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[5]
+WARNING: [Synth 8-3331] design SSD has unconnected port newData[4]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[15]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[14]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[13]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[12]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[11]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[10]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[9]
+WARNING: [Synth 8-3331] design PWM has unconnected port newCompareValue[8]
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:05 ; elapsed = 00:01:38 . Memory (MB): peak = 1635.613 ; gain = 456.270 ; free physical = 203 ; free virtual = 5441
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Preliminary Mapping  Report (see note below)
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name | RTL Object    | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|MainMemory: | ramList_1_reg | 2 K x 16(READ_FIRST)   | W |   | 2 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 0      | 1      | 
+|MainMemory: | ramList_0_reg | 2 K x 16(READ_FIRST)   | W |   | 2 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 0      | 1      | 
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+Note: The tale above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+
+Distributed RAM: Preliminary Mapping  Report (see note below)
++----------------+----------------------------------------+-----------+----------------------+--------------+
+|Module Name     | RTL Object                             | Inference | Size (Depth x Width) | Primitives   | 
++----------------+----------------------------------------+-----------+----------------------+--------------+
+|Board_Nexys4DDR | core/coreArea_cpu/coreJ1CPU/rStack_reg | Implied   | 32 x 16              | RAM32M x 3   | 
+|Board_Nexys4DDR | core/coreArea_cpu/coreJ1CPU/dStack_reg | Implied   | 32 x 16              | RAM32M x 3   | 
+|Board_Nexys4DDR | core/streamFifo_2/ram_reg              | Implied   | 8 x 8                | RAM32M x 2   | 
+|Board_Nexys4DDR | core/streamFifo_3/ram_reg              | Implied   | 8 x 8                | RAM32M x 2   | 
++----------------+----------------------------------------+-----------+----------------------+--------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+INFO: [Synth 8-4480] The timing for the instance i_8/core/coreArea_cpu/mainMem/ramList_1_reg (implemented as a block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-4480] The timing for the instance i_9/core/coreArea_cpu/mainMem/ramList_0_reg (implemented as a block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:12 ; elapsed = 00:01:51 . Memory (MB): peak = 1635.613 ; gain = 456.270 ; free physical = 196 ; free virtual = 5451
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:01:48 ; elapsed = 00:02:28 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 196 ; free virtual = 5389
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping  Report
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name | RTL Object    | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|MainMemory: | ramList_1_reg | 2 K x 16(READ_FIRST)   | W |   | 2 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 0      | 1      | 
+|MainMemory: | ramList_0_reg | 2 K x 16(READ_FIRST)   | W |   | 2 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 0      | 1      | 
++------------+---------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+
+Distributed RAM: Final Mapping  Report
++----------------+----------------------------------------+-----------+----------------------+--------------+
+|Module Name     | RTL Object                             | Inference | Size (Depth x Width) | Primitives   | 
++----------------+----------------------------------------+-----------+----------------------+--------------+
+|Board_Nexys4DDR | core/coreArea_cpu/coreJ1CPU/rStack_reg | Implied   | 32 x 16              | RAM32M x 3   | 
+|Board_Nexys4DDR | core/coreArea_cpu/coreJ1CPU/dStack_reg | Implied   | 32 x 16              | RAM32M x 3   | 
+|Board_Nexys4DDR | core/streamFifo_2/ram_reg              | Implied   | 8 x 8                | RAM32M x 2   | 
+|Board_Nexys4DDR | core/streamFifo_3/ram_reg              | Implied   | 8 x 8                | RAM32M x 2   | 
++----------------+----------------------------------------+-----------+----------------------+--------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg_rep[0]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg[0]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg_rep[1]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg[1]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg_rep[2]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg[2]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg_rep[3]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg[3]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg_rep[4]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/rStackPtr_reg[4]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg_rep[0]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg[0]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg_rep[1]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg[1]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg_rep[2]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg[2]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg_rep[3]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg[3]'
+INFO: [Synth 8-3886] merging instance 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg_rep[4]' (FDR) to 'core/coreArea_cpu/coreJ1CPU/dStackPtr_reg[4]'
+INFO: [Synth 8-4480] The timing for the instance core/coreArea_cpu/mainMem/ramList_1_reg (implemented as a block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-4480] The timing for the instance core/coreArea_cpu/mainMem/ramList_0_reg (implemented as a block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:01:49 ; elapsed = 00:02:29 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 191 ; free virtual = 5384
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:50 ; elapsed = 00:02:29 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 190 ; free virtual = 5383
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:50 ; elapsed = 00:02:29 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 190 ; free virtual = 5383
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:50 ; elapsed = 00:02:30 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 190 ; free virtual = 5383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:50 ; elapsed = 00:02:30 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 190 ; free virtual = 5383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:50 ; elapsed = 00:02:30 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 190 ; free virtual = 5383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:50 ; elapsed = 00:02:30 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 190 ; free virtual = 5383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----------+------+
+|      |Cell       |Count |
++------+-----------+------+
+|1     |BUFG       |     1|
+|2     |BUFGCE     |     1|
+|3     |CARRY4     |    89|
+|4     |LUT1       |    93|
+|5     |LUT2       |   133|
+|6     |LUT3       |    71|
+|7     |LUT4       |   194|
+|8     |LUT5       |   216|
+|9     |LUT6       |   347|
+|10    |MMCME2_ADV |     1|
+|11    |MUXF7      |    39|
+|12    |MUXF8      |     6|
+|13    |RAM32M     |    10|
+|14    |RAMB36E1   |     1|
+|15    |RAMB36E1_1 |     1|
+|16    |FDPE       |     2|
+|17    |FDRE       |   587|
+|18    |FDSE       |    23|
+|19    |IBUF       |    24|
+|20    |IBUFG      |     1|
+|21    |IOBUF      |     8|
+|22    |OBUF       |    39|
++------+-----------+------+
+
+Report Instance Areas: 
++------+-----------------------+--------------+------+
+|      |Instance               |Module        |Cells |
++------+-----------------------+--------------+------+
+|1     |top                    |              |  1887|
+|2     |  core                 |J1Nexys4X     |  1811|
+|3     |    bufferCC_3         |BufferCC_2    |     2|
+|4     |    coreArea_cpu       |J1            |   391|
+|5     |      coreJ1CPU        |J1Core        |   210|
+|6     |      mainMem          |MainMemory    |   165|
+|7     |    coreArea_intCtrl   |InterruptCtrl |   136|
+|8     |      bufferCC_3       |BufferCC_1    |    29|
+|9     |    coreArea_ledArray  |LEDArray      |    18|
+|10    |    coreArea_pButtons  |DBPinArray_1  |    39|
+|11    |    coreArea_pmodA     |GPIO          |    53|
+|12    |    coreArea_pwm       |PWM           |   222|
+|13    |    coreArea_sSwitches |DBPinArray    |    57|
+|14    |    coreArea_ssd       |SSD           |   171|
+|15    |    coreArea_timerA    |Timer         |   199|
+|16    |    coreArea_timerB    |Timer_0       |   224|
+|17    |    coreArea_uartCtrl  |UartCtrl      |   153|
+|18    |      rx               |UartCtrlRx    |    61|
+|19    |        bufferCC_3     |BufferCC      |     2|
+|20    |      tx               |UartCtrlTx    |    28|
+|21    |    streamFifo_2       |StreamFifo    |    44|
+|22    |    streamFifo_3       |StreamFifo_1  |    60|
+|23    |  makeClk              |PLL           |     5|
++------+-----------------------+--------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:50 ; elapsed = 00:02:30 . Memory (MB): peak = 1715.371 ; gain = 536.027 ; free physical = 190 ; free virtual = 5383
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 30 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:43 ; elapsed = 00:02:08 . Memory (MB): peak = 1715.371 ; gain = 210.270 ; free physical = 247 ; free virtual = 5441
+Synthesis Optimization Complete : Time (s): cpu = 00:01:50 ; elapsed = 00:02:30 . Memory (MB): peak = 1715.379 ; gain = 536.027 ; free physical = 247 ; free virtual = 5441
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 181 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 20 instances were transformed.
+  BUFGCE => BUFGCTRL: 1 instances
+  IBUFG => IBUF: 1 instances
+  IOBUF => IOBUF (IBUF, OBUFT): 8 instances
+  RAM32M => RAM32M (RAMD32, RAMD32, RAMD32, RAMD32, RAMD32, RAMD32, RAMS32, RAMS32): 10 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+84 Infos, 59 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:53 ; elapsed = 00:02:32 . Memory (MB): peak = 1715.379 ; gain = 536.133 ; free physical = 280 ; free virtual = 5475
+INFO: [Common 17-1381] The checkpoint '/home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/Board_Nexys4DDR.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file Board_Nexys4DDR_utilization_synth.rpt -pb Board_Nexys4DDR_utilization_synth.pb
+report_utilization: Time (s): cpu = 00:00:00.09 ; elapsed = 00:00:00.13 . Memory (MB): peak = 1739.383 ; gain = 0.000 ; free physical = 278 ; free virtual = 5474
+INFO: [Common 17-206] Exiting Vivado at Sat May  5 11:42:38 2018...
