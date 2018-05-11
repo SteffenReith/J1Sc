@@ -59,4 +59,7 @@ class J1(cfg : J1Config) extends Component {
   coreJ1CPU.internal.intVec <> internal.intVec
   coreJ1CPU.internal.irq <> internal.irq
 
+  // Disable the stall
+  coreJ1CPU.internal.stall := False
+
 }

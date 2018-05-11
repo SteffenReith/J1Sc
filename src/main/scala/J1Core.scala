@@ -25,6 +25,9 @@ class J1Core(cfg : J1Config) extends Component {
     val extToWrite   = out Bits(cfg.wordSize bits)
     val toRead       = in  Bits(cfg.wordSize bits)
 
+    // Signal to stall the CPU
+    val stall = in Bool
+
     // Interface for the interrupt system
     val irq    = in Bool
     val intVec = in Bits (cfg.adrWidth bits)
@@ -40,7 +43,7 @@ class J1Core(cfg : J1Config) extends Component {
 
   // Program counter (note that the MSB is used to control dstack and rstack, hence make is one bit larger)
   val pcN = UInt(cfg.adrWidth + 1 bits)
-  val pc = RegNext(pcN) init(cfg.startAddress)
+  val pc = RegNextWhen(pcN, !(clrActive || internal.stall)) init(cfg.startAddress)
   val pcPlusOne = pc + 1
 
   // Instruction to be executed (insert a call-instruction for handling an interrupt)
