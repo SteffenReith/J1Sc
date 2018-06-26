@@ -14,8 +14,8 @@ import spinal.lib._
 case class JBus(cfg : J1Config) extends Bundle with IMasterSlave {
 
   // Width of addresses and data
-  def adrWidth  = cfg.wordSize
-  def dataWidth = cfg.wordSize
+  def adrWidth  : Int = cfg.wordSize
+  def dataWidth : Int = cfg.wordSize
 
   // Data and control signals used by 'SimpleBus'
   val enable    = Bool // Bus can be used when 'enable' is high
