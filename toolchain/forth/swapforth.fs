@@ -49,8 +49,8 @@
     postpone ;
 ;
 
-include core.fs
-include peripheral.fs
+#include common/core.fs
+#include common/peripheral.fs
 
 : /mod      >r s>d r> sm/rem ;
 : /         /mod nip ;
@@ -83,7 +83,7 @@ include peripheral.fs
     here aligned
 ;
 
-include core-ext.fs
+#include common/core-ext.fs
 
 : marker
     forth 2@        \ preserve FORTH and DP

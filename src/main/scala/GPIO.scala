@@ -68,16 +68,16 @@ class GPIO(gpioCfg : GPIOConfig) extends Component {
   io.dataOut := dataReg
 
   // Implement the bus interface
-  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
+  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) : Area = new Area {
 
     // The direction register is mapped at address 0 and is of type r/w
-    busCtrl.read(io.directions, baseAddress + 0, 0)
-    busCtrl.nonStopWrite(bus.dirValue, 0) // contents of direction register will be constantly driven by the bus
+    busCtrl.read(io.directions, baseAddress + 0, bitOffset = 0)
+    busCtrl.nonStopWrite(bus.dirValue, bitOffset = 0) // contents of direction register will be constantly driven by the bus
     bus.dirEnable := busCtrl.isWriting(baseAddress + 0)
 
     // The data register is mapped at address 4 and is of type r/w
-    busCtrl.read(io.dataOut, baseAddress + 4, 0)
-    busCtrl.nonStopWrite(bus.dataValue, 0) // contents of direction register will be constantly driven by the bus
+    busCtrl.read(io.dataOut, baseAddress + 4, bitOffset = 0)
+    busCtrl.nonStopWrite(bus.dataValue, bitOffset = 0) // contents of direction register will be constantly driven by the bus
     bus.dataEnable := busCtrl.isWriting(baseAddress + 4)
 
   }

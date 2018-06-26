@@ -13,8 +13,8 @@ class PWM(j1Cfg  : J1Config,
           pwmCfg : PWMConfig) extends Component {
 
   // Check the generic parameters
-  assert(isPow2(pwmCfg.numOfDutyCycles), "ERROR: The number of duty cycles has to be a power of 2!")
-  assert(pwmCfg.numOfChannels <= j1Cfg.wordSize, "ERROR: Too many pwm channels!")
+  assert(isPow2(pwmCfg.numOfDutyCycles), message = "ERROR: The number of duty cycles has to be a power of 2!")
+  assert(pwmCfg.numOfChannels <= j1Cfg.wordSize, message = "ERROR: Too many pwm channels!")
 
   // Signals used for the internal bus
   val bus = new Bundle {
@@ -66,16 +66,16 @@ class PWM(j1Cfg  : J1Config,
   compareRegs.zipWithIndex.foreach{case (reg, i) => (io.pwmChannels(i) := (reg > pwmArea.cycle))}
 
   // Implement the bus interface
-  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
+  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) : Area = new Area {
 
     // The value to be used as a new compare value is constantly driven by the bus
-    busCtrl.nonStopWrite(bus.newCompareValue, 0)
+    busCtrl.nonStopWrite(bus.newCompareValue, bitOffset = 0)
 
     // Make the compare register R/W
     for (i <- 0 to pwmCfg.numOfChannels - 1) {
 
       // A r/w register access for the ith compare register
-      busCtrl.read(bus.compareRegs(i), baseAddress + i, 0)
+      busCtrl.read(bus.compareRegs(i), baseAddress + i, bitOffset = 0)
 
       // Generate the write enable signal for the ith compare register
       bus.writeEnable(i) := busCtrl.isWriting(baseAddress + i)

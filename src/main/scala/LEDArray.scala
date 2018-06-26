@@ -13,7 +13,7 @@ class LEDArray(j1Cfg  : J1Config,
                ledCfg : LEDArrayConfig) extends Component {
 
   // Check the generic parameters
-  assert(ledCfg.width <= j1Cfg.wordSize, "ERROR: Too many pwm channels!")
+  assert(ledCfg.width <= j1Cfg.wordSize, message = "ERROR: Too many pwm channels!")
 
   val bus = new Bundle {
 

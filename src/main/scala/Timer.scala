@@ -12,7 +12,7 @@ import spinal.lib.bus.misc.BusSlaveFactory
 class Timer(cfg : TimerConfig) extends Component {
 
   // The width has to be even to be split into two halfs
-  assert(cfg.width % 2 == 0, "ERROR: Timer width has to be even!")
+  assert(cfg.width % 2 == 0, message = "ERROR: Timer width has to be even!")
 
   val io = new Bundle {
 
@@ -91,23 +91,23 @@ class Timer(cfg : TimerConfig) extends Component {
   io.interrupt := isEnabled && (cnt === maxCnt) && !(io.loadHigh || io.loadLow)
 
   // Implement the bus interface
-  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
+  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) : Area = new Area {
 
     // The lower part of the compare register is mapped at address 0 and is of type r/w
-    busCtrl.read(io.lowState, baseAddress + 0, 0)
-    busCtrl.nonStopWrite(io.cmpLow, 0) // value will be constantly driven by the data of the memory bus
+    busCtrl.read(io.lowState, baseAddress + 0, bitOffset = 0)
+    busCtrl.nonStopWrite(io.cmpLow, bitOffset = 0) // value will be constantly driven by the data of the memory bus
 
     // The higher part of the compare register is mapped at address 0 and is of type r/w
-    busCtrl.read(io.highState, baseAddress + 1, 0)
-    busCtrl.nonStopWrite(io.cmpHigh, 0) // value will be constantly driven by the data of the memory bus
+    busCtrl.read(io.highState, baseAddress + 1, bitOffset = 0)
+    busCtrl.nonStopWrite(io.cmpHigh, bitOffset = 0) // value will be constantly driven by the data of the memory bus
 
     // Generate the write enable signals for loading the compare value
     io.loadLow  := busCtrl.isWriting(baseAddress + 0)
     io.loadHigh := busCtrl.isWriting(baseAddress + 1)
 
     // A r/w register for enabling the timer (anything != 0 means true)
-    busCtrl.read(io.enableState, baseAddress + 2, 0)
-    busCtrl.nonStopWrite(io.enable, 0) // the enable signal is constantly driven by the data of the memory bus
+    busCtrl.read(io.enableState, baseAddress + 2, bitOffset = 0)
+    busCtrl.nonStopWrite(io.enable, bitOffset = 0) // the enable signal is constantly driven by the data of the memory bus
 
     // Generate a flag for write access of io.enable
     io.accessEnableWrite := busCtrl.isWriting(baseAddress + 2)

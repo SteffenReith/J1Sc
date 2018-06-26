@@ -27,7 +27,7 @@ class SSD(j1Cfg  : J1Config,
   val nibbleWidth : Int = 4
 
   // Check the generic parameters
-  assert(ssdCfg.numOfDisplays <= j1Cfg.wordSize, "ERROR: Too many seven-segment displays!")
+  assert(ssdCfg.numOfDisplays <= j1Cfg.wordSize, message = "ERROR: Too many seven-segment displays!")
 
   // Signals used for the internal bus
   val bus = new Bundle {
@@ -123,10 +123,10 @@ class SSD(j1Cfg  : J1Config,
   io.selector := (if (ssdCfg.invertSelector) ~ssdArea.selector else ssdArea.selector)
 
   // Implement the bus interface
-  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
+  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) : Area = new Area {
 
     // The mask is constantly driven by the bus
-    busCtrl.nonStopWrite(bus.newMask, 0)
+    busCtrl.nonStopWrite(bus.newMask, bitOffset = 0)
 
     // Make the mask register r/w
     busCtrl.read(bus.mask, baseAddress + ssdCfg.numOfDisplays)
@@ -135,13 +135,13 @@ class SSD(j1Cfg  : J1Config,
     bus.enableNewMask := busCtrl.isWriting(baseAddress + ssdCfg.numOfDisplays)
 
     // The value to be used as a new register content constantly driven by the bus
-    busCtrl.nonStopWrite(bus.newData, 0)
+    busCtrl.nonStopWrite(bus.newData, bitOffset = 0)
 
     // Make the compare register R/W
     for (i <- 0 to ssdCfg.numOfDisplays - 1) {
 
       // A r/w register access for the ith interrupt vector
-      busCtrl.read(bus.data(i), baseAddress + i, 0)
+      busCtrl.read(bus.data(i), baseAddress + i, bitOffset = 0)
 
       // Generate the write enable signal for the ith interrupt vector
       bus.enableNewData(i) := busCtrl.isWriting(baseAddress + i)

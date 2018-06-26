@@ -40,7 +40,7 @@ class DBPinArray(j1Cfg         : J1Config,
   val timeOut = Timeout(dbPinArrayCfg.waitTime)
 
   // Clear the timeout if the input data has not changed
-  when (debounced === io.inputPins ) {timeOut.clear()}
+  when (debounced === io.inputPins) {timeOut.clear()}
 
   // When the alarm is active the new input is taken
   when (timeOut) {debounced := io.inputPins}
@@ -49,11 +49,10 @@ class DBPinArray(j1Cfg         : J1Config,
   bus.dbPins := debounced.resize(j1Cfg.wordSize)
 
   // Implement the bus interface
-  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
+  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) : Area = new Area {
 
     // A r/w register access for the ith interrupt vector
-    busCtrl.read(bus.dbPins, baseAddress, 0)
-
+    busCtrl.read(bus.dbPins, baseAddress, bitOffset = 0)
 
   }
 

@@ -49,7 +49,7 @@ class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
     super.doNonStopWrite(bus.writeData)
 
     // Describe one data package transfered on the bus
-    def doMappedElements(jobs : Seq[BusSlaveFactoryElement]) = super.doMappedElements (
+    def doMappedElements(jobs : Seq[BusSlaveFactoryElement]) : Unit = super.doMappedElements (
 
       // Do the mapping of all bus signals
       jobs = jobs,
