@@ -124,7 +124,6 @@ class J1Ico(j1Cfg    : J1Config,
 
     // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
     uartBridge.interruptCtrl.interrupt.allowPruning()
-    uartBridge.write.streamUnbuffered.ready.allowPruning()
 
     // Connect the physical UART pins to the outside world
     io.tx := uartCtrl.io.uart.txd

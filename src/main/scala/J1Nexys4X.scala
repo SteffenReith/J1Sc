@@ -117,10 +117,16 @@ class J1Nexys4X(j1Cfg    : J1Config,
     val sSwitchesBridge = sSwitches.driveFrom(peripheralBusCtrl, baseAddress = 0x80)
     sSwitches.io.inputPins := io.sSwitches
 
+    // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
+    sSwitches.timeOut.stateRise.allowPruning()
+
     // Create the push button array
     val pButtons = new DBPinArray(j1Cfg, boardCfg.pButtonConfig)
     val pButtonsBridge = pButtons.driveFrom(peripheralBusCtrl, baseAddress = 0x90)
     pButtons.io.inputPins := io.pButtons
+
+    // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
+    pButtons.timeOut.stateRise.allowPruning()
 
     // Create two timer and map it at 0xC0 and 0xD0
     val timerA       = new Timer(j1Cfg.timerConfig)
@@ -152,7 +158,6 @@ class J1Nexys4X(j1Cfg    : J1Config,
 
     // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
     uartBridge.interruptCtrl.interrupt.allowPruning()
-    uartBridge.write.streamUnbuffered.ready.allowPruning()
 
     // Connect the physical UART pins to the outside world
     io.tx := uartCtrl.io.uart.txd
