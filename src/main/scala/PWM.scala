@@ -52,7 +52,7 @@ class PWM(j1Cfg  : J1Config,
   }
 
   // Create all compare registers
-  val compareRegs = Vec(for(i <- 0 to pwmCfg.numOfChannels - 1) yield {
+  val compareRegs = Vec(for(i <- 0 until pwmCfg.numOfChannels) yield {
 
     // Create the ith register
     RegNextWhen(bus.newCompareValue.resize(log2Up(pwmCfg.numOfDutyCycles)).asUInt,
@@ -72,7 +72,7 @@ class PWM(j1Cfg  : J1Config,
     busCtrl.nonStopWrite(bus.newCompareValue, bitOffset = 0)
 
     // Make the compare register R/W
-    for (i <- 0 to pwmCfg.numOfChannels - 1) {
+    for (i <- 0 until pwmCfg.numOfChannels) {
 
       // A r/w register access for the ith compare register
       busCtrl.read(bus.compareRegs(i), baseAddress + i, bitOffset = 0)

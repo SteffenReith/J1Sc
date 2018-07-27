@@ -296,7 +296,7 @@ object J1IcoSim {
               g.setColor(Color.BLACK)
 
               // Draw some ovals as a decoration
-              for(i <- 0 to boardCfg.ledBankConfig.width - 1) {
+              for(i <- 0 until boardCfg.ledBankConfig.width) {
 
                 // Fill the the ith area
                 g.fillOval(ledDiameter * i, ledDiameter, ledDiameter, ledDiameter)
@@ -305,7 +305,7 @@ object J1IcoSim {
               }
 
               // Now draw all leds of the led array
-              for(i <- 0 to boardCfg.ledBankConfig.width - 1) {
+              for(i <- 0 until boardCfg.ledBankConfig.width) {
 
                 // Check for the ith led
                 if (((ledsValue >> (boardCfg.ledBankConfig.width - (i + 1))) & 1) != 0) {
