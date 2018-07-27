@@ -17,7 +17,7 @@ case class IRQCtrlConfig (numOfInterrupts         : Int,
 object IRQCtrlConfig {
 
   // Provide a default configuration
-  def default = {
+  def default : IRQCtrlConfig = {
 
     // Default configuration values
     val config = IRQCtrlConfig(numOfInterrupts         = 4,
@@ -37,7 +37,7 @@ case class TimerConfig (width : Int)
 object TimerConfig {
 
   // Provide a default configuration
-  def default = {
+  def default : TimerConfig = {
 
     // Default configuration values
     val config = TimerConfig(width = 32)
