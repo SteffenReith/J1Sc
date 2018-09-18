@@ -36,4 +36,4 @@ toolchain/forth/shell/swapforth.pyc
 lprj/IcoBoard/build/
 J1Ico.v_toplevel_coreArea_cpu_mainMem_ramList_0.bin
 J1Ico.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin
-
+verbose.log
