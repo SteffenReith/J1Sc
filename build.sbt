@@ -17,12 +17,13 @@ fork := true
 // Setting for the build process
 lazy val verilogGenerator = settingKey[String]("Name of the generating class")
 lazy val verilogToplevel  = settingKey[String]("Name of the toplevel module (also assumes filename <toplevel>.v)")
-lazy val verilogDir       = settingKey[String]("Output directory for RTL")
+lazy val genDir       = settingKey[String]("Output directory for RTL")
 
 lazy val genVerilog = taskKey[Unit]("Generate verilog code using SpinalHDL")
 lazy val synthYosys = taskKey[Unit]("Synthesize verilog with yosys")
 lazy val icePnr     = taskKey[Unit]("Place and route with Icestorm toolchain")
 lazy val iceClean   = taskKey[Unit]("Deletes files produced by the build, such as generated sources, compiled classes, and task caches.")
+lazy val icoProg    = taskKey[Unit]("Send the bit-file to an attached ico-board")
 
 // Clean all generated files
 iceClean := {
@@ -36,7 +37,10 @@ iceClean := {
 
   // Start to remove the files
   Process("rm" :: "-f" :: s"${gendir}/${toplevel}.v" :: Nil, baseDir) !;
-  Process("rm" :: "-f" :: s"${gendir}/${toplevel}.asc ${gendir}/${toplevel}.bin ${gendir}/${toplevel}.blif cpu0.yaml" :: Nil, baseDir) !;
+  Process("rm" :: "-f" :: s"${gendir}/${toplevel}.asc" :: Nil, baseDir) !;
+  Process("rm" :: "-f" :: s"${gendir}/${toplevel}.bin" :: Nil, baseDir) !;
+  Process("rm" :: "-f" :: s"${gendir}/${toplevel}.blif" :: Nil, baseDir) !;
+  Process("rm" :: "-f" :: "cpu0.yaml" :: Nil, baseDir) !;
   Process("rm" :: "-f" :: s"${gendir}/${toplevel}.v_toplevel_coreArea_cpu_mainMem_ramList_0.bin" :: Nil, baseDir) !;
   Process("rm" :: "-f" :: s"${gendir}/${toplevel}.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin" :: Nil, baseDir) !;
   Process("rm" :: "-fR" :: s"target/ project/target" :: Nil, baseDir) !;
@@ -46,18 +50,22 @@ iceClean := {
 // Run the scala program to generate the verilog files
 genVerilog := {
 
-  val toplevel = verilogToplevel.value
-  val outDir   = "gen/src/verilog"
+  // Specify main class
+  val generator = "J1Ico"
+  val genDir    = "gen/src/verilog"
 
   // Print a debug message
   println("[sbt-info] Generate verilog code")
 
   // Run the main-class
   Def.taskDyn[Unit] {
-    (runMain in Compile).toTask(s" ${toplevel} --verilog -o ${outDir}")
+
+    // Run the Scala binary
+    (runMain in Compile).toTask(s" ${generator} --verilog -o ${genDir}")
+
   }
 
-}
+}.value
 
 // Do synthesize step
 synthYosys :=  {
@@ -67,7 +75,7 @@ synthYosys :=  {
 
   val toplevel = verilogToplevel.value
   val baseDir  = baseDirectory.value
-  val outDir   = baseDirectory.value / verilogDir.value
+  val outDir   = baseDirectory.value / genDir.value
   val yosysDir = "src/main/lattice/IcoBoard"
 
   // Print a debug message
@@ -80,7 +88,7 @@ synthYosys :=  {
   // Do the synthesis using yosys to generate a netlist out of the verilog code
   Process("yosys" :: "-q" :: s"${baseDir}/${yosysDir}/${toplevel}.ys" :: Nil, baseDir) !;
 
-  // Remove the temporarily copied files
+  // Remove the temporarily copied files copied by the ugly workaround
   Process("rm" :: s"${baseDir}/${toplevel}.v_toplevel_coreArea_cpu_mainMem_ramList_0.bin" :: Nil, baseDir) !;
   Process("rm" :: s"${baseDir}/${toplevel}.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin" :: Nil, baseDir) !;
 
@@ -93,7 +101,7 @@ icePnr := {
   synthYosys.value
 
   val toplevel    = verilogToplevel.value
-  val outDir      = baseDirectory.value / verilogDir.value
+  val outDir      = baseDirectory.value / genDir.value
   val latticePath = baseDirectory.value / "src/main/lattice/IcoBoard"
 
   // Print a debug message
@@ -106,6 +114,24 @@ icePnr := {
 
 }
 
+// Send the bit-file to an attached IcoBoard
+icoProg := {
+
+  // Generate the bit-file first
+  icePnr.value
+
+  val toplevel = verilogToplevel.value
+  val outDir   = baseDirectory.value / genDir.value
+
+  // Print a debug message
+  println("[sbt-info] Send bit-file to attached IcoBoard")
+
+  // Send the file
+  //"icoprog -p" #< s"${outDir}/${toplevel).bin" !;
+  Process("icoprog" :: "-p" :: Nil, outDir) #< file(s"${outDir}/${toplevel}.bin") !;
+
+}
+
 lazy val J1Sc = RootProject(uri("git://github.com/SteffenReith/J1Sc.git"))
 
 // Default settings
@@ -113,6 +139,5 @@ lazy val root = (project in file(".")).settings( organization     := "com.gitHub
                                                  scalaVersion     := "2.11.8",
                                                  version          := "0.1",
                                                  name             := "J1Sc",
-                                                 verilogGenerator := "J1Ico",
                                                  verilogToplevel  := "J1Ico",
-                                                 verilogDir       := "gen/src/verilog")
+                                                 genDir           := "gen/src/verilog")
