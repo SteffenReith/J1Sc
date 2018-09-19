@@ -20,6 +20,15 @@ To build the J1Sc you need first to create the VDHL / Verilog sources. The imple
 
 * Run `cd toolchain/forth && make && cd ../..` to build the forth core system
 
+## A FORTH Shell/Terminal for J1Sc
+Manfred Mahlow offers a really great terminal for embedded FORTH systems, which supports linux on X86 and Raspberry/Raspbian. Besides 430CamelForth , 430eForth , 4e4th, AmForth, anyForth , Mecrisp , Mecrisp-Stellaris , noForth and STM8 eForth it now supports the J1Sc with Swapforth. This solution gives a much higher comfort than the original Python-based terminals from Swapforth, hence it is suggested to use e4thcom.
+
+Simply download e4thcom (https://wiki.forth-ev.de/doku.php/en:projects:e4thcom) and install (simply copy it to the installation directory) the e4thcom-plugin swapforth-j1sc.efc from support/e4thcom/.
+
+Start enjoying e4thcom by the following command-line by `e4thcom-0.6.3.1 -d ttyUSB1 -b B115200 -t swapforth-j1sc`. In case anything does not work, please check for the correct transmission rate (B115200 for the Nexys4 and B38400 for the simulation) and the serial device (e.g. `/dev/tnt0` for the simulation). Make sure that the PATH-variable is set correctly and your J1Sc instance is connected to `/dev/ttyUSB1` or modify the command-line accordingly to your situation.
+
+The descriptions below show how to work with J1Sc _without_ e4thcom. I give you advise _not_ to do so, because the shell scripts `bin/confsX` are unflexible and uncomfortable. Be warned!
+
 ## J1Sc for a Digilent Nexys4 and Nexys4DDR board
 
 * Build J1Sc (either using the VHDL or the Verilog version) by `sbt run` (select the Nexys4X configuration to be generated). The generated files can be found in `gen/src/vhdl/J1SoC.vhd` and `gen/src/verilog/J1SoC.v`. You need `Board_<BOARDNAME>.vhd` and `PLL.vhd` in `src/main/vhdl/arch` or the corresponding Verilog versions in `src/main/verilog/arch` as toplevel for synthesis.
@@ -64,15 +73,7 @@ Clone and install the latest version of
 
 Now change to the cloned directory of J1Sc
 
-* Build J1Sc (either using the VHDL or the Verilog version) by `sbt run` (select the IcoBoard configuration to be generated).
-
-* go to the IcoBoard project directory by `cd lprj/IcoBoard`
-
-* type `make fixit` (not necessarily needed, but avoids a lot of warnings). Not needed for the latest version of Spinal.
-
-* build everything by `make`. The last line should by similar to `Checking 25.00 ns (40.00 MHz) clock constraint: PASSED.`
-
-* Download the configuration by `make prog`
+* Build J1Ico by using the sbt build system. Type `sbt icoProg` to generate a Verilog version of J1Sc for your IcoBoard, synthesize it, do a place & route and to download the bit-file finally.
 
 * Become root or set the the permissions of your serial devices properly and run `bin/confsX`, where X is the number of the used serial port. Hence X is 0 if `/dev/ttyUSB0` should be used.
 
@@ -83,6 +84,8 @@ Now change to the cloned directory of J1Sc
 * Turn the leds on by `$ff leds!`
 
 * Have fun with a running FORTH system on your icoBoard!
+
+At the moment the tools are able to provide an implementation which is able to run at 40 MHz. This constraint will be checked during the sbt build. Hence stay tuned and read the log-files.
 
 In principle it is possible to use the IcoBoard together with a Raspberry PI to run J1Sc. In the case you do this, please send me (EMail: streit@streit.cc) the needed steps, because I don´t have / use this configuration.
 
@@ -107,10 +110,3 @@ To make the installation permanently, install the kernel module according to you
 * Turn the simulated leds on by `$ff leds!`
 
 * Have fun with a running FORTH on the simulated J1Sc!
-
-## A FORTH Shell/Terminal for J1Sc
-Manfred Mahlow offers a really great terminal for embedded FORTH systems, which supports linux on X86 and Raspberry/Raspbian. Besides 430CamelForth , 430eForth , 4e4th, AmForth, anyForth , Mecrisp , Mecrisp-Stellaris , noForth and STM8 eForth it now supports the J1Sc with Swapforth. This solution gives a much higher comfort than the original Python-based terminals from Swapforth, hence it is suggested to use e4thcom.
-
-Simply download e4thcom (https://wiki.forth-ev.de/doku.php/en:projects:e4thcom) and install (simply copy it to the installation directory) the e4thcom-plugin swapforth-j1sc.efc from support/e4thcom/.
-
-Start enjoying e4thcom by the following command-line by `e4thcom-0.6.3.1 -d ttyUSB1 -b B115200 -t swapforth-j1sc`. In case anything does not work, please check for the correct transmission rate (B115200 for the Nexys4 and B38400 for the simulation) and the serial device (e.g. `/dev/tnt0` for the simulation). Make sure that the PATH-variable is set correctly and your J1Sc instance is connected to `/dev/ttyUSB1` or modify the command-line accordingly to your situation.

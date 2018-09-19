@@ -46,7 +46,7 @@ class MainMemory(cfg : J1Config) extends Component {
   println("[J1Sc] Total size is " + cfg.numOfRAMs * numOfCells + " cells")
 
   // Create a complete list of memory blocks (start with first block)
-  val ramList = for (i <- 0 to cfg.numOfRAMs - 1) yield {
+  val ramList = for (i <- 0 until cfg.numOfRAMs) yield {
 
     // Write a message
     println("[J1Sc]   Filling RAM " +

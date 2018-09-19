@@ -11,7 +11,7 @@
 import spinal.core._
 import spinal.lib._
 
-case class JBus(cfg : J1Config) extends Bundle with IMasterSlave {
+case class J1Bus(cfg : J1Config) extends Bundle with IMasterSlave {
 
   // Width of addresses and data
   def adrWidth  : Int = cfg.wordSize
@@ -25,7 +25,7 @@ case class JBus(cfg : J1Config) extends Bundle with IMasterSlave {
   val readData  = Bits(dataWidth bits)
 
   // Created a copy of the current bus which signals are delayed by 'delayCnt' ticks
-  def delayIt(ticks : Int = 1) : JBus = {
+  def delayIt(ticks : Int = 1) : J1Bus = {
 
     // Check for proper parameter
     require (ticks >= 0, "Error: ticks has to be at least 0")
@@ -48,7 +48,7 @@ case class JBus(cfg : J1Config) extends Bundle with IMasterSlave {
   }
 
   // Methods to connect SimpleBus objects
-  def << (that : JBus) : Unit = {
+  def << (that : J1Bus) : Unit = {
 
     // Simply wire the signals of 'this' and 'that'
     that.enable    := this.enable
@@ -58,7 +58,7 @@ case class JBus(cfg : J1Config) extends Bundle with IMasterSlave {
     this.readData  := that.readData
 
   }
-  def >>(that : JBus) : Unit = that << this
+  def >>(that : J1Bus) : Unit = that << this
 
   // This is called by 'apply' when the master-object is called with data (-> side effect write/read data)
   override def asMaster() : Unit = {

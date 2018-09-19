@@ -11,14 +11,14 @@
 import spinal.core._
 import spinal.lib.bus.misc._
 
-object JBusSlaveFactory {
+object J1BusSlaveFactory {
 
   // Make a factory for the JBus
-  def apply(bus : JBus) = new JBusSlaveFactory(bus)
+  def apply(bus : J1Bus) = new J1BusSlaveFactory(bus)
 
 }
 
-class JBusSlaveFactory(bus : JBus) extends BusSlaveFactoryDelayed {
+class J1BusSlaveFactory(bus : J1Bus) extends BusSlaveFactoryDelayed {
 
   // Get read/write address used on the bus
   def readAddress()  : UInt = bus.address

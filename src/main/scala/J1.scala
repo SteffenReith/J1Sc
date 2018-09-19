@@ -24,7 +24,7 @@ class J1(cfg : J1Config) extends Component {
   val bus = new Bundle {
 
     // I/O signals for peripheral data port
-    val cpuBus = master(JBus(cfg))
+    val cpuBus = master(J1Bus(cfg))
 
   }.setName("")
 

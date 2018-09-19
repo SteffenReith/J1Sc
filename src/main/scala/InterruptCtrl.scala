@@ -56,7 +56,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   irqVecWriteEnable := bus.enableWriteIrqVec.resize(cfg.irqConfig.numOfInterrupts)
 
   // Create a register file for storing the interrupt vectors
-  val irqVectors = Vec(for(i <- 0 to cfg.irqConfig.numOfInterrupts - 1) yield {
+  val irqVectors = Vec(for(i <- 0 until cfg.irqConfig.numOfInterrupts) yield {
 
     // Create the ith register and truncate data read from the bus
     RegNextWhen((bus.irqSetData >> 1).resize(cfg.adrWidth),
@@ -95,7 +95,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
     bus.enableWriteNewMask := busCtrl.isWriting(baseAddress + cfg.irqConfig.numOfInterrupts)
 
     // r/w-registers for all irq-vectors
-    for (i <- 0 to cfg.irqConfig.numOfInterrupts - 1) {
+    for (i <- 0 until cfg.irqConfig.numOfInterrupts) {
 
       // A r/w register access for the ith interrupt vector
       busCtrl.read(bus.irqVectors(i), baseAddress + i, 0)

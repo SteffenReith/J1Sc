@@ -17,6 +17,7 @@ case class Seg7() extends Bundle {
 
 }
 
+//noinspection PostfixMethodCall,PostfixMethodCall,PostfixMethodCall,PostfixMethodCall,PostfixMethodCall,PostfixMethodCall
 class SSD(j1Cfg  : J1Config,
           ssdCfg : SSDConfig) extends Component {
 
@@ -97,7 +98,7 @@ class SSD(j1Cfg  : J1Config,
   bus.mask := mask.resize(j1Cfg.wordSize)
 
   // Create all registers holding the nibbles to be displayed (including the dot)
-  val data = Vec(for(i <- 0 to ssdCfg.numOfDisplays - 1) yield {
+  val data = Vec(for(i <- 0 until ssdCfg.numOfDisplays) yield {
 
     // Create the ith register and pack the provided data
     RegNextWhen(bus.newData.msb ## bus.newData(nibbleWidth - 1 downto 0),
@@ -107,8 +108,8 @@ class SSD(j1Cfg  : J1Config,
   })
 
   // Rearrange the packed register format for the databus
-  data.zipWithIndex.foreach{case (reg, i) => (bus.data(i) := reg.msb ##
-                                                             reg(nibbleWidth - 1 downto 0).resize(j1Cfg.wordSize - 1))}
+  data.zipWithIndex.foreach{case (reg, i) => bus.data(i) := reg.msb ##
+                                                            reg(nibbleWidth - 1 downto 0).resize(j1Cfg.wordSize - 1)}
 
   // Get the data addressed by the actual selector value (convert one-hot to binary)
   val selIdx = OHToUInt(ssdArea.selector)
@@ -138,7 +139,7 @@ class SSD(j1Cfg  : J1Config,
     busCtrl.nonStopWrite(bus.newData, bitOffset = 0)
 
     // Make the compare register R/W
-    for (i <- 0 to ssdCfg.numOfDisplays - 1) {
+    for (i <- 0 until ssdCfg.numOfDisplays) {
 
       // A r/w register access for the ith interrupt vector
       busCtrl.read(bus.data(i), baseAddress + i, bitOffset = 0)
