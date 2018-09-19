@@ -64,15 +64,7 @@ Clone and install the latest version of
 
 Now change to the cloned directory of J1Sc
 
-* Build J1Sc (either using the VHDL or the Verilog version) by `sbt run` (select the IcoBoard configuration to be generated).
-
-* go to the IcoBoard project directory by `cd lprj/IcoBoard`
-
-* type `make fixit` (not necessarily needed, but avoids a lot of warnings). Not needed for the latest version of Spinal.
-
-* build everything by `make`. The last line should by similar to `Checking 25.00 ns (40.00 MHz) clock constraint: PASSED.`
-
-* Download the configuration by `make prog`
+* Build J1Ico by using the sbt build system. Type `sbt icoProg` to generate a Verilog version of J1Sc for your IcoBoard, synthesize it, do a place & route and to download the bit-file finally.
 
 * Become root or set the the permissions of your serial devices properly and run `bin/confsX`, where X is the number of the used serial port. Hence X is 0 if `/dev/ttyUSB0` should be used.
 
@@ -83,6 +75,8 @@ Now change to the cloned directory of J1Sc
 * Turn the leds on by `$ff leds!`
 
 * Have fun with a running FORTH system on your icoBoard!
+
+At the moment the tools are able to provide an implementation which is able to run at 40 MHz. This constraint will be checked during the sbt build. Hence stay tuned and read the log-files.
 
 In principle it is possible to use the IcoBoard together with a Raspberry PI to run J1Sc. In the case you do this, please send me (EMail: streit@streit.cc) the needed steps, because I don´t have / use this configuration.
 
