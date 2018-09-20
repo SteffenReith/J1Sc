@@ -23,11 +23,11 @@ lazy val icoGen    = taskKey[Unit]("Generate Verilog and VHDL code using SpinalH
 lazy val nexys4Gen = taskKey[Unit]("Generate Verilog code using SpinalHDL for an IcoBoard")
 lazy val icoSynth  = taskKey[Unit]("Synthesize Verilog with yosys")
 lazy val icoPnr    = taskKey[Unit]("Place and route with Icestorm toolchain")
-lazy val iceClean  = taskKey[Unit]("Delete all files produced by the build (sources, classes, caches, etc)")
+lazy val cleanAll  = taskKey[Unit]("Delete all files produced by the build (sources, classes, caches, etc)")
 lazy val icoProg   = taskKey[Unit]("Send the bit-file to an attached ico-board")
 
 // Clean all generated files
-iceClean := {
+cleanAll := {
 
   val baseDir       = baseDirectory.value
   val icoTop        = icoToplevel.value
