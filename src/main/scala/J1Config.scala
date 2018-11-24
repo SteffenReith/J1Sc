@@ -74,6 +74,8 @@ object TimerConfig {
 case class J1Config (wordSize : Int,
                      dataStackIdxWidth : Int,
                      returnStackIdxWidth : Int,
+                     hasJtag : Boolean,
+                     jtagConfig : JTAGConfig,
                      timerConfig : TimerConfig,
                      irqConfig : IRQCtrlConfig,
                      adrWidth : Int,
@@ -257,6 +259,7 @@ object J1Config {
     def wordSize               = 16
     def dataStackIdxWidth      =  8
     def returnStackIdxWidth    =  4
+    def hasJtag                =  true
     def noOfInterrupts         =  8
     def noOfInternalInterrupts =  1
     def irqLatency             =  3
@@ -266,6 +269,9 @@ object J1Config {
 
     // Default timer configuration
     val timerConfig = TimerConfig.default
+
+    // Default jtag configuration
+    val jtagConfig = JTAGConfig.default
 
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
@@ -278,6 +284,8 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          hasJtag             = hasJtag,
+                          jtagConfig          = jtagConfig,
                           timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
@@ -297,6 +305,7 @@ object J1Config {
     def wordSize               = 16
     def dataStackIdxWidth      =  5
     def returnStackIdxWidth    =  4
+    def hasJtag                =  true
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def irqLatency             =  3
@@ -306,6 +315,9 @@ object J1Config {
 
     // Default timer configuration
     val timerConfig = TimerConfig.default
+
+    // Default jtag configuration
+    val jtagConfig = JTAGConfig.default
 
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
@@ -321,6 +333,8 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          hasJtag             = hasJtag,
+                          jtagConfig          = jtagConfig,
                           timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
@@ -339,6 +353,7 @@ object J1Config {
     def wordSize               = 16
     def dataStackIdxWidth      =  5
     def returnStackIdxWidth    =  4
+    def hasJtag                =  true
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def irqLatency             =  3
@@ -348,6 +363,9 @@ object J1Config {
 
     // Default timer configuration
     val timerConfig = TimerConfig.default
+
+    // Default jtag configuration
+    val jtagConfig = JTAGConfig.default
 
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
@@ -359,6 +377,8 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          hasJtag             = hasJtag,
+                          jtagConfig          = jtagConfig,
                           timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
@@ -377,6 +397,7 @@ object J1Config {
     def wordSize               = 16
     def dataStackIdxWidth      =  5
     def returnStackIdxWidth    =  4
+    def hasJtag                =  true
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def irqLatency             =  3
@@ -386,6 +407,9 @@ object J1Config {
 
     // Default timer configuration
     val timerConfig = TimerConfig.default
+
+    // Default jtag configuration
+    val jtagConfig = JTAGConfig.default
 
     // IRQ controller parameters (enable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
@@ -401,6 +425,8 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          hasJtag             = hasJtag,
+                          jtagConfig          = jtagConfig,
                           timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,
@@ -419,6 +445,7 @@ object J1Config {
     def wordSize               = 16
     def dataStackIdxWidth      =  5
     def returnStackIdxWidth    =  5
+    def hasJtag                =  true
     def noOfInterrupts         =  4
     def noOfInternalInterrupts =  3
     def irqLatency             =  3
@@ -428,6 +455,9 @@ object J1Config {
 
     // Default timer configuration
     val timerConfig = TimerConfig.default
+
+    // Default jtag configuration
+    val jtagConfig = JTAGConfig.default
 
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
@@ -442,6 +472,8 @@ object J1Config {
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
+                          hasJtag             = hasJtag,
+                          jtagConfig          = jtagConfig,
                           timerConfig         = timerConfig,
                           irqConfig           = irqConfig,
                           adrWidth            = adrWidth,

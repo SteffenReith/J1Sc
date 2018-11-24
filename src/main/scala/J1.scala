@@ -28,11 +28,41 @@ class J1(cfg : J1Config) extends Component {
 
   }.setName("")
 
+  // Check whether we need a jtag
+  if (cfg.hasJtag) {
+
+    // I/O signal for the jtag interface
+    val jtag = new Bundle {
+
+      // JTAG data input
+      val tdi = in Bool
+
+      // JTAG data output
+      val tdo = out Bool
+
+      // Control for the JTAG TAP
+      val tms = in Bool
+
+      // The JTAG clock (the signal tdi, tdo and tms are synchron to this clock)
+      val tck = in Bool
+
+    }.setName("")
+
+  }
+
   // Create a new CPU core
   val coreJ1CPU = new J1Core(cfg)
 
   // Create the main memory
   val mainMem = new MainMemory(cfg)
+
+  // Check whether we need a jtag interface
+  if (cfg.hasJtag) {
+
+    // Create a JTAG interface if needed
+    val jtagInterface = new JTAG(cfg.jtagConfig)
+
+  }
 
   // Instruction port (read only)
   mainMem.internal.readDataAdr <> coreJ1CPU.internal.nextInstrAdr
