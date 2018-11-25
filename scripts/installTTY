@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DEST=/lib/modules/`uname -r`/kernel/drivers/misc
+
+(cd tty0tty && make clean && make) 
+
+echo Copy module to $DEST
+sudo cp tty0tty/module/tty0tty.ko $DEST
+
+sudo depmod -a
+
+
