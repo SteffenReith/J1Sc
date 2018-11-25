@@ -15,8 +15,8 @@ class J1(cfg : J1Config) extends Component {
   val internal = new Bundle {
 
     // Interface for the interrupt system
-    val irq    = in Bool
-    val intVec = in Bits(cfg.adrWidth bits)
+    val irq = in Bool
+    val intVec = in Bits (cfg.adrWidth bits)
 
   }.setName("")
 
@@ -28,11 +28,11 @@ class J1(cfg : J1Config) extends Component {
 
   }.setName("")
 
-  // Check whether we need a jtag
-  if (cfg.hasJtag) {
+  // I/O signal for the jtag interface
+  val jtagTap = if (cfg.hasJtag) {
 
-    // I/O signal for the jtag interface
-    val jtag = new Bundle {
+    // Create the interface bundle
+    new Bundle {
 
       // JTAG data input
       val tdi = in Bool
@@ -48,6 +48,11 @@ class J1(cfg : J1Config) extends Component {
 
     }.setName("")
 
+  } else {
+
+    // The jtag is not needed
+    null
+
   }
 
   // Create a new CPU core
@@ -60,18 +65,24 @@ class J1(cfg : J1Config) extends Component {
   if (cfg.hasJtag) {
 
     // Create a JTAG interface if needed
-    val jtagInterface = new JTAG(cfg.jtagConfig)
+    val coreJtag = new JTAG(cfg.jtagConfig)
+
+    // Connect the jtag interface
+    coreJtag.jtagIO.tdi <> jtagTap.tdi
+    jtagTap.tdo         <> coreJtag.jtagIO.tdo
+    coreJtag.jtagIO.tms <> jtagTap.tms
+    coreJtag.jtagIO.tck <> jtagTap.tck
 
   }
 
   // Instruction port (read only)
   mainMem.internal.readDataAdr <> coreJ1CPU.internal.nextInstrAdr
-  coreJ1CPU.internal.memInstr <> mainMem.internal.readData
+  coreJ1CPU.internal.memInstr  <> mainMem.internal.readData
 
   // Connect the CPU core with the main memory (convert the byte address to a cell address)
-  mainMem.internal.writeEnable <> coreJ1CPU.internal.memWriteMode
+  mainMem.internal.writeEnable  <> coreJ1CPU.internal.memWriteMode
   mainMem.internal.writeDataAdr <> coreJ1CPU.internal.extAdr(cfg.adrWidth downto 1)
-  mainMem.internal.writeData <> coreJ1CPU.internal.extToWrite
+  mainMem.internal.writeData    <> coreJ1CPU.internal.extToWrite
 
   // Check whether data should be read for I/O space else provide a constant zero value
   val coreMemRead = coreJ1CPU.internal.ioReadMode ? bus.cpuBus.readData | B(0, cfg.wordSize bits)
