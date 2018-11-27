@@ -9,7 +9,8 @@
 import spinal.core._
 import spinal.lib.fsm._
 
-class JTAG(jtagConfig : JTAGConfig) extends Component {
+class JTAG(j1Cfg   : J1Config,
+           jtagCfg : JTAGConfig) extends Component {
 
   // Signals used for the JTAG interface
   val jtagIO = new Bundle {
@@ -34,9 +35,36 @@ class JTAG(jtagConfig : JTAGConfig) extends Component {
   // Create the clock area used for the JTAG
   val jtagArea = new ClockingArea(jtagClockDomain) {
 
-    // The JTAG data and instruction register
-    val dataReg = Reg(Bits(jtagConfig.drWidth bits))
-    val instructionReg = Reg(Bits(jtagConfig.irWidth bits))
+    // List of all implemented JTAG-commands (format Name x ID x Width)
+    val jtagCommands = ("BYPASS", B(jtagCfg.irWidth bits, default -> True), 1) :: (
+                       ("IDCODE", B(1, jtagCfg.irWidth bits), j1Cfg.wordSize) :: Nil)
+
+    // The JTAG instruction register
+    val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits))
+    val instructionReg = Reg(Bits(jtagCfg.irWidth bits))
+
+    // For all JTAG instructions
+    val dataRegs = Vec(for((name,_,width) <- jtagCommands) yield {
+
+      // Write a message
+      println("[J1Sc]   Create register for JTAG command " +
+              name +
+              " (Width is " +
+              width +
+              " bits)")
+
+      // Create the corresponding data register
+      Reg(Bits(width bits))
+
+    })
+
+    // For all JTAG instructions
+    val dataShiftRegs = Vec(for((_,_,width) <- jtagCommands) yield {
+
+      // Create the corresponding data register
+      Reg(Bits(width bits))
+
+    })
 
     // Create the JTAG FSM (see https://www.fpga4fun.com/JTAG2.html)
     val jtagFSM = new StateMachine {
@@ -79,7 +107,7 @@ class JTAG(jtagConfig : JTAGConfig) extends Component {
       shiftDR.whenIsActive {
 
         // Add data to shift register
-        dataReg := instructionReg(dataReg.high - 1 downto 0) ## jtagIO.tdi
+        //dataReg := instructionReg(dataReg.high - 1 downto 0) ## jtagIO.tdi
 
         // Define the transition function for this state
         when(jtagIO.tms) {goto(exit1DR)} otherwise{goto(shiftDR)}
@@ -88,20 +116,40 @@ class JTAG(jtagConfig : JTAGConfig) extends Component {
 
       // Define the transisition function for states related to the instruction register
       selectIRScan.whenIsActive{when(jtagIO.tms) {goto(testLogicReset)} otherwise{goto(captureIR)}}
-      captureIR.whenIsActive{when(jtagIO.tms) {goto(exit1IR)} otherwise{goto(shiftIR)}}
       exit1IR.whenIsActive{when(jtagIO.tms) {goto(updateIR)} otherwise{goto(pauseIR)}}
       pauseIR.whenIsActive{when(jtagIO.tms) {goto(exit2IR)} otherwise{goto(pauseIR)}}
       exit2IR.whenIsActive{when(jtagIO.tms) {goto(updateIR)} otherwise{goto(shiftIR)}}
-      updateIR.whenIsActive{when(jtagIO.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}}
 
-      // Handle the instruction shift-register
+      // Handle the capture of the instruction register
+      captureIR.whenIsActive {
+
+        // Capture the current instruction into the instruction shift register
+        instructionShiftReg := instructionReg
+
+        // Define the transition function for this state
+        when(jtagIO.tms) {goto(exit1IR)} otherwise{goto(shiftIR)}
+
+      }
+
+      // Handle the shift-register
       shiftIR.whenIsActive {
 
         // Add data to shift register
-        instructionReg := instructionReg(instructionReg.high - 1 downto 0) ## jtagIO.tdi
+        instructionShiftReg := (jtagIO.tdi ## instructionReg) >> 1
 
         // Define the transition function for the this state
         when(jtagIO.tms) {goto(exit1IR)} otherwise{goto(shiftIR)}
+
+      }
+
+      // Move the next instruction (received in the shift register) to the instruction register
+      updateIR.whenIsActive {
+
+        // Copy data from shift register to the instruction register
+        instructionReg := instructionShiftReg
+
+        // Define the transition function for the this state
+        when(jtagIO.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}
 
       }
 

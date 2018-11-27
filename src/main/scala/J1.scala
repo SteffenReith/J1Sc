@@ -65,7 +65,7 @@ class J1(cfg : J1Config) extends Component {
   if (cfg.hasJtag) {
 
     // Create a JTAG interface if needed
-    val coreJtag = new JTAG(cfg.jtagConfig)
+    val coreJtag = new JTAG(cfg, cfg.jtagConfig)
 
     // Connect the jtag interface
     coreJtag.jtagIO.tdi <> jtagTap.tdi
