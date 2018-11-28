@@ -95,7 +95,7 @@ class JTAG(j1Cfg   : J1Config,
       testLogicReset.whenIsActive{when(jtagIO.tms) {goto(testLogicReset)} otherwise{goto(runTestIdle)}}
       runTestIdle.whenIsActive{when(jtagIO.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}}
 
-      // Define the transisition function for states related to the data register
+      // Define the transition function for states related to the data register
       selectDRScan.whenIsActive{when(jtagIO.tms) {goto(selectIRScan)} otherwise{goto(captureDR)}}
       exit1DR.whenIsActive{when(jtagIO.tms) {goto(updateDR)} otherwise{goto(pauseDR)}}
       pauseDR.whenIsActive{when(jtagIO.tms) {goto(exit2DR)} otherwise{goto(pauseDR)}}
