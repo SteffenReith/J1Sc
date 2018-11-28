@@ -97,20 +97,65 @@ class JTAG(j1Cfg   : J1Config,
 
       // Define the transisition function for states related to the data register
       selectDRScan.whenIsActive{when(jtagIO.tms) {goto(selectIRScan)} otherwise{goto(captureDR)}}
-      captureDR.whenIsActive{when(jtagIO.tms) {goto(exit1DR)} otherwise{goto(shiftDR)}}
       exit1DR.whenIsActive{when(jtagIO.tms) {goto(updateDR)} otherwise{goto(pauseDR)}}
       pauseDR.whenIsActive{when(jtagIO.tms) {goto(exit2DR)} otherwise{goto(pauseDR)}}
       exit2DR.whenIsActive{when(jtagIO.tms) {goto(updateDR)} otherwise{goto(shiftDR)}}
-      updateDR.whenIsActive{when(jtagIO.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}}
+
+      // Handle the capture of all data registers
+      captureDR.whenIsActive {
+
+        // Generate code of all JTAG data registers
+        for(((name, id, width), i) <- jtagCommands.zipWithIndex) {
+
+          // Generate decoder for the ith data register
+          when(instructionReg === id) {
+
+            // Capture the ith data register
+            dataShiftRegs(i) := dataRegs(i)
+
+          }
+
+        }
+
+        // Define the transition function for this state
+        when(jtagIO.tms) {goto(exit1DR)} otherwise{goto(shiftDR)}
+
+      }
 
       // Handle the data shift-register
       shiftDR.whenIsActive {
 
-        // Add data to shift register
-        //dataReg := instructionReg(dataReg.high - 1 downto 0) ## jtagIO.tdi
+        // Generate code of all JTAG data shift registers
+        for(((name, id, width), i) <- jtagCommands.zipWithIndex) {
+
+          // Add data to ith shift register
+          dataShiftRegs(i) := (jtagIO.tdi ## dataShiftRegs(i)) >> 1
+
+        }
 
         // Define the transition function for this state
         when(jtagIO.tms) {goto(exit1DR)} otherwise{goto(shiftDR)}
+
+      }
+
+      // Move the received data for the shift register to data register
+      updateDR.whenIsActive {
+
+        // Generate code of all JTAG data registers
+        for(((name, id, width), i) <- jtagCommands.zipWithIndex) {
+
+          // Generate decoder for the ith data register
+          when(instructionReg === id) {
+
+            // Update the ith data register
+            dataRegs(i) := dataShiftRegs(i)
+
+          }
+
+        }
+
+        // Define the transition function for the this state
+        when(jtagIO.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}
 
       }
 
@@ -135,7 +180,7 @@ class JTAG(j1Cfg   : J1Config,
       shiftIR.whenIsActive {
 
         // Add data to shift register
-        instructionShiftReg := (jtagIO.tdi ## instructionReg) >> 1
+        instructionShiftReg := (jtagIO.tdi ## instructionShiftReg) >> 1
 
         // Define the transition function for the this state
         when(jtagIO.tms) {goto(exit1IR)} otherwise{goto(shiftIR)}
