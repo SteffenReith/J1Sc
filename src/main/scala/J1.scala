@@ -28,8 +28,8 @@ class J1(cfg : J1Config) extends Component {
 
   }.setName("")
 
-  // I/O signal for the jtag interface
-  val jtagTap = if (cfg.hasJtag) {
+  // I/O signal for the jtag interface (if needed)
+  val jtagTap = cfg.hasJtag generate {
 
     // Create the interface bundle
     new Bundle {
@@ -48,11 +48,6 @@ class J1(cfg : J1Config) extends Component {
 
     }.setName("")
 
-  } else {
-
-    // The jtag is not needed
-    null
-
   }
 
   // Create a new CPU core
@@ -62,7 +57,7 @@ class J1(cfg : J1Config) extends Component {
   val mainMem = new MainMemory(cfg)
 
   // Check whether we need a jtag interface
-  if (cfg.hasJtag) {
+  cfg.hasJtag generate {
 
     // Create a JTAG interface if needed
     val coreJtag = new JTAG(cfg, cfg.jtagConfig)
