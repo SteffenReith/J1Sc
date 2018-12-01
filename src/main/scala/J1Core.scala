@@ -146,11 +146,11 @@ class J1Core(cfg : J1Config) extends Component {
   }
 
   // Internal condition flags
-  val funcTtoN     = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
-  val funcTtoR     = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
-  val funcWriteMem = (instr(6 downto 4).asUInt === 3) // Write to RAM
-  val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O write operation
-  val funcReadIO   = (instr(6 downto 4).asUInt === 5) // I/O read operation
+  val funcTtoN     = instr(6 downto 4).asUInt === 1 // Copy DTOS to DNOS
+  val funcTtoR     = instr(6 downto 4).asUInt === 2 // Copy DTOS to return stack
+  val funcWriteMem = instr(6 downto 4).asUInt === 3 // Write to RAM
+  val funcWriteIO  = instr(6 downto 4).asUInt === 4 // I/O write operation
+  val funcReadIO   = instr(6 downto 4).asUInt === 5 // I/O read operation
   val isALU        = !pc.msb && (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Signals for handling external memory
