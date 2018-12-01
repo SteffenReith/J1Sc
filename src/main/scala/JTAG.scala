@@ -35,31 +35,40 @@ class JTAG(j1Cfg   : J1Config,
   // Create the clock area used for the JTAG
   val jtagArea = new ClockingArea(jtagClockDomain) {
 
-    // List of all implemented JTAG-commands (format Name x ID x Width)
-    val jtagCommands = ("BYPASS", B(jtagCfg.irWidth bits, default -> True), 1) :: (
-                       ("IDCODE", B(1, jtagCfg.irWidth bits), j1Cfg.wordSize) :: Nil)
+    // Patterns to check whether a JTAG command has a read, write or read/write semantic
+    val readModePattern = ".*r.*"
+    val writeModePattern = ".*w.*"
+
+    val bypassCmd = ("BYPASS", B(jtagCfg.irWidth bits, default -> True), 1,              "rw") :: Nil
+    val idcodeCmd = ("IDCODE", B(1, jtagCfg.irWidth bits),               j1Cfg.wordSize, " r") :: Nil
+    val haltCmd   = ("HALT",   B(2, jtagCfg.irWidth bits),               1,              "rw") :: Nil
+
+    // List of all implemented JTAG-commands (format Name x ID x Width x Mode), where BYPASS is mandatory
+    val jtagCommands = bypassCmd ::: idcodeCmd ::: haltCmd
 
     // The JTAG instruction register
     val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits))
     val instructionReg = Reg(Bits(jtagCfg.irWidth bits))
 
-    // For all JTAG instructions
-    val dataRegs = Vec(for((name,_,width) <- jtagCommands) yield {
+    // For all JTAG instructions which needs a data register
+    val dataRegs = Vec(for((name, _, width, mode) <- jtagCommands) yield {
 
       // Write a message
       println("[J1Sc]   Create register for JTAG command " +
               name +
               " (Width is " +
               width +
-              " bits)")
+              " bits) with mode >>" +
+              mode +
+              "<<")
 
-      // Create the corresponding data register
-      Reg(Bits(width bits))
+        // Create the corresponding data register
+        Reg(Bits(width bits))
 
     })
 
     // For all JTAG instructions
-    val dataShiftRegs = Vec(for((_,_,width) <- jtagCommands) yield {
+    val dataShiftRegs = Vec(for((_, _, width, _) <- jtagCommands) yield {
 
       // Create the corresponding data register
       Reg(Bits(width bits))
@@ -101,17 +110,22 @@ class JTAG(j1Cfg   : J1Config,
       pauseDR.whenIsActive{when(jtagIO.tms) {goto(exit2DR)} otherwise{goto(pauseDR)}}
       exit2DR.whenIsActive{when(jtagIO.tms) {goto(updateDR)} otherwise{goto(shiftDR)}}
 
-      // Handle the capture of all data registers
+      // Handle the capture of all data registers (copy content of data register to the corresponding shift register)
       captureDR.whenIsActive {
 
         // Generate code of all JTAG data registers
-        for(((name, id, width), i) <- jtagCommands.zipWithIndex) {
+        for(((name, id, width, mode), i) <- jtagCommands.zipWithIndex) {
 
-          // Generate decoder for the ith data register
-          when(instructionReg === id) {
+          // Check for read mode
+          if(mode.matches(readModePattern)) {
 
-            // Capture the ith data register
-            dataShiftRegs(i) := dataRegs(i)
+            // Generate decoder for the ith data register
+            when(instructionReg === id) {
+
+              // Capture the ith data register
+              dataShiftRegs(i) := dataRegs(i)
+
+            }
 
           }
 
@@ -126,7 +140,7 @@ class JTAG(j1Cfg   : J1Config,
       shiftDR.whenIsActive {
 
         // Generate code of all JTAG data shift registers
-        for(((name, id, width), i) <- jtagCommands.zipWithIndex) {
+        for(((name, id, width, _), i) <- jtagCommands.zipWithIndex) {
 
           // Add data to ith shift register
           dataShiftRegs(i) := (jtagIO.tdi ## dataShiftRegs(i)) >> 1
@@ -142,13 +156,18 @@ class JTAG(j1Cfg   : J1Config,
       updateDR.whenIsActive {
 
         // Generate code of all JTAG data registers
-        for(((name, id, width), i) <- jtagCommands.zipWithIndex) {
+        for(((name, id, width, mode), i) <- jtagCommands.zipWithIndex) {
 
-          // Generate decoder for the ith data register
-          when(instructionReg === id) {
+          // Check for write mode
+          if(mode.matches(writeModePattern)) {
 
-            // Update the ith data register
-            dataRegs(i) := dataShiftRegs(i)
+            // Generate decoder for the ith data register
+            when(instructionReg === id) {
+
+              // Update the ith data register
+              dataRegs(i) := dataShiftRegs(i)
+
+            }
 
           }
 
