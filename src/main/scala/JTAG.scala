@@ -7,6 +7,7 @@
  *
  */
 import spinal.core._
+import spinal.lib._
 import spinal.lib.fsm._
 
 class JTAG(j1Cfg   : J1Config,
@@ -29,6 +30,14 @@ class JTAG(j1Cfg   : J1Config,
 
   }.setName("")
 
+  // All internal signals
+  val internal = new Bundle {
+
+    // Indicate that the CPU has to halted
+    val halt = out Bool
+
+  }.setName("")
+
   // Create a clockdomain which is synchron to tck but used a global synchron reset
   val jtagClockDomain = ClockDomain(clock = jtagIO.tck, reset = ClockDomain.current.reset)
 
@@ -39,12 +48,13 @@ class JTAG(j1Cfg   : J1Config,
     val readModePattern = ".*r.*"
     val writeModePattern = ".*w.*"
 
-    val bypassCmd = ("BYPASS", B(jtagCfg.irWidth bits, default -> True), 1,              "rw") :: Nil
-    val idcodeCmd = ("IDCODE", B(1, jtagCfg.irWidth bits),               j1Cfg.wordSize, " r") :: Nil
-    val haltCmd   = ("HALT",   B(2, jtagCfg.irWidth bits),               1,              "rw") :: Nil
+    // JTAG-command to be implemented (format Name x ID x Width x Mode)
+    val bypassCmd = ("BYPASS", B(jtagCfg.irWidth bits, default -> True), 1,              "rw")
+    val idcodeCmd = ("IDCODE", B(1, jtagCfg.irWidth bits),               j1Cfg.wordSize, " r")
+    val haltCmd   = ("HALT",   B(2, jtagCfg.irWidth bits),               1,              "rw")
 
-    // List of all implemented JTAG-commands (format Name x ID x Width x Mode), where BYPASS is mandatory
-    val jtagCommands = bypassCmd ::: idcodeCmd ::: haltCmd
+    // List of all implemented JTAG-commands, where BYPASS is mandatory
+    val jtagCommands = (bypassCmd :: (idcodeCmd :: (haltCmd :: Nil)))
 
     // The JTAG instruction register
     val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits))
@@ -101,7 +111,15 @@ class JTAG(j1Cfg   : J1Config,
       val updateIR       = new State
 
       // Handle idle and reset state of the JTAG fsm
-      testLogicReset.whenIsActive{when(jtagIO.tms) {goto(testLogicReset)} otherwise{goto(runTestIdle)}}
+      testLogicReset.whenIsActive{
+
+        // Init the HALT data register
+        dataRegs(jtagCommands.indexOf(haltCmd))(0) := False
+
+        // Implement the transition logic
+        when(jtagIO.tms) {goto(testLogicReset)} otherwise{goto(runTestIdle)}
+
+      }
       runTestIdle.whenIsActive{when(jtagIO.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}}
 
       // Define the transition function for states related to the data register
@@ -220,5 +238,8 @@ class JTAG(j1Cfg   : J1Config,
     }
 
   }
+
+  // Find the data register of HALT, do a clock domain crossing and provide this information externally
+  internal.halt := BufferCC(jtagArea.dataRegs(jtagArea.jtagCommands.indexOf(jtagArea.haltCmd))(0))
 
 }

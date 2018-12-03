@@ -15,7 +15,7 @@ class J1(cfg : J1Config) extends Component {
   val internal = new Bundle {
 
     // Interface for the interrupt system
-    val irq = in Bool
+    val irq    = in Bool
     val intVec = in Bits (cfg.adrWidth bits)
 
   }.setName("")
@@ -29,10 +29,10 @@ class J1(cfg : J1Config) extends Component {
   }.setName("")
 
   // I/O signal for the jtag interface (if needed)
-  val jtagTap = cfg.hasJtag generate {
+  val jtagArea = cfg.hasJtag generate new Area {
 
     // Create the interface bundle
-    new Bundle {
+    val jtag = new Bundle {
 
       // JTAG data input
       val tdi = in Bool
@@ -57,16 +57,24 @@ class J1(cfg : J1Config) extends Component {
   val mainMem = new MainMemory(cfg)
 
   // Check whether we need a jtag interface
-  cfg.hasJtag generate {
+  val jtagIface = if (cfg.hasJtag) new Area {
 
     // Create a JTAG interface if needed
     val coreJtag = new JTAG(cfg, cfg.jtagConfig)
 
     // Connect the jtag interface
-    coreJtag.jtagIO.tdi <> jtagTap.tdi
-    jtagTap.tdo         <> coreJtag.jtagIO.tdo
-    coreJtag.jtagIO.tms <> jtagTap.tms
-    coreJtag.jtagIO.tck <> jtagTap.tck
+    coreJtag.jtagIO.tdi <> jtagArea.jtag.tdi
+    jtagArea.jtag.tdo   <> coreJtag.jtagIO.tdo
+    coreJtag.jtagIO.tms <> jtagArea.jtag.tms
+    coreJtag.jtagIO.tck <> jtagArea.jtag.tck
+
+    // Connect the CPU stall with the HALT JTAG data register
+    coreJ1CPU.internal.stall <> coreJtag.internal.halt
+
+  } else new Area {
+
+    // Simply disable the stall by default
+    coreJ1CPU.internal.stall := False
 
   }
 
@@ -93,9 +101,6 @@ class J1(cfg : J1Config) extends Component {
 
   // Connect the interrupts
   coreJ1CPU.internal.intVec <> internal.intVec
-  coreJ1CPU.internal.irq <> internal.irq
-
-  // Disable the stall
-  coreJ1CPU.internal.stall := False
+  coreJ1CPU.internal.irq    <> internal.irq
 
 }
