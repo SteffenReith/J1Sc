@@ -96,7 +96,7 @@ icoGen := {
 // Do synthesize step
 icoSynth :=  {
 
-  // Synthesize the project first
+  // Generate the project first
   icoGen.value
 
   val toplevel = icoToplevel.value

@@ -19,7 +19,7 @@ class GPIO(gpioCfg : GPIOConfig) extends Component {
 
   }
 
-  // Signal used for the internal bus
+  // Signals used for the internal bus
   val bus = new Bundle {
 
     // Ports used for the direction register
