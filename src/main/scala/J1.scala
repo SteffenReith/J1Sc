@@ -29,7 +29,7 @@ class J1(cfg : J1Config) extends Component {
   }.setName("")
 
   // I/O signal for the jtag interface (if needed)
-  val jtagArea = cfg.hasJtag generate new Area {
+  val jtagCondIOArea = cfg.hasJtag generate new Area {
 
     // Create the interface bundle
     val jtag = new Bundle {
@@ -59,17 +59,17 @@ class J1(cfg : J1Config) extends Component {
   // Check whether we need a jtag interface
   val jtagIface = if (cfg.hasJtag) new Area {
 
-    // Create a JTAG interface if needed
-    val coreJtag = new JTAG(cfg, cfg.jtagConfig)
+    // Create a JTAG interface
+    val jtag = new JTAG(cfg, cfg.jtagConfig)
 
     // Connect the jtag interface
-    coreJtag.jtagIO.tdi <> jtagArea.jtag.tdi
-    jtagArea.jtag.tdo   <> coreJtag.jtagIO.tdo
-    coreJtag.jtagIO.tms <> jtagArea.jtag.tms
-    coreJtag.jtagIO.tck <> jtagArea.jtag.tck
+    jtag.io.tdi         <> jtagCondIOArea.jtag.tdi
+    jtagCondIOArea.jtag.tdo <> jtag.io.tdo
+    jtag.io.tms         <> jtagCondIOArea.jtag.tms
+    jtag.io.tck         <> jtagCondIOArea.jtag.tck
 
     // Connect the CPU stall with the HALT JTAG data register
-    coreJ1CPU.internal.stall <> coreJtag.internal.halt
+    coreJ1CPU.internal.stall <> jtag.internal.halt
 
   } else new Area {
 
