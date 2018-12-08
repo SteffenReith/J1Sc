@@ -10,8 +10,8 @@ import spinal.core._
 import spinal.lib._
 import spinal.lib.fsm._
 
-class JTAG(j1Cfg   : J1Config,
-           jtagCfg : JTAGConfig) extends Component {
+class J1Jtag(j1Cfg   : J1Config,
+             jtagCfg : JTAGConfig) extends Component {
 
   // Signals used for the JTAG interface
   val io = new Bundle {
@@ -44,18 +44,19 @@ class JTAG(j1Cfg   : J1Config,
   // Create the clock area used for the JTAG
   val jtagArea = new ClockingArea(jtagClockDomain) {
 
-    // Patterns to check whether a JTAG command has a read, write or read/write semantic
-    val readModePattern = ".*r.*"
-    val writeModePattern = ".*w.*"
+    // Patterns to check whether a JTAG command has a read, write or output constant semantic
+    val readModePattern     = ".*r.*"
+    val writeModePattern    = ".*w.*"
+    val constantModePattern = ".*c.*"
 
     // JTAG-command to be implemented (format Name x ID x Width x Mode)
     val bypassCmd = ("BYPASS", B(jtagCfg.irWidth bits, default -> True), 1,              "rw")
-    val idcodeCmd = ("IDCODE", B(1, jtagCfg.irWidth bits),               j1Cfg.wordSize, " r")
+    val idcodeCmd = ("IDCODE", B(1, jtagCfg.irWidth bits),               j1Cfg.wordSize, " c")
     val haltCmd   = ("HALT",   B(2, jtagCfg.irWidth bits),               1,              "rw")
 
-    // List of all implemented JTAG-commands, where BYPASS is mandatory
+    // List of all implemented JTAG-commands, where BYPASS is mandatory and has to be the first entry
     val jtagCommands = (bypassCmd :: (idcodeCmd :: (haltCmd :: Nil)))
-
+    
     // The JTAG instruction register
     val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits))
     val instructionReg = Reg(Bits(jtagCfg.irWidth bits))
@@ -85,11 +86,14 @@ class JTAG(j1Cfg   : J1Config,
 
     })
 
+
     // Create the JTAG FSM (see https://www.fpga4fun.com/JTAG2.html)
     val jtagFSM = new StateMachine {
 
-      // Idle and reset of the JTAG FSM
+      // Reset the FSM and init the registers if needed
       val testLogicReset = new State with EntryPoint
+
+      // Idle the JTAG FSM
       val runTestIdle    = new State
 
       // States related to the data register
@@ -110,11 +114,15 @@ class JTAG(j1Cfg   : J1Config,
       val exit2IR        = new State
       val updateIR       = new State
 
-      // Handle idle and reset state of the JTAG fsm
+      // Handle idle and reset state of the JTAG FSM
       testLogicReset.whenIsActive{
 
         // Init the HALT data register
         dataRegs(jtagCommands.indexOf(haltCmd))(0) := False
+        dataShiftRegs(jtagCommands.indexOf(haltCmd))(0) := False
+
+        // Init the register for the idcode command
+        dataShiftRegs(jtagCommands.indexOf(idcodeCmd)) := B(jtagCfg.idCodeValue)
 
         // Implement the transition logic
         when(io.tms) {goto(testLogicReset)} otherwise{goto(runTestIdle)}
@@ -132,7 +140,7 @@ class JTAG(j1Cfg   : J1Config,
       captureDR.whenIsActive {
 
         // Generate decoders for all JTAG data registers
-        for(((name, id, width, mode), i) <- jtagCommands.zipWithIndex) {
+        for(((_, id, _, mode), i) <- jtagCommands.zipWithIndex) {
 
           // Check whether we need a read mode
           if(mode.matches(readModePattern)) {
@@ -221,6 +229,9 @@ class JTAG(j1Cfg   : J1Config,
       // Handle the shift-register
       shiftIR.whenIsActive {
 
+        // Feed lsb of instruction register to tdo
+        io.tdo := instructionShiftReg.lsb
+
         // Add data to shift register
         instructionShiftReg := (io.tdi ## instructionShiftReg) >> 1
 
@@ -242,9 +253,23 @@ class JTAG(j1Cfg   : J1Config,
 
     }
 
-  }
+    // Avoid a latch and feed the lsb of BYPASS to tdo
+    io.tdo := dataShiftRegs(0).lsb
 
-  io.tdo := jtagArea.dataShiftRegs(0).lsb
+    // Generate code of all JTAG data shift registers
+    for(((_ ,id ,_ ,_), i) <- jtagCommands.zipWithIndex) {
+
+      // check whether the command with id is a active
+      when (instructionReg === id) {
+
+        // Add data to ith shift register
+        io.tdo := dataShiftRegs(i).lsb
+
+      }
+
+    }
+
+  }
 
   // Find the data register of HALT, do a clock domain crossing and provide this information externally
   internal.halt := BufferCC(jtagArea.dataRegs(jtagArea.jtagCommands.indexOf(jtagArea.haltCmd))(0))

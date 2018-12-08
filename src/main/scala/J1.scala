@@ -60,7 +60,7 @@ class J1(cfg : J1Config) extends Component {
   val jtagIface = if (cfg.hasJtag) new Area {
 
     // Create a JTAG interface
-    val jtag = new JTAG(cfg, cfg.jtagConfig)
+    val jtag = new J1Jtag(cfg, cfg.jtagConfig)
 
     // Connect the jtag interface
     jtag.io.tdi         <> jtagCondIOArea.jtag.tdi

@@ -32,8 +32,9 @@ object IRQCtrlConfig {
 }
 
 // Configuration used for the JTAG interface
-case class JTAGConfig(drWidth : Int,
-                      irWidth : Int)
+case class JTAGConfig(drWidth     : Int,
+                      irWidth     : Int,
+                      idCodeValue : Int)
 
 object JTAGConfig {
 
@@ -41,8 +42,9 @@ object JTAGConfig {
   def default : JTAGConfig = {
 
     // Set the default configuration values
-    val config = JTAGConfig(drWidth = 16,
-                            irWidth = 16)
+    val config = JTAGConfig(drWidth     = 16,
+                            irWidth     = 16,
+                            idCodeValue = 8128)
 
     // Return the default configuration
     config
@@ -60,7 +62,7 @@ object TimerConfig {
   // Provide a default configuration
   def default : TimerConfig = {
 
-    // Default configuration values
+    // Default configuration valuesf
     val config = TimerConfig(width = 32)
 
     // Return the default configuration
