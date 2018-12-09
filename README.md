@@ -6,13 +6,15 @@ To build the J1Sc you need first to create the VDHL / Verilog sources. The imple
 
 * Install a running Scala system and sbt
 
-* Clone the latest version of Spinal HDL
+* Clone the latest version of Spinal HDL (at least version 1.2.2)
    (see https://github.com/SpinalHDL/SpinalHDL)
 
 * Setup Spinal HDL
    (see http://spinalhdl.github.io/SpinalDoc/spinal_getting_started/)
 
 * Change directory to the new clone of SpinalHDL and run `sbt publish-local` inside
+
+* Clone J1Sc
 
 * Change directory to J1Sc
 
@@ -94,8 +96,8 @@ The latest versions for SpinalHDL (you need at least version 1.1.2) offer a comp
 
 * Clone and install the latest version of Verilator from http://git.veripool.org/git/verilator
 
-* Clone and install the latest version of tty0tty from https://github.com/freemed/tty0tty.git. Load the kernel module by `insmod tty0tty.ko`. You have to set the permission of `/dev/tnt0` and `/dev/tnt1` such that they are user read- and writeable.
-To make the installation permanently, install the kernel module according to your distribution (for Ubuntu 16.04.3 LTS ``cp tty0tty.ko /lib/modules/`uname -r`/kernel/drivers/misc`` and `depmod -a`). You can set the permissions of ´/dev/tnt0´ and ´/dev/tnt1´ by udev after every reboot automatically. For this see the udev-rule `55-tty-tnt.rules` in the directory `doc/udev`, modify it to your needs (e.g. the dialout group) and copy it e.g. to `/etc/udev/rules.d`.
+* Clone and install the latest version of tty0tty from https://github.com/SteffenReith/tty0tty.git. Load the kernel module by `insmod tty0tty.ko`. To make the installation permanent, install the kernel module according to your distribution (for Ubuntu 16.04.3 LTS ``cp tty0tty.ko /lib/modules/`uname -r`/kernel/drivers/misc`` and `depmod -a`). Alternatively you can update the tty0tty submodule by `git submodule update --init --recursive`. You can install the kernel-module by running `scripts/installTTY`.
+You have to set the permission of `/dev/tnt0` and `/dev/tnt1` such that they are user read- and writeable. You can set the permissions of ´/dev/tnt0´ and ´/dev/tnt1´ by udev after every reboot automatically. For this see the udev-rule `55-tty-tnt.rules` in the directory `doc/udev`, modify it to your needs (e.g. the dialout group) and copy it e.g. to `/etc/udev/rules.d`.
 
 * Go to your cloned J1Sc copy and type `cd toolchain/forth`
 
