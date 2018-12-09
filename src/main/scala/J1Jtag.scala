@@ -37,7 +37,19 @@ class J1Jtag(j1Cfg   : J1Config,
     val halt = out Bool
 
   }.setName("")
+<<<<<<< HEAD
   
+=======
+
+  // Create a register of width bits if condition createIt is true
+  def ConditionalCreateRegister(createIt : Boolean, width : BitCount)= {
+
+    // Check the condition
+    if (createIt) Reg(Bits(width)) else null
+
+  }
+
+>>>>>>> 2fb247d52058a2c8f1c122264e6f7dd499025655
   // Create a clockdomain which is synchron to tck but used a global synchron reset
   val jtagClockDomain = ClockDomain(clock = io.tck, reset = ClockDomain.current.reset)
 
@@ -73,8 +85,13 @@ class J1Jtag(j1Cfg   : J1Config,
               mode +
               "<<")
 
+<<<<<<< HEAD
       // Create the corresponding data register (if needed)
       Reg(Bits(width bits)).allowPruning()
+=======
+        // Create the corresponding data register
+        ConditionalCreateRegister(! mode.matches(constantModePattern), width bits)
+>>>>>>> 2fb247d52058a2c8f1c122264e6f7dd499025655
 
     })
 
@@ -143,7 +160,11 @@ class J1Jtag(j1Cfg   : J1Config,
         for (((_, id, _, mode), i) <- jtagCommands.zipWithIndex) {
 
           // Check whether we need a read mode
+<<<<<<< HEAD
           if (mode.matches(readModePattern) && !mode.matches(constantModePattern)) {
+=======
+          if (mode.matches(readModePattern)) {
+>>>>>>> 2fb247d52058a2c8f1c122264e6f7dd499025655
 
             // Generate decoder for the ith data register
             when (instructionReg === id) {
