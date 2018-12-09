@@ -37,7 +37,7 @@ class J1Jtag(j1Cfg   : J1Config,
     val halt = out Bool
 
   }.setName("")
-
+  
   // Create a clockdomain which is synchron to tck but used a global synchron reset
   val jtagClockDomain = ClockDomain(clock = io.tck, reset = ClockDomain.current.reset)
 
@@ -73,8 +73,8 @@ class J1Jtag(j1Cfg   : J1Config,
               mode +
               "<<")
 
-        // Create the corresponding data register
-        Reg(Bits(width bits))
+      // Create the corresponding data register (if needed)
+      Reg(Bits(width bits)).allowPruning()
 
     })
 
@@ -115,7 +115,7 @@ class J1Jtag(j1Cfg   : J1Config,
       val updateIR       = new State
 
       // Handle idle and reset state of the JTAG FSM
-      testLogicReset.whenIsActive{
+      testLogicReset.whenIsActive {
 
         // Init the HALT data register
         dataRegs(jtagCommands.indexOf(haltCmd))(0) := False
@@ -140,13 +140,13 @@ class J1Jtag(j1Cfg   : J1Config,
       captureDR.whenIsActive {
 
         // Generate decoders for all JTAG data registers
-        for(((_, id, _, mode), i) <- jtagCommands.zipWithIndex) {
+        for (((_, id, _, mode), i) <- jtagCommands.zipWithIndex) {
 
           // Check whether we need a read mode
-          if(mode.matches(readModePattern)) {
+          if (mode.matches(readModePattern) && !mode.matches(constantModePattern)) {
 
             // Generate decoder for the ith data register
-            when(instructionReg === id) {
+            when (instructionReg === id) {
 
               // Capture the ith data register
               dataShiftRegs(i) := dataRegs(i)
@@ -190,7 +190,7 @@ class J1Jtag(j1Cfg   : J1Config,
         for(((_,id ,_ ,mode), i) <- jtagCommands.zipWithIndex) {
 
           // Check whether we need a write mode access
-          if(mode.matches(writeModePattern)) {
+          if(mode.matches(writeModePattern) && !mode.matches(constantModePattern)) {
 
             // Generate decoder for the ith data register
             when (instructionReg === id) {
