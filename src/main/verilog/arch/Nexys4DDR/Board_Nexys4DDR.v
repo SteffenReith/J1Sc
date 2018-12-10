@@ -24,6 +24,10 @@ module Board_Nexys4DDR (nreset,
                         pmodA,
                         sSwitches,
                         pButtons,
+                        tck,
+                        tms,
+                        tdi,
+                        tdo,
                         rx,    
                         tx);
 	                
@@ -33,11 +37,15 @@ module Board_Nexys4DDR (nreset,
  input [0:0] extInt;
  input [15:0] sSwitches;  
  input [4:0] pButtons;
+ input tck;
+ input tms;
+ input tdi;
  input rx;
 
  // Output ports
  output [15:0] leds;
  output [5:0] rgbLeds;
+ output tdo;
  output tx;
  output segments_a;  
  output segments_b;  
@@ -90,6 +98,10 @@ module Board_Nexys4DDR (nreset,
                  .pmodA_writeEnable  (pmodA_writeEnable),
 	         .sSwitches          (sSwitches),
 	         .pButtons           (pButtons),
+                 .tck                (tck),
+                 .tms                (tms),
+                 .tdi                (tdi),
+                 .tdo                (tdo),
                  .rx                 (rx),
                  .tx                 (tx));
 
