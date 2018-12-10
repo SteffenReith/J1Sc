@@ -177,7 +177,7 @@ set_property  IOSTANDARD LVCMOS33 [get_ports {rx}]
 set_property  PACKAGE_PIN D4 [get_ports {tx}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {tx}]
 
-set_property  PACKAGE_PIN G14 [get_ports {extInt[0]}]
+set_property  PACKAGE_PIN K2 [get_ports {extInt[0]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {extInt[0]}]
 
 set_property PACKAGE_PIN B13 [get_ports {pmodA[0]}]
