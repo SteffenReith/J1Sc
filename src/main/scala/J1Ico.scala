@@ -36,7 +36,7 @@ class J1Ico(j1Cfg    : J1Config,
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
     // I/O pins for the UART
-    val rx = in Bool // UART input
+    val rx = in  Bool // UART input
     val tx = out Bool // UART output
 
   }.setName("")
