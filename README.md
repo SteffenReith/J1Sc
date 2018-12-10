@@ -65,13 +65,13 @@ Attach the [icoUSBBaseBoard](https://shop.trenz-electronic.de/en/TE0889-02-icoUS
 
 Clone and install the latest version of
 
-* yosys (https://github.com/cliffordwolf/yosys.git)
+* yosys (clone https://github.com/cliffordwolf/yosys.git)
 
-* Arachne-PNR (https://github.com/cseed/arachne-pnr.git)
+* next-pnr (clone https://github.com/YosysHQ/nextpnr.git)
 
-* IceStorm (https://github.com/cliffordwolf/icestorm.git)
+* IceStorm (clone https://github.com/cliffordwolf/icestorm.git)
 
-* IcoTools (https://github.com/cliffordwolf/icotools.git)
+* IcoTools (clone https://github.com/cliffordwolf/icotools.git)
 
 Now change to the cloned directory of J1Sc
 

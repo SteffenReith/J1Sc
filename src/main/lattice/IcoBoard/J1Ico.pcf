@@ -37,8 +37,8 @@ set_io --warn-no-port rx L7
 set_io --warn-no-port tx G5
 
 # JTAG connected to P4 (upper row of P4)
-set_io --warn-no-port tclk T15
-set_io --warn-no-port tms  T14
-set_io --warn-no-port tdi  T11
-set_io --warn-no-port tdo  R10
+set_io --warn-no-port tck T15
+set_io --warn-no-port tms T14
+set_io --warn-no-port tdi T11
+set_io --warn-no-port tdo R10
 

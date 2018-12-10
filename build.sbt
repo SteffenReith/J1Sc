@@ -44,6 +44,7 @@ cleanAll := {
   Process("rm" :: "-f" :: s"${verilogGenDir}/${icoTop}.asc" :: Nil, baseDir) !;
   Process("rm" :: "-f" :: s"${verilogGenDir}/${icoTop}.bin" :: Nil, baseDir) !;
   Process("rm" :: "-f" :: s"${verilogGenDir}/${icoTop}.blif" :: Nil, baseDir) !;
+  Process("rm" :: "-f" :: s"${verilogGenDir}/${icoTop}.json" :: Nil, baseDir) !; 
   Process("rm" :: "-f" :: "cpu0.yaml" :: Nil, baseDir) !;
   Process("rm" :: "-f" :: s"${verilogGenDir}/${icoTop}.v_toplevel_coreArea_cpu_mainMem_ramList_0.bin" :: Nil, baseDir) !;
   Process("rm" :: "-f" :: s"${verilogGenDir}/${icoTop}.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin" :: Nil, baseDir) !;
@@ -134,7 +135,7 @@ icoPnr := {
   println("[sbt-info] Do place, route, check and generate a bit-file using the IceStorm toolchain")
 
   // Do the place and route, check the result and generate a bit file
-  Process("arachne-pnr" :: "-p" :: s"${latticePath}/${toplevel}.pcf" :: "-d" :: "8k" :: "--max-passes" :: "600" :: s"${toplevel}.blif" :: "-o" :: s"${toplevel}.asc" :: Nil, outDir) !;
+  Process("nextpnr-ice40" :: "--pcf" :: s"${latticePath}/${toplevel}.pcf" :: "--hx8k" :: "--json" :: s"${outDir}/${toplevel}.json" :: "--asc" :: s"${toplevel}.asc" :: Nil, outDir) !;
   Process("icetime" :: "-tmd" :: "hx8k" :: "-c 40" :: s"${toplevel}.asc" :: Nil, outDir) !;
   Process("icepack" :: s"${toplevel}.asc" :: s"${toplevel}.bin" :: Nil, outDir) !;
 
