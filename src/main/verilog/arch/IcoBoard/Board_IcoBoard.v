@@ -69,14 +69,19 @@ module IcoBoard (reset,
              .rx                 (rx),
              .tx                 (tx));
 
-  // Connect the pmodA read port
-  assign pmodA_read = pmodA;
-
   // Generate the write port and equip it with tristate functionality
   genvar i;
   generate
      for (i = 0; i < 8; i = i + 1) begin
-	   assign pmodA[i] = pmodA_writeEnable[i] ? pmodA_write[i] : 1'bZ;
+
+	// Instantiate the ith tristate buffer
+	SB_IO #(.PIN_TYPE(6'b 1010_01),
+		.PULLUP(1'b 0)
+	       ) iobuf (
+		.PACKAGE_PIN(pmodA[i]),
+		.OUTPUT_ENABLE(pmodA_writeEnable[i]),
+                .D_OUT_0(pmodA_write[i]),
+                .D_IN_0(pmodA_read[i]));
      end
   endgenerate
   

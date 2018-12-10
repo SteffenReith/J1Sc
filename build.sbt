@@ -135,7 +135,7 @@ icoPnr := {
   println("[sbt-info] Do place, route, check and generate a bit-file using the IceStorm toolchain")
 
   // Do the place and route, check the result and generate a bit file
-  Process("nextpnr-ice40" :: "--pcf" :: s"${latticePath}/${toplevel}.pcf" :: "--hx8k" :: "--json" :: s"${outDir}/${toplevel}.json" :: "--asc" :: s"${toplevel}.asc" :: Nil, outDir) !;
+  Process("nextpnr-ice40" :: "--freq" :: "40" :: "--pcf" :: s"${latticePath}/${toplevel}.pcf" :: "--hx8k" :: "--package" :: "ct256" :: "--json" :: s"${outDir}/${toplevel}.json" :: "--asc" :: s"${toplevel}.asc" :: Nil, outDir) !;
   Process("icetime" :: "-tmd" :: "hx8k" :: "-c 40" :: s"${toplevel}.asc" :: Nil, outDir) !;
   Process("icepack" :: s"${toplevel}.asc" :: s"${toplevel}.bin" :: Nil, outDir) !;
 
