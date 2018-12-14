@@ -59,7 +59,7 @@ class J1Jtag(j1Cfg   : J1Config,
     
     // The JTAG instruction register
     val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits))
-    val instructionReg = Reg(Bits(jtagCfg.irWidth bits))
+    val instructionReg = Reg(Bits(jtagCfg.irWidth bits)) init(jtagCommands.indexOf(haltCmd))
 
     // For all JTAG instructions which needs a data register
     val dataRegs = Vec(for((name, _, width, mode) <- jtagCommands) yield {
