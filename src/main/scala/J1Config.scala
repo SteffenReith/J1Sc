@@ -43,7 +43,7 @@ object JTAGConfig {
 
     // Set the default configuration values
     val config = JTAGConfig(drWidth     = 16,
-                            irWidth     = 16,
+                            irWidth     =  5,
                             idCodeValue = 8128)
 
     // Return the default configuration
