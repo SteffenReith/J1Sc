@@ -50,19 +50,19 @@ class J1Jtag(j1Cfg   : J1Config,
     val constantModePattern = ".*c.*"
 
     // JTAG-command to be implemented (format Name x ID x Width x Mode)
-    val bypassCmd = ("BYPASS", B(jtagCfg.irWidth bits, default -> True), 1,              "rw")
-    val idcodeCmd = ("IDCODE", B(1, jtagCfg.irWidth bits),               j1Cfg.wordSize, " c")
-    val haltCmd   = ("HALT",   B(2, jtagCfg.irWidth bits),               1,              "rw")
+    val bypassCmd = ("BYPASS", B(jtagCfg.irWidth bits, default -> True),  1, "rw")
+    val idCodeCmd = ("IDCODE", B(1, jtagCfg.irWidth bits),               32, " c")
+    val haltCmd   = ("HALT",   B(2, jtagCfg.irWidth bits),                1, "rw")
 
     // List of all implemented JTAG-commands, where BYPASS is mandatory and has to be the first entry
-    val jtagCommands = (bypassCmd :: (idcodeCmd :: (haltCmd :: Nil)))
-    
+    val jtagCommands = (bypassCmd :: (idCodeCmd :: (haltCmd :: Nil)))
+
     // The JTAG instruction register
     val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits))
-    val instructionReg = Reg(Bits(jtagCfg.irWidth bits)) init(jtagCommands.indexOf(haltCmd))
+    val instructionHoldReg  = Reg(Bits(jtagCfg.irWidth bits))
 
     // For all JTAG instructions which needs a data register
-    val dataRegs = Vec(for((name, _, width, mode) <- jtagCommands) yield {
+    val dataHoldRegs = Vec(for((name, _, width, mode) <- jtagCommands) yield {
 
       // Write a message
       println("[J1Sc]   Create register for JTAG command " +
@@ -117,12 +117,11 @@ class J1Jtag(j1Cfg   : J1Config,
       // Handle idle and reset state of the JTAG FSM
       testLogicReset.whenIsActive {
 
-        // Init the HALT data register
-        dataRegs(jtagCommands.indexOf(haltCmd))(0) := False
-        dataShiftRegs(jtagCommands.indexOf(haltCmd))(0) := False
+        // Set the instruction register to idcode by default
+        instructionHoldReg := idCodeCmd._2
 
-        // Init the register for the idcode command
-        dataShiftRegs(jtagCommands.indexOf(idcodeCmd)) := B(jtagCfg.idCodeValue)
+        // Init the HALT data register
+        dataHoldRegs(jtagCommands.indexOf(haltCmd))(0) := False
 
         // Implement the transition logic
         when(io.tms) {goto(testLogicReset)} otherwise{goto(runTestIdle)}
@@ -146,10 +145,22 @@ class J1Jtag(j1Cfg   : J1Config,
           if (mode.matches(readModePattern) && !mode.matches(constantModePattern)) {
 
             // Generate decoder for the ith data register
-            when (instructionReg === id) {
+            when (instructionHoldReg === id) {
 
               // Capture the ith data register
-              dataShiftRegs(i) := dataRegs(i)
+              dataShiftRegs(i) := dataHoldRegs(i)
+
+            }
+
+          }
+
+          // Check whether we load a constant value
+          if (mode.matches(constantModePattern)) {
+
+            when (instructionHoldReg === id) {
+
+              // Init the register for the idcode command
+              dataShiftRegs(jtagCommands.indexOf(idCodeCmd)) := B(43)
 
             }
 
@@ -169,7 +180,7 @@ class J1Jtag(j1Cfg   : J1Config,
         for(((_ ,id ,_ ,_), i) <- jtagCommands.zipWithIndex) {
 
           // Generate decoder for the ith data register
-          when (instructionReg === id) {
+          when (instructionHoldReg === id) {
 
             // Add data to ith shift register
             dataShiftRegs(i) := (io.tdi ## dataShiftRegs(i)) >> 1
@@ -193,10 +204,10 @@ class J1Jtag(j1Cfg   : J1Config,
           if(mode.matches(writeModePattern) && !mode.matches(constantModePattern)) {
 
             // Generate decoder for the ith data register
-            when (instructionReg === id) {
+            when (instructionHoldReg === id) {
 
               // Update the ith data register
-              dataRegs(i) := dataShiftRegs(i)
+              dataHoldRegs(i) := dataShiftRegs(i)
 
             }
 
@@ -218,8 +229,8 @@ class J1Jtag(j1Cfg   : J1Config,
       // Handle the capture of the instruction register
       captureIR.whenIsActive {
 
-        // Capture the current instruction into the instruction shift register
-        instructionShiftReg := instructionReg
+        // Set instruction register (note tat 01 for the two LSBs is mandatory)
+        instructionShiftReg := (0 -> True, 1 -> False, default -> True)
 
         // Define the transition function for this state
         when(io.tms) {goto(exit1IR)} otherwise{goto(shiftIR)}
@@ -244,7 +255,7 @@ class J1Jtag(j1Cfg   : J1Config,
       updateIR.whenIsActive {
 
         // Copy data from shift register to the instruction register
-        instructionReg := instructionShiftReg
+        instructionHoldReg := instructionShiftReg
 
         // Define the transition function for the this state
         when(io.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}
@@ -260,7 +271,7 @@ class J1Jtag(j1Cfg   : J1Config,
     for(((_ ,id ,_ ,_), i) <- jtagCommands.zipWithIndex) {
 
       // check whether the command with id is a active
-      when (instructionReg === id) {
+      when (instructionHoldReg === id) {
 
         // Add data to ith shift register
         io.tdo := dataShiftRegs(i).lsb
@@ -272,6 +283,6 @@ class J1Jtag(j1Cfg   : J1Config,
   }
 
   // Find the data register of HALT, do a clock domain crossing and provide this information externally
-  internal.halt := BufferCC(jtagArea.dataRegs(jtagArea.jtagCommands.indexOf(jtagArea.haltCmd))(0))
+  internal.halt := BufferCC(jtagArea.dataHoldRegs(jtagArea.jtagCommands.indexOf(jtagArea.haltCmd))(0))
 
 }
