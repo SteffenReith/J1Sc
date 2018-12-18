@@ -43,7 +43,7 @@ class J1Core(cfg : J1Config) extends Component {
 
   // Program counter (note that the MSB is used to control dstack and rstack, hence make is one bit larger)
   val pcN = UInt(cfg.adrWidth + 1 bits)
-  val pc = RegNextWhen(pcN, !(clrActive || internal.stall)) init(cfg.startAddress)
+  val pc = RegNextWhen(pcN, !clrActive) init(cfg.startAddress)
   val pcPlusOne = pc + 1
 
   // Instruction to be executed (insert a call-instruction for handling an interrupt)
@@ -207,16 +207,21 @@ class J1Core(cfg : J1Config) extends Component {
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
   // Handle the PC (remember cfg.adrWidth - 1 is the high indicator and instr(7) is the R -> PC field)
-  switch(clrActive ## pc.msb ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
+  switch(clrActive ##
+         internal.stall ##
+         pc.msb ## instr(instr.high downto (instr.high - 3) + 1) ## instr(7) ## dtos.orR) {
 
     // Check if we are in reset state
-    is(M"1_-_---_-_-") {pcN := cfg.startAddress}
+    is(M"1_-_-_---_-_-") {pcN := cfg.startAddress}
+
+    // Check if the CPU is stalled
+    is(M"-_1_-_---_-_-") {pcN := pc}
 
     // Check for jump, call instruction or conditional jump
-    is(M"0_0_000_-_-", M"0_0_010_-_-", M"0_0_001_-_0") {pcN := instr(cfg.adrWidth downto 0).asUInt}
+    is(M"0_0_0_000_-_-", M"0_0_0_010_-_-", M"0_0_0_001_-_0") {pcN := instr(cfg.adrWidth downto 0).asUInt}
 
     // Check either for a high call or R -> PC field of an ALU instruction and load PC from return stack
-    is(M"0_1_---_-_-", M"0_0_011_1_-") {pcN := rtos(cfg.adrWidth + 1 downto 1).asUInt}
+    is(M"0_0_1_---_-_-", M"0_0_0_011_1_-") {pcN := rtos(cfg.adrWidth + 1 downto 1).asUInt}
 
     // By default goto next instruction
     default {pcN := pcPlusOne}
