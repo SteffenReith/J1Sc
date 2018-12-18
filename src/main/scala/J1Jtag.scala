@@ -78,6 +78,9 @@ class J1Jtag(j1Cfg   : J1Config,
 
     })
 
+    // Set init value of HALT hold register
+    dataHoldRegs(jtagCommands.indexOf(haltCmd)).init(0)
+
     // For all JTAG instructions
     val dataShiftRegs = Vec(for((_, _, width, _) <- jtagCommands) yield {
 
@@ -119,9 +122,6 @@ class J1Jtag(j1Cfg   : J1Config,
 
         // Set the instruction register to idcode by default
         instructionHoldReg := idCodeCmd._2
-
-        // Init the HALT data register
-        dataHoldRegs(jtagCommands.indexOf(haltCmd))(0) := False
 
         // Implement the transition logic
         when(io.tms) {goto(testLogicReset)} otherwise{goto(runTestIdle)}
