@@ -164,16 +164,19 @@ class J1Core(cfg : J1Config) extends Component {
   val dStackPtrInc = SInt(cfg.dataStackIdxWidth bits)
 
   // Handle update of data stack
-  switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
+  switch(internal.stall ## pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
+
+    // Check for stall mode
+    is(M"1_-_---") {dStackWrite := False; dStackPtrInc := 0}
 
     // For a high call push the instruction (== memory access) and for a literal push the value to the data stack
-    is(M"1_---", M"0_1--") {dStackWrite := True; dStackPtrInc := 1}
+    is(M"0_1_---", M"0_0_1--") {dStackWrite := True; dStackPtrInc := 1}
 
     // Conditional jump (pop DTOS from data stack)
-    is(M"0_001") {dStackWrite := False; dStackPtrInc := -1}
+    is(M"0_0_001") {dStackWrite := False; dStackPtrInc := -1}
 
     // ALU instruction (check for a possible push of data, ISA bug can be fixed by '| (instr(1 downto 0) === B"b01")')
-    is(M"0_011"){dStackWrite  := funcTtoN; dStackPtrInc := instr(1 downto 0).asSInt.resized}
+    is(M"0_0_011"){dStackWrite  := funcTtoN; dStackPtrInc := instr(1 downto 0).asSInt.resized}
 
     // Don't change the data stack by default
     default {dStackWrite := False; dStackPtrInc := 0}
@@ -187,16 +190,19 @@ class J1Core(cfg : J1Config) extends Component {
   val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
 
   // Handle the update of the return stack
-  switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
+  switch(internal.stall ## pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
+
+    // Check if CPU is stalled (do not manipulate the return stack)
+    is(M"1_-_---") {rStackWrite := False; rStackPtrInc := 0}
 
     // When we do a high call (the msb of the PC is set) do a pop of return address
-    is(M"1_---") {rStackWrite := False; rStackPtrInc := -1}
+    is(M"0_1_---") {rStackWrite := False; rStackPtrInc := -1}
 
     // Call instruction or interrupt (push return address to stack)
-    is(M"0_010") {rStackWrite := True; rStackPtrInc := 1}
+    is(M"0_0_010") {rStackWrite := True; rStackPtrInc := 1}
 
     // Conditional jump (maybe we have to push)
-    is(M"0_011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resized}
+    is(M"0_0_011") {rStackWrite := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resized}
 
     // Don't change the return stack by default
     default {rStackWrite := False; rStackPtrInc := 0}
