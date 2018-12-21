@@ -63,10 +63,10 @@ class J1(cfg : J1Config) extends Component {
     val jtag = new J1Jtag(cfg, cfg.jtagConfig)
 
     // Connect the jtag interface
-    jtag.io.tdi         <> jtagCondIOArea.jtag.tdi
+    jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
     jtagCondIOArea.jtag.tdo <> jtag.io.tdo
-    jtag.io.tms         <> jtagCondIOArea.jtag.tms
-    jtag.io.tck         <> jtagCondIOArea.jtag.tck
+    jtag.io.tms             <> jtagCondIOArea.jtag.tms
+    jtag.io.tck             <> jtagCondIOArea.jtag.tck
 
     // Connect the CPU stall with the HALT JTAG data register
     coreJ1CPU.internal.stall <> jtag.internal.halt
