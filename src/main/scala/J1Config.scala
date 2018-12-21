@@ -86,6 +86,7 @@ case class J1Config (wordSize : Int,
 object J1Config {
 
   // Some useful instructions
+  def instrNOP   = B"0110_0000_0000_0000"
   def instrRTS   = B"0110_0000_1000_1100"
   def instrJMP20 = B"0000_0000_0001_0100"
   def instrJMP50 = B"0000_0000_0011_0010"
