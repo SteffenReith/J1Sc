@@ -1,3 +1,3 @@
 [submodule "tty0tty"]
 	path = tty0tty
-	url = https://github.com/freemed/tty0tty.git
+	url = git@github.com:SteffenReith/tty0tty.git

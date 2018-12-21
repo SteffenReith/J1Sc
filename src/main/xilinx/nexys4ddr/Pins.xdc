@@ -159,13 +159,25 @@ set_property  PACKAGE_PIN J17 [get_ports {selector[0]}]
 set_property  IOSTANDARD LVCMOS33 [get_ports {selector[0]}]
 set_property  SLEW FAST [get_ports {selector[0]}]
 
+set_property  PACKAGE_PIN H16 [get_ports {tck}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {tck}]
+
+set_property  PACKAGE_PIN G13 [get_ports {tdi}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {tdi}]
+
+set_property  PACKAGE_PIN F13 [get_ports {tdo}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {tdo}]
+
+set_property  PACKAGE_PIN E16 [get_ports {tms}]
+set_property  IOSTANDARD LVCMOS33 [get_ports {tms}]
+
 set_property PACKAGE_PIN C4 [get_ports rx]
 set_property IOSTANDARD LVCMOS33 [get_ports rx]
 
 set_property PACKAGE_PIN D4 [get_ports tx]
 set_property IOSTANDARD LVCMOS33 [get_ports tx]
 
-set_property PACKAGE_PIN D14 [get_ports {extInt[0]}]
+set_property PACKAGE_PIN K1 [get_ports {extInt[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {extInt[0]}]
 
 set_property PACKAGE_PIN C17 [get_ports {pmodA[0]}]

@@ -13,6 +13,10 @@ module IcoBoard (reset,
                  leds,
                  pwmLeds,
                  pmodA,
+                 tck,
+                 tms,
+                 tdi,
+                 tdo,
                  rx,    
                  tx);
          
@@ -21,11 +25,15 @@ module IcoBoard (reset,
  input clk100Mhz;
  input [0:0] extInt;
  input rx;
+ input tck;
+ input tms;
+ input tdi;
 
  // Output ports
  output [7:0] leds;
  output [2:0] pwmLeds;
  output tx;
+ output tdo;
 
  // Bidirectional port
  inout [7:0] pmodA;
@@ -51,20 +59,29 @@ module IcoBoard (reset,
              .extInt             (extInt),
              .leds               (leds),
              .pwmLeds            (pwmLeds),
+             .tck                (tck),
+             .tms                (tms),
+             .tdi                (tdi),
+             .tdo                (tdo),
              .pmodA_read         (pmodA_read),
              .pmodA_write        (pmodA_write),
              .pmodA_writeEnable  (pmodA_writeEnable),
              .rx                 (rx),
              .tx                 (tx));
 
-  // Connect the pmodA read port
-  assign pmodA_read = pmodA;
-
   // Generate the write port and equip it with tristate functionality
   genvar i;
   generate
      for (i = 0; i < 8; i = i + 1) begin
-	   assign pmodA[i] = pmodA_writeEnable[i] ? pmodA_write[i] : 1'bZ;
+
+	// Instantiate the ith tristate buffer
+	SB_IO #(.PIN_TYPE(6'b 1010_01),
+		.PULLUP(1'b 0)
+	       ) iobuf (
+		.PACKAGE_PIN(pmodA[i]),
+		.OUTPUT_ENABLE(pmodA_writeEnable[i]),
+                .D_OUT_0(pmodA_write[i]),
+                .D_IN_0(pmodA_read[i]));
      end
   endgenerate
   

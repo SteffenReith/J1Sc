@@ -32,6 +32,10 @@ entity Board_Nexys4DDR is
         pmodA      : inout std_logic_vector(7 downto 0);
         sSwitches  : in    std_logic_vector(15 downto 0);
         pButtons   : in    std_logic_vector(4 downto 0);
+        tck        : in    std_logic;
+        tms        : in    std_logic;
+        tdi        : in    std_logic;
+        tdo        : out   std_logic;
         rx         : in    std_logic;
         tx         : out   std_logic);
 
@@ -84,6 +88,10 @@ begin
               pmodA_writeEnable => pmodA_writeEnable,
               sSwitches         => sSwitches,
               pButtons          => pButtons,
+              tck               => tck,
+              tms               => tms,
+              tdi               => tdi,
+              tdo               => tdo,
               rx                => rx,
               tx                => tx);
 

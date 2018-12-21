@@ -50,6 +50,28 @@ class J1Nexys4X(j1Cfg    : J1Config,
 
   }.setName("")
 
+  // I/O signals for the jtag interface (if needed)
+  val jtagCondIOArea = j1Cfg.hasJtag generate new Area {
+
+    // Create the interface bundle
+    val jtag = new Bundle {
+
+      // JTAG data input
+      val tdi = in Bool
+
+      // JTAG data output
+      val tdo = out Bool
+
+      // Control for the JTAG TAP
+      val tms = in Bool
+
+      // The JTAG clock (the signal tdi, tdo and tms are synchron to this clock)
+      val tck = in Bool
+
+    }.setName("")
+
+  }
+
   // Physical clock area (connected to a physical clock generator (e.g. crystal oscillator))
   val clkCtrl = new Area {
 
@@ -79,6 +101,17 @@ class J1Nexys4X(j1Cfg    : J1Config,
     // Create a delayed version of the cpu core interface to IO-peripherals
     val peripheralBus     = cpu.bus.cpuBus.delayIt(boardCfg.ioWaitStates)
     val peripheralBusCtrl = J1BusSlaveFactory(peripheralBus)
+
+    // Check whether we need a jtag interface
+    j1Cfg.hasJtag generate {
+
+      // Connect the jtag interface
+      cpu.jtagCondIOArea.jtag.tdi <> jtagCondIOArea.jtag.tdi
+      jtagCondIOArea.jtag.tdo     <> cpu.jtagCondIOArea.jtag.tdo
+      cpu.jtagCondIOArea.jtag.tms <> jtagCondIOArea.jtag.tms
+      cpu.jtagCondIOArea.jtag.tck <> jtagCondIOArea.jtag.tck
+
+    }
 
     // Create a LED array at base address 0x40
     val ledArray  = new LEDArray(j1Cfg, boardCfg.ledBankConfig)

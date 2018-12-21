@@ -5,7 +5,8 @@ import java.io._
 
 import jssc._
 import java.awt.{BorderLayout, Color, Graphics}
-import javax.swing.{JButton, JFrame, JPanel}
+
+import javax.swing.{JButton, JFrame, JPanel, WindowConstants}
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
@@ -259,7 +260,7 @@ object J1IcoSim {
           mainPanel.add(resetPanel, BorderLayout.SOUTH)
 
           // Terminate program when close button is used
-          setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+          setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 
           // Set a useful frame size and make is visible
           setSize(300, 100)
