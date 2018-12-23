@@ -14,6 +14,9 @@ class J1(cfg : J1Config) extends Component {
   // Internal signals
   val internal = new Bundle {
 
+    // Stall signal of CPU
+    val stall = in Bool
+
     // Interface for the interrupt system
     val irq    = in Bool
     val intVec = in Bits (cfg.adrWidth bits)
@@ -28,55 +31,11 @@ class J1(cfg : J1Config) extends Component {
 
   }.setName("")
 
-  // I/O signal for the jtag interface (if needed)
-  val jtagCondIOArea = cfg.hasJtag generate new Area {
-
-    // Create the interface bundle
-    val jtag = new Bundle {
-
-      // JTAG data input
-      val tdi = in Bool
-
-      // JTAG data output
-      val tdo = out Bool
-
-      // Control for the JTAG TAP
-      val tms = in Bool
-
-      // The JTAG clock (the signal tdi, tdo and tms are synchron to this clock)
-      val tck = in Bool
-
-    }.setName("")
-
-  }
-
   // Create a new CPU core
   val coreJ1CPU = new J1Core(cfg)
 
   // Create the main memory
   val mainMem = new MainMemory(cfg)
-
-  // Check whether we need a jtag interface
-  val jtagIface = if (cfg.hasJtag) new Area {
-
-    // Create a JTAG interface
-    val jtag = new J1Jtag(cfg, cfg.jtagConfig)
-
-    // Connect the jtag interface
-    jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
-    jtagCondIOArea.jtag.tdo <> jtag.io.tdo
-    jtag.io.tms             <> jtagCondIOArea.jtag.tms
-    jtag.io.tck             <> jtagCondIOArea.jtag.tck
-
-    // Connect the CPU stall with the HALT JTAG data register
-    coreJ1CPU.internal.stall <> jtag.internal.halt
-
-  } else new Area {
-
-    // Simply disable the stall by default
-    coreJ1CPU.internal.stall := False
-
-  }
 
   // Instruction port (read only)
   mainMem.internal.readDataAdr <> coreJ1CPU.internal.nextInstrAdr
@@ -98,6 +57,9 @@ class J1(cfg : J1Config) extends Component {
   bus.cpuBus.writeMode <> coreJ1CPU.internal.ioWriteMode
   bus.cpuBus.address   <> Delay(coreJ1CPU.internal.extAdr, 1)
   bus.cpuBus.writeData <> coreJ1CPU.internal.extToWrite
+
+  // Connect the stall
+  coreJ1CPU.internal.stall <> internal.stall
 
   // Connect the interrupts
   coreJ1CPU.internal.intVec <> internal.intVec

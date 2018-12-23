@@ -93,17 +93,6 @@ class J1Ico(j1Cfg    : J1Config,
     val peripheralBus     = cpu.bus.cpuBus.delayIt(boardCfg.ioWaitStates)
     val peripheralBusCtrl = J1BusSlaveFactory(peripheralBus)
 
-    // Check whether we need a jtag interface
-    j1Cfg.hasJtag generate {
-
-      // Connect the jtag interface
-      cpu.jtagCondIOArea.jtag.tdi <> jtagCondIOArea.jtag.tdi
-      jtagCondIOArea.jtag.tdo     <> cpu.jtagCondIOArea.jtag.tdo
-      cpu.jtagCondIOArea.jtag.tms <> jtagCondIOArea.jtag.tms
-      cpu.jtagCondIOArea.jtag.tck <> jtagCondIOArea.jtag.tck
-
-    }
-
     // Create a LED array at base address 0x40
     val ledArray  = new LEDArray(j1Cfg, boardCfg.ledBankConfig)
     val ledBridge = ledArray.driveFrom(peripheralBusCtrl, baseAddress = 0x40)
