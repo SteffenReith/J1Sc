@@ -63,6 +63,35 @@ class J1Ico(j1Cfg    : J1Config,
 
   }
 
+  // Check whether we need a jtag interface
+  val jtagIface = j1Cfg.hasJtag generate new Area {
+
+    // Make the reset synchron and use the rising edge
+    val jtagClockConfig = ClockDomainConfig(clockEdge        = RISING,
+                                            resetKind        = ASYNC,
+                                            resetActiveLevel = HIGH)
+
+    // Create a clockdomain which is synchron to tck but the global reset is asynchronous to this clock domain
+    val jtagClockDomainDesc = ClockDomain(config = jtagClockConfig,
+                                          clock  = jtagCondIOArea.jtag.tck,
+                                          reset  = ClockDomain.current.reset)
+
+    // Create the clock area used for the JTAG
+    val jtagArea = new ClockingArea(jtagClockDomainDesc) {
+
+      // Create a JTAG interface
+      val jtag = new J1Jtag(j1Cfg, j1Cfg.jtagConfig)
+
+      // Connect the jtag interface
+      jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
+      jtagCondIOArea.jtag.tdo <> jtag.io.tdo
+      jtag.io.tms             <> jtagCondIOArea.jtag.tms
+      jtag.io.tck             <> jtagCondIOArea.jtag.tck
+
+    }
+
+  }
+
   // Physical clock area (connected to a physical clock generator (e.g. crystal oscillator))
   val clkCtrl = new Area {
 
@@ -72,14 +101,30 @@ class J1Ico(j1Cfg    : J1Config,
     // Connect the synthesized clock
     coreClockDomain.clock := io.boardClk
 
-    // Connect the new asynchron reset
-    coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
+    // Check if we have a jtag interface
+    if (j1Cfg.hasJtag) {
 
-      // Hold the reset as long as the PLL is not locked
-      input = io.reset || (! io.boardClkLocked),
-      clockDomain = coreClockDomain
+      // Connect the new asynchronous reset
+      coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
-    )))
+        // Hold the reset as long as the PLL is not locked
+        input = io.reset || jtagIface.jtagArea.jtag.internal.jtagReset || (!io.boardClkLocked),
+        clockDomain = coreClockDomain
+
+      )))
+
+    } else {
+
+      // Connect the new asynchronous reset
+      coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
+
+        // Hold the reset as long as the PLL is not locked
+        input = io.reset || (!io.boardClkLocked),
+        clockDomain = coreClockDomain
+
+      )))
+
+    }
 
   }
 
@@ -88,6 +133,19 @@ class J1Ico(j1Cfg    : J1Config,
 
     // Create a new CPU core
     val cpu = new J1(j1Cfg)
+
+    // Check if we have a jtag interface
+    if (j1Cfg.hasJtag) {
+
+      // Connect the jtag halt signal an do a clock domain crossing
+      cpu.internal.stall := BufferCC(jtagIface.jtagArea.jtag.internal.jtagStall)
+
+    } else {
+
+      // Without JTAG deactivate the stall signal
+      cpu.internal.stall := False
+
+    }
 
     // Create a delayed version of the cpu core interface to IO-peripherals
     val peripheralBus     = cpu.bus.cpuBus.delayIt(boardCfg.ioWaitStates)
@@ -177,7 +235,7 @@ object J1Ico {
     def elaborate = {
 
       // Configuration of CPU-core
-      val j1Cfg = J1Config.forth
+      val j1Cfg = J1Config.forth16
 
       // Configuration of the used board
       val boardCfg = CoreConfig.icoBoard
