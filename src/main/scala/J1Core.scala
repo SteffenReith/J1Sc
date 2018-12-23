@@ -41,6 +41,9 @@ class J1Core(cfg : J1Config) extends Component {
   // Synchronous reset signal
   val clrActive = ClockDomain.current.isResetActive
 
+  // The stall signal is allowed to be pruned (if we have no JTAG)
+  internal.stall.allowPruning()
+
   // Program counter (note that the MSB is used to control dstack and rstack, hence make is one bit larger)
   val pcN       = UInt(cfg.adrWidth + 1 bits)
   val pc        = RegNextWhen(pcN, !clrActive) init(cfg.startAddress)
