@@ -8,6 +8,7 @@
  */
 import spinal.core._
 import scala.io.Source
+import scala.sys._
 
 // Configuration of the IRQ controller
 case class IRQCtrlConfig (numOfInterrupts         : Int,
@@ -69,21 +70,8 @@ object TimerConfig {
 
 }
 
-// The configuration of a J1-CPU
-case class J1Config (wordSize : Int,
-                     dataStackIdxWidth : Int,
-                     returnStackIdxWidth : Int,
-                     hasJtag : Boolean,
-                     jtagConfig : JTAGConfig,
-                     timerConfig : TimerConfig,
-                     irqConfig : IRQCtrlConfig,
-                     adrWidth : Int,
-                     numOfRAMs : Int,
-                     startAddress : Int,
-                     bootCode : () => List[Bits])
-
-// Holds the configuration parameters of a J1
-object J1Config {
+// Some sample programs for a J1 with 16 bit wordsize
+object J1ISA16 {
 
   // Some useful instructions
   def instrNOP   = B"0110_0000_0000_0000"
@@ -231,6 +219,26 @@ object J1Config {
                              B"0110_0001_0000_0011", // 22. Pop
                              B"0110_0001_0000_0011", // 23. Pop
                              B"0110_0000_1000_1100") // 24. Return from subroutine
+                       
+
+
+}                      
+
+// The configuration of a J1-CPU
+case class J1Config (wordSize : Int,
+                     dataStackIdxWidth : Int,
+                     returnStackIdxWidth : Int,
+                     hasJtag : Boolean,
+                     jtagConfig : JTAGConfig,
+                     timerConfig : TimerConfig,
+                     irqConfig : IRQCtrlConfig,
+                     adrWidth : Int,
+                     numOfRAMs : Int,
+                     startAddress : Int,
+                     bootCode : () => List[Bits])
+
+// Holds some convenience functions for configuring a J1
+object J1Config {
 
   // Convert a bin-string to an integer
   def binToBits(s : String, w : Int) = {B(s.toList.map("01".indexOf(_)).reduceLeft(_ * 2 + _), w bits)}
@@ -249,6 +257,48 @@ object J1Config {
 
     // Convert it to a list of Bits of width w
     filteredLines.map((s : String) => binToBits(s, w))
+
+  }
+
+  // Provide a NOP instruction
+  def instrNOP(wordSize : Int) = {
+
+    val instr = try {
+
+      // Select the needed NOP instruction
+      wordSize match {
+
+        case 16 =>
+
+          J1ISA16.instrNOP
+
+      }
+
+    } catch {
+
+      // Handle failed matching
+     case m : MatchError =>
+
+       // Report the unknown word size
+       println("[J1Sc] Unsupported wordsize! (At least provide a NOP in J1Config for wordsize " + wordSize)
+
+       // Terminate program
+       exit(-1)
+
+     case e : Exception =>
+
+       // Unknown exception
+       println("[J1Sc] Unknown exception (" + e + ")")
+
+       // Terminate program
+       exit(-1)
+
+    }
+
+    // Give some information about NOP
+    println("[J1Sc] NOP for this architecture is " + J1ISA16.instrNOP)
+
+    instr
 
   }
 
@@ -277,8 +327,8 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     // Relevant content of all generated memory blocks
-    def bootCode() = endlessLoop() ++
-                     List.fill((1 << adrWidth) - endlessLoop().length)(B(0, wordSize bits))
+    def bootCode() = J1ISA16.endlessLoop() ++
+                     List.fill((1 << adrWidth) - J1ISA16.endlessLoop().length)(B(0, wordSize bits))
 
     // Set the default configuration values
     val config = J1Config(wordSize            = wordSize,
@@ -322,12 +372,12 @@ object J1Config {
     // IRQ controller parameters (disable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
-    def bootCode() = isaTest() ++
-                     List.fill((1 << adrWidth) - isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List(instrJMP60) ++
-                     List(instrJMP60) ++
-                     List(instrJMP60) ++
-                     List(instrJMP60)
+    def bootCode() = J1ISA16.isaTest() ++
+                     List.fill((1 << adrWidth) - J1ISA16.isaTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List(J1ISA16.instrJMP60) ++
+                     List(J1ISA16.instrJMP60) ++
+                     List(J1ISA16.instrJMP60) ++
+                     List(J1ISA16.instrJMP60)
 
     // Set the configuration values for ISA debugging
     val config = J1Config(wordSize            = wordSize,
@@ -371,7 +421,7 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     // Relevant content of all generated memories
-    def bootCode() = ioTest() ++ List.fill((1 << adrWidth) - ioTest.length)(B(0, wordSize bits))
+    def bootCode() = J1ISA16.ioTest() ++ List.fill((1 << adrWidth) - J1ISA16.ioTest.length)(B(0, wordSize bits))
 
     // Set the configuration values for debugging I/O instructions
     val config = J1Config(wordSize            = wordSize,
@@ -414,12 +464,12 @@ object J1Config {
     // IRQ controller parameters (enable all interrupts by default)
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
-    def bootCode() = simpleIRQTest() ++
-                     List.fill((1 << adrWidth) - simpleIRQTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
-                     List.fill(1)(instrJMP20) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrRTS) ++
-                     List.fill(1)(instrRTS)
+    def bootCode() = J1ISA16.simpleIRQTest() ++
+                     List.fill((1 << adrWidth) - J1ISA16.simpleIRQTest().length - noOfInterrupts)(B(0, wordSize bits)) ++
+                     List.fill(1)(J1ISA16.instrJMP20) ++
+                     List.fill(1)(J1ISA16.instrRTS) ++
+                     List.fill(1)(J1ISA16.instrRTS) ++
+                     List.fill(1)(J1ISA16.instrRTS)
 
     // Set the default configuration values
     val config = J1Config(wordSize            = wordSize,

@@ -55,8 +55,8 @@ class J1Core(cfg : J1Config) extends Component {
   // Check status and inject nop (stall mode) or jump (interrupt) when needed
   val instr = stateSelect.mux(0 -> internal.memInstr,                                   // Normal mode
                               1 -> B"b010" ## internal.intVec.resize(cfg.wordSize - 3), // Interrupt mode
-                              2 -> J1Config.instrNOP,                                   // Stall mode
-                              3 -> J1Config.instrNOP)                                   // Stall overrides interrupt
+                              2 -> J1Config.instrNOP(cfg.wordSize),                     // Stall mode
+                              3 -> J1Config.instrNOP(cfg.wordSize))                     // Stall overrides interrupt
 
   // Data stack pointer (set to first entry, which can be arbitrary)
   val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)
