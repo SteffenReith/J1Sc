@@ -253,7 +253,7 @@ object J1Config {
   }
 
   // Provide a default configuration
-  def default = {
+  def default16 = {
 
     // Default parameters for a J1 CPU
     def wordSize               = 16
@@ -299,7 +299,7 @@ object J1Config {
   }
 
   // Provide a debug configuration
-  def debug = {
+  def debug16 = {
 
     // Parameters of a debug configuration
     def wordSize               = 16
@@ -392,7 +392,7 @@ object J1Config {
   }
 
   // Provide a debug configuration for the interrupt controller
-  def debugIRQ = {
+  def debug16IRQ = {
 
     def wordSize               = 16
     def dataStackIdxWidth      =  5
@@ -440,7 +440,7 @@ object J1Config {
   }
 
   // Provide a configuration for SwapForth
-  def forth = {
+  def forth16 = {
 
     def wordSize               = 16
     def dataStackIdxWidth      =  5
