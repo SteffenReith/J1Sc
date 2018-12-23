@@ -42,7 +42,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
 
     // The physical pins for slider switches and push buttons
     val sSwitches = in Bits(boardCfg.sSwitchConfig.numOfPins bits)
-    val pButtons = in Bits(boardCfg.pButtonConfig.numOfPins bits)
+    val pButtons  = in Bits(boardCfg.pButtonConfig.numOfPins bits)
 
     // I/O pins for the UART
     val rx = in Bool // UART input
@@ -81,21 +81,21 @@ class J1Nexys4X(j1Cfg    : J1Config,
                                             resetActiveLevel = HIGH)
 
     // Create a clockdomain which is synchron to tck but the global reset is asynchronous to this clock domain
-    val jtagClockDomain = ClockDomain(config = jtagClockConfig,
-                                      clock  = jtagCondIOArea.jtag.tck,
-                                      reset  = ClockDomain.current.reset)
+    val jtagClockDomainDesc = ClockDomain(config = jtagClockConfig,
+                                          clock  = jtagCondIOArea.jtag.tck,
+                                          reset  = ClockDomain.current.reset)
 
     // Create the clock area used for the JTAG
-    val jtagArea = new ClockingArea(jtagClockDomain) {
+    val jtagArea = new ClockingArea(jtagClockDomainDesc) {
 
       // Create a JTAG interface
       val jtag = new J1Jtag(j1Cfg, j1Cfg.jtagConfig)
 
       // Connect the jtag interface
-      jtag.io.tdi <> jtagCondIOArea.jtag.tdi
+      jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
       jtagCondIOArea.jtag.tdo <> jtag.io.tdo
-      jtag.io.tms <> jtagCondIOArea.jtag.tms
-      jtag.io.tck <> jtagCondIOArea.jtag.tck
+      jtag.io.tms             <> jtagCondIOArea.jtag.tms
+      jtag.io.tck             <> jtagCondIOArea.jtag.tck
 
     }
 
@@ -269,7 +269,7 @@ object J1Nexys4X {
     def elaborate = {
 
       // Configuration of CPU-core
-      val j1Cfg = J1Config.forth
+      val j1Cfg = J1Config.forth16
 
       // Configuration of the used board
       val boardCfg = CoreConfig.nexys4DDR
