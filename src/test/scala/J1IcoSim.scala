@@ -114,7 +114,7 @@ object J1IcoSim {
     val simCycles = 10000000l
 
     // Configuration of CPU-core
-    val j1Cfg = J1Config.forth
+    val j1Cfg = J1Config.forth16
 
     // Configuration of the used board
     val boardCfg = CoreConfig.icoBoardSim
