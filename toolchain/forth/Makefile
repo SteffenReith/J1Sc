@@ -1,10 +1,10 @@
-build/nuc.hex: cross.fs basewords.fs nuc.fs
-	gforth cross.fs basewords.fs nuc.fs
+all: nucleus
+	mv build/nuc.binary build/16bit/nuc.binary
+	mv build/nuc.hex    build/16bit/nuc.hex
+	mv build/nuc.lst    build/16bit/nuc.lst
 
-build/nuc.binary: cross.fs basewords.fs nuc.fs
+nucleus: cross.fs basewords.fs nuc.fs
 	gforth cross.fs basewords.fs nuc.fs
-
-all: build/nuc.binary 
 
 clean: 
-	rm build/nuc.hex build/nuc.binary build/nuc.lst
+	rm build/16bit/nuc.hex build/16bit/nuc.binary build/16bit/nuc.lst

@@ -8,7 +8,10 @@
  */
 import spinal.core._
 import scala.io.Source
+import java.io.FileNotFoundException
+import java.io.IOException
 import scala.sys._
+import scala.util.Properties.envOrElse
 
 // Configuration of the IRQ controller
 case class IRQCtrlConfig (numOfInterrupts         : Int,
@@ -249,14 +252,65 @@ object J1Config {
   // Provide the SwapForth base system
   def forthBase(w : Int) = {
 
-    // Read all lines of the hex dump into a list of strings
-    val lines = Source.fromFile("toolchain/forth/build/nuc.binary").getLines().toList.map((s : String) => s.toUpperCase)
+    // Get the environment
+    val j1Env = envOrElse("J1SCBASE","")
 
-    // Only use valid lines (so anything not matching a number is a comment)
-    val filteredLines = lines.filter((s : String) => s.matches("[0-9A-F]+"))
+    // Build location of the forth system
+    val forthPath = if (j1Env == "") {
 
-    // Convert it to a list of Bits of width w
-    filteredLines.map((s : String) => binToBits(s, w))
+      // Relative path
+      "toolchain/forth/build/" + w + "bit/nuc.binary"
+
+    } else {
+
+      // Use the J1Sc base to build the path
+      j1Env + "/toolchain/forth/build/" + w + "bit/nuc.binary"
+
+    }
+
+    // Give some information about the location of the forth system
+    println("[J1Sc] Use forth system at " + forthPath)
+
+    val forthLines = try {
+
+      // Read all lines of the system dump into a list of strings
+      val lines = Source.fromFile(forthPath).getLines().toList.map((s: String) => s.toUpperCase)
+
+      // Only use valid lines (so anything not matching a number is a comment)
+      val filteredLines = lines.filter((s : String) => s.matches("[0-9A-F]+"))
+
+      // Convert it to a list of Bits of width w
+      filteredLines.map((s : String) => binToBits(s, w))
+
+    } catch {
+
+      case o : FileNotFoundException =>
+
+        // Report that the forth system cannot be accessed
+        println("[J1Sc] Forth system " + forthPath + " not found!")
+
+        // Terminate program
+        exit(-1)
+
+      case i : IOException =>
+
+        // Report an IOException
+        println("[J1Sc] IO exception while access to forth system at " + forthPath)
+
+        // Terminate program
+        exit(-1)
+
+      case e : Exception =>
+
+        // Unknown exception
+        println("[J1Sc] General exception while access to forth system at " + forthPath)
+
+        // Terminate program
+        exit(-1)
+
+    }
+
+    forthLines
 
   }
 
