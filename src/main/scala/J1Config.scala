@@ -228,17 +228,17 @@ object J1ISA16 {
 }                      
 
 // The configuration of a J1-CPU
-case class J1Config (wordSize : Int,
-                     dataStackIdxWidth : Int,
+case class J1Config (wordSize            : Int,
+                     dataStackIdxWidth   : Int,
                      returnStackIdxWidth : Int,
-                     hasJtag : Boolean,
-                     jtagConfig : JTAGConfig,
-                     timerConfig : TimerConfig,
-                     irqConfig : IRQCtrlConfig,
-                     adrWidth : Int,
-                     numOfRAMs : Int,
-                     startAddress : Int,
-                     bootCode : () => List[Bits])
+                     hasJtag             : Boolean,
+                     jtagConfig          : JTAGConfig,
+                     timerConfig         : TimerConfig,
+                     irqConfig           : IRQCtrlConfig,
+                     adrWidth            : Int,
+                     numOfRAMs           : Int,
+                     startAddress        : Int,
+                     bootCode            : () => List[Bits])
 
 // Holds some convenience functions for configuring a J1
 object J1Config {
