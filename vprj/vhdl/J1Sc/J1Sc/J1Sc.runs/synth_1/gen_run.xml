@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenRun Id="synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1525513194">
-  <File Type="VDS-TIMING-PB" Name="Board_Nexys4DDR_timing_summary_synth.pb"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="Board_Nexys4DDR_timing_summary_synth.rpt"/>
+  <File Type="PA-TCL" Name="Board_Nexys4DDR.tcl"/>
+  <File Type="REPORTS-TCL" Name="Board_Nexys4DDR_reports.tcl"/>
+  <File Type="RDS-RDS" Name="Board_Nexys4DDR.vds"/>
   <File Type="RDS-DCP" Name="Board_Nexys4DDR.dcp"/>
   <File Type="RDS-UTIL-PB" Name="Board_Nexys4DDR_utilization_synth.pb"/>
   <File Type="RDS-UTIL" Name="Board_Nexys4DDR_utilization_synth.rpt"/>
-  <File Type="RDS-PROPCONSTRS" Name="Board_Nexys4DDR_drc_synth.rpt"/>
-  <File Type="RDS-RDS" Name="Board_Nexys4DDR.vds"/>
-  <File Type="REPORTS-TCL" Name="Board_Nexys4DDR_reports.tcl"/>
-  <File Type="PA-TCL" Name="Board_Nexys4DDR.tcl"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd">
