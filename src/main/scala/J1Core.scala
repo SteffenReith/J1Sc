@@ -33,8 +33,8 @@ class J1Core(cfg : J1Config) extends Component {
     val intVec = in Bits (cfg.adrWidth bits)
 
     // I/O port for instructions
-    val nextInstrAdr = out (UInt(cfg.adrWidth bits))
-    val memInstr     = in (Bits(cfg.wordSize bits))
+    val nextInstrAdr = out UInt(cfg.adrWidth bits)
+    val memInstr     = in Bits(cfg.wordSize bits)
 
   }.setName("")
 
