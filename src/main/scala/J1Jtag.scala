@@ -76,8 +76,9 @@ class J1Jtag(j1Cfg   : J1Config,
 
   })
 
-  // Set init value of HALT hold register
+  // Set init value of HALT and RESET hold register
   dataHoldRegs(jtagCommands.indexOf(stallCmd)).init(0)
+  dataHoldRegs(jtagCommands.indexOf(resetCmd)).init(0)
 
   // For all JTAG instructions
   val dataShiftRegs = Vec(for((_, _, width, _) <- jtagCommands) yield {

@@ -384,14 +384,14 @@ object CoreConfig {
 
     // Configuration values for an IcoBoard
     val config = CoreConfig(gpioConfig     = GPIOConfig.pmod,
-      ledBankConfig = LEDArrayConfig.pmodLEDs,
-      pwmConfig     = PWMConfig.icoPWM,
-      ssdConfig     = SSDConfig.default,
-      sSwitchConfig = DBPinArrayConfig.default,
-      pButtonConfig = DBPinArrayConfig.default,
-      uartConfig    = J1UARTConfig.default,
-      coreFrequency = FixedFrequency(40 MHz),
-      1)
+                            ledBankConfig = LEDArrayConfig.pmodLEDs,
+                            pwmConfig     = PWMConfig.icoPWM,
+                            ssdConfig     = SSDConfig.default,
+                            sSwitchConfig = DBPinArrayConfig.default,
+                            pButtonConfig = DBPinArrayConfig.default,
+                            uartConfig    = J1UARTConfig.default,
+                            coreFrequency = FixedFrequency(value = 40 MHz),
+                            1)
 
     // Return the configuration
     config

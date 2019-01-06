@@ -1,8 +1,7 @@
-import spinal.sim._
+import scala.sys.exit
+
 import spinal.core._
 import spinal.core.sim._
-import java.io._
-
 import jssc._
 import java.awt.{BorderLayout, Color, Graphics}
 
@@ -18,6 +17,9 @@ object UARTReceiver {
     // An UART is high inactive -> wait until simulation starts
     waitUntil(uartPin.toBoolean == true)
 
+    // Give some information about the UART receiver
+    println("[J1Sc] Start Receiver simulation")
+
     // Simulate the Receiver forever
     while (true) {
 
@@ -32,7 +34,7 @@ object UARTReceiver {
       var buffer = 0
 
       // Read all 8 data bits
-      (0 to 7).suspendable.foreach { bitIdx =>
+      (0 to 7).foreach { bitIdx =>
 
         // Check the actual data bit
         if (uartPin.toBoolean) {
@@ -64,13 +66,16 @@ object UARTTransceiver {
     // Make the line inactive (high)
     uartPin #= true
 
+    // Give some information about the transiver simulation
+    println("[J1Sc] Start transceiver simulation")
+
     // Simulate the data transmission forever
     while(true) {
 
       // Check if there is data send by the host
       if(input.getInputBufferBytesCount > 0){
 
-        // get one byte from the host
+        // get one byte from the host (remember the return type of 'readBytes' is an array of bytes)
         val buffer = input.readBytes(1)(0)
 
         // Create the start bit
@@ -78,7 +83,7 @@ object UARTTransceiver {
         sleep(baudPeriod)
 
         // Send 8 data bits
-        (0 to 7).suspendable.foreach{ bitIdx=>
+        (0 to 7).foreach{ bitIdx =>
 
           // Send bit at position "bitIdx"
           uartPin #= ((buffer >> bitIdx) & 1) != 0
@@ -113,19 +118,47 @@ object J1IcoSim {
     // Number of CPU cycles between some status information
     val simCycles = 10000000l
 
+    // Name of serial device to be used
+    val serialDeviceName = "/dev/tnt1"
+
     // Configuration of CPU-core
     val j1Cfg = J1Config.forth16
 
     // Configuration of the used board
     val boardCfg = CoreConfig.icoBoardSim
 
+    // Flag for doing a reset
+    var doReset = false
+
+    // Open the (pseudo) serial connection
+    println("[J1Sc]  Try to open the serial device " + serialDeviceName)
+    val comPort = new SerialPort(serialDeviceName)
+
+    try {
+
+      comPort.openPort()
+      comPort.setParams(SerialPort.BAUDRATE_38400,
+                        SerialPort.DATABITS_8,
+                        SerialPort.STOPBITS_1,
+                        SerialPort.PARITY_NONE)
+
+    } catch {
+
+      case e : Exception =>
+
+        // Unknown exception
+        println("[J1Sc] Cannot open " + serialDeviceName)
+        println("[J1Sc] Have to terminate simulation!")
+
+        // Terminate program
+        exit(-1)
+
+    }
+
     SimConfig.workspacePath("gen/sim")
              .allOptimisation
              //.withWave
-             .compile(new J1Ico(j1Cfg, boardCfg)).doSim{dut =>
-
-      // Flag the indicates that a reset should be performed
-      var doReset = false
+             .compile(new J1Ico(j1Cfg, boardCfg)).doSimUntilVoid { dut =>
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
@@ -139,57 +172,41 @@ object J1IcoSim {
       println("[J1Sc]  One clock period in ticks is " + mainClkPeriod + " ticks")
       println("[J1Sc]  Bit time (UART) in ticks is " + uartBaudPeriod + " ticks")
 
-      // Open the (pseudo) serial connection
-      val comPort = new SerialPort("/dev/tnt1")
-      comPort.openPort()
-      comPort.setParams(SerialPort.BAUDRATE_38400,
-                        SerialPort.DATABITS_8,
-                        SerialPort.STOPBITS_1,
-                        SerialPort.PARITY_NONE)
-
-      // Create the global system - clock
+      // Init the system and create the global system clock
       val genClock = fork {
 
-        // Pretend that the clock is already locked
+        // Pretend that the clock is already locked and low
         dut.io.boardClkLocked #= true
+        dut.io.boardClk       #= false
 
-        // Make the reset active
-        dut.io.reset #= true
+        // Create the clock signal using the threadless API
+        ForkClock(dut.io.boardClk, mainClkPeriod)
 
-        // Release the reset with clock is low
-        dut.io.boardClk #= false
-        sleep(mainClkPeriod)
-        dut.io.reset #= false
-        sleep(mainClkPeriod)
+        // Do a reset cycle for some cycles
+        DoReset(dut.io.reset, 100, HIGH)
 
         // Init the cycle counter
         var cycleCounter = 0l
 
-        // Get the actual system time
+        // Get the actual system time to init the time calculation
         var lastTime = System.nanoTime()
 
-        // Simulate forever
-        while(true){
-
-          // Simulate a clock signal
-          dut.io.boardClk #= false
-          sleep(mainClkPeriod / 2)
-          dut.io.boardClk #= true
-          sleep(mainClkPeriod / 2)
+        // The reset is simulated using the threaded API
+        ClockDomain(dut.io.boardClk).onSamplings {
 
           // Advance the simulated cycles value by one
           cycleCounter += 1
 
           // Check if we should write some information
-          if(cycleCounter == simCycles){
+          if (cycleCounter == simCycles) {
 
             // Get current system time
             val currentTime = System.nanoTime()
 
             // Write information about simulation speed
             val deltaTime = (currentTime - lastTime) * 1e-9
-            val speedUp   = (simCycles.toDouble /
-                             boardCfg.coreFrequency.getValue.toDouble) / deltaTime
+            val speedUp = (simCycles.toDouble /
+                           boardCfg.coreFrequency.getValue.toDouble) / deltaTime
             println(f"[J1Sc] $simCycles cycles in $deltaTime%4.2f real seconds (Speedup: $speedUp%4.3f)")
 
             // Store the current system time for the next round and reset the cycle counter
@@ -202,22 +219,20 @@ object J1IcoSim {
 
       }
 
-      // Handle a reset request
+      // Handle a reset request using the threaded API
       val resetHandler = fork {
 
         // Simulate forever
-        while(true){
+        while(true) {
 
           // Wait until we should do a reset
           waitUntil(doReset)
 
           // Give a short message about the reset
-          println("[J1Sc] Reset CPU")
+          println("[J1Sc] Asynchronous reset CPU")
 
-          // Make reset active for some cycles
-          dut.io.reset #= true
-          sleep(1000)
-          dut.io.reset #= false
+          // Do a reset cycle for some cycles
+          DoReset(dut.io.reset, 100, HIGH)
 
           // Clear the reset flag
           doReset = false
@@ -354,11 +369,11 @@ object J1IcoSim {
       // Receive data from the host OS and send it into the simulation
       UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
 
-      // Do the simulation
+      // Terminate all threads and the simulation
       genClock.join()
 
       // Close the serial port (never reached)
-      assert(comPort.closePort())
+      //assert(comPort.closePort())
 
     }
 

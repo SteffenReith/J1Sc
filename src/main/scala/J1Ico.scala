@@ -66,18 +66,18 @@ class J1Ico(j1Cfg    : J1Config,
   // Check whether we need a jtag interface
   val jtagIface = j1Cfg.hasJtag generate new Area {
 
-    // Make the reset synchron and use the rising edge
+    // Make the reset asynchronous and use the rising edge
     val jtagClockConfig = ClockDomainConfig(clockEdge        = RISING,
                                             resetKind        = ASYNC,
                                             resetActiveLevel = HIGH)
 
     // Create a clockdomain which is synchron to tck but the global reset is asynchronous to this clock domain
-    val jtagClockDomainDesc = ClockDomain(config = jtagClockConfig,
-                                          clock  = jtagCondIOArea.jtag.tck,
-                                          reset  = ClockDomain.current.reset)
+    val jtagClockDomain = ClockDomain(config = jtagClockConfig,
+                                      clock  = jtagCondIOArea.jtag.tck,
+                                      reset  = io.reset)
 
     // Create the clock area used for the JTAG
-    val jtagArea = new ClockingArea(jtagClockDomainDesc) {
+    val jtagArea = new ClockingArea(jtagClockDomain) {
 
       // Create a JTAG interface
       val jtag = new J1Jtag(j1Cfg, j1Cfg.jtagConfig)
@@ -96,7 +96,7 @@ class J1Ico(j1Cfg    : J1Config,
   val clkCtrl = new Area {
 
     // Create a clock domain which is related to the synthesized clock
-    val coreClockDomain = ClockDomain.internal("core", frequency = boardCfg.coreFrequency)
+    val coreClockDomain = ClockDomain.internal(name = "core", frequency = boardCfg.coreFrequency)
 
     // Connect the synthesized clock
     coreClockDomain.clock := io.boardClk
@@ -137,7 +137,7 @@ class J1Ico(j1Cfg    : J1Config,
     // Check if we have a jtag interface
     if (j1Cfg.hasJtag) {
 
-      // Connect the jtag halt signal an do a clock domain crossing
+      // Connect the jtag halt signal and do a clock domain crossing
       cpu.internal.stall := BufferCC(jtagIface.jtagArea.jtag.internal.jtagStall)
 
     } else {
