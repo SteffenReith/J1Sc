@@ -88,7 +88,6 @@ class J1Jtag(j1Cfg   : J1Config,
 
   })
 
-
   // Create the JTAG FSM (see https://www.fpga4fun.com/JTAG2.html)
   val jtagFSM = new StateMachine {
 

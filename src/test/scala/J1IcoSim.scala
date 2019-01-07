@@ -182,7 +182,9 @@ object J1IcoSim {
         // Create the clock signal using the threadless API
         ForkClock(dut.io.boardClk, mainClkPeriod)
 
-        // Do a reset cycle for some cycles
+        // Force (note that reset can be 1 after startup) a reset cycle for some cycles
+        dut.io.reset #= false
+        sleep(cycles = 1)
         DoReset(dut.io.reset, 100, HIGH)
 
         // Init the cycle counter
