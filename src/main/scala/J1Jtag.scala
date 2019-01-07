@@ -7,7 +7,6 @@
  *
  */
 import spinal.core._
-import spinal.lib._
 import spinal.lib.fsm._
 
 class J1Jtag(j1Cfg   : J1Config,
