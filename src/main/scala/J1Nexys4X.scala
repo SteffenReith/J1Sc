@@ -65,7 +65,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
       // Control for the JTAG TAP
       val tms = in Bool
 
-      // The JTAG clock (the signal tdi, tdo and tms are synchron to this clock)
+      // The JTAG clock (the signal tdi, tdo and tms are synchronous to this clock)
       val tck = in Bool
 
     }.setName("")
@@ -75,18 +75,18 @@ class J1Nexys4X(j1Cfg    : J1Config,
   // Check whether we need a jtag interface
   val jtagIface = j1Cfg.hasJtag generate new Area {
 
-    // Make the reset synchron and use the rising edge
+    // Make the reset synchronous and use the rising edge
     val jtagClockConfig = ClockDomainConfig(clockEdge        = RISING,
                                             resetKind        = ASYNC,
                                             resetActiveLevel = HIGH)
 
     // Create a clockdomain which is synchron to tck but the global reset is asynchronous to this clock domain
-    val jtagClockDomainDesc = ClockDomain(config = jtagClockConfig,
-                                          clock  = jtagCondIOArea.jtag.tck,
-                                          reset  = ClockDomain.current.reset)
+    val jtagClockDomain = ClockDomain(config = jtagClockConfig,
+                                      clock  = jtagCondIOArea.jtag.tck,
+                                      reset  = io.reset)
 
     // Create the clock area used for the JTAG
-    val jtagArea = new ClockingArea(jtagClockDomainDesc) {
+    val jtagArea = new ClockingArea(jtagClockDomain) {
 
       // Create a JTAG interface
       val jtag = new J1Jtag(j1Cfg, j1Cfg.jtagConfig)
@@ -146,7 +146,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
     // Check if we have a jtag interface
     if (j1Cfg.hasJtag) {
 
-      // Connect the jtag halt signal an do a clock domain crossing
+      // Connect the jtag halt signal and do a clock domain crossing
       cpu.internal.stall := BufferCC(jtagIface.jtagArea.jtag.internal.jtagStall)
 
     } else {
