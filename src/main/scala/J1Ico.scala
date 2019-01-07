@@ -36,7 +36,7 @@ class J1Ico(j1Cfg    : J1Config,
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
     // I/O pins for the UART
-    val rx = in  Bool // UART input
+    val rx = in Bool // UART input
     val tx = out Bool // UART output
 
   }.setName("")
@@ -56,7 +56,7 @@ class J1Ico(j1Cfg    : J1Config,
       // Control for the JTAG TAP
       val tms = in Bool
 
-      // The JTAG clock (the signal tdi, tdo and tms are synchron to this clock)
+      // The JTAG clock (the signal tdi, tdo and tms are synchronous to this clock)
       val tck = in Bool
 
     }.setName("")
