@@ -24,9 +24,6 @@ class J1Jtag(j1Cfg   : J1Config,
     // Control for the JTAG TAP
     val tms = in Bool
 
-    // The JTAG clock (the signal tdi, tdo and tms are synchron to this clock)
-    val tck = in Bool
-
   }.setName("")
 
   // All internal signals

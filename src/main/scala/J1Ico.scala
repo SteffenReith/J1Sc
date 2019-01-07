@@ -86,7 +86,6 @@ class J1Ico(j1Cfg    : J1Config,
       jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
       jtagCondIOArea.jtag.tdo <> jtag.io.tdo
       jtag.io.tms             <> jtagCondIOArea.jtag.tms
-      jtag.io.tck             <> jtagCondIOArea.jtag.tck
 
     }
 
