@@ -1,8 +1,12 @@
 import scala.sys.exit
-
 import spinal.core._
 import spinal.core.sim._
+
 import jssc._
+
+import java.net.ServerSocket
+import java.io.{InputStream, OutputStream}
+
 import java.awt.{BorderLayout, Color, Graphics}
 
 import javax.swing.{JButton, JFrame, JPanel, WindowConstants}
@@ -169,8 +173,8 @@ object J1IcoSim {
       println("[J1Sc]  Board frequency is " + boardCfg.coreFrequency.getValue.toDouble + " Hz")
       println("[J1Sc]  UART transmission rate " + boardCfg.uartConfig.baudrate.toLong + " bits/sec")
       println("[J1Sc]  Time resolution is " + 1.0 / simTimeRes + " sec")
-      println("[J1Sc]  One clock period in ticks is " + mainClkPeriod + " ticks")
-      println("[J1Sc]  Bit time (UART) in ticks is " + uartBaudPeriod + " ticks")
+      println("[J1Sc]  One clock period in ticks is " + mainClkPeriod  + " ticks")
+      println("[J1Sc]  Bit time (UART) in ticks is "  + uartBaudPeriod + " ticks")
 
       // Init the system and create the global system clock
       val genClock = fork {
@@ -238,6 +242,91 @@ object J1IcoSim {
 
           // Clear the reset flag
           doReset = false
+
+        }
+
+      }
+
+      // Check if we have an interface
+      val jtagCondSim = j1Cfg.hasJtag generate {
+
+        // Calculate the number of ticks of a jtag clock cycle
+        val jtagClkPeriod = (simTimeRes / j1Cfg.jtagConfig.jtagFreq.getValue.toDouble).toLong
+
+        // Give some information about the number of ticks of a jtag clock cycle
+        println("[J1Sc]  Jtag Cycle time in ticks is " + jtagClkPeriod + " ticks")
+
+        // Build a simulation for the JTAG interface
+        val jtag = fork {
+
+          // Input an output data for server socket
+          var inStream  : InputStream  = null
+          var outStream : OutputStream = null
+
+          // Create the server thread
+          val server = new Thread {
+
+            // Specify with code has to run in this thread
+            override def run() = {
+
+              // Start the socket
+              val socket = new ServerSocket(7894)
+
+              // Give some information
+              println("[J1Sc] Waiting for tcp connection on port 7894")
+
+              // Run the server forever
+              while (true) {
+
+                // Accept data
+                val connection = socket.accept()
+                connection.setTcpNoDelay(true)
+
+                // Connect the data streams to the socket
+                outStream = connection.getOutputStream()
+                inStream  = connection.getInputStream()
+
+                // Report that we handled data
+                println("[J1Sc] New TCP connection for jtag simulation")
+
+              }
+
+            }
+
+          }
+          server.start()
+
+          // Forever handle new data
+          while (true) {
+
+            // Wait for some jtag clock cycles
+            sleep(jtagClkPeriod * 200)
+
+            // Check if new input data is available
+            while ((inStream != null) && (inStream.available() != 0)) {
+
+              // Get the new data
+              val buffer = inStream.read()
+
+              // Decode virtual jtag data and write is to the dut
+              dut.jtagCondIOArea.jtag.tms #= (buffer & 1) != 0
+              dut.jtagCondIOArea.jtag.tdi #= (buffer & 2) != 0
+              dut.jtagCondIOArea.jtag.tck #= (buffer & 8) != 0
+
+              // Check if we have to read back some data
+              if ((buffer & 4) != 0) {
+
+                // Send back the data given by the jtag interface
+                outStream.write(if (dut.jtagCondIOArea.jtag.tdo.toBoolean) 1 else 0)
+
+              }
+
+              // Wait half a jtag cycle
+              sleep(jtagClkPeriod / 2)
+
+            }
+
+          }
 
         }
 
@@ -382,3 +471,4 @@ object J1IcoSim {
   }
 
 }
+

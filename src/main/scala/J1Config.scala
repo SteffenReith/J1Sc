@@ -7,9 +7,13 @@
  *
  */
 import spinal.core._
+
 import scala.io.Source
 import java.io.FileNotFoundException
 import java.io.IOException
+
+import spinal.core.ClockDomain.FixedFrequency
+
 import scala.sys._
 import scala.util.Properties.envOrElse
 
@@ -37,7 +41,8 @@ object IRQCtrlConfig {
 
 // Configuration used for the JTAG interface
 case class JTAGConfig(irWidth     : Int,
-                      idCodeValue : Int)
+                      idCodeValue : Int,
+                      jtagFreq    : IClockDomainFrequency)
 
 object JTAGConfig {
 
@@ -46,7 +51,8 @@ object JTAGConfig {
 
     // Set the default configuration values
     val config = JTAGConfig(irWidth     =  5,
-                            idCodeValue = 8128)
+                            idCodeValue = 8128,
+                            jtagFreq    = FixedFrequency(1 MHz))
 
     // Return the default configuration
     config
