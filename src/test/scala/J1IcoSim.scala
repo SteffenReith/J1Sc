@@ -375,7 +375,7 @@ object J1IcoSim {
           // Create an event handler for checking the reset button
           class ResetButtonHandler extends ActionListener {
 
-            override def actionPerformed(event : ActionEvent): Unit = {
+            override def actionPerformed(event : ActionEvent) : Unit = {
 
               // Check if the event source was the reset button
               if (event.getSource == resetButton) {
