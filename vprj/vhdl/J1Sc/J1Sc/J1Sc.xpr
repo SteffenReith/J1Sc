@@ -65,19 +65,16 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd">
+      <File Path="$PPRDIR/../../../../gen/src/vhdl/J1Nexys4X.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd"/>
-          <Attr Name="ImportTime" Val="1514110635"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../gen/src/vhdl/J1Nexys4X.vhd"/>
-          <Attr Name="ImportTime" Val="1521724658"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../../src/main/vhdl/arch/Nexys4DDR/Board_Nexys4DDR.vhd"/>
+          <Attr Name="ImportTime" Val="1514110635"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>

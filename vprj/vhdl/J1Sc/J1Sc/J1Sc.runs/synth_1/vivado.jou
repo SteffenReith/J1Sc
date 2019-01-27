@@ -1,12 +1,12 @@
 #-----------------------------------------------------------
-# Vivado v2018.1 (64-bit)
-# SW Build 2188600 on Wed Apr  4 18:39:19 MDT 2018
-# IP Build 2185939 on Wed Apr  4 20:55:05 MDT 2018
-# Start of session at: Sat May  5 11:39:57 2018
-# Process ID: 32652
-# Current directory: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:36:41 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Sun Jan 27 02:08:48 2019
+# Process ID: 5710
+# Current directory: /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1
 # Command line: vivado -log Board_Nexys4DDR.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source Board_Nexys4DDR.tcl
-# Log file: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/Board_Nexys4DDR.vds
-# Journal file: /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/vivado.jou
+# Log file: /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/Board_Nexys4DDR.vds
+# Journal file: /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/vivado.jou
 #-----------------------------------------------------------
 source Board_Nexys4DDR.tcl -notrace

@@ -1,52 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="impl_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1525513194">
+<GenRun Id="impl_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1548551326">
+  <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
+  <File Type="BG-DRC" Name="Board_Nexys4DDR.drc"/>
+  <File Type="BG-BGN" Name="Board_Nexys4DDR.bgn"/>
+  <File Type="BITSTR-SYSDEF" Name="Board_Nexys4DDR.sysdef"/>
+  <File Type="BITSTR-LTX" Name="debug_nets.ltx"/>
+  <File Type="BITSTR-LTX" Name="Board_Nexys4DDR.ltx"/>
+  <File Type="BITSTR-MMI" Name="Board_Nexys4DDR.mmi"/>
+  <File Type="BITSTR-BMM" Name="Board_Nexys4DDR_bd.bmm"/>
+  <File Type="BITSTR-NKY" Name="Board_Nexys4DDR.nky"/>
+  <File Type="BITSTR-RBT" Name="Board_Nexys4DDR.rbt"/>
+  <File Type="BITSTR-MSK" Name="Board_Nexys4DDR.msk"/>
+  <File Type="BG-BIN" Name="Board_Nexys4DDR.bin"/>
+  <File Type="BG-BIT" Name="Board_Nexys4DDR.bit"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-RPX" Name="Board_Nexys4DDR_bus_skew_postroute_physopted.rpx"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-PB" Name="Board_Nexys4DDR_bus_skew_postroute_physopted.pb"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="Board_Nexys4DDR_bus_skew_postroute_physopted.rpt"/>
+  <File Type="RDI-RDI" Name="Board_Nexys4DDR.vdi"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="Board_Nexys4DDR_timing_summary_postroute_physopted.rpx"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="Board_Nexys4DDR_timing_summary_postroute_physopted.pb"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING" Name="Board_Nexys4DDR_timing_summary_postroute_physopted.rpt"/>
+  <File Type="POSTROUTE-PHYSOPT-BLACKBOX-DCP" Name="Board_Nexys4DDR_postroute_physopt_bb.dcp"/>
+  <File Type="POSTROUTE-PHYSOPT-DCP" Name="Board_Nexys4DDR_postroute_physopt.dcp"/>
+  <File Type="ROUTE-BUS-SKEW" Name="Board_Nexys4DDR_bus_skew_routed.rpt"/>
+  <File Type="ROUTE-CLK" Name="Board_Nexys4DDR_clock_utilization_routed.rpt"/>
+  <File Type="ROUTE-SIMILARITY" Name="Board_Nexys4DDR_incremental_reuse_routed.rpt"/>
+  <File Type="ROUTE-TIMING-RPX" Name="Board_Nexys4DDR_timing_summary_routed.rpx"/>
+  <File Type="ROUTE-TIMING-PB" Name="Board_Nexys4DDR_timing_summary_routed.pb"/>
+  <File Type="ROUTE-TIMINGSUMMARY" Name="Board_Nexys4DDR_timing_summary_routed.rpt"/>
+  <File Type="ROUTE-STATUS-PB" Name="Board_Nexys4DDR_route_status.pb"/>
+  <File Type="ROUTE-STATUS" Name="Board_Nexys4DDR_route_status.rpt"/>
+  <File Type="ROUTE-PWR-RPX" Name="Board_Nexys4DDR_power_routed.rpx"/>
   <File Type="ROUTE-PWR-SUM" Name="Board_Nexys4DDR_power_summary_routed.pb"/>
-  <File Type="ROUTE-METHODOLOGY-DRC-RPX" Name="Board_Nexys4DDR_methodology_drc_routed.rpx"/>
   <File Type="ROUTE-PWR" Name="Board_Nexys4DDR_power_routed.rpt"/>
-  <File Type="ROUTE-DRC-RPX" Name="Board_Nexys4DDR_drc_routed.rpx"/>
   <File Type="ROUTE-METHODOLOGY-DRC-PB" Name="Board_Nexys4DDR_methodology_drc_routed.pb"/>
-  <File Type="ROUTE-DRC-PB" Name="Board_Nexys4DDR_drc_routed.pb"/>
+  <File Type="ROUTE-METHODOLOGY-DRC-RPX" Name="Board_Nexys4DDR_methodology_drc_routed.rpx"/>
   <File Type="ROUTE-METHODOLOGY-DRC" Name="Board_Nexys4DDR_methodology_drc_routed.rpt"/>
+  <File Type="ROUTE-DRC-RPX" Name="Board_Nexys4DDR_drc_routed.rpx"/>
+  <File Type="ROUTE-DRC-PB" Name="Board_Nexys4DDR_drc_routed.pb"/>
   <File Type="ROUTE-DRC" Name="Board_Nexys4DDR_drc_routed.rpt"/>
   <File Type="ROUTE-BLACKBOX-DCP" Name="Board_Nexys4DDR_routed_bb.dcp"/>
   <File Type="ROUTE-DCP" Name="Board_Nexys4DDR_routed.dcp"/>
   <File Type="ROUTE-ERROR-DCP" Name="Board_Nexys4DDR_routed_error.dcp"/>
+  <File Type="PHYSOPT-TIMING" Name="Board_Nexys4DDR_timing_summary_physopted.rpt"/>
+  <File Type="PHYSOPT-DRC" Name="Board_Nexys4DDR_drc_physopted.rpt"/>
   <File Type="PHYSOPT-DCP" Name="Board_Nexys4DDR_physopt.dcp"/>
+  <File Type="POSTPLACE-PWROPT-TIMING" Name="Board_Nexys4DDR_timing_summary_postplace_pwropted.rpt"/>
   <File Type="POSTPLACE-PWROPT-DCP" Name="Board_Nexys4DDR_postplace_pwropt.dcp"/>
+  <File Type="PLACE-TIMING" Name="Board_Nexys4DDR_timing_summary_placed.rpt"/>
+  <File Type="PLACE-PRE-SIMILARITY" Name="Board_Nexys4DDR_incremental_reuse_pre_placed.rpt"/>
+  <File Type="PLACE-SIMILARITY" Name="Board_Nexys4DDR_incremental_reuse_placed.rpt"/>
   <File Type="PLACE-CTRL" Name="Board_Nexys4DDR_control_sets_placed.rpt"/>
   <File Type="PLACE-UTIL-PB" Name="Board_Nexys4DDR_utilization_placed.pb"/>
   <File Type="PLACE-UTIL" Name="Board_Nexys4DDR_utilization_placed.rpt"/>
-  <File Type="PLACE-DCP" Name="Board_Nexys4DDR_placed.dcp"/>
-  <File Type="PA-TCL" Name="Board_Nexys4DDR.tcl"/>
+  <File Type="PLACE-CLK" Name="Board_Nexys4DDR_clock_utilization_placed.rpt"/>
   <File Type="PLACE-IO" Name="Board_Nexys4DDR_io_placed.rpt"/>
-  <File Type="BG-BIT" Name="Board_Nexys4DDR.bit"/>
-  <File Type="ROUTE-STATUS-PB" Name="Board_Nexys4DDR_route_status.pb"/>
-  <File Type="BG-BIN" Name="Board_Nexys4DDR.bin"/>
-  <File Type="ROUTE-TIMINGSUMMARY" Name="Board_Nexys4DDR_timing_summary_routed.rpt"/>
-  <File Type="BITSTR-MSK" Name="Board_Nexys4DDR.msk"/>
-  <File Type="ROUTE-TIMING-PB" Name="Board_Nexys4DDR_timing_summary_routed.pb"/>
-  <File Type="POSTROUTE-PHYSOPT-BLACKBOX-DCP" Name="Board_Nexys4DDR_postroute_physopt_bb.dcp"/>
-  <File Type="BITSTR-RBT" Name="Board_Nexys4DDR.rbt"/>
-  <File Type="ROUTE-TIMING-RPX" Name="Board_Nexys4DDR_timing_summary_routed.rpx"/>
-  <File Type="REPORTS-TCL" Name="Board_Nexys4DDR_reports.tcl"/>
-  <File Type="OPT-DRC" Name="Board_Nexys4DDR_drc_opted.rpt"/>
-  <File Type="BITSTR-NKY" Name="Board_Nexys4DDR.nky"/>
-  <File Type="OPT-HWDEF" Name="Board_Nexys4DDR.hwdef"/>
-  <File Type="BITSTR-BMM" Name="Board_Nexys4DDR_bd.bmm"/>
-  <File Type="ROUTE-CLK" Name="Board_Nexys4DDR_clock_utilization_routed.rpt"/>
-  <File Type="BG-DRC" Name="Board_Nexys4DDR.drc"/>
-  <File Type="BITSTR-MMI" Name="Board_Nexys4DDR.mmi"/>
-  <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
-  <File Type="BG-BGN" Name="Board_Nexys4DDR.bgn"/>
-  <File Type="BITSTR-SYSDEF" Name="Board_Nexys4DDR.sysdef"/>
-  <File Type="BITSTR-LTX" Name="Board_Nexys4DDR.ltx"/>
-  <File Type="POSTROUTE-PHYSOPT-DCP" Name="Board_Nexys4DDR_postroute_physopt.dcp"/>
-  <File Type="ROUTE-STATUS" Name="Board_Nexys4DDR_route_status.rpt"/>
-  <File Type="ROUTE-PWR-RPX" Name="Board_Nexys4DDR_power_routed.rpx"/>
-  <File Type="OPT-DCP" Name="Board_Nexys4DDR_opt.dcp"/>
-  <File Type="PLACE-PRE-SIMILARITY" Name="Board_Nexys4DDR_incremental_reuse_pre_placed.rpt"/>
+  <File Type="PLACE-DCP" Name="Board_Nexys4DDR_placed.dcp"/>
+  <File Type="PWROPT-TIMING" Name="Board_Nexys4DDR_timing_summary_pwropted.rpt"/>
+  <File Type="PWROPT-DRC" Name="Board_Nexys4DDR_drc_pwropted.rpt"/>
   <File Type="PWROPT-DCP" Name="Board_Nexys4DDR_pwropt.dcp"/>
-  <File Type="RDI-RDI" Name="Board_Nexys4DDR.vdi"/>
+  <File Type="OPT-TIMING" Name="Board_Nexys4DDR_timing_summary_opted.rpt"/>
+  <File Type="OPT-HWDEF" Name="Board_Nexys4DDR.hwdef"/>
+  <File Type="OPT-METHODOLOGY-DRC" Name="Board_Nexys4DDR_methodology_drc_opted.rpt"/>
+  <File Type="OPT-DRC" Name="Board_Nexys4DDR_drc_opted.rpt"/>
+  <File Type="OPT-DCP" Name="Board_Nexys4DDR_opt.dcp"/>
+  <File Type="INIT-TIMING" Name="Board_Nexys4DDR_timing_summary_init.rpt"/>
+  <File Type="ROUTE-BUS-SKEW-RPX" Name="Board_Nexys4DDR_bus_skew_routed.rpx"/>
+  <File Type="REPORTS-TCL" Name="Board_Nexys4DDR_reports.tcl"/>
+  <File Type="ROUTE-BUS-SKEW-PB" Name="Board_Nexys4DDR_bus_skew_routed.pb"/>
+  <File Type="PA-TCL" Name="Board_Nexys4DDR.tcl"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/imports/J1Sc/src/main/vhdl/arch/Nexys4DDR/PLL.vhd">
@@ -57,10 +79,8 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PSRCDIR/sources_1/imports/J1Sc/gen/src/vhdl/J1Nexys4X.vhd">
+    <File Path="$PPRDIR/../../../../gen/src/vhdl/J1Nexys4X.vhd">
       <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../../../../gen/src/vhdl/J1Nexys4X.vhd"/>
-        <Attr Name="ImportTime" Val="1521724658"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
@@ -107,6 +127,12 @@
     </File>
     <Config>
       <Option Name="ConstrsType" Val="XDC"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
+    <Filter Type="Utils"/>
+    <Config>
+      <Option Name="TopAutoSet" Val="TRUE"/>
     </Config>
   </FileSet>
   <Strategy Version="1" Minor="2">

@@ -68,14 +68,14 @@ set rc [catch {
   create_project -in_memory -part xc7a100tcsg324-1
   set_property design_mode GateLvl [current_fileset]
   set_param project.singleFileAddWarning.threshold 0
-  set_property webtalk.parent_dir /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.cache/wt [current_project]
-  set_property parent.project_path /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.xpr [current_project]
-  set_property ip_output_repo /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.cache/ip [current_project]
+  set_property webtalk.parent_dir /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.cache/wt [current_project]
+  set_property parent.project_path /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.xpr [current_project]
+  set_property ip_output_repo /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.cache/ip [current_project]
   set_property ip_cache_permissions {read write} [current_project]
-  add_files -quiet /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/Board_Nexys4DDR.dcp
-  read_xdc /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Clocks.xdc
-  read_xdc /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Debug.xdc
-  read_xdc /home/streit/src/scala/J1Sc/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Pins.xdc
+  add_files -quiet /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.runs/synth_1/Board_Nexys4DDR.dcp
+  read_xdc /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Clocks.xdc
+  read_xdc /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Debug.xdc
+  read_xdc /home/streit/src/scala/J1Sc-devel/vprj/vhdl/J1Sc/J1Sc/J1Sc.srcs/constrs_1/imports/nexys4ddr/Pins.xdc
   link_design -top Board_Nexys4DDR -part xc7a100tcsg324-1
   close_msg_db -file init_design.pb
 } RESULT]
@@ -139,7 +139,7 @@ set rc [catch {
   create_report "impl_1_route_report_timing_summary_0" "report_timing_summary -max_paths 10 -file Board_Nexys4DDR_timing_summary_routed.rpt -pb Board_Nexys4DDR_timing_summary_routed.pb -rpx Board_Nexys4DDR_timing_summary_routed.rpx -warn_on_violation "
   create_report "impl_1_route_report_incremental_reuse_0" "report_incremental_reuse -file Board_Nexys4DDR_incremental_reuse_routed.rpt"
   create_report "impl_1_route_report_clock_utilization_0" "report_clock_utilization -file Board_Nexys4DDR_clock_utilization_routed.rpt"
-  create_report "impl_1_route_report_bus_skew_0" "report_bus_skew -warn_on_violation -file route_report_bus_skew_0.rpt -rpx route_report_bus_skew_0.rpx"
+  create_report "impl_1_route_report_bus_skew_0" "report_bus_skew -warn_on_violation -file Board_Nexys4DDR_bus_skew_routed.rpt -pb Board_Nexys4DDR_bus_skew_routed.pb -rpx Board_Nexys4DDR_bus_skew_routed.rpx"
   close_msg_db -file route_design.pb
 } RESULT]
 if {$rc} {
