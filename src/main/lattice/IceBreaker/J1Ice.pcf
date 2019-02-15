@@ -1,44 +1,37 @@
 # External clock
-set_io --warn-no-port clk100Mhz R9
+set_io --warn-no-port clk12Mhz 35
 
-# Use button S1 as reset
-set_io --warn-no-port reset K11
+# Use button UButton as reset
+set_io --warn-no-port reset 10
 
-# Use button S3 as external interrupt
-set_io --warn-no-port extInt P13
+# Use button 3 as external interrupt
+set_io --warn-no-port extInt 18
 
-# The IcoBoard has 3 LEDs on the PCB. Connect them via PWM
-set_io --warn-no-port pwmLeds[0] C8
-set_io --warn-no-port pwmLeds[1] F7
-set_io --warn-no-port pwmLeds[2] K9
+# The use the centered red led for pwm 
+set_io --warn-no-port pwmLeds[0] 26
 
-# Pmod8LD connected to P1
-set_io --warn-no-port leds[0] D8
-set_io --warn-no-port leds[1] B9
-set_io --warn-no-port leds[2] B10
-set_io --warn-no-port leds[3] B11
-set_io --warn-no-port leds[4] B8
-set_io --warn-no-port leds[5] A9
-set_io --warn-no-port leds[6] A10
-set_io --warn-no-port leds[7] A11
+# Green leds
+set_io --warn-no-port leds[0] 27 
+set_io --warn-no-port leds[1] 25
+set_io --warn-no-port leds[2] 23
+set_io --warn-no-port leds[3] 21
 
-# PmodA connected to P2
-set_io --warn-no-port pmodA[0] B4
-set_io --warn-no-port pmodA[1] C3
-set_io --warn-no-port pmodA[2] A2
-set_io --warn-no-port pmodA[3] A5
-set_io --warn-no-port pmodA[4] B5
-set_io --warn-no-port pmodA[5] B3
-set_io --warn-no-port pmodA[6] B6
-set_io --warn-no-port pmodA[7] B7
+# PmodA connected to PMOD1A
+set_io --warn-no-port pmodA[0]  4 
+set_io --warn-no-port pmodA[1]  2
+set_io --warn-no-port pmodA[2] 47
+set_io --warn-no-port pmodA[3] 45
+set_io --warn-no-port pmodA[4] 44
+set_io --warn-no-port pmodA[5] 47
+set_io --warn-no-port pmodA[6] 48
+set_io --warn-no-port pmodA[7]  3
 
 # PmodUSBUART connected to P3 (upper row of P3)
-set_io --warn-no-port rx L7
-set_io --warn-no-port tx G5
+set_io --warn-no-port rx 6
+set_io --warn-no-port tx 9
 
 # JTAG connected to P4 (lower row of P4)
-set_io --warn-no-port tck T9
-set_io --warn-no-port tdi T10 
-set_io --warn-no-port tdo T13
-set_io --warn-no-port tms R14
-
+set_io --warn-no-port tck 25
+set_io --warn-no-port tdi 23 
+set_io --warn-no-port tdo 21
+set_io --warn-no-port tms 20
