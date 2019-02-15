@@ -78,6 +78,17 @@ object LEDArrayConfig {
     config
   }
 
+  // Provide a config for four LEDs of an IceBreaker board
+  def iceLEDs : LEDArrayConfig = {
+
+    // Configure a bank of eight LEDs on a PMod
+    val config = LEDArrayConfig(width = 4,
+                                lowActive = false)
+
+    // Return the configuration for a LED array on a Pmod
+    config
+  }
+
 }
 
 // Configuration of the PWM component
@@ -122,6 +133,19 @@ object PWMConfig {
     val config = PWMConfig(pwmFrequency    = 200 Hz,
                            numOfDutyCycles = 256,
                            numOfChannels   = 3)
+
+    // Return the configuration
+    config
+
+  }
+
+  // Provide a configuration for an IceBreaker board
+  def icePWM : PWMConfig = {
+
+    // Create a config for on LED (using pwm) on an IcoBreaker board
+    val config = PWMConfig(pwmFrequency    = 200 Hz,
+                           numOfDutyCycles = 256,
+                           numOfChannels   = 1)
 
     // Return the configuration
     config
@@ -206,9 +230,21 @@ object DBPinArrayConfig {
   // A configuration for push buttons
   def pushButton5 : DBPinArrayConfig = {
 
-    // Debounce 5 push butting with 5ms (e.g. Nexys4X)
+    // Debounce 5 push butting with 5ms
     val config = DBPinArrayConfig(waitTime  = 5 ms,
                                   numOfPins = 5)
+
+    // Return the configuration
+    config
+
+  }
+
+  // A configuration for the push buttons of an IceBreaker board
+  def iceButtons : DBPinArrayConfig = {
+
+    // Debounce 3 push butting with 5ms (e.g. IceBreaker)
+    val config = DBPinArrayConfig(waitTime  = 5 ms,
+                                  numOfPins = 3)
 
     // Return the configuration
     config
@@ -379,8 +415,27 @@ object CoreConfig {
 
   }
 
+  // Provide a configuration for the IcoBreaker board
+  def iceBoard : CoreConfig = {
+
+    // Configuration values for an IceBreaker board
+    val config = CoreConfig(gpioConfig    = GPIOConfig.pmod,
+                            ledBankConfig = LEDArrayConfig.iceLEDs,
+                            pwmConfig     = PWMConfig.icePWM,
+                            ssdConfig     = null,
+                            sSwitchConfig = null,
+                            pButtonConfig = DBPinArrayConfig.iceButtons,
+                            uartConfig    = J1UARTConfig.slowUartConfig,
+                            coreFrequency = FixedFrequency(42 MHz),
+                            1)
+
+    // Return the configuration
+    config
+
+  }
+
   // Provide a configuration for the simulation of an IcoBoard
-  def icoBoardSim : CoreConfig = {
+  def boardSim : CoreConfig = {
 
     // Configuration values for an IcoBoard
     val config = CoreConfig(gpioConfig     = GPIOConfig.pmod,

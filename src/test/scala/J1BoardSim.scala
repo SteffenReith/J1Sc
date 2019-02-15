@@ -112,7 +112,7 @@ object UARTTransceiver {
 
 }
 
-object J1IcoSim {
+object J1BoardSim {
 
   def main(args: Array[String]) : Unit = {
 
@@ -129,7 +129,7 @@ object J1IcoSim {
     val j1Cfg = J1Config.forth16
 
     // Configuration of the used board
-    val boardCfg = CoreConfig.icoBoardSim
+    val boardCfg = CoreConfig.boardSim
 
     // Flag for doing a reset
     var doReset = false
@@ -162,7 +162,7 @@ object J1IcoSim {
     SimConfig.workspacePath("gen/sim")
              .allOptimisation
              //.withWave
-             .compile(new J1Ico(j1Cfg, boardCfg)).doSimUntilVoid { dut =>
+             .compile(new J1Ice(j1Cfg, boardCfg)).doSimUntilVoid { dut =>
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong

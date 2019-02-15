@@ -11,7 +11,7 @@ import spinal.lib._
 import spinal.lib.com.uart._
 import spinal.lib.io._
 
-class J1Ico(j1Cfg    : J1Config,
+class J1Ice(j1Cfg    : J1Config,
             boardCfg : CoreConfig) extends Component {
 
   val io = new Bundle {
@@ -36,7 +36,7 @@ class J1Ico(j1Cfg    : J1Config,
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
     // I/O pins for the UART
-    val rx = in Bool // UART input
+    val rx = in  Bool // UART input
     val tx = out Bool // UART output
 
   }.setName("")
@@ -222,7 +222,7 @@ class J1Ico(j1Cfg    : J1Config,
 
 }
 
-object J1Ico {
+object J1Ice {
 
   // Make the reset synchron and use the rising edge
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
@@ -237,17 +237,17 @@ object J1Ico {
       val j1Cfg = J1Config.forth16
 
       // Configuration of the used board
-      val boardCfg = CoreConfig.icoBoard
+      val boardCfg = CoreConfig.iceBoard
 
       // Create a system instance
-      new J1Ico(j1Cfg, boardCfg)
+      new J1Ice(j1Cfg, boardCfg)
 
     }
 
     // Write a message
-    println("[J1Sc] Create the J1 for an IcoBoard")
+    println("[J1Sc] Create the J1 for an IceBreaker board")
 
-    // Generate VHDL
+    // Generate VHDL code (for debugging purposes)
     SpinalConfig(mergeAsyncProcess = true,
                  genVhdlPkg = true,
                  defaultConfigForClockDomains = globalClockConfig,
