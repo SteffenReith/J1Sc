@@ -1,0 +1,44 @@
+# External clock
+set_io --warn-no-port clk100Mhz R9
+
+# Use button S1 as reset
+set_io --warn-no-port reset K11
+
+# Use button S3 as external interrupt
+set_io --warn-no-port extInt P13
+
+# The IcoBoard has 3 LEDs on the PCB. Connect them via PWM
+set_io --warn-no-port pwmLeds[0] C8
+set_io --warn-no-port pwmLeds[1] F7
+set_io --warn-no-port pwmLeds[2] K9
+
+# Pmod8LD connected to P1
+set_io --warn-no-port leds[0] D8
+set_io --warn-no-port leds[1] B9
+set_io --warn-no-port leds[2] B10
+set_io --warn-no-port leds[3] B11
+set_io --warn-no-port leds[4] B8
+set_io --warn-no-port leds[5] A9
+set_io --warn-no-port leds[6] A10
+set_io --warn-no-port leds[7] A11
+
+# PmodA connected to P2
+set_io --warn-no-port pmodA[0] B4
+set_io --warn-no-port pmodA[1] C3
+set_io --warn-no-port pmodA[2] A2
+set_io --warn-no-port pmodA[3] A5
+set_io --warn-no-port pmodA[4] B5
+set_io --warn-no-port pmodA[5] B3
+set_io --warn-no-port pmodA[6] B6
+set_io --warn-no-port pmodA[7] B7
+
+# PmodUSBUART connected to P3 (upper row of P3)
+set_io --warn-no-port rx L7
+set_io --warn-no-port tx G5
+
+# JTAG connected to P4 (lower row of P4)
+set_io --warn-no-port tck T9
+set_io --warn-no-port tdi T10 
+set_io --warn-no-port tdo T13
+set_io --warn-no-port tms R14
+
