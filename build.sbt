@@ -100,7 +100,7 @@ iceSynth :=  {
   val toplevel = iceToplevel.value
   val baseDir  = baseDirectory.value
   val outDir   = baseDirectory.value / genDir.value
-  val yosysDir = "src/main/lattice/IceBreaker board"
+  val yosysDir = "src/main/lattice/IceBreaker"
 
   // Print a debug message
   println("[sbt-info] Synthesize netlist using yosys")
