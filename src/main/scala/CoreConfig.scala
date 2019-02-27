@@ -244,7 +244,7 @@ object DBPinArrayConfig {
 
     // Debounce 3 push butting with 5ms (e.g. IceBreaker)
     val config = DBPinArrayConfig(waitTime  = 5 ms,
-                                  numOfPins = 3)
+                                  numOfPins = 2)
 
     // Return the configuration
     config

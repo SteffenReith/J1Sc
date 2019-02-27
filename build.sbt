@@ -3,9 +3,9 @@ scalaVersion := "2.11.8"
 
 // Added the spinal libraries and a UART-driver
 libraryDependencies ++= Seq(
-  "com.github.spinalhdl" % "spinalhdl-core_2.11" % "1.3.0",
-  "com.github.spinalhdl" % "spinalhdl-lib_2.11" % "1.3.0",
-  "com.github.spinalhdl" % "spinalhdl-sim_2.11" % "1.3.0",
+  "com.github.spinalhdl" % "spinalhdl-core_2.11" % "1.3.1",
+  "com.github.spinalhdl" % "spinalhdl-lib_2.11" % "1.3.1",
+  "com.github.spinalhdl" % "spinalhdl-sim_2.11" % "1.3.1",
   "org.scream3r" % "jssc" % "2.8.0"
 )
 
@@ -124,16 +124,17 @@ icePnr := {
   // Synthesize first
   iceSynth.value
 
+  val baseDir     = baseDirectory.value 
   val toplevel    = iceToplevel.value
   val outDir      = baseDirectory.value / genDir.value
-  val latticePath = baseDirectory.value / "src/main/lattice/IceBreaker board"
+  val latticePath = baseDirectory.value / "src/main/lattice/IceBreaker"
+  val clockPath   = "src/main/lattice/IceBreaker"
 
   // Print a debug message
   println("[sbt-info] Do place, route, check and generate a bit-file using the IceStorm toolchain")
 
   // Do the place and route, check the result and generate a bit file
-  Process("nextpnr-ice40" :: "--freq" :: "42" :: "--pcf" :: s"${latticePath}/${toplevel}.pcf" :: "--hx8k" :: "--package" :: "ct256" :: "--json" :: s"${outDir}/${toplevel}.json" :: "--asc" :: s"${toplevel}.asc" :: Nil, outDir) !;
-  Process("icetime" :: "-tmd" :: "hx8k" :: "-c 40" :: s"${toplevel}.asc" :: Nil, outDir) !;
+  Process("nextpnr-ice40" :: "--pre-pack" :: s"${baseDir}/${clockPath}/clocks" :: "--pcf" :: s"${latticePath}/${toplevel}.pcf" :: "--up5k" :: "--json" :: s"${outDir}/${toplevel}.json" :: "--asc" :: s"${toplevel}.asc" :: Nil, outDir) !;
   Process("icepack" :: s"${toplevel}.asc" :: s"${toplevel}.bin" :: Nil, outDir) !;
 
 }
@@ -151,7 +152,6 @@ iceProg := {
   println("[sbt-info] Send bit-file to attached IceBreaker board")
 
   // Send the file
-  //"iceprog -p" #< s"${outDir}/${toplevel).bin" !;
   Process("iceprog" :: "-p" :: Nil, outDir) #< file(s"${outDir}/${toplevel}.bin") !;
 
 }
@@ -166,3 +166,4 @@ lazy val root = (project in file(".")).settings( organization     := "com.gitHub
                                                  iceToplevel      := "J1Ice",
                                                  nexysToplevel    := "J1Nexys4X",
                                                  genDir           := "gen/src/verilog")
+

@@ -12,6 +12,7 @@ module IceBreaker (reset,
                    extInt,
                    leds,
                    pwmLeds,
+                   pButtons,
                    pmodA,
                    tck,
                    tms,
@@ -24,6 +25,7 @@ module IceBreaker (reset,
  input reset;
  input clk12Mhz;
  input [0:0] extInt;
+ input [1:0] pButtons;
  input rx;
  input tck;
  input tms;
@@ -47,7 +49,7 @@ module IceBreaker (reset,
  wire [7:0] pmodA_write;
  wire [7:0] pmodA_writeEnable;
 
- // Instantiate a PLL/MMCM (makes a 42Mhz clock)
+ // Instantiate a PLL to make a 42Mhz clock
  PLL makeClk (.clkIn    (clk12Mhz),
               .clkOut   (boardClk),
               .isLocked (boardClkLocked));
@@ -63,6 +65,7 @@ module IceBreaker (reset,
              .tms                (tms),
              .tdi                (tdi),
              .tdo                (tdo),
+             .pButtons           (pButtons),
              .pmodA_read         (pmodA_read),
              .pmodA_write        (pmodA_write),
              .pmodA_writeEnable  (pmodA_writeEnable),
@@ -86,3 +89,4 @@ module IceBreaker (reset,
   endgenerate
   
 endmodule
+

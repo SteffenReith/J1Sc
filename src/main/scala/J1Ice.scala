@@ -35,6 +35,9 @@ class J1Ice(j1Cfg    : J1Config,
     // The physical pins for pmod A
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
+    // The physical pins for the push buttons
+    val pButtons  = in Bits(boardCfg.pButtonConfig.numOfPins bits)
+
     // I/O pins for the UART
     val rx = in  Bool // UART input
     val tx = out Bool // UART output
@@ -172,6 +175,14 @@ class J1Ice(j1Cfg    : J1Config,
     io.pmodA.write       <> pmodA.io.dataOut
     pmodA.io.dataIn      <> io.pmodA.read
     io.pmodA.writeEnable <> pmodA.io.directions
+
+    // Create the push button array
+    val pButtons = new DBPinArray(j1Cfg, boardCfg.pButtonConfig)
+    val pButtonsBridge = pButtons.driveFrom(peripheralBusCtrl, baseAddress = 0x90)
+    pButtons.io.inputPins := io.pButtons
+
+    // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
+    pButtons.timeOut.stateRise.allowPruning()
 
     // Create two timer and map it at 0xC0 and 0xD0
     val timerA       = new Timer(j1Cfg.timerConfig)

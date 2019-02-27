@@ -16,19 +16,17 @@ module PLL(clkIn, clkOut, isLocked);
    output isLocked;
 
    // In: 12Mhz / Out: 42Mhz
-   SB_PLL40_CORE #(
+   SB_PLL40_PAD #(
        .FEEDBACK_PATH("SIMPLE"),
-       .PLLOUT_SELECT("GENCLK"),
-       .DIVR(4'b0000),
-       .DIVF(7'b0110111),
-       .DIVQ(3'b100),
-       .FILTER_RANGE(3'b001)
+       .DIVR(4'b0000),         // DIVR =  0
+       .DIVF(7'b0110111),      // DIVF = 55
+       .DIVQ(3'b100),          // DIVQ =  4
+       .FILTER_RANGE(3'b001)   // FILTER_RANGE = 1
    ) uut (
        .LOCK(isLocked),
        .RESETB(1'b1),
        .BYPASS(1'b0),
-       .REFERENCECLK(clkIn),
+       .PACKAGEPIN(clkIn),
        .PLLOUTCORE(clkOut)
    );
 endmodule
-
