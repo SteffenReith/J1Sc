@@ -7,7 +7,7 @@
 //
 //
 
-module IceBreaker (reset,
+module IceBreaker (nreset,
                    clk12Mhz, 
                    extInt,
                    leds,
@@ -19,10 +19,12 @@ module IceBreaker (reset,
                    tdi,
                    tdo,
                    rx,    
-                   tx);
+                   tx,
+                   rxLed,
+                   txLed);
          
  // Input ports
- input reset;
+ input nreset;
  input clk12Mhz;
  input [0:0] extInt;
  input [1:0] pButtons;
@@ -36,6 +38,8 @@ module IceBreaker (reset,
  output [0:0] pwmLeds;
  output tx;
  output tdo;
+ output rxLed;
+ output txLed;
 
  // Bidirectional port
  inout [7:0] pmodA;
@@ -48,6 +52,9 @@ module IceBreaker (reset,
  wire [7:0] pmodA_read;
  wire [7:0] pmodA_write;
  wire [7:0] pmodA_writeEnable;
+
+ // Internal wire for reset
+ wire reset;
 
  // Instantiate a PLL to make a 42Mhz clock
  PLL makeClk (.clkIn    (clk12Mhz),
@@ -70,7 +77,12 @@ module IceBreaker (reset,
              .pmodA_write        (pmodA_write),
              .pmodA_writeEnable  (pmodA_writeEnable),
              .rx                 (rx),
-             .tx                 (tx));
+             .tx                 (tx),
+             .rxLed              (rxLed),
+             .txLed              (txLed));
+
+  // Invert the negative reset
+  assign reset = !nreset;
 
   // Generate the write port and equip it with tristate functionality
   genvar i;
