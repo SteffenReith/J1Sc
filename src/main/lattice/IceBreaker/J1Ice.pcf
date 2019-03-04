@@ -2,7 +2,7 @@
 set_io --warn-no-port clk12Mhz 35
 
 # Use button UButton as reset
-set_io --warn-no-port reset 10
+set_io --warn-no-port nreset 10
 
 # Use button 3 as external interrupt
 set_io --warn-no-port extInt 18
@@ -30,9 +30,13 @@ set_io --warn-no-port pmodA[5] 46
 set_io --warn-no-port pmodA[6] 48
 set_io --warn-no-port pmodA[7]  3
 
-# PmodUSBUART connected to P3 (upper row of P3)
-set_io --warn-no-port rx 6
-set_io --warn-no-port tx 9
+# Connection to the UART
+set_io --warn-no-port rx 6 
+set_io --warn-no-port tx 9 
+
+# Indicator LEDs for UART
+set_io --warn-no-port rxLed 37
+set_io --warn-no-port txLed 11
 
 # JTAG connected to PMOD1B (lower row)
 set_io --warn-no-port tck 43
