@@ -42,6 +42,10 @@ class J1Ice(j1Cfg    : J1Config,
     val rx = in  Bool // UART input
     val tx = out Bool // UART output
 
+    // LEDs pins for indicating UART activity
+    val rxLed = out Bool
+    val txLed = out Bool
+
   }.setName("")
 
   // I/O signals for the jtag interface (if needed)
@@ -110,7 +114,7 @@ class J1Ice(j1Cfg    : J1Config,
       coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
         // Hold the reset as long as the PLL is not locked
-        input = io.reset || jtagIface.jtagArea.jtag.internal.jtagReset || (!io.boardClkLocked),
+        input       = io.reset || jtagIface.jtagArea.jtag.internal.jtagReset || (!io.boardClkLocked),
         clockDomain = coreClockDomain
 
       )))
@@ -121,7 +125,7 @@ class J1Ice(j1Cfg    : J1Config,
       coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
         // Hold the reset as long as the PLL is not locked
-        input = io.reset || (!io.boardClkLocked),
+        input       = io.reset || (!io.boardClkLocked),
         clockDomain = coreClockDomain
 
       )))
@@ -208,9 +212,10 @@ class J1Ice(j1Cfg    : J1Config,
                                                       rxFifoDepth                   = boardCfg.uartConfig.fifoDepth)
     val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
-    // Map the UART to 0xF0 and enable the generation of read interrupts
+    // Map the UART to 0xF0 and enable the generation of read/write interrupts
     val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartMemMapConfig, baseAddress = 0xF0)
-    uartBridge.interruptCtrl.readIntEnable := True
+    uartBridge.interruptCtrl.readIntEnable  := True
+    uartBridge.interruptCtrl.writeIntEnable := True
 
     // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
     uartBridge.interruptCtrl.interrupt.allowPruning()
@@ -218,6 +223,30 @@ class J1Ice(j1Cfg    : J1Config,
     // Connect the physical UART pins to the outside world
     io.tx := uartCtrl.io.uart.txd
     uartCtrl.io.uart.rxd := io.rx
+
+    // Create timeouts for the UART Leds
+    val rxTimeOut = Timeout(1 ms)
+    val txTimeOut = Timeout(1 ms)
+
+    // Start tx timeout when UART becomes active
+    when(uartBridge.interruptCtrl.writeInt) {
+
+      // Reset the write timeout
+      txTimeOut.clear()
+
+    }
+
+    // Start rx timeout when UART becomes active
+    when(uartBridge.interruptCtrl.readInt) {
+
+      // Reset the read timeout
+      rxTimeOut.clear()
+
+    }
+
+    // Handle the LEDs for UART activity (note that this leds are low active)
+    io.txLed := txTimeOut.state
+    io.rxLed := rxTimeOut.state
 
     // Create an interrupt controller, map it to 0xE0 and connect all interrupts
     val intCtrl = new InterruptCtrl(j1Cfg)
