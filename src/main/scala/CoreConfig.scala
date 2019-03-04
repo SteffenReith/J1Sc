@@ -380,7 +380,7 @@ object CoreConfig {
   // Provide a configuration for the Nexys4 board from Digilent
   def nexys4 : CoreConfig = {
 
-    // Configuration values for a Nexys4
+    // Configuration values for a Nexys4X
     val config = CoreConfig(gpioConfig    = GPIOConfig.pmod,
                             ledBankConfig = LEDArrayConfig.nexys4X,
                             pwmConfig     = PWMConfig.nexys4X,
@@ -426,7 +426,7 @@ object CoreConfig {
                             sSwitchConfig = null,
                             pButtonConfig = DBPinArrayConfig.iceButtons,
                             uartConfig    = J1UARTConfig.slowUartConfig,
-                            coreFrequency = FixedFrequency(42 MHz),
+                            coreFrequency = FixedFrequency(value = 42 MHz),
                             1)
 
     // Return the configuration
@@ -438,7 +438,7 @@ object CoreConfig {
   def boardSim : CoreConfig = {
 
     // Configuration values for an IcoBoard
-    val config = CoreConfig(gpioConfig     = GPIOConfig.pmod,
+    val config = CoreConfig(gpioConfig    = GPIOConfig.pmod,
                             ledBankConfig = LEDArrayConfig.pmodLEDs,
                             pwmConfig     = PWMConfig.icoPWM,
                             ssdConfig     = SSDConfig.default,
