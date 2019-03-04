@@ -49,7 +49,7 @@ cleanAll := {
   Process("rm" :: "-f" :: s"${verilogGenDir}/${nexysTop}.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin" :: Nil, baseDir) !;
   Process("rm" :: "-f" :: s"${vhdlGenDir}/${iceTop}.vhd" :: Nil, baseDir) !;
   Process("rm" :: "-f" :: s"${vhdlGenDir}/${nexysTop}.vhd" :: Nil, baseDir) !;
-  Process("rm" :: "-fR" :: s"target/ project/target" :: Nil, baseDir) !;
+  Process("rm" :: "-fR" :: s"target/project/target" :: Nil, baseDir) !;
 
 }
 
@@ -152,7 +152,7 @@ iceProg := {
   println("[sbt-info] Send bit-file to attached IceBreaker board")
 
   // Send the file
-  Process("iceprog" :: "-p" :: Nil, outDir) #< file(s"${outDir}/${toplevel}.bin") !;
+  Process("iceprog" :: s"${outDir}/${toplevel}.bin" :: Nil, outDir) !;
 
 }
 
