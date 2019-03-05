@@ -38,7 +38,7 @@ set_io --warn-no-port tx 9
 set_io --warn-no-port rxLed 37
 set_io --warn-no-port txLed 11
 
-# JTAG connected to PMOD1B (lower row)
+# JTAG connected to PMOD1B (upper row)
 set_io --warn-no-port tck 43
 set_io --warn-no-port tdi 38 
 set_io --warn-no-port tdo 34 
