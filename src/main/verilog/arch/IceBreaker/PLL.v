@@ -27,6 +27,6 @@ module PLL(clkIn, clkOut, isLocked);
        .RESETB(1'b1),
        .BYPASS(1'b0),
        .REFERENCECLK(clkIn),
-       .PLLOUTCORE(clkOut)
+       .PLLOUTGLOBAL(clkOut)
    );
 endmodule
