@@ -137,6 +137,9 @@ class J1Ice(j1Cfg    : J1Config,
   // Generate the application specific clocking area
   val coreArea = new ClockingArea(clkCtrl.coreClockDomain) {
 
+    // Give some info about the frequency
+    println(s"[J1Sc] Use board frequency of ${ClockDomain.current.frequency.getValue.toBigDecimal /1000000} Mhz")
+
     // Create a new CPU core
     val cpu = new J1(j1Cfg)
 
@@ -225,8 +228,8 @@ class J1Ice(j1Cfg    : J1Config,
     uartCtrl.io.uart.rxd := io.rx
 
     // Create timeouts for the UART Leds
-    val rxTimeOut = Timeout(1 ms)
-    val txTimeOut = Timeout(1 ms)
+    val rxTimeOut = Timeout(50 ms)
+    val txTimeOut = Timeout(50 ms)
 
     // Start tx timeout when UART becomes active
     when(uartBridge.interruptCtrl.writeInt) {
@@ -276,7 +279,7 @@ object J1Ice {
       // Configuration of CPU-core
       val j1Cfg = J1Config.forth16
 
-      // Configuration of the used board
+      // Configuration of the ICEBreaker board
       val boardCfg = CoreConfig.iceBoard
 
       // Create a system instance
@@ -285,7 +288,7 @@ object J1Ice {
     }
 
     // Write a message
-    println("[J1Sc] Create the J1 for an IceBreaker board")
+    println("[J1Sc] Create the J1 for an IceBreaker board using")
 
     // Generate VHDL code (for debugging purposes)
     SpinalConfig(mergeAsyncProcess = true,

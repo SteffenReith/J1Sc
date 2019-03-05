@@ -139,6 +139,9 @@ class J1Nexys4X(j1Cfg    : J1Config,
   // Generate the application specific clocking area
   val coreArea = new ClockingArea(clkCtrl.coreClockDomain) {
 
+    // Give some info about the frequency
+    println(s"[J1Sc] Use board frequency of ${ClockDomain.current.frequency.getValue.toBigDecimal /1000000} Mhz")
+
     // Create a new CPU core
     val cpu = new J1(j1Cfg)
 
