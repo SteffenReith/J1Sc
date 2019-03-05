@@ -34,9 +34,8 @@ set_io --warn-no-port pmodA[7]  3
 set_io --warn-no-port rx 6 
 set_io --warn-no-port tx 9 
 
-# Indicator LEDs for UART
-set_io --warn-no-port rxLed 37
-set_io --warn-no-port txLed 11
+# Indicator LED for UART
+set_io --warn-no-port uartLed 37
 
 # JTAG connected to PMOD1B (upper row)
 set_io --warn-no-port tck 43
