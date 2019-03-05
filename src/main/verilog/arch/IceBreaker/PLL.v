@@ -22,11 +22,11 @@ module PLL(clkIn, clkOut, isLocked);
        .DIVF(7'b0110111),      // DIVF = 55
        .DIVQ(3'b100),          // DIVQ =  4
        .FILTER_RANGE(3'b001)   // FILTER_RANGE = 1
-   ) uut (
+   ) global_pll_inst (
        .LOCK(isLocked),
        .RESETB(1'b1),
        .BYPASS(1'b0),
-       .REFERENCECLK(clkIn),
+       .PACKAGEPIN(clkIn),
        .PLLOUTGLOBAL(clkOut)
    );
 endmodule
