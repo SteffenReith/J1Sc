@@ -271,7 +271,7 @@ object J1Nexys4X {
     def elaborate = {
 
       // Configuration of CPU-core
-      val j1Cfg = J1Config.forth16
+      val j1Cfg = J1Config.forth16Jtag
 
       // Configuration of the used board
       val boardCfg = CoreConfig.nexys4DDR
