@@ -550,7 +550,7 @@ object J1Config {
   }
 
   // Provide a configuration for SwapForth
-  def forth16 = {
+  def forth16Jtag = {
 
     def wordSize               = 16
     def dataStackIdxWidth      =  5
@@ -590,6 +590,53 @@ object J1Config {
                           numOfRAMs           = numOfRAMs,
                           startAddress        = startAddress,
                           bootCode            = bootCode)
+
+    // Return the default configuration
+    config
+
+  }
+
+  // Provide a configuration for SwapForth
+  def forth16 = {
+
+    def wordSize               = 16
+    def dataStackIdxWidth      =  5
+    def returnStackIdxWidth    =  5
+    def hasJtag                =  false
+    def noOfInterrupts         =  4
+    def noOfInternalInterrupts =  3
+    def irqLatency             =  3
+    def adrWidth               = 12
+    def numOfRAMs              =  2
+    def startAddress           =  0
+
+    // Default timer configuration
+    val timerConfig = TimerConfig.default
+
+    // Default jtag configuration
+    val jtagConfig = JTAGConfig.default
+
+    // IRQ controller parameters (disable all interrupts by default)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
+
+    // Take the base system and cut the interrupt vectors at the end
+    def baseSystem = forthBase(wordSize).take((1 << adrWidth) - noOfInterrupts)
+
+    // Generate the complete memory layout of the system (using invalid interrupt vectors)
+    def bootCode() = baseSystem ++ List.fill((1 << adrWidth) - baseSystem.length)(B(0, wordSize bits))
+
+    // Set the configuration values for the forth system
+    val config = J1Config(wordSize            = wordSize,
+      dataStackIdxWidth   = dataStackIdxWidth,
+      returnStackIdxWidth = returnStackIdxWidth,
+      hasJtag             = hasJtag,
+      jtagConfig          = null,
+      timerConfig         = timerConfig,
+      irqConfig           = irqConfig,
+      adrWidth            = adrWidth,
+      numOfRAMs           = numOfRAMs,
+      startAddress        = startAddress,
+      bootCode            = bootCode)
 
     // Return the default configuration
     config
