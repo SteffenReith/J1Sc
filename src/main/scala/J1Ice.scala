@@ -265,7 +265,7 @@ object J1Ice {
     def elaborate = {
 
       // Configuration of CPU-core
-      val j1Cfg = J1Config.forth16
+      val j1Cfg = J1Config.forth16Jtag
 
       // Configuration of the ICEBreaker board
       val boardCfg = CoreConfig.iceBoard
