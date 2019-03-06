@@ -42,9 +42,8 @@ class J1Ice(j1Cfg    : J1Config,
     val rx = in  Bool // UART input
     val tx = out Bool // UART output
 
-    // LEDs pins for indicating UART activity
-    val rxLed = out Bool
-    val txLed = out Bool
+    // led for indicating UART activity
+    val uartLed = out Bool
 
   }.setName("")
 
@@ -217,8 +216,7 @@ class J1Ice(j1Cfg    : J1Config,
 
     // Map the UART to 0xF0 and enable the generation of read/write interrupts
     val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartMemMapConfig, baseAddress = 0xF0)
-    uartBridge.interruptCtrl.readIntEnable  := True
-    uartBridge.interruptCtrl.writeIntEnable := True
+    uartBridge.interruptCtrl.readIntEnable := True
 
     // Tell Spinal that some unneeded signals are allowed to be pruned to avoid warnings
     uartBridge.interruptCtrl.interrupt.allowPruning()
@@ -227,29 +225,19 @@ class J1Ice(j1Cfg    : J1Config,
     io.tx := uartCtrl.io.uart.txd
     uartCtrl.io.uart.rxd := io.rx
 
-    // Create timeouts for the UART Leds
-    val rxTimeOut = Timeout(50 ms)
-    val txTimeOut = Timeout(50 ms)
+    // Create a timeout of the UART led
+    val uartTimeOut = Timeout(50 ms)
 
-    // Start tx timeout when UART becomes active
-    when(uartBridge.interruptCtrl.writeInt) {
+    // Start timeout when the UART becomes active (note that high indicates inactivity)
+    when(!(io.tx && io.rx)) {
 
       // Reset the write timeout
-      txTimeOut.clear()
+      uartTimeOut.clear()
 
     }
 
-    // Start rx timeout when UART becomes active
-    when(uartBridge.interruptCtrl.readInt) {
-
-      // Reset the read timeout
-      rxTimeOut.clear()
-
-    }
-
-    // Handle the LEDs for UART activity (note that this leds are low active)
-    io.txLed := txTimeOut.state
-    io.rxLed := rxTimeOut.state
+    // Handle the led for UART activity (suppose that the led is low active)
+    io.uartLed := uartTimeOut.state
 
     // Create an interrupt controller, map it to 0xE0 and connect all interrupts
     val intCtrl = new InterruptCtrl(j1Cfg)
