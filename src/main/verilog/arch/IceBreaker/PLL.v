@@ -15,12 +15,12 @@ module PLL(clkIn, clkOut, isLocked);
    output clkOut;
    output isLocked;
 
-   // In: 12Mhz / Out: 42Mhz
+   // In: 12Mhz / Out: 18Mhz
    SB_PLL40_PAD #(
        .FEEDBACK_PATH("SIMPLE"),
        .DIVR(4'b0000),         // DIVR =  0
-       .DIVF(7'b0110111),      // DIVF = 55
-       .DIVQ(3'b100),          // DIVQ =  4
+       .DIVF(7'b0101111),      // DIVF = 47
+       .DIVQ(3'b101),          // DIVQ =  5 
        .FILTER_RANGE(3'b001)   // FILTER_RANGE = 1
    ) global_pll_inst (
        .LOCK(isLocked),
