@@ -126,7 +126,7 @@ object J1BoardSim {
     val serialDeviceName = "/dev/tnt1"
 
     // Configuration of CPU-core
-    val j1Cfg = J1Config.forth16
+    val j1Cfg = J1Config.forth16Jtag
 
     // Configuration of the used board
     val boardCfg = CoreConfig.boardSim
