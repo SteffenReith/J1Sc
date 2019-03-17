@@ -174,5 +174,5 @@ For the simulated version use
 
 ![Nexys4DDRJtag](./doc/xilinx/Nexys4DDRJtag.jpg)
 
-Note that the jtag-support is tested on a Nexys4DDR only!
+Note that the jtag-support is tested on a Nexys4DDR only, but in principle it should work for the IcoBoard and the iCEBreaker too!
 
