@@ -1,0 +1,4 @@
+ctx.addClock("clk100Mhz", 100)
+ctx.addClock("boardClk", 40)
+ctx.addClock("tck", 10)
+

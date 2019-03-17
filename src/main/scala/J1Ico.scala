@@ -74,7 +74,7 @@ class J1Ico(j1Cfg    : J1Config,
     // Create a clockdomain which is synchron to tck but the global reset is asynchronous to this clock domain
     val jtagClockDomainDesc = ClockDomain(config = jtagClockConfig,
                                           clock  = jtagCondIOArea.jtag.tck,
-                                          reset  = ClockDomain.current.reset)
+                                          reset  = io.reset)
 
     // Create the clock area used for the JTAG
     val jtagArea = new ClockingArea(jtagClockDomainDesc) {
@@ -86,7 +86,6 @@ class J1Ico(j1Cfg    : J1Config,
       jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
       jtagCondIOArea.jtag.tdo <> jtag.io.tdo
       jtag.io.tms             <> jtagCondIOArea.jtag.tms
-      jtag.io.tck             <> jtagCondIOArea.jtag.tck
 
     }
 
@@ -235,7 +234,7 @@ object J1Ico {
     def elaborate = {
 
       // Configuration of CPU-core
-      val j1Cfg = J1Config.forth16
+      val j1Cfg = J1Config.forth16Jtag
 
       // Configuration of the used board
       val boardCfg = CoreConfig.icoBoard
