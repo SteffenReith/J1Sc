@@ -25,7 +25,7 @@ To build the J1Sc, you need first to create the VDHL / Verilog sources. The impl
 * Run `cd toolchain/forth && make && cd ../..` to build the forth core system
 
 ## A FORTH Shell/Terminal for J1Sc
-Manfred Mahlow offers an excellent terminal for embedded FORTH systems, which supports linux on X86 and Raspberry/Raspbian. Besides 430CamelForth , 430eForth , 4e4th, AmForth, anyForth , Mecrisp , Mecrisp-Stellaris , noForth and STM8 eForth it now supports the J1Sc with Swapforth. This solution gives a much higher comfort than the original Python-based terminals from Swapforth. Hence it is suggested to use e4thcom instead the provided python-scripts. The python scripts are not very comfortable (you are be warned!))
+Manfred Mahlow offers an excellent terminal for embedded FORTH systems, which supports linux on x86 and Raspberry/Raspbian. Besides 430CamelForth , 430eForth , 4e4th, AmForth, anyForth , Mecrisp , Mecrisp-Stellaris , noForth and STM8 eForth it also supports the J1Sc with Swapforth now (thank you Manfred!). This solution gives a much higher comfort than the original Python-based terminals from Swapforth. Hence it is (strongly) suggested to use e4thcom instead the provided python-scripts. The python scripts are not very comfortable (you are be warned!) and reconnection to your J1Sc doesn't work (at least for me).
 
 Download e4thcom (https://wiki.forth-ev.de/doku.php/en:projects:e4thcom) and install (copy it to the installation directory) the e4thcom-plugin swapforth-j1sc.efc from support/e4thcom/.
 
