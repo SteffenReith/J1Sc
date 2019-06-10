@@ -90,7 +90,7 @@ object J1ISA16 {
   def instrJMP60 = B"0000_0000_0011_1100"
 
   // Simply halt the CPU (endless loop of instruction at 0)
-  def endlessLoop() = List(B"0000_0000_0000_0000") // 0. Jump 0
+  def endless() = List(B"0000_0000_0000_0000") // 0. Jump 0
 
   // Simple test of the ISA
   def isaTest() = List(B"1000_0000_0000_0111", //  0. Push 7
@@ -228,10 +228,8 @@ object J1ISA16 {
                              B"0110_0001_0000_0011", // 22. Pop
                              B"0110_0001_0000_0011", // 23. Pop
                              B"0110_0000_1000_1100") // 24. Return from subroutine
-                       
 
-
-}                      
+}
 
 // The configuration of a J1-CPU
 case class J1Config (wordSize            : Int,
@@ -387,8 +385,8 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     // Relevant content of all generated memory blocks
-    def bootCode() = J1ISA16.endlessLoop() ++
-                     List.fill((1 << adrWidth) - J1ISA16.endlessLoop().length)(B(0, wordSize bits))
+    def bootCode() = J1ISA16.endless() ++
+                     List.fill((1 << adrWidth) - J1ISA16.endless().length)(B(0, wordSize bits))
 
     // Set the default configuration values
     val config = J1Config(wordSize            = wordSize,
@@ -484,6 +482,50 @@ object J1Config {
     def bootCode() = J1ISA16.ioTest() ++ List.fill((1 << adrWidth) - J1ISA16.ioTest.length)(B(0, wordSize bits))
 
     // Set the configuration values for debugging I/O instructions
+    val config = J1Config(wordSize            = wordSize,
+                          dataStackIdxWidth   = dataStackIdxWidth,
+                          returnStackIdxWidth = returnStackIdxWidth,
+                          hasJtag             = hasJtag,
+                          jtagConfig          = jtagConfig,
+                          timerConfig         = timerConfig,
+                          irqConfig           = irqConfig,
+                          adrWidth            = adrWidth,
+                          numOfRAMs           = numOfRAMs,
+                          startAddress        = startAddress,
+                          bootCode            = bootCode)
+
+    // Return the default configuration
+    config
+
+  }
+
+  // Provide a blank configuration for SwapForth
+  def blank16Jtag = {
+
+    def wordSize               = 16
+    def dataStackIdxWidth      =  5
+    def returnStackIdxWidth    =  5
+    def hasJtag                =  true
+    def noOfInterrupts         =  4
+    def noOfInternalInterrupts =  3
+    def irqLatency             =  3
+    def adrWidth               = 12
+    def numOfRAMs              =  2
+    def startAddress           =  0
+
+    // Default timer configuration
+    val timerConfig = TimerConfig.default
+
+    // Default jtag configuration
+    val jtagConfig = JTAGConfig.default
+
+    // IRQ controller parameters (disable all interrupts by default)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
+
+    // Generate the complete memory layout of the system (using invalid interrupt vectors)
+    def bootCode() = J1ISA16.endless() ++ List.fill((1 << adrWidth) - J1ISA16.endless().length)(B(0, wordSize bits))
+
+    // Set the configuration values for the forth system
     val config = J1Config(wordSize            = wordSize,
                           dataStackIdxWidth   = dataStackIdxWidth,
                           returnStackIdxWidth = returnStackIdxWidth,
