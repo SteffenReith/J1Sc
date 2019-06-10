@@ -148,8 +148,13 @@ class J1Nexys4X(j1Cfg    : J1Config,
     // Check if we have a jtag interface
     if (j1Cfg.hasJtag) {
 
-      // Connect the jtag halt signal and do a clock domain crossing
+      // Connect the jtag stall signal and do a clock domain crossing
       cpu.internal.stall := BufferCC(jtagIface.jtagArea.jtag.internal.jtagStall)
+
+      // Connect the jtag cpu memory signals and do a clock domain crossing
+      cpu.jtagCondIOArea.jtagMemBus.captureMemory := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCaptureMemory)
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemAdr    := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCPUAdr)
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemWord   := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCPUWord)
 
     } else {
 

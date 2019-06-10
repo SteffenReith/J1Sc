@@ -25,7 +25,7 @@ class MainMemory(cfg : J1Config) extends Component {
   val internal = new Bundle {
 
     // Instruction port (read only)
-    val readDataAdr = in UInt (cfg.adrWidth bits)
+    val readDataAdr = in  UInt (cfg.adrWidth bits)
     val readData    = out Bits (cfg.wordSize bits)
 
     // Memory port (write only)
