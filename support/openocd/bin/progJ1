@@ -1,17 +1,10 @@
-interface ftdi
-ftdi_vid_pid 0x0403 0x6014
-ftdi_layout_init 0x0008 0x400b
-#ftdi_layout_init 0xfff8 0xfffb
-adapter_khz 1000
-transport select jtag
+#!/usr/local/openocd/bin/openocd -f
 
-jtag newtap J1Sc cpu -irlen 5
+source [find target/adafruit/FT232H.ocd]
+source [find cpu/J1]
+source [find common/init]
 
-echo "Init jtag"    
-init 
-jtag_init
-
-echo "Stop CPU"      
+echo "Stop J1 for upload"      
 irscan J1Sc.cpu 2 
 drscan J1Sc.cpu 1 1 
 
@@ -63,3 +56,4 @@ irscan J1Sc.cpu 2
 drscan J1Sc.cpu 1 0
 
 exit
+

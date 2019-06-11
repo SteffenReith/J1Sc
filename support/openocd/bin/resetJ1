@@ -1,0 +1,18 @@
+#!/usr/local/openocd/bin/openocd -f 
+
+source [find target/adafruit/FT232H.ocd]
+source [find cpu/J1]
+source [find common/init]
+
+echo "Activate Reset"
+irscan J1Sc.cpu 3
+drscan J1Sc.cpu 1 1
+
+sleep 500
+
+echo "Deactive Reset"
+irscan J1Sc.cpu 3
+drscan J1Sc.cpu 1 0
+
+exit
+

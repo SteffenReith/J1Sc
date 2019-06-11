@@ -1,0 +1,1 @@
+jtag newtap J1Sc cpu -irlen 5
