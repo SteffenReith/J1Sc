@@ -278,7 +278,7 @@ object J1Nexys4X {
       // Configuration of CPU-core
       //val j1Cfg = J1Config.blank16Jtag
       val j1Cfg = J1Config.forth16Jtag
-      
+
       // Configuration of the used board
       val boardCfg = CoreConfig.nexys4DDR
 
