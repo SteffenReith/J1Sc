@@ -66,7 +66,7 @@ class J1Jtag(j1Cfg   : J1Config,
   val instructionHoldReg  = Reg(Bits(jtagCfg.irWidth bits))
 
   // For all JTAG instructions which needs a data register
-  private val dataHoldRegs = Vec(for((name, _, width, mode) <- jtagCommands) yield {
+  val dataHoldRegs = Vec(for((name, _, width, mode) <- jtagCommands) yield {
 
     // Write a message
     println("[J1Sc]   Create register for JTAG command " +
