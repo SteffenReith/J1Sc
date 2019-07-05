@@ -3,9 +3,9 @@ scalaVersion := "2.11.8"
 
 // Added the spinal libraries and a UART-driver
 libraryDependencies ++= Seq(
-  "com.github.spinalhdl" % "spinalhdl-core_2.11" % "1.3.5",
-  "com.github.spinalhdl" % "spinalhdl-lib_2.11"  % "1.3.5",
-  "com.github.spinalhdl" % "spinalhdl-sim_2.11"  % "1.3.5",
+  "com.github.spinalhdl" % "spinalhdl-core_2.11" % "1.3.6",
+  "com.github.spinalhdl" % "spinalhdl-lib_2.11"  % "1.3.6",
+  "com.github.spinalhdl" % "spinalhdl-sim_2.11"  % "1.3.6",
   "org.scream3r" % "jssc" % "2.8.0"
 )
 
