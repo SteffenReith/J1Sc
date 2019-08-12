@@ -12,6 +12,7 @@ target/
 tmp/
 simWorkspace/
 tty0tty/module/.tmp_versions/tty0tty.mod
+tty0tty/module/.cache.mk
 toolchain/forth/nuc.fs.orig
 vprj/vhdl/J1Sc/J1Sc.cache/
 vprj/vhdl/J1Sc/J1Sc.hw/
