@@ -41,7 +41,7 @@ class MainMemory(cfg : J1Config) extends Component {
   // Number of cells of a RAM
   def numOfCells = 1 << (cfg.adrWidth - ramAdrWidth)
 
-  // Write a message
+  // Give some information about RAM-size and used bank layout
   println("[J1Sc] Create " + cfg.numOfRAMs + " RAMs which have " + numOfCells + " cells each")
   println("[J1Sc] Total size is " + cfg.numOfRAMs * numOfCells + " cells")
 
