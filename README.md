@@ -174,5 +174,6 @@ For the simulated version use
 
 ![Nexys4DDRJtag](./doc/xilinx/Nexys4DDRJtag.jpg)
 
+Be warned: The jtag interface currently does not use correct clock domain crossing into the CPU core. So don't rely on a correct function! This will be fixed in the next version.
 Note that the jtag-support is tested on a Nexys4DDR only, but in principle, it should work for the IcoBoard and the iCEBreaker too!
 
