@@ -1,0 +1,4 @@
+echo "Init jtag"
+init
+jtag_init
+

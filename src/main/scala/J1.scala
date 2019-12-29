@@ -23,6 +23,21 @@ class J1(cfg : J1Config) extends Component {
 
   }.setName("")
 
+  // I/O signals for the jtag interface (if needed)
+  val jtagCondIOArea = cfg.hasJtag generate new Area {
+
+    // Create the interface bundle
+    val jtagMemBus = new Bundle {
+
+      // Signal from jtag for memory bus
+      val captureMemory = in Bool
+      val jtagMemAdr    = in Bits (cfg.adrWidth bits)
+      val jtagMemWord   = in Bits (cfg.wordSize bits)
+
+    }.setName("")
+
+  }
+
   // Peripheral bus
   val bus = new Bundle {
 
@@ -41,10 +56,34 @@ class J1(cfg : J1Config) extends Component {
   mainMem.internal.readDataAdr <> coreJ1CPU.internal.nextInstrAdr
   coreJ1CPU.internal.memInstr  <> mainMem.internal.readData
 
-  // Connect the CPU core with the main memory (convert the byte address to a cell address)
-  mainMem.internal.writeEnable  <> coreJ1CPU.internal.memWriteMode
-  mainMem.internal.writeDataAdr <> coreJ1CPU.internal.extAdr(cfg.adrWidth downto 1)
-  mainMem.internal.writeData    <> coreJ1CPU.internal.extToWrite
+  // Check if we have a jtag interface
+  if (cfg.hasJtag) {
+
+    // Check whether the cpu is stalled (otherwise we have no access to the memory)
+    when (internal.stall) {
+
+      // Connect the synchronized hold register of the jtag interface
+      mainMem.internal.writeEnable  <> jtagCondIOArea.jtagMemBus.captureMemory
+      mainMem.internal.writeDataAdr <> jtagCondIOArea.jtagMemBus.jtagMemAdr.asUInt
+      mainMem.internal.writeData    <> jtagCondIOArea.jtagMemBus.jtagMemWord
+
+    }.otherwise {
+
+      // Connect the CPU core with the main memory (convert the byte address to a cell address)
+      mainMem.internal.writeEnable  <> coreJ1CPU.internal.memWriteMode
+      mainMem.internal.writeDataAdr <> coreJ1CPU.internal.extAdr(cfg.adrWidth downto 1)
+      mainMem.internal.writeData    <> coreJ1CPU.internal.extToWrite
+
+    }
+
+  } else {
+
+    // Connect the CPU core with the main memory (convert the byte address to a cell address)
+    mainMem.internal.writeEnable  <> coreJ1CPU.internal.memWriteMode
+    mainMem.internal.writeDataAdr <> coreJ1CPU.internal.extAdr(cfg.adrWidth downto 1)
+    mainMem.internal.writeData    <> coreJ1CPU.internal.extToWrite
+
+  }
 
   // Check whether data should be read for I/O space else provide a constant zero value
   val coreMemRead = coreJ1CPU.internal.ioReadMode ? bus.cpuBus.readData | B(0, cfg.wordSize bits)

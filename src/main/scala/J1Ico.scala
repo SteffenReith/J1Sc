@@ -139,6 +139,11 @@ class J1Ico(j1Cfg    : J1Config,
       // Connect the jtag halt signal an do a clock domain crossing
       cpu.internal.stall := BufferCC(jtagIface.jtagArea.jtag.internal.jtagStall)
 
+      // Connect the jtag cpu memory signals and do a clock domain crossing
+      cpu.jtagCondIOArea.jtagMemBus.captureMemory := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCaptureMemory)
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemAdr    := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCPUAdr)
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemWord   := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCPUWord)
+
     } else {
 
       // Without JTAG deactivate the stall signal

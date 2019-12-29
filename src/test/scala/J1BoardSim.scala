@@ -247,7 +247,7 @@ object J1BoardSim {
 
       }
 
-      // Check if we have an interface
+      // Check if we have an jtag interface
       val jtagCondSim = j1Cfg.hasJtag generate {
 
         // Calculate the number of ticks of a jtag clock cycle
