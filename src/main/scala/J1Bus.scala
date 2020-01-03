@@ -60,7 +60,7 @@ case class J1Bus(cfg : J1Config) extends Bundle with IMasterSlave {
   }
   def >>(that : J1Bus) : Unit = that << this
 
-  // This is called by 'apply' when the master-object is called with data (-> side effect write/read data)
+  // Set the data directions when used as a master
   override def asMaster() : Unit = {
 
     // Write data to the bus
