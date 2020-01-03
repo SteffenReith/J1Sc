@@ -2,8 +2,8 @@
  * Author: Steffen Reith (steffen.reith@hs-rm.de)
  *
  * Creation Date:  Sat Sep 22 21:50:27 GMT+2 2018
- * Module Name:    JTAG - A JTAG implementation for the J1 processor
- * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
+ * Module Name:    J1Jtag - A JTAG implementation for the J1 processor
+ * Project Name:   J1Sc   - A simple J1 implementation in Scala using Spinal HDL
  *
  */
 import spinal.core._
