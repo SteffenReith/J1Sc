@@ -7,5 +7,29 @@
  *
  */
 import spinal.core._
+import spinal.lib.IMasterSlave
 
+case class J1JtagBus(j1Cfg : J1Config) extends Bundle with IMasterSlave {
 
+  // Indicate that the CPU has to halted
+  val jtagStall = Bool
+
+  // Indicate that we should reset the CPU
+  val jtagReset = Bool
+
+  // Indicate that the CPU memory is managed by the jtag interface
+  val jtagCaptureMemory = Bool
+
+  // Hold address and data for the CPU memory
+  val jtagCPUAdr  = Bits(j1Cfg.adrWidth bits)
+  val jtagCPUWord = Bits(j1Cfg.wordSize bits)
+
+  // Set the data directions when used as a master
+  override def asMaster() : Unit = {
+
+    // Write data to the bus
+    out(jtagStall, jtagReset, jtagCaptureMemory, jtagCPUAdr, jtagCPUWord)
+
+  }
+
+}
