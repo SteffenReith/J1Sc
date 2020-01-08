@@ -113,7 +113,7 @@ class J1Ice(j1Cfg    : J1Config,
       coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
         // Hold the reset as long as the PLL is not locked
-        input       = io.reset || jtagIface.jtagArea.jtag.internal.jtagReset || (!io.boardClkLocked),
+        input       = io.reset || jtagIface.jtagArea.jtag.asyncSignals.jtagReset || (!io.boardClkLocked),
         clockDomain = coreClockDomain
 
       )))
