@@ -73,8 +73,7 @@ class MainMemory(cfg : J1Config) extends Component {
               data    = internal.writeData)
 
     // Create the read port of the ith RAM
-    ram.readSync(address = internal.readDataAdr((internal.readDataAdr.high - ramAdrWidth) downto 0),
-                                                readUnderWrite = readFirst)
+    ram.readSync(address = internal.readDataAdr((internal.readDataAdr.high - ramAdrWidth) downto 0))
 
   })
 

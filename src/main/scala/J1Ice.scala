@@ -98,7 +98,7 @@ class J1Ice(j1Cfg    : J1Config,
   }
 
   // Physical clock area (connected to a physical clock generator (e.g. crystal oscillator))
-  val clkCtrl = new Area {
+  val clkCoreCtrl = new Area {
 
     // Create a clock domain which is related to the synthesized clock
     val coreClockDomain = ClockDomain.internal(name = "core", frequency = boardCfg.coreFrequency)
@@ -134,7 +134,7 @@ class J1Ice(j1Cfg    : J1Config,
   }
 
   // Generate the application specific clocking area
-  val coreArea = new ClockingArea(clkCtrl.coreClockDomain) {
+  val coreArea = new ClockingArea(clkCoreCtrl.coreClockDomain) {
 
     // Give some info about the frequency
     println(s"[J1Sc] Use board frequency of ${ClockDomain.current.frequency.getValue.toBigDecimal /1000000} Mhz")
@@ -145,13 +145,22 @@ class J1Ice(j1Cfg    : J1Config,
     // Check if we have a jtag interface
     if (j1Cfg.hasJtag) {
 
-      // Connect the jtag halt signal and do a clock domain crossing
-      cpu.internal.stall := BufferCC(jtagIface.jtagArea.jtag.internal.jtagStall)
 
-      // Connect the jtag cpu memory signals and do a clock domain crossing
-      cpu.jtagCondIOArea.jtagMemBus.captureMemory := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCaptureMemory)
-      cpu.jtagCondIOArea.jtagMemBus.jtagMemAdr    := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCPUAdr)
-      cpu.jtagCondIOArea.jtagMemBus.jtagMemWord   := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCPUWord)
+      // Do the clock domain crossing to make the jtag data synchron
+      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.internal,
+        inputClock  = jtagIface.jtagClockDomain,
+        outputClock = clkCoreCtrl.coreClockDomain)
+
+      // Register to hold synchron jtag data
+      val synchronJtagData = RegNextWhen(jtagCore.payload, jtagCore.valid)
+
+      // Connect the jtag stall signal (clock domain crossing already done)
+      cpu.internal.stall := synchronJtagData.jtagStall
+
+      // Connect the jtag cpu memory signals (clock domain crossing already done)
+      cpu.jtagCondIOArea.jtagMemBus.captureMemory := synchronJtagData.jtagCaptureMemory
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemAdr    := synchronJtagData.jtagCPUAdr
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemWord   := synchronJtagData.jtagCPUWord
 
     } else {
 
