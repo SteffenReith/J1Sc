@@ -38,4 +38,6 @@ toolchain/forth/shell/dpansf.pyc
 toolchain/forth/shell/swapforth.pyc
 J1Ico.v_toplevel_coreArea_cpu_mainMem_ramList_0.bin
 J1Ico.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin
+J1Ice.v_toplevel_coreArea_cpu_mainMem_ramList_0.bin
+J1Ice.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin
 verbose.log
