@@ -5,6 +5,8 @@
  * Module Name:    J1Jtag - A JTAG implementation for the J1 processor
  * Project Name:   J1Sc   - A simple J1 implementation in Scala using Spinal HDL
  *
+ * Remark: This interface uses an own clock-domain controlled by tck. Hence the user has to use an special
+ * clocking-area environment
  */
 import spinal.core._
 import spinal.lib._
@@ -46,24 +48,27 @@ class J1Jtag(j1Cfg   : J1Config,
   val writeModePattern    = ".*w.*"
   val constantModePattern = ".*c.*"
 
-  // JTAG-command to be implemented (format Name x ID x dataRegWidth x Mode)
-  val bypassCmd     = ("BYPASS",     B(jtagCfg.irWidth bits, default -> True),  1,              "rw")
-  val idCodeCmd     = ("IDCODE",     B(1, jtagCfg.irWidth bits),               32,              " c")
-  val stallCmd      = ("STALL",      B(2, jtagCfg.irWidth bits),                1,              "rw")
-  val resetCmd      = ("RESET",      B(3, jtagCfg.irWidth bits),                1,              "rw")
-  val captureMemCmd = ("CAPTUREMEM", B(4, jtagCfg.irWidth bits),                1,              "rw")
-  val setAdrCmd     = ("SETADR",     B(5, jtagCfg.irWidth bits),   j1Cfg.adrWidth,              " w")
-  val setDataCmd    = ("SETDATA",    B(6, jtagCfg.irWidth bits),   j1Cfg.wordSize,              " w")
+  // JTAG-command to be implemented (format Name x ID x dataRegWidth x Mode x constant value)
+  val bypassCmd     = ("BYPASS",     B(jtagCfg.irWidth bits, default -> True),                                 1, "rw", -1)
+  val stallCmd      = ("STALL",      B(4*1 + 1,              jtagCfg.irWidth bits),                            1, "rw", -1)
+  val resetCmd      = ("RESET",      B(4*2 + 1,              jtagCfg.irWidth bits),                            1, "rw", -1)
+  val captureMemCmd = ("CAPTUREMEM", B(4*3 + 1,              jtagCfg.irWidth bits),                            1, "rw", -1)
+  val setAdrCmd     = ("SETADR",     B(4*4 + 1,              jtagCfg.irWidth bits),               j1Cfg.adrWidth, " w", -1)
+  val setDataCmd    = ("SETDATA",    B(4*5 + 1,              jtagCfg.irWidth bits),               j1Cfg.wordSize, " w", -1)
+  val idCodeCmd     = ("IDCODE",     B(4*6 + 1,              jtagCfg.irWidth bits),                           32, " c", jtagCfg.idCodeValue)
 
   // List of all implemented JTAG-commands, where BYPASS is mandatory and has to be the first entry
   val jtagCommands = bypassCmd :: idCodeCmd :: stallCmd :: resetCmd :: captureMemCmd :: setAdrCmd :: setDataCmd :: Nil
 
   // The JTAG instruction register
-  val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits))
-  val instructionHoldReg  = Reg(Bits(jtagCfg.irWidth bits))
+  val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits)) randBoot()
+  val instructionHoldReg  = Reg(Bits(jtagCfg.irWidth bits)) randBoot()
 
-  // For all JTAG instructions which needs a data register
-  val dataHoldRegs = Vec(for((name, _, width, mode) <- jtagCommands) yield {
+  // Give some infos about the idcode command
+  println("[J1Sc]   Idcode is " + idCodeCmd._2 + " (value: 0x" + idCodeCmd._5.toHexString + ")")
+
+  // For all JTAG instructions create a data hold register
+  val dataHoldRegs = Vec(for((name, _, width, mode, _) <- jtagCommands) yield {
 
     // Write a message
     println("[J1Sc]   Create register for JTAG command " +
@@ -71,8 +76,7 @@ class J1Jtag(j1Cfg   : J1Config,
             " (Width is " +
             width +
             " bits) with mode >>" +
-            mode +
-            "<<")
+            mode.replaceAll("""^\s+(?m)""",""))
 
     // Create the corresponding data register (if needed)
     Reg(Bits(width bits)).allowPruning()
@@ -84,8 +88,8 @@ class J1Jtag(j1Cfg   : J1Config,
   dataHoldRegs(jtagCommands.indexOf(resetCmd)).init(0)
   dataHoldRegs(jtagCommands.indexOf(captureMemCmd)).init(0)
 
-  // For all JTAG instructions
-  val dataShiftRegs = Vec(for((_, _, width, _) <- jtagCommands) yield {
+  // For all JTAG instructions create a data shift register
+  val dataShiftRegs = Vec(for((_, _, width, _, _) <- jtagCommands) yield {
 
     // Create the corresponding data register
     Reg(Bits(width bits))
@@ -122,17 +126,34 @@ class J1Jtag(j1Cfg   : J1Config,
     // By default the data send to the CPU core is invalid
     jValid := False
 
+    // Avoid a latch and feed the lsb of BYPASS to tdo (in case of an invalid id)
+    io.tdo := dataShiftRegs(0).lsb
+
+    // Generate output for all JTAG data shift registers
+    for(((_ ,id , _, _, _), i) <- jtagCommands.zipWithIndex) {
+
+      // check whether the command with id is a active
+      when (instructionHoldReg === id) {
+
+        // Output data from the ith shift register
+        io.tdo := dataShiftRegs(i).lsb
+
+      }
+
+    }
+
     // Handle the reset state of the JTAG FSM (data send by the jtag to the core is valid in reset state)
     testLogicReset.whenIsActive {
 
       // Jtag data send to the CPU core is valid at the moment
       jValid := True
 
-      // Set the instruction register to idcode by default
+      // Set to idcode mode and the corresponding data register by default
       instructionHoldReg := idCodeCmd._2
+      dataHoldRegs(jtagCommands.indexOf(idCodeCmd)) := (idCodeCmd._2).resized
 
       // Implement the transition logic
-      when(io.tms) {goto(testLogicReset)} otherwise{goto(runTestIdle)}
+      when(io.tms) { goto(testLogicReset) } otherwise{ goto(runTestIdle) }
 
     }
 
@@ -150,23 +171,22 @@ class J1Jtag(j1Cfg   : J1Config,
     // Define the transition function for states related to the data register
     selectDRScan.whenIsActive{
 
-      // Jtag data send to the CPU core is valid when idle
+      // Jtag data (sent to the CPU core) is valid during DRScan
       jValid := True
 
-      when(io.tms) { goto(selectIRScan) } otherwise{ goto(captureDR)}
+      when(io.tms) { goto(selectIRScan) } otherwise{ goto(captureDR) }
 
     }
 
-
-    exit1DR.whenIsActive{when(io.tms) { goto(updateDR) } otherwise{ goto(pauseDR) }}
-    pauseDR.whenIsActive{when(io.tms) { goto(exit2DR) } otherwise{ goto(pauseDR) }}
-    exit2DR.whenIsActive{when(io.tms) { goto(updateDR) } otherwise{ goto(shiftDR) }}
+    exit1DR.whenIsActive { when(io.tms) { goto(updateDR) } otherwise{ goto(pauseDR) }}
+    pauseDR.whenIsActive { when(io.tms) { goto(exit2DR)  } otherwise{ goto(pauseDR) }}
+    exit2DR.whenIsActive { when(io.tms) { goto(updateDR) } otherwise{ goto(shiftDR) }}
 
     // Handle the capture of all data registers (copy content of data register to the corresponding shift register)
     captureDR.whenIsActive {
 
       // Generate decoders for all JTAG data registers
-      for (((_, id, _, mode), i) <- jtagCommands.zipWithIndex) {
+      for (((_, id, width, mode, loadValue), i) <- jtagCommands.zipWithIndex) {
 
         // Check whether we need a read mode
         if (mode.matches(readModePattern) && !mode.matches(constantModePattern)) {
@@ -184,10 +204,11 @@ class J1Jtag(j1Cfg   : J1Config,
         // Check whether we have to load a constant value
         if (mode.matches(constantModePattern)) {
 
+          // Generate decoder for the ith data register
           when (instructionHoldReg === id) {
 
-            // Init the register for the idcode command
-            dataShiftRegs(jtagCommands.indexOf(idCodeCmd)) := B(43)
+            // Init the register with the corresponding constant value
+            dataShiftRegs(i) := B(loadValue, width bits)
 
           }
 
@@ -196,7 +217,7 @@ class J1Jtag(j1Cfg   : J1Config,
       }
 
       // Define the transition function for this state
-      when(io.tms) {goto(exit1DR)} otherwise{goto(shiftDR)}
+      when(io.tms) { goto(exit1DR) } otherwise{ goto(shiftDR) }
 
     }
 
@@ -204,7 +225,7 @@ class J1Jtag(j1Cfg   : J1Config,
     shiftDR.whenIsActive {
 
       // Generate code of all JTAG data shift registers
-      for(((_ ,id ,_ ,_), i) <- jtagCommands.zipWithIndex) {
+      for(((_, id, _, _, _), i) <- jtagCommands.zipWithIndex) {
 
         // Generate decoder for the ith data register
         when (instructionHoldReg === id) {
@@ -217,7 +238,7 @@ class J1Jtag(j1Cfg   : J1Config,
       }
 
       // Define the transition function for this state
-      when(io.tms) {goto(exit1DR)} otherwise{goto(shiftDR)}
+      when(io.tms) { goto(exit1DR) } otherwise{ goto(shiftDR) }
 
     }
 
@@ -225,7 +246,7 @@ class J1Jtag(j1Cfg   : J1Config,
     updateDR.whenIsActive {
 
       // Generate decoder for all JTAG data registers
-      for(((_,id ,_ ,mode), i) <- jtagCommands.zipWithIndex) {
+      for(((_, id, _,mode, _), i) <- jtagCommands.zipWithIndex) {
 
         // Check whether we need a write mode access
         if(mode.matches(writeModePattern) && !mode.matches(constantModePattern)) {
@@ -243,15 +264,15 @@ class J1Jtag(j1Cfg   : J1Config,
       }
 
       // Define the transition function for the this state
-      when(io.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}
+      when(io.tms) { goto(selectDRScan) } otherwise{ goto(runTestIdle) }
 
     }
 
-    // Define the transisition function for states related to the instruction register
-    selectIRScan.whenIsActive{when(io.tms) {goto(testLogicReset)} otherwise{goto(captureIR)}}
-    exit1IR.whenIsActive{when(io.tms) {goto(updateIR)} otherwise{goto(pauseIR)}}
-    pauseIR.whenIsActive{when(io.tms) {goto(exit2IR)} otherwise{goto(pauseIR)}}
-    exit2IR.whenIsActive{when(io.tms) {goto(updateIR)} otherwise{goto(shiftIR)}}
+    // Define the transition function for states related to the instruction register
+    selectIRScan.whenIsActive{when(io.tms) { goto(testLogicReset) } otherwise{ goto(captureIR) }}
+    exit1IR.whenIsActive     {when(io.tms) { goto(updateIR)       } otherwise{ goto(pauseIR)   }}
+    pauseIR.whenIsActive     {when(io.tms) { goto(exit2IR)        } otherwise{ goto(pauseIR)   }}
+    exit2IR.whenIsActive     {when(io.tms) { goto(updateIR)       } otherwise{ goto(shiftIR)   }}
 
     // Handle the capture of the instruction register
     captureIR.whenIsActive {
@@ -260,11 +281,11 @@ class J1Jtag(j1Cfg   : J1Config,
       instructionShiftReg := (0 -> True, 1 -> False, default -> True)
 
       // Define the transition function for this state
-      when(io.tms) {goto(exit1IR)} otherwise{goto(shiftIR)}
+      when(io.tms) { goto(exit1IR) } otherwise{ goto(shiftIR) }
 
     }
 
-    // Handle the shift-register
+    // Handle the instruction shift-register
     shiftIR.whenIsActive {
 
       // Feed lsb of instruction register to tdo
@@ -274,7 +295,7 @@ class J1Jtag(j1Cfg   : J1Config,
       instructionShiftReg := (io.tdi ## instructionShiftReg) >> 1
 
       // Define the transition function for the this state
-      when(io.tms) {goto(exit1IR)} otherwise{goto(shiftIR)}
+      when(io.tms) { goto(exit1IR) } otherwise{ goto(shiftIR) }
 
     }
 
@@ -285,29 +306,13 @@ class J1Jtag(j1Cfg   : J1Config,
       instructionHoldReg := instructionShiftReg
 
       // Define the transition function for the this state
-      when(io.tms) {goto(selectDRScan)} otherwise{goto(runTestIdle)}
+      when(io.tms) { goto(selectDRScan) } otherwise{ goto(runTestIdle) }
 
     }
 
     // Now the value of the data registers are valid
     updateDR.onExit { jValid := True }
     updateIR.onExit { jValid := True }
-
-  }
-
-  // Avoid a latch and feed the lsb of BYPASS to tdo
-  io.tdo := dataShiftRegs(0).lsb
-
-  // Generate code of all JTAG data shift registers
-  for(((_ ,id ,_ ,_), i) <- jtagCommands.zipWithIndex) {
-
-    // check whether the command with id is a active
-    when (instructionHoldReg === id) {
-
-      // Add data to ith shift register
-      io.tdo := dataShiftRegs(i).lsb
-
-    }
 
   }
 
@@ -328,7 +333,7 @@ class J1Jtag(j1Cfg   : J1Config,
   // Send the payload into the flow
   internal.payload := jtagDataBundle
 
-  // The register data is only valid in idle mode
+  // Make the payload valid in state where the data is stable
   internal.valid := jValid
 
 }

@@ -145,7 +145,6 @@ class J1Ice(j1Cfg    : J1Config,
     // Check if we have a jtag interface
     if (j1Cfg.hasJtag) {
 
-
       // Do the clock domain crossing to make the jtag data synchron
       val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.internal,
         inputClock  = jtagIface.jtagClockDomain,
@@ -165,6 +164,7 @@ class J1Ice(j1Cfg    : J1Config,
     } else {
 
       // Without JTAG deactivate the stall signal
+      cpu.internal.stall.allowPruning()
       cpu.internal.stall := False
 
     }
