@@ -51,7 +51,7 @@ object JTAGConfig {
 
     // Set the default configuration values
     val config = JTAGConfig(irWidth     =  5,
-                            idCodeValue = 8128,
+                            idCodeValue = 19088743,
                             jtagFreq    = FixedFrequency(1 MHz))
 
     // Return the default configuration
