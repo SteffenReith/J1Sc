@@ -11,6 +11,9 @@ import spinal.lib.IMasterSlave
 
 case class J1JtagData(j1Cfg : J1Config) extends Bundle with IMasterSlave {
 
+  // The data provided by the interface is valid
+  val jtagDataValid = Bool
+
   // Indicate that the CPU has to halted
   val jtagStall = Bool
 
@@ -27,6 +30,7 @@ case class J1JtagData(j1Cfg : J1Config) extends Bundle with IMasterSlave {
     val ret = cloneOf(this)
 
     // Init the bundle (deactivate stall, reset and capture memory)
+    ret.jtagDataValid := False
     ret.jtagStall := False
     ret.jtagCaptureMemory := False
     ret.jtagCPUAdr := B(adr, j1Cfg.adrWidth bits)
@@ -41,6 +45,7 @@ case class J1JtagData(j1Cfg : J1Config) extends Bundle with IMasterSlave {
   def clear = {
 
     // Init all members
+    this.jtagDataValid := False
     this.jtagStall := False
     this.jtagCaptureMemory := False
     this.jtagCPUAdr := B(0, j1Cfg.adrWidth bits)

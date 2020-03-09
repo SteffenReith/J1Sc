@@ -147,11 +147,11 @@ class J1Ice(j1Cfg    : J1Config,
 
       // Do the clock domain crossing to make the jtag data synchron
       val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.internal,
-        inputClock  = jtagIface.jtagClockDomain,
-        outputClock = clkCoreCtrl.coreClockDomain)
+                                    inputClock  = jtagIface.jtagClockDomain,
+                                    outputClock = clkCoreCtrl.coreClockDomain)
 
       // Register to hold synchron jtag data
-      val synchronJtagData = RegNextWhen(jtagCore.payload, jtagCore.valid)
+      val synchronJtagData = RegNextWhen(jtagCore.payload, jtagCore.jtagDataValid)
 
       // Connect the jtag stall signal (clock domain crossing already done)
       cpu.internal.stall := synchronJtagData.jtagStall

@@ -41,7 +41,7 @@ class J1Jtag(j1Cfg   : J1Config,
   }.setName("")
 
   // Indicates that the jtag data is valid
-  val jValid = Bool
+  val jtagDataValid = Bool
 
   // Patterns to check whether a JTAG command has a read, write or output constant semantic
   val readModePattern     = ".*r.*"
@@ -124,7 +124,7 @@ class J1Jtag(j1Cfg   : J1Config,
     val updateIR       = new State
 
     // By default the data send to the CPU core is invalid
-    jValid := False
+    jtagDataValid := False
 
     // Avoid a latch and feed the lsb of BYPASS to tdo (in case of an invalid id)
     io.tdo := dataShiftRegs(0).lsb
@@ -146,7 +146,7 @@ class J1Jtag(j1Cfg   : J1Config,
     testLogicReset.whenIsActive {
 
       // Jtag data send to the CPU core is valid at the moment
-      jValid := True
+      jtagDataValid := True
 
       // Set to idcode mode and the corresponding data register by default
       instructionHoldReg := idCodeCmd._2
@@ -161,7 +161,7 @@ class J1Jtag(j1Cfg   : J1Config,
     runTestIdle.whenIsActive {
 
       // Jtag data send to the CPU core is valid when idle
-      jValid := True
+      jtagDataValid := True
 
       // Check whether test mode is activated and we start to navigate through the state machine
       when(io.tms) { goto(selectDRScan) } otherwise { goto(runTestIdle) }
@@ -172,7 +172,7 @@ class J1Jtag(j1Cfg   : J1Config,
     selectDRScan.whenIsActive{
 
       // Jtag data (sent to the CPU core) is valid during DRScan
-      jValid := True
+      jtagDataValid := True
 
       when(io.tms) { goto(selectIRScan) } otherwise{ goto(captureDR) }
 
@@ -311,8 +311,8 @@ class J1Jtag(j1Cfg   : J1Config,
     }
 
     // Now the value of the data registers are valid
-    updateDR.onExit { jValid := True }
-    updateIR.onExit { jValid := True }
+    updateDR.onExit { jtagDataValid := True }
+    updateIR.onExit { jtagDataValid := True }
 
   }
 
@@ -325,6 +325,9 @@ class J1Jtag(j1Cfg   : J1Config,
   // Find and provide the data register of RESET (register has only one bit)
   asyncSignals.jtagReset := dataHoldRegs(jtagCommands.indexOf(resetCmd))(0)
 
+  // Set the valid flag
+  jtagDataBundle.jtagDataValid := jtagDataValid
+
   // Find and provide the data for the memory bus
   jtagDataBundle.jtagCaptureMemory := dataHoldRegs(jtagCommands.indexOf(captureMemCmd))(0)
   jtagDataBundle.jtagCPUAdr        := dataHoldRegs(jtagCommands.indexOf(setAdrCmd))
@@ -334,6 +337,6 @@ class J1Jtag(j1Cfg   : J1Config,
   internal.payload := jtagDataBundle
 
   // Make the payload valid in state where the data is stable
-  internal.valid := jValid
+  internal.valid := jtagDataValid
 
 }

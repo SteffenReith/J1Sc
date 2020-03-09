@@ -155,7 +155,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
                                     outputClock = clkCoreCtrl.coreClockDomain)
 
       // Register to hold synchron jtag data
-      val synchronJtagData = RegNextWhen(jtagCore.payload, jtagCore.valid)
+      val synchronJtagData = RegNextWhen(jtagCore.payload, jtagCore.jtagDataValid)
 
       // Connect the jtag stall signal (clock domain crossing already done)
       cpu.internal.stall := synchronJtagData.jtagStall
