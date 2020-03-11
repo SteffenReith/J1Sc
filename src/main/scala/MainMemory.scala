@@ -25,7 +25,7 @@ class MainMemory(cfg : J1Config) extends Component {
   val internal = new Bundle {
 
     // Instruction port (read only)
-    val readDataAdr = in UInt (cfg.adrWidth bits)
+    val readDataAdr = in  UInt (cfg.adrWidth bits)
     val readData    = out Bits (cfg.wordSize bits)
 
     // Memory port (write only)
@@ -41,7 +41,7 @@ class MainMemory(cfg : J1Config) extends Component {
   // Number of cells of a RAM
   def numOfCells = 1 << (cfg.adrWidth - ramAdrWidth)
 
-  // Write a message
+  // Give some information about RAM-size and used bank layout
   println("[J1Sc] Create " + cfg.numOfRAMs + " RAMs which have " + numOfCells + " cells each")
   println("[J1Sc] Total size is " + cfg.numOfRAMs * numOfCells + " cells")
 
@@ -73,8 +73,7 @@ class MainMemory(cfg : J1Config) extends Component {
               data    = internal.writeData)
 
     // Create the read port of the ith RAM
-    ram.readSync(address        = internal.readDataAdr((internal.readDataAdr.high - ramAdrWidth) downto 0),
-                 readUnderWrite = readFirst)
+    ram.readSync(address        = internal.readDataAdr((internal.readDataAdr.high - ramAdrWidth) downto 0))
 
   })
 

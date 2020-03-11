@@ -32,8 +32,15 @@ class J1Jtag(j1Cfg   : J1Config,
     // Indicate that the CPU has to halted
     val jtagStall = out Bool
 
-    // Indicate that we should reset the CPU (synchronously)
+    // Indicate that we should reset the CPU
     val jtagReset = out Bool
+
+    // Indicate that the CPU memory is managed by the jtag interface
+    val jtagCaptureMemory = out Bool
+
+    // Hold address and data for the CPU memory
+    val jtagCPUAdr  = out Bits(j1Cfg.adrWidth bits)
+    val jtagCPUWord = out Bits(j1Cfg.wordSize bits)
 
   }.setName("")
 
@@ -43,13 +50,16 @@ class J1Jtag(j1Cfg   : J1Config,
   val constantModePattern = ".*c.*"
 
   // JTAG-command to be implemented (format Name x ID x dataRegWidth x Mode)
-  val bypassCmd = ("BYPASS", B(jtagCfg.irWidth bits, default -> True),  1, "rw")
-  val idCodeCmd = ("IDCODE", B(1, jtagCfg.irWidth bits),               32, " c")
-  val stallCmd  = ("STALL",  B(2, jtagCfg.irWidth bits),                1, "rw")
-  val resetCmd  = ("RESET",  B(3, jtagCfg.irWidth bits),                1, "rw")
+  val bypassCmd     = ("BYPASS",     B(jtagCfg.irWidth bits, default -> True),  1,              "rw")
+  val idCodeCmd     = ("IDCODE",     B(1, jtagCfg.irWidth bits),               32,              " c")
+  val stallCmd      = ("STALL",      B(2, jtagCfg.irWidth bits),                1,              "rw")
+  val resetCmd      = ("RESET",      B(3, jtagCfg.irWidth bits),                1,              "rw")
+  val captureMemCmd = ("CAPTUREMEM", B(4, jtagCfg.irWidth bits),                1,              "rw")
+  val setAdrCmd     = ("SETADR",     B(5, jtagCfg.irWidth bits),   j1Cfg.adrWidth,              " w")
+  val setDataCmd    = ("SETDATA",    B(6, jtagCfg.irWidth bits),   j1Cfg.wordSize,              " w")
 
   // List of all implemented JTAG-commands, where BYPASS is mandatory and has to be the first entry
-  val jtagCommands = (bypassCmd :: (idCodeCmd :: (stallCmd :: (resetCmd :: Nil))))
+  val jtagCommands = bypassCmd :: idCodeCmd :: stallCmd :: resetCmd :: captureMemCmd :: setAdrCmd :: setDataCmd :: Nil
 
   // The JTAG instruction register
   val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits))
@@ -72,9 +82,10 @@ class J1Jtag(j1Cfg   : J1Config,
 
   })
 
-  // Set init value of HALT and RESET hold register
+  // Set init value of STALL, RESET and MEMCAPTURE hold register
   dataHoldRegs(jtagCommands.indexOf(stallCmd)).init(0)
   dataHoldRegs(jtagCommands.indexOf(resetCmd)).init(0)
+  dataHoldRegs(jtagCommands.indexOf(captureMemCmd)).init(0)
 
   // For all JTAG instructions
   val dataShiftRegs = Vec(for((_, _, width, _) <- jtagCommands) yield {
@@ -279,5 +290,10 @@ class J1Jtag(j1Cfg   : J1Config,
 
   // Find and provide the data register of RESET
   internal.jtagReset := dataHoldRegs(jtagCommands.indexOf(resetCmd))(0)
+
+  // Find and provide the data for the memory bus
+  internal.jtagCaptureMemory := dataHoldRegs(jtagCommands.indexOf(captureMemCmd))(0)
+  internal.jtagCPUAdr        := dataHoldRegs(jtagCommands.indexOf(setAdrCmd))
+  internal.jtagCPUWord       := dataHoldRegs(jtagCommands.indexOf(setDataCmd))
 
 }
