@@ -1,0 +1,13 @@
+echo "Activate Reset"
+irscan J1Sc.cpu 9
+drscan J1Sc.cpu 1 1
+runtest 2
+
+sleep 500
+
+echo "Deactive Reset"
+irscan J1Sc.cpu 9
+drscan J1Sc.cpu 1 0
+runtest 2
+
+

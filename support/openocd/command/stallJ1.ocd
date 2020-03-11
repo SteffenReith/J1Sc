@@ -1,0 +1,5 @@
+echo "Stop CPU"      
+irscan J1Sc.cpu 5 
+drscan J1Sc.cpu 1 1 
+runtest 2
+

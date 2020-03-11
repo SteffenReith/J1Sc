@@ -4,56 +4,7 @@ source [find target/adafruit/FT232H.ocd]
 source [find cpu/J1]
 source [find common/init]
 
-echo "Stop J1 for upload"      
-irscan J1Sc.cpu 5
-drscan J1Sc.cpu 1 1 
-
-echo "Open prog file"
-set fp [open ../../toolchain/forth/build/16bit/nuc.hex r]
-
-# Set address counter
-set adr 0
-
-# For all lines of file
-while {[gets $fp line] != -1} {
-
-     # Debug message 
-     puts "Set value $line @ $adr"
-
-     # Set word address
-     irscan J1Sc.cpu 17 
-     drscan J1Sc.cpu 12 $adr
-
-     # Set word data
-     irscan J1Sc.cpu 21 
-     drscan J1Sc.cpu 16 [expr 0x$line]
-
-     # Write to memory
-     irscan J1Sc.cpu 13 
-     drscan J1Sc.cpu 1 1
-     irscan J1Sc.cpu 13
-     drscan J1Sc.cpu 1 0
-
-     # Next adr
-     incr adr
-
-}
-
-echo "Activate Reset"
-irscan J1Sc.cpu 9 
-drscan J1Sc.cpu 1 1
-
-sleep 500
-
-echo "Deactive Reset"
-irscan J1Sc.cpu 9 
-drscan J1Sc.cpu 1 0
-
-sleep 500
-
-echo "Continue CPU"
-irscan J1Sc.cpu 5
-drscan J1Sc.cpu 1 0
+source [find command/progJ1]
 
 exit
 

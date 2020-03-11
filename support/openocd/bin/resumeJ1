@@ -4,10 +4,7 @@ source [find target/adafruit/FT232H.ocd]
 source [find cpu/J1]
 source [find common/init]
 
-echo "Continue CPU"
-irscan J1Sc.cpu 5
-drscan J1Sc.cpu 1 0
-runtest 2
+source [find command/resumeJ1]
 
 exit
 

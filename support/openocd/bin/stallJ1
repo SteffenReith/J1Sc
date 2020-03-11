@@ -4,10 +4,7 @@ source [find target/adafruit/FT232H.ocd]
 source [find cpu/J1]
 source [find common/init]
 
-echo "Stop CPU"      
-irscan J1Sc.cpu 5 
-drscan J1Sc.cpu 1 1 
-runtest 2
+source [find command/stallJ1]
 
 exit
 

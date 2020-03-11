@@ -1,0 +1,5 @@
+echo "Continue CPU"
+irscan J1Sc.cpu 5
+drscan J1Sc.cpu 1 0
+runtest 2
+
