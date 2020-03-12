@@ -169,10 +169,7 @@ class J1Jtag(j1Cfg   : J1Config,
     }
 
     // Define the transition function for states related to the data register
-    selectDRScan.whenIsActive{
-
-      // Jtag data (sent to the CPU core) is valid during DRScan
-      jtagDataValid := True
+    selectDRScan.whenIsActive {
 
       when(io.tms) { goto(selectIRScan) } otherwise{ goto(captureDR) }
 
