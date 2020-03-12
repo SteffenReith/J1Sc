@@ -1,0 +1,10 @@
+#!/usr/local/openocd/bin/openocd -f 
+
+source [find target/sim/tcp.ocd]
+source [find cpu/J1]
+source [find common/init]
+
+source [find command/resetJ1]
+
+exit
+
