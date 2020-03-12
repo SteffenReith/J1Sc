@@ -137,7 +137,7 @@ class J1Ico(j1Cfg    : J1Config,
     if (j1Cfg.hasJtag) {
 
       // Do the clock domain crossing to make the jtag data synchron
-      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.internal,
+      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.jtagDataFlow,
                                     inputClock  = jtagIface.jtagClockDomain,
                                     outputClock = clkCoreCtrl.coreClockDomain)
 

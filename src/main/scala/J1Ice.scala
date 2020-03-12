@@ -72,7 +72,7 @@ class J1Ice(j1Cfg    : J1Config,
   // Check whether we need a jtag interface
   val jtagIface = j1Cfg.hasJtag generate new Area {
 
-    // Make the reset asynchronous and use the rising edge
+    // Make the reset synchronous and use the rising edge
     val jtagClockConfig = ClockDomainConfig(clockEdge        = RISING,
                                             resetKind        = ASYNC,
                                             resetActiveLevel = HIGH)
@@ -88,7 +88,7 @@ class J1Ice(j1Cfg    : J1Config,
       // Create a JTAG interface
       val jtag = new J1Jtag(j1Cfg, j1Cfg.jtagConfig)
 
-      // Connect the jtag interface
+      // Connect the physical jtag interface
       jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
       jtagCondIOArea.jtag.tdo <> jtag.io.tdo
       jtag.io.tms             <> jtagCondIOArea.jtag.tms
@@ -137,7 +137,7 @@ class J1Ice(j1Cfg    : J1Config,
   val coreArea = new ClockingArea(clkCoreCtrl.coreClockDomain) {
 
     // Give some info about the frequency
-    println(s"[J1Sc] Use board frequency of ${ClockDomain.current.frequency.getValue.toBigDecimal /1000000} Mhz")
+    println(s"[J1Sc] Use board frequency of ${ClockDomain.current.frequency.getValue.toBigDecimal / 1000000} Mhz")
 
     // Create a new CPU core
     val cpu = new J1(j1Cfg)
@@ -146,7 +146,7 @@ class J1Ice(j1Cfg    : J1Config,
     if (j1Cfg.hasJtag) {
 
       // Do the clock domain crossing to make the jtag data synchron
-      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.internal,
+      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.jtagDataFlow,
                                     inputClock  = jtagIface.jtagClockDomain,
                                     outputClock = clkCoreCtrl.coreClockDomain)
 
@@ -228,7 +228,7 @@ class J1Ice(j1Cfg    : J1Config,
                                                       rxFifoDepth                   = boardCfg.uartConfig.fifoDepth)
     val uartCtrl = new UartCtrl(uartCtrlGenerics)
 
-    // Map the UART to 0xF0 and enable the generation of read/write interrupts
+    // Map the UART to 0xF0 and enable the generation of read interrupts
     val uartBridge = uartCtrl.driveFrom(peripheralBusCtrl, uartMemMapConfig, baseAddress = 0xF0)
     uartBridge.interruptCtrl.readIntEnable := True
 
@@ -279,7 +279,7 @@ object J1Ice {
     def elaborate = {
 
       // Configuration of CPU-core
-      val j1Cfg = J1Config.forth16
+      val j1Cfg = J1Config.forth16Jtag
 
       // Configuration of the ICEBreaker board
       val boardCfg = CoreConfig.iceBoard

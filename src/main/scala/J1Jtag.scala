@@ -30,7 +30,7 @@ class J1Jtag(j1Cfg   : J1Config,
   }.setName("")
 
   // A very simple bus used for all internal signals sent or received by the core
-  val internal = master Flow(J1JtagData(j1Cfg))
+  val jtagDataFlow = master Flow(J1JtagData(j1Cfg))
 
   // Contain all signals used without synchronization by the CPU-core
   val asyncSignals = new Bundle {
@@ -331,9 +331,9 @@ class J1Jtag(j1Cfg   : J1Config,
   jtagDataBundle.jtagCPUWord       := dataHoldRegs(jtagCommands.indexOf(setDataCmd))
 
   // Send the payload into the flow
-  internal.payload := jtagDataBundle
+  jtagDataFlow.payload := jtagDataBundle
 
   // Make the payload valid in state where the data is stable
-  internal.valid := jtagDataValid
+  jtagDataFlow.valid := jtagDataValid
 
 }
