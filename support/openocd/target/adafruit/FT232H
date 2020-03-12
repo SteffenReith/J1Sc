@@ -1,0 +1,10 @@
+# Configure the adafruit breakout 
+interface ftdi
+ftdi_vid_pid 0x0403 0x6014
+ftdi_layout_init 0x0008 0x400b
+
+# 1Mhz is enough 
+adapter_khz 1000
+
+transport select jtag
+

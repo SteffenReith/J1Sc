@@ -1,6 +1,6 @@
 #!/usr/local/openocd/bin/openocd -f 
 
-source [find target/sim/tcp.ocd]
+source [find target/sim/tcp]
 source [find cpu/J1]
 source [find common/init]
 

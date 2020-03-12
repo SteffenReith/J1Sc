@@ -1,6 +1,6 @@
 #!/usr/local/openocd/bin/openocd -f
 
-source [find target/adafruit/FT232H.ocd]
+source [find target/adafruit/FT232H]
 source [find cpu/J1]
 source [find common/init]
 
