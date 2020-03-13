@@ -5,7 +5,7 @@ source [find cpu/J1]
 source [find common/init]
 
 echo "Stop J1 for upload"      
-irscan J1Sc.cpu 2 
+irscan J1Sc.cpu 5
 drscan J1Sc.cpu 1 1 
 
 echo "Open prog file"
@@ -21,17 +21,17 @@ while {[gets $fp line] != -1} {
      puts "Set value $line @ $adr"
 
      # Set word address
-     irscan J1Sc.cpu 5
+     irscan J1Sc.cpu 17 
      drscan J1Sc.cpu 12 $adr
 
      # Set word data
-     irscan J1Sc.cpu 6
+     irscan J1Sc.cpu 21 
      drscan J1Sc.cpu 16 [expr 0x$line]
 
      # Write to memory
-     irscan J1Sc.cpu 4
+     irscan J1Sc.cpu 13 
      drscan J1Sc.cpu 1 1
-     irscan J1Sc.cpu 4
+     irscan J1Sc.cpu 13
      drscan J1Sc.cpu 1 0
 
      # Next adr
@@ -40,19 +40,19 @@ while {[gets $fp line] != -1} {
 }
 
 echo "Activate Reset"
-irscan J1Sc.cpu 3
+irscan J1Sc.cpu 9 
 drscan J1Sc.cpu 1 1
 
 sleep 500
 
 echo "Deactive Reset"
-irscan J1Sc.cpu 3
+irscan J1Sc.cpu 9 
 drscan J1Sc.cpu 1 0
 
 sleep 500
 
 echo "Continue CPU"
-irscan J1Sc.cpu 2
+irscan J1Sc.cpu 5
 drscan J1Sc.cpu 1 0
 
 exit

@@ -72,12 +72,12 @@ class J1Ico(j1Cfg    : J1Config,
                                             resetActiveLevel = HIGH)
 
     // Create a clockdomain which is synchron to tck but the global reset is asynchronous to this clock domain
-    val jtagClockDomainDesc = ClockDomain(config = jtagClockConfig,
-                                          clock  = jtagCondIOArea.jtag.tck,
-                                          reset  = io.reset)
+    val jtagClockDomain = ClockDomain(config = jtagClockConfig,
+                                      clock  = jtagCondIOArea.jtag.tck,
+                                      reset  = io.reset)
 
     // Create the clock area used for the JTAG
-    val jtagArea = new ClockingArea(jtagClockDomainDesc) {
+    val jtagArea = new ClockingArea(jtagClockDomain) {
 
       // Create a JTAG interface
       val jtag = new J1Jtag(j1Cfg, j1Cfg.jtagConfig)
@@ -92,7 +92,7 @@ class J1Ico(j1Cfg    : J1Config,
   }
 
   // Physical clock area (connected to a physical clock generator (e.g. crystal oscillator))
-  val clkCtrl = new Area {
+  val clkCoreCtrl = new Area {
 
     // Create a clock domain which is related to the synthesized clock
     val coreClockDomain = ClockDomain.internal("core", frequency = boardCfg.coreFrequency)
@@ -107,7 +107,7 @@ class J1Ico(j1Cfg    : J1Config,
       coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
         // Hold the reset as long as the PLL is not locked
-        input = io.reset || jtagIface.jtagArea.jtag.internal.jtagReset || (!io.boardClkLocked),
+        input = io.reset || jtagIface.jtagArea.jtag.asyncSignals.jtagReset || (!io.boardClkLocked),
         clockDomain = coreClockDomain
 
       )))
@@ -128,7 +128,7 @@ class J1Ico(j1Cfg    : J1Config,
   }
 
   // Generate the application specific clocking area
-  val coreArea = new ClockingArea(clkCtrl.coreClockDomain) {
+  val coreArea = new ClockingArea(clkCoreCtrl.coreClockDomain) {
 
     // Create a new CPU core
     val cpu = new J1(j1Cfg)
@@ -136,17 +136,26 @@ class J1Ico(j1Cfg    : J1Config,
     // Check if we have a jtag interface
     if (j1Cfg.hasJtag) {
 
-      // Connect the jtag halt signal an do a clock domain crossing
-      cpu.internal.stall := BufferCC(jtagIface.jtagArea.jtag.internal.jtagStall)
+      // Do the clock domain crossing to make the jtag data synchron
+      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.internal,
+                                    inputClock  = jtagIface.jtagClockDomain,
+                                    outputClock = clkCoreCtrl.coreClockDomain)
 
-      // Connect the jtag cpu memory signals and do a clock domain crossing
-      cpu.jtagCondIOArea.jtagMemBus.captureMemory := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCaptureMemory)
-      cpu.jtagCondIOArea.jtagMemBus.jtagMemAdr    := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCPUAdr)
-      cpu.jtagCondIOArea.jtagMemBus.jtagMemWord   := BufferCC(jtagIface.jtagArea.jtag.internal.jtagCPUWord)
+      // Register to hold synchron jtag data
+      val synchronJtagData = RegNextWhen(jtagCore.payload, jtagCore.valid)
+
+      // Connect the jtag stall signal (clock domain crossing already done)
+      cpu.internal.stall := synchronJtagData.jtagStall
+
+      // Connect the jtag cpu memory signals (clock domain crossing already done)
+      cpu.jtagCondIOArea.jtagMemBus.captureMemory := synchronJtagData.jtagCaptureMemory
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemAdr    := synchronJtagData.jtagCPUAdr
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemWord   := synchronJtagData.jtagCPUWord
 
     } else {
 
       // Without JTAG deactivate the stall signal
+      cpu.internal.stall.allowPruning()
       cpu.internal.stall := False
 
     }

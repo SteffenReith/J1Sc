@@ -5,13 +5,13 @@ source [find cpu/J1]
 source [find common/init]
 
 echo "Activate Reset"
-irscan J1Sc.cpu 3
+irscan J1Sc.cpu 9
 drscan J1Sc.cpu 1 1
 
 sleep 500
 
 echo "Deactive Reset"
-irscan J1Sc.cpu 3
+irscan J1Sc.cpu 9
 drscan J1Sc.cpu 1 0
 
 exit
