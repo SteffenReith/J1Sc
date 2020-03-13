@@ -91,7 +91,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
       // Create a JTAG interface
       val jtag = new J1Jtag(j1Cfg, j1Cfg.jtagConfig)
 
-      // Connect the physical jtag interface
+      // Connect the physical JTAG interface
       jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
       jtagCondIOArea.jtag.tdo <> jtag.io.tdo
       jtag.io.tms             <> jtagCondIOArea.jtag.tms
