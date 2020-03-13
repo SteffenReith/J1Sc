@@ -8,7 +8,7 @@ To build the J1Sc, you need first to create the VDHL / Verilog sources. The impl
 
 * Install a running Scala system and sbt
 
-* Clone the latest version of Spinal HDL (at least version 1.2.2)
+* Clone the latest version of Spinal HDL (at least version 1.4.1)
    (see https://github.com/SpinalHDL/SpinalHDL)
 
 * Setup Spinal HDL

@@ -1,11 +1,14 @@
 // The scala version needed for Spinal
 scalaVersion := "2.11.8"
 
+val spinalVersion = "1.4.1"
+
 // Added the spinal libraries and a UART-driver
 libraryDependencies ++= Seq(
-  "com.github.spinalhdl" % "spinalhdl-core_2.11" % "1.3.9",
-  "com.github.spinalhdl" % "spinalhdl-lib_2.11"  % "1.3.9",
-  "com.github.spinalhdl" % "spinalhdl-sim_2.11"  % "1.3.9",
+  "com.github.spinalhdl" % "spinalhdl-core_2.11" % spinalVersion,
+  "com.github.spinalhdl" % "spinalhdl-lib_2.11"  % spinalVersion,
+  "com.github.spinalhdl" % "spinalhdl-sim_2.11"  % spinalVersion,
+  compilerPlugin("com.github.spinalhdl" % "spinalhdl-idsl-plugin_2.11" % spinalVersion),
   "org.scream3r" % "jssc" % "2.8.0"
 )
 
