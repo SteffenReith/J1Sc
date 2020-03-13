@@ -1,0 +1,62 @@
+echo "Stop J1 for upload"
+irscan J1Sc.cpu $_STALL_id
+drscan J1Sc.cpu $_STALL_width $_ocdTrue
+runtest 2
+
+echo "Open prog file"
+set fp [open ../../toolchain/forth/build/16bit/nuc.hex r]
+
+echo "Start programming"
+
+# Set address counter
+set adr 0
+
+# For all lines of file
+while {[gets $fp line] != -1} {
+
+     # Debug message 
+     puts "Set value $line @ $adr"
+
+     # Set word address
+     irscan J1Sc.cpu $_SETADR_id 
+     drscan J1Sc.cpu $_SETADR_width $adr
+     runtest 2
+
+     # Set word data
+     irscan J1Sc.cpu $_SETDATA_id
+     drscan J1Sc.cpu $_SETDATA_width [expr 0x$line]
+     runtest 2
+
+     # Write to memory
+     irscan J1Sc.cpu $_CAPTUREMEM_id
+     drscan J1Sc.cpu $_CAPTUREMEM_width $_ocdTrue
+     irscan J1Sc.cpu $_CAPTUREMEM_id
+     drscan J1Sc.cpu $_CAPTUREMEM_width $_ocdFalse
+     runtest 2
+
+     # Next adr
+     incr adr
+
+}
+
+echo "Programming done"
+
+echo "Activate Reset"
+irscan J1Sc.cpu $_RESET_id 
+drscan J1Sc.cpu $_RESET_width $_ocdTrue
+runtest 2
+
+sleep 500
+
+echo "Deactive Reset"
+irscan J1Sc.cpu $_RESET_id
+drscan J1Sc.cpu $_RESET_width $_ocdFalse
+runtest 2
+
+sleep 500
+
+echo "Continue CPU"
+irscan J1Sc.cpu $_STALL_id
+drscan J1Sc.cpu $_STALL_width $_ocdFalse
+runtest 2
+

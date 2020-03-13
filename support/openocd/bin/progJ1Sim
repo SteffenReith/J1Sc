@@ -2,11 +2,11 @@
 
 source [find gen/jinfo]
 
-source [find target/adafruit/FT232H]
+source [find target/sim/tcp]
 source [find cpu/J1]
 source [find common/init]
 
-source [find command/stallJ1]
+source [find command/progJ1]
 
 exit
 

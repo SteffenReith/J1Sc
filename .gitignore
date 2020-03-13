@@ -41,3 +41,5 @@ J1Ico.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin
 J1Ice.v_toplevel_coreArea_cpu_mainMem_ramList_0.bin
 J1Ice.v_toplevel_coreArea_cpu_mainMem_ramList_1.bin
 verbose.log
+support/openocd/gen/jinfo
+

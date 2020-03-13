@@ -1,0 +1,5 @@
+echo "Stop CPU"      
+irscan J1Sc.cpu $_STALL_id
+drscan J1Sc.cpu $_STALL_width $_ocdTrue
+runtest 2
+

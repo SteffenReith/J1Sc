@@ -1,0 +1,12 @@
+echo "Activate Reset"
+irscan J1Sc.cpu $_RESET_id 
+drscan J1Sc.cpu $_RESET_width $_ocdTrue
+runtest 2
+
+sleep 500
+
+echo "Deactive Reset"
+irscan J1Sc.cpu $_RESET_id
+drscan J1Sc.cpu $_RESET_width $_ocdFalse
+runtest 2
+

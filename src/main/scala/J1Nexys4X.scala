@@ -8,7 +8,6 @@
  */
 import spinal.core._
 import spinal.lib._
-import spinal.lib.Flow
 import spinal.lib.com.uart._
 import spinal.lib.io._
 
@@ -46,7 +45,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
     val pButtons  = in Bits(boardCfg.pButtonConfig.numOfPins bits)
 
     // I/O pins for the UART
-    val rx = in Bool // UART input
+    val rx = in  Bool // UART input
     val tx = out Bool // UART output
 
   }.setName("")
@@ -92,11 +91,11 @@ class J1Nexys4X(j1Cfg    : J1Config,
       // Create a JTAG interface
       val jtag = new J1Jtag(j1Cfg, j1Cfg.jtagConfig)
 
-      // Connect the physical jtag interface
+      // Connect the physical JTAG interface
       jtag.io.tdi             <> jtagCondIOArea.jtag.tdi
       jtagCondIOArea.jtag.tdo <> jtag.io.tdo
       jtag.io.tms             <> jtagCondIOArea.jtag.tms
-     
+
     }
 
   }
@@ -117,7 +116,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
       coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
         // Hold reset as long as the PLL is not locked (resets can be asynchron, simply use the jtag reset without CCD)
-        input = io.reset || jtagIface.jtagArea.jtag.asyncSignals.jtagReset || (!io.boardClkLocked),
+        input       = io.reset || jtagIface.jtagArea.jtag.asyncSignals.jtagReset || (!io.boardClkLocked),
         clockDomain = coreClockDomain
 
       )))
@@ -128,7 +127,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
       coreClockDomain.reset := coreClockDomain(RegNext(ResetCtrl.asyncAssertSyncDeassert(
 
         // Hold the reset as long as the PLL is not locked
-        input = io.reset || (!io.boardClkLocked),
+        input       = io.reset || (!io.boardClkLocked),
         clockDomain = coreClockDomain
 
       )))
@@ -150,7 +149,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
     if (j1Cfg.hasJtag) {
 
       // Do the clock domain crossing to make the jtag data synchron
-      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.internal,
+      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.jtagDataFlow,
                                     inputClock  = jtagIface.jtagClockDomain,
                                     outputClock = clkCoreCtrl.coreClockDomain)
 
