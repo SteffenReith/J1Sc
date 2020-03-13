@@ -147,25 +147,25 @@ You have to set the permission of `/dev/tnt0` and `/dev/tnt1` such that they are
 * Have fun with a running FORTH on the simulated J1Sc!
 
 ## Preliminary JTAG support
-J1Sc supports simple and very restricted JTAG support at a very early stage. At the moment you can reset, stop, and continue the CPU by corresponding JTAG-commands. All variants of J1Sc (including the gate-level simulation!) supports this the jtag. For this, you need a special variant of OpenOCD. So clone and build
+J1Sc offeres a simple and very restricted JTAG support at a very early stage. At the moment you can reset, stop and continue the CPU by corresponding JTAG-commands. Moreover, you can upload a memory-dump to the internal RAM. The corresponding scripts can be found in `support/openocd/bin`. All variants of J1Sc (including the gate-level simulation!) support this JTAG interface. Note that you need a special variant of OpenOCD for this. So clone and build
 
-* https://github.com/SpinalHDL/openocd_riscv.git 
+* https://github.com/SteffenReith/openocd_riscv.git
 
 For the physical connection, I use a simple FT232H board from [adafruit](https://www.adafruit.com/product/2264) as shown below (I found it accidentally in my grab bag). Remember any similar FT232H adapter should work (please send [email](mailto:j1sc@streit.cc) if you use another adapter) too.
 
-![JTag Adapter](./doc/jtag/JTagSmall.jpg)
+![JTAG Adapter](./doc/jtag/JTagSmall.jpg)
 
-In `support/openocd` you will find some primitive OpenOCD scripts for resetting, stalling and resuming your J1Sc:
+In `support/openocd/bin` you will find some primitive OpenOCD scripts for programming, resetting, resuming and stalling your J1Sc:
 
-`doReset.cfg`, `stallCPU.cfg` and `continueCPU.cfg`
+`progJ1`, `resetJ1`, `resumeJ1` and `stallJ1`
 
-For the simulated version use
+For the gatelevel simulation of J1Sc use
 
-`doResetSim.cfg`, `stallCPUSim.cfg` and `continueCPUSim.cfg`
+`progJ1Sim`, `resetJ1Sim`, `resumeJ1Sim` and `stallJ1Sim`
 
-### Wiring a jtag-adapter to a Nexys4DDR
+### Wiring a JTAG-adapter to a Nexys4DDR
 
-|Jtag signal|FT232H pin|Constraint|PMod|
+|JTAG signal|FT232H pin|Constraint|PMod|
 |-----------|----------|----------|----|
 |TCK|D0|H16|JB10|
 |TDI|D1|G13|JB9|
@@ -174,6 +174,5 @@ For the simulated version use
 
 ![Nexys4DDRJtag](./doc/xilinx/Nexys4DDRJtag.jpg)
 
-Be warned: The jtag interface currently does not use correct clock domain crossing into the CPU core. So don't rely on a correct function! This will be fixed in the next version.
-Note that the jtag-support is tested on a Nexys4DDR only, but in principle, it should work for the IcoBoard and the iCEBreaker too!
-
+The JTAG-implementation is at a very early state. Hence, I suggest that you don't rely on a correct function! This will be fixed in the future.
+Note that the JTAG-support is tested on a Nexys4DDR (and the simulation) only, but in principle, it should work for the IcoBoard and the iCEBreaker too! In the case that you use the JTAG on the IcoBoard or the Icebreaker: Please send an email and the needed patches!
