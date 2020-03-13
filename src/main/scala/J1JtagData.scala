@@ -42,7 +42,7 @@ case class J1JtagData(j1Cfg : J1Config) extends Bundle with IMasterSlave {
   }
 
   // Clear the instance
-  def clear = {
+  def clear() : Unit = {
 
     // Init all members
     this.jtagDataValid := False
