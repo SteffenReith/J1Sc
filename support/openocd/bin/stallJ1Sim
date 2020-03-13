@@ -1,5 +1,7 @@
 #!/usr/local/openocd/bin/openocd -f
 
+source [find gen/jinfo]
+
 source [find target/sim/tcp]
 source [find cpu/J1]
 source [find common/init]

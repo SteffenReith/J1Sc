@@ -12,6 +12,11 @@ import spinal.core._
 import spinal.lib._
 import spinal.lib.fsm._
 
+import scala.sys._
+
+import java.io._
+import java.util.Calendar
+
 class J1Jtag(j1Cfg   : J1Config,
              jtagCfg : JTAGConfig) extends Component {
 
@@ -48,14 +53,22 @@ class J1Jtag(j1Cfg   : J1Config,
   val writeModePattern    = ".*w.*"
   val constantModePattern = ".*c.*"
 
-  // JTAG-command to be implemented (format Name x ID x dataRegWidth x Mode x constant value)
-  val bypassCmd     = ("BYPASS",     B(jtagCfg.irWidth bits, default -> True),                                 1, "rw", -1)
-  val stallCmd      = ("STALL",      B(4*1 + 1,              jtagCfg.irWidth bits),                            1, "rw", -1)
-  val resetCmd      = ("RESET",      B(4*2 + 1,              jtagCfg.irWidth bits),                            1, "rw", -1)
-  val captureMemCmd = ("CAPTUREMEM", B(4*3 + 1,              jtagCfg.irWidth bits),                            1, "rw", -1)
-  val setAdrCmd     = ("SETADR",     B(4*4 + 1,              jtagCfg.irWidth bits),               j1Cfg.adrWidth, " w", -1)
-  val setDataCmd    = ("SETDATA",    B(4*5 + 1,              jtagCfg.irWidth bits),               j1Cfg.wordSize, " w", -1)
-  val idCodeCmd     = ("IDCODE",     B(4*6 + 1,              jtagCfg.irWidth bits),                           32, " c", jtagCfg.idCodeValue)
+  // Command id codes
+  val stallId      = 4 * 1 + 1
+  val resetId      = 4 * 2 + 1
+  val captureMemId = 4 * 3 + 1
+  val setAdrId     = 4 * 4 + 1
+  val setDataId    = 4 * 5 + 1
+  val idCodeId     = 4 * 6 + 1
+
+  // JTAG-command to be implemented (format Name x IDVal x ID x dataRegWidth x Mode x constant value)
+  val bypassCmd     = ("BYPASS",     -1,           B(jtagCfg.irWidth bits, default -> True),                   1, "rw", -1)
+  val stallCmd      = ("STALL",      stallId,      B(stallId,              jtagCfg.irWidth bits),              1, "rw", -1)
+  val resetCmd      = ("RESET",      resetId,      B(resetId,              jtagCfg.irWidth bits),              1, "rw", -1)
+  val captureMemCmd = ("CAPTUREMEM", captureMemId, B(captureMemId,         jtagCfg.irWidth bits),              1, "rw", -1)
+  val setAdrCmd     = ("SETADR",     setAdrId,     B(setAdrId,             jtagCfg.irWidth bits), j1Cfg.adrWidth, " w", -1)
+  val setDataCmd    = ("SETDATA",    setDataId,    B(setDataId,            jtagCfg.irWidth bits), j1Cfg.wordSize, " w", -1)
+  val idCodeCmd     = ("IDCODE",     idCodeId,     B(idCodeId,             jtagCfg.irWidth bits),             32, " c", jtagCfg.idCodeValue)
 
   // List of all implemented JTAG-commands, where BYPASS is mandatory and has to be the first entry
   val jtagCommands = bypassCmd :: idCodeCmd :: stallCmd :: resetCmd :: captureMemCmd :: setAdrCmd :: setDataCmd :: Nil
@@ -64,11 +77,64 @@ class J1Jtag(j1Cfg   : J1Config,
   val instructionShiftReg = Reg(Bits(jtagCfg.irWidth bits)) randBoot()
   val instructionHoldReg  = Reg(Bits(jtagCfg.irWidth bits)) randBoot()
 
+  // Path to the generated file holding information about the jtag interface
+  val jtagInfoPath = "support/openocd/gen/jinfo"
+
+  // Write all information (register width, command codes to an extern file for open openocd)
+  try {
+
+    // Open the file
+    val writer = new PrintWriter(new File(jtagInfoPath))
+
+    // Write a small header
+    writer.write("# Jtag info generated on " + Calendar.getInstance().getTime() + "\n\n")
+
+    // Write info about how long to wait in idle mode after a JTAG-command
+    writer.write("set _ocdSleepAmount 2\n\n")
+    
+    // Write symbolic constants for boolean value
+    writer.write("set _ocdTrue 1\n")
+    writer.write("set _ocdFalse 0\n\n")
+
+    // Write instruction register width
+    writer.write("set _irwidth " + jtagCfg.irWidth + "\n\n")
+
+    // Iterate over all available jtag commands
+    for ((name, id, _ , width, _, _) <- jtagCommands) {
+
+      writer.write("set _" + name + "_id " + id + "\n")
+      writer.write("set _" + name + "_width " + width + "\n\n")
+
+    }
+
+    // Close the file
+    writer.close()
+
+  } catch {
+
+    case i : IOException =>
+
+      // Report an IOException
+      println("[J1Sc] IO exception while generating the jtag info (" + jtagInfoPath + ")")
+
+      // Terminate program
+      exit(-1)
+
+    case e : Exception =>
+
+      // Unknown exception
+      println("[J1Sc] General exception while generating the jtag info (" + jtagInfoPath + ")")
+
+      // Terminate program
+      exit(-1)
+
+  }
+
   // Give some infos about the idcode command
-  println("[J1Sc]   Idcode is " + idCodeCmd._2 + " (value: 0x" + idCodeCmd._5.toHexString + ")")
+  println("[J1Sc]   Idcode is " + idCodeCmd._3 + " (value: 0x" + idCodeCmd._6.toHexString + ")")
 
   // For all JTAG instructions create a data hold register
-  val dataHoldRegs = Vec(for((name, _, width, mode, _) <- jtagCommands) yield {
+  val dataHoldRegs = Vec(for((name, _, _, width, mode, _) <- jtagCommands) yield {
 
     // Write a message
     println("[J1Sc]   Create register for JTAG command " +
@@ -89,7 +155,7 @@ class J1Jtag(j1Cfg   : J1Config,
   dataHoldRegs(jtagCommands.indexOf(captureMemCmd)).init(0)
 
   // For all JTAG instructions create a data shift register
-  val dataShiftRegs = Vec(for((_, _, width, _, _) <- jtagCommands) yield {
+  val dataShiftRegs = Vec(for((_, _,  _, width, _, _) <- jtagCommands) yield {
 
     // Create the corresponding data register
     Reg(Bits(width bits))
@@ -130,7 +196,7 @@ class J1Jtag(j1Cfg   : J1Config,
     io.tdo := dataShiftRegs(0).lsb
 
     // Generate output for all JTAG data shift registers
-    for(((_ ,id , _, _, _), i) <- jtagCommands.zipWithIndex) {
+    for(((_ , _, id , _, _, _), i) <- jtagCommands.zipWithIndex) {
 
       // check whether the command with id is a active
       when (instructionHoldReg === id) {
@@ -149,8 +215,8 @@ class J1Jtag(j1Cfg   : J1Config,
       jtagDataValid := True
 
       // Set to idcode mode and the corresponding data register by default
-      instructionHoldReg := idCodeCmd._2
-      dataHoldRegs(jtagCommands.indexOf(idCodeCmd)) := (idCodeCmd._2).resized
+      instructionHoldReg := idCodeCmd._3
+      dataHoldRegs(jtagCommands.indexOf(idCodeCmd)) := (idCodeCmd._3).resized
 
       // Implement the transition logic
       when(io.tms) { goto(testLogicReset) } otherwise{ goto(runTestIdle) }
@@ -183,7 +249,7 @@ class J1Jtag(j1Cfg   : J1Config,
     captureDR.whenIsActive {
 
       // Generate decoders for all JTAG data registers
-      for (((_, id, width, mode, loadValue), i) <- jtagCommands.zipWithIndex) {
+      for (((_, _, id, width, mode, loadValue), i) <- jtagCommands.zipWithIndex) {
 
         // Check whether we need a read mode
         if (mode.matches(readModePattern) && !mode.matches(constantModePattern)) {
@@ -222,7 +288,7 @@ class J1Jtag(j1Cfg   : J1Config,
     shiftDR.whenIsActive {
 
       // Generate code of all JTAG data shift registers
-      for(((_, id, _, _, _), i) <- jtagCommands.zipWithIndex) {
+      for(((_, _, id, _, _, _), i) <- jtagCommands.zipWithIndex) {
 
         // Generate decoder for the ith data register
         when (instructionHoldReg === id) {
@@ -243,7 +309,7 @@ class J1Jtag(j1Cfg   : J1Config,
     updateDR.whenIsActive {
 
       // Generate decoder for all JTAG data registers
-      for(((_, id, _,mode, _), i) <- jtagCommands.zipWithIndex) {
+      for(((_, _, id, _,mode, _), i) <- jtagCommands.zipWithIndex) {
 
         // Check whether we need a write mode access
         if(mode.matches(writeModePattern) && !mode.matches(constantModePattern)) {

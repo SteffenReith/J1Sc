@@ -1,5 +1,5 @@
 echo "Continue CPU"
-irscan J1Sc.cpu 5
-drscan J1Sc.cpu 1 0
+irscan J1Sc.cpu $_STALL_id
+drscan J1Sc.cpu $_STALL_width $_ocdFalse
 runtest 2
 

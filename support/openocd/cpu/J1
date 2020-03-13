@@ -1,5 +1,5 @@
 set _CPUTAPID 0x01234567 
 set _CHIPNAME J1Sc
 
-jtag newtap $_CHIPNAME cpu -expected-id $_CPUTAPID -irlen 5
+jtag newtap $_CHIPNAME cpu -expected-id $_CPUTAPID -irlen $_irwidth
 
