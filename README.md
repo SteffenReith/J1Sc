@@ -18,11 +18,13 @@ To build the J1Sc, you need first to create the VDHL / Verilog sources. The impl
 
 * Change directory to the new clone of SpinalHDL and run `sbt publish-local` inside
 
-* Clone J1Sc
+* Clone J1Sc (use git clone --recurse-submodules https://github.com/SteffenReith/J1Sc.git)
 
 * Change directory to J1Sc
 
 * Run `cd toolchain/forth && make && cd ../..` to build the forth core system
+
+* Build, load and install the tty0tty kernel module 
 
 ## A FORTH Shell/Terminal for J1Sc
 Manfred Mahlow offers an excellent terminal for embedded FORTH systems, which supports linux on x86 and Raspberry/Raspbian. Besides 430CamelForth , 430eForth , 4e4th, AmForth, anyForth , Mecrisp , Mecrisp-Stellaris , noForth and STM8 eForth it also supports the J1Sc with Swapforth now (thank you Manfred!). This solution gives a much higher comfort than the original Python-based terminals from Swapforth. Hence, it is (strongly) suggested to use e4thcom instead the provided python-scripts. The python scripts are not very comfortable (you have been warned!) and reconnecting to your J1Sc doesn't work (at least for me).
