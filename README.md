@@ -18,7 +18,7 @@ To build the J1Sc, you need first to create the VDHL / Verilog sources. The impl
 
 * Change directory to the new clone of SpinalHDL and run `sbt publish-local` inside
 
-* Clone J1Sc (use git clone --recurse-submodules https://github.com/SteffenReith/J1Sc.git)
+* Clone J1Sc (use `git clone --recurse-submodules https://github.com/SteffenReith/J1Sc.git`)
 
 * Change directory to J1Sc
 
