@@ -73,10 +73,10 @@ class J1Core(cfg : J1Config) extends Component {
   val dtos  = RegNext(dtosN) init(0)
 
   // Data stack with read and write port
-  val dStack = Mem(Bits(cfg.wordSize bits), wordCount = 1 << (cfg.dataStackIdxWidth))
-  dStack.write(enable  = dStackWrite & !internal.stall,
-               address = dStackPtrN,
-               data    = dtos)
+  val dStack = Mem(Bits(cfg.wordSize bits), 1 << cfg.dataStackIdxWidth)
+  dStack.write(address = dStackPtrN,
+               data    = dtos,
+               enable  = dStackWrite & !internal.stall)
   val dnos = dStack.readAsync(address = dStackPtr, readUnderWrite = writeFirst)
 
   // Check for interrupt mode, because afterwards the current instruction has to be executed
@@ -90,46 +90,15 @@ class J1Core(cfg : J1Config) extends Component {
   val rStackPtr = RegNextWhen(rStackPtrN, !internal.stall) init(0)
 
   // Return stack with read and write port
-  val rStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.returnStackIdxWidth))
-  rStack.write(enable  = rStackWrite & !internal.stall,
-               address = rStackPtrN,
-               data    = rtosN)
+  val rStack = Mem(Bits(cfg.wordSize bits), 1 << cfg.returnStackIdxWidth)
+  rStack.write(address = rStackPtrN,
+               data    = rtosN,
+               enable  = rStackWrite & !internal.stall)
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
-  // Calculate difference (- dtos + dnos) and sign to be reused multiple times
-  val difference = dnos.resize(cfg.wordSize + 1).asSInt - dtos.resize(cfg.wordSize + 1).asSInt
-  val nosIsLess  = (dtos.msb ^ dnos.msb) ? dnos.msb | difference.msb
-
-  // Slice the ALU code out of the instruction
-  val aluOp = instr((instr.high - 4) downto ((instr.high - 8) + 1))
-
-  // Calculate the ALU result (mux all possible cases)
-  val aluResult = aluOp.mux(B"0000" -> dtos,
-                            B"0001" -> dnos,
-
-                            // Arithmetic and logical operations
-                            B"0010" -> (dtos.asUInt + dnos.asUInt).asBits,
-                            B"1100" -> difference.resize(cfg.wordSize).asBits,
-                            B"0011" -> (dtos & dnos),
-                            B"0100" -> (dtos | dnos),
-                            B"0101" -> (dtos ^ dnos),
-                            B"0110" -> (~dtos),
-                            B"1001" -> (dtos(dtos.high) ## dtos(dtos.high downto 1).asUInt),
-                            B"1010" -> (dtos(dtos.high - 1 downto 0) ## B"b0"),
-
-                            // Push rtos to dtos
-                            B"1011" -> rtos,
-
-                            // Compare operations (equal, dtos > dnos, signed and unsigned)
-                            B"0111" -> B(cfg.wordSize bits, default -> (difference === 0)),
-                            B"1000" -> B(cfg.wordSize bits, default -> nosIsLess),
-                            B"1111" -> B(cfg.wordSize bits, default -> difference.msb),
-
-                            // Memory / IO read operations
-                            B"1101" -> internal.toRead,
-
-                            // Misc operations (depth of dstack)
-                            B"1110" -> dStackPtr.resize(cfg.wordSize bits).asBits)
+  // Slice the ALU code out of the instruction and create an ALU
+  val alu = new J1Alu(cfg)
+  val aluResult = alu(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
 
   // Instruction decoder
   switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
