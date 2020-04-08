@@ -97,7 +97,7 @@ class J1Core(cfg : J1Config) extends Component {
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
   // Slice the ALU code out of the instruction and create an ALU
-  val alu = new J1Alu(cfg)
+  val alu = J1Alu(cfg)
   val aluResult = alu(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
 
   // Instruction decoder
