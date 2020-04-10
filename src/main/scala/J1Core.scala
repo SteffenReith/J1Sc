@@ -123,11 +123,11 @@ class J1Core(cfg : J1Config) extends Component {
   }
 
   // Internal condition flags
-  val funcTtoN     = (instr(6 downto 4).asUInt === 1) // Copy DTOS to DNOS
-  val funcTtoR     = (instr(6 downto 4).asUInt === 2) // Copy DTOS to return stack
-  val funcWriteMem = (instr(6 downto 4).asUInt === 3) // Write to RAM
-  val funcWriteIO  = (instr(6 downto 4).asUInt === 4) // I/O write operation
-  val funcReadIO   = (instr(6 downto 4).asUInt === 5) // I/O read operation
+  val funcTtoN     = instr(6 downto 4).asUInt === 1 // Copy DTOS to DNOS
+  val funcTtoR     = instr(6 downto 4).asUInt === 2 // Copy DTOS to return stack
+  val funcWriteMem = instr(6 downto 4).asUInt === 3 // Write to RAM
+  val funcWriteIO  = instr(6 downto 4).asUInt === 4 // I/O write operation
+  val funcReadIO   = instr(6 downto 4).asUInt === 5 // I/O read operation
   val isALU        = !pc.msb && (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Signals for handling external memory
@@ -183,30 +183,15 @@ class J1Core(cfg : J1Config) extends Component {
   // Update the return stack pointer
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
-  // Handle the PC (remember cfg.adrWidth - 1 is the high indicator and instr(7) is the R -> PC field)
-  switch(internal.stall ##                                // CPU stalled
-         clrActive ##                                     // Check for reset state
-         pc.msb ##                                        // Used to check for high jumps
-         instr(instr.high downto (instr.high - 3) + 1) ## // Holds information about jumps and relevant ALU instructions
-         instr(7) ##                                      // The R -> PC field in ALU instructions
-         dtos.orR) {                                      // Jump if dtos is zero
-
-    // Don't change the PC in stall mode
-    is(M"1_-_-_---_-_-") {pcN := pc}
-
-    // Check if we are in reset state
-    is(M"0_1_-_---_-_-") {pcN := cfg.startAddress}
-
-    // Check for jump, call instruction or conditional jump
-    is(M"0_0_0_000_-_-", M"0_0_0_010_-_-", M"0_0_0_001_-_0") {pcN := instr(cfg.adrWidth downto 0).asUInt}
-
-    // Check either for a high call or R -> PC field of an ALU instruction and load PC from return stack
-    is(M"0_0_1_---_-_-", M"0_0_0_011_1_-") {pcN := rtos(cfg.adrWidth + 1 downto 1).asUInt}
-
-    // By default goto next instruction
-    default {pcN := pcPlusOne}
-
-  }
+  // Create the PC update logic
+  val pcNext = J1PCNext(cfg)
+  pcN := pcNext(stall     = internal.stall,
+                clrActive = clrActive,
+                pc        = pc,
+                pcPlusOne = pcPlusOne,
+                instr     = instr,
+                dtos      = dtos,
+                rtos      = rtos)
 
   // Use next PC as address of instruction memory (do not use the MSB)
   internal.nextInstrAdr := pcN(pcN.high - 1 downto 0)

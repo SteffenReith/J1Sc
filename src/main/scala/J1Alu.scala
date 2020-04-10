@@ -6,7 +6,6 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
-import com.sun.xml.internal.ws.encoding.MtomCodec.MtomXMLStreamReaderEx
 import spinal.core._
 
 case class J1Alu(cfg : J1Config) {
