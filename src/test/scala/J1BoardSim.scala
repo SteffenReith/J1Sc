@@ -342,7 +342,7 @@ object J1BoardSim {
         val ledsFrame = new JFrame("J1Sc Components") {
 
           // Dimensions of the simulated leds
-          val ledBorderWidth = 2
+          val ledBorderWidth = 5
           val ledDiameter = 20
 
           // Create a new contents panel
@@ -351,7 +351,7 @@ object J1BoardSim {
 
           // Create the led panel
           val ledPanel = new LEDPanel()
-          ledPanel.setSize(boardCfg.ledBankConfig.width * ledDiameter, ledDiameter + 5)
+          ledPanel.setSize(boardCfg.ledBankConfig.width * ledDiameter, ledDiameter + ledBorderWidth)
 
           // Add the led panel to the main panel
           mainPanel.add(ledPanel)

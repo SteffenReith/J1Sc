@@ -6,7 +6,7 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
-import spinal.core.{Bits, _}
+import spinal.core._
 
 class J1Core(cfg : J1Config) extends Component {
 
@@ -73,7 +73,7 @@ class J1Core(cfg : J1Config) extends Component {
   val dtos  = RegNext(dtosN) init(0)
 
   // Data stack with read and write port
-  val dStack = Mem(Bits(cfg.wordSize bits), 1 << cfg.dataStackIdxWidth)
+  val dStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.dataStackIdxWidth))
   dStack.write(address = dStackPtrN,
                data    = dtos,
                enable  = dStackWrite & !internal.stall)
@@ -87,18 +87,17 @@ class J1Core(cfg : J1Config) extends Component {
 
   // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
-  val rStackPtr = RegNextWhen(rStackPtrN, !internal.stall) init(0)
+  val rStackPtr = RegNextWhen(rStackPtrN, !internal.stall) init 0
 
   // Return stack with read and write port
-  val rStack = Mem(Bits(cfg.wordSize bits), 1 << cfg.returnStackIdxWidth)
+  val rStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.returnStackIdxWidth))
   rStack.write(address = rStackPtrN,
                data    = rtosN,
                enable  = rStackWrite & !internal.stall)
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
-  // Slice the ALU code out of the instruction and create an ALU
-  val alu = new J1Alu(cfg)
-  val aluResult = alu(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
+  // Create an ALU (the AluOp is taken out of the instruction)
+  val aluResult = new J1Alu(cfg)(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
 
   // Instruction decoder
   switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
