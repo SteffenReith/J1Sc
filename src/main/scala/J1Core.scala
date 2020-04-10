@@ -83,7 +83,7 @@ class J1Core(cfg : J1Config) extends Component {
 
   // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
   val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
-  val rStackPtr = RegNextWhen(rStackPtrN, !internal.stall) init 0
+  val rStackPtr = RegNextWhen(rStackPtrN, !internal.stall) init(0)
 
   // Return stack with read and write port
   val rStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.returnStackIdxWidth))
