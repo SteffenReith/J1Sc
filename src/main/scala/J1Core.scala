@@ -93,7 +93,7 @@ class J1Core(cfg : J1Config) extends Component {
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
   // Create an ALU (the AluOp is taken out of the instruction)
-  val aluResult = new J1Alu(cfg)(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
+  val aluResult = J1Alu(cfg)(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
 
   // Instruction decoder
   switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
