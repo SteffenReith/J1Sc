@@ -14,7 +14,7 @@ case class J1Alu(cfg : J1Config) {
   def getALUOp(instr : Bits) = instr((instr.high - 4) downto ((instr.high - 8) + 1))
 
   // Create and execute a ALU operation
-  def apply(instr : Bits, dtos : Bits, dnos : Bits, dStackPtr : UInt, rtos : Bits, toRead : Bits) = {
+  def apply(instr : Bits, dtos : Bits, dnos : Bits, dStackPtr : UInt, rtos : Bits, toRead : Bits) : Bits = {
 
     // Calculate difference (- dtos + dnos) and sign to be reused multiple times
     val difference = dnos.resize(cfg.wordSize + 1).asSInt - dtos.resize(cfg.wordSize + 1).asSInt
