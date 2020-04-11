@@ -54,10 +54,10 @@ class J1Core(cfg : J1Config) extends Component {
 
   // Check status and inject nop (stall mode) or call-instruction (interrupt mode) when needed
   val stateSelect = internal.stall ## internal.irq
-  val instr = stateSelect.mux(B"00" -> internal.memInstr,                                   // Normal mode
-                              B"01" -> B"b010" ## internal.intVec.resize(cfg.wordSize - 3), // Interrupt mode
-                              B"10" -> J1Config.instrNOP(cfg.wordSize),                     // Stall mode
-                              B"11" -> J1Config.instrNOP(cfg.wordSize))                     // Stall overrides interrupt
+  val instr = stateSelect.mux(B"b00" -> internal.memInstr,                                   // Normal mode
+                              B"b01" -> B"b010" ## internal.intVec.resize(cfg.wordSize - 3), // Interrupt mode
+                              B"b10" -> J1Config.instrNOP(cfg.wordSize),                     // Stall mode
+                              B"b11" -> J1Config.instrNOP(cfg.wordSize))                     // Stall overrides interrupt
 
   // Data stack pointer (set to first entry, which can be arbitrary)
   val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)
@@ -67,7 +67,7 @@ class J1Core(cfg : J1Config) extends Component {
   val dStackWriteEnable = Bool
   val rStackWriteEnable = Bool
 
-  // Top of stack and next value
+  // Top of data stack and next value
   val dtosN = Bits(cfg.wordSize bits)
   val dtos  = RegNext(dtosN) init(0)
 
@@ -95,38 +95,18 @@ class J1Core(cfg : J1Config) extends Component {
   // Create an ALU (the AluOp is taken out of the instruction)
   val aluResult = J1Alu(cfg)(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
 
-  // Instruction decoder
-  switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
-
-    // If there is a high call then push the instruction (== memory access) to the data stack
-    is(M"1_---") {dtosN := instr}
-
-    // Literal instruction (Push value)
-    is(M"0_1--") {dtosN := instr(instr.high - 1 downto 0).resized}
-
-    // Jump and call instruction (do not change dtos)
-    is(M"0_000", M"0_010") {dtosN := dtos}
-
-    // Conditional jump (pop a 0 at dtos by adjusting the dstack pointer)
-    is(M"0_001") {dtosN := dnos}
-
-    // Check for ALU operation
-    is(M"0_011") {dtosN := aluResult}
-
-    // Set all bits of top of stack to true by default
-    default {dtosN := (default -> True)}
-
-  }
+  // Decode instruction and calculate next top of data stack
+  dtosN := J1Decoder(cfg)(pc, instr, dtos, dnos, aluResult)
 
   // Internal condition flags
-  val funcTtoN     = instr(6 downto 4).asUInt === 1 // Copy DTOS to DNOS
-  val funcTtoR     = instr(6 downto 4).asUInt === 2 // Copy DTOS to return stack
-  val funcWriteMem = instr(6 downto 4).asUInt === 3 // Write to RAM
-  val funcWriteIO  = instr(6 downto 4).asUInt === 4 // I/O write operation
-  val funcReadIO   = instr(6 downto 4).asUInt === 5 // I/O read operation
+  val funcTtoN     = instr(6 downto 4) === B"b001" // Copy DTOS to DNOS
+  val funcTtoR     = instr(6 downto 4) === B"b010" // Copy DTOS to return stack
+  val funcWriteMem = instr(6 downto 4) === B"b011" // Write to RAM
+  val funcWriteIO  = instr(6 downto 4) === B"b100" // I/O write operation
+  val funcReadIO   = instr(6 downto 4) === B"b101" // I/O read operation
   val isALU        = !pc.msb && (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
-  // Signals for handling external memory
+  // Control signals for external memory
   internal.memWriteMode := !clrActive && isALU && funcWriteMem
   internal.ioWriteMode  := !clrActive && isALU && funcWriteIO
   internal.ioReadMode   := !clrActive && isALU && funcReadIO
