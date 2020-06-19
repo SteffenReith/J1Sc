@@ -23,22 +23,22 @@ case class J1PCNext(cfg : J1Config) {
            dtos.orR) {                                      // Jump if dtos is zero
 
       // Don't change the PC in stall mode
-      is(M"1_-_-_---_-_-") {
+      is (M"1_-_-_---_-_-") {
         pcN := pc
       }
 
       // Check if we are in reset state
-      is(M"0_1_-_---_-_-") {
+      is (M"0_1_-_---_-_-") {
         pcN := cfg.startAddress
       }
 
       // Check for jump, call instruction or conditional jump
-      is(M"0_0_0_000_-_-", M"0_0_0_010_-_-", M"0_0_0_001_-_0") {
+      is (M"0_0_0_000_-_-", M"0_0_0_010_-_-", M"0_0_0_001_-_0") {
         pcN := instr(cfg.adrWidth downto 0).asUInt
       }
 
       // Check either for a high call or R -> PC field of an ALU instruction and load PC from return stack
-      is(M"0_0_1_---_-_-", M"0_0_0_011_1_-") {
+      is (M"0_0_1_---_-_-", M"0_0_0_011_1_-") {
         pcN := rtos(cfg.adrWidth + 1 downto 1).asUInt
       }
 
