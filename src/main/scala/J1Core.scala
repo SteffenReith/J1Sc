@@ -59,24 +59,18 @@ class J1Core(cfg : J1Config) extends Component {
                               B"b10" -> J1Config.instrNOP(cfg.wordSize),                     // Stall mode
                               B"b11" -> J1Config.instrNOP(cfg.wordSize))                     // Stall overrides interrupt
 
-  // Data stack pointer (set to first entry, which can be arbitrary)
-  val dStackPtrN = UInt(cfg.dataStackIdxWidth bits)
-  val dStackPtr  = RegNextWhen(dStackPtrN, !internal.stall) init(0)
-
   // Write enable signals for data and return stack
-  val dStackWriteEnable = Bool
   val rStackWriteEnable = Bool
 
   // Top of data stack and next value
   val dtosN = Bits(cfg.wordSize bits)
-  val dtos  = RegNext(dtosN) init(0)
 
-  // Data stack with read and write port
-  val dStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.dataStackIdxWidth))
-  dStack.write(address = dStackPtrN,
-               data    = dtos,
-               enable  = dStackWriteEnable & !internal.stall)
-  val dnos = dStack.readAsync(address = dStackPtr, readUnderWrite = writeFirst)
+  // Create the Data stack
+  val dStack     = J1DStack(cfg)
+  val dStackInfo = dStack(internal.stall, dtosN)
+  val dtos       = dStackInfo._1
+  val dnos       = dStackInfo._2
+  val dStackPtr  = dStackInfo._3
 
   // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
   val rtosN = Mux(!instr(instr.high - 3 + 1), (returnPC ## B"b0").resized, dtos)
@@ -93,17 +87,18 @@ class J1Core(cfg : J1Config) extends Component {
   val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
 
   // Create an ALU (the AluOp is taken out of the instruction)
-  val aluResult = J1Alu(cfg)(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
+  val alu = J1Alu(cfg)
+  val aluResult = alu(instr, dtos, dnos, dStackPtr, rtos, internal.toRead)
 
   // Decode instruction and calculate next top of data stack
   dtosN := J1Decoder(cfg)(pc, instr, dtos, dnos, aluResult)
 
   // Internal condition flags
-  val funcTtoN     = instr(6 downto 4) === B"b001" // Copy DTOS to DNOS
-  val funcTtoR     = instr(6 downto 4) === B"b010" // Copy DTOS to return stack
-  val funcWriteMem = instr(6 downto 4) === B"b011" // Write to RAM
-  val funcWriteIO  = instr(6 downto 4) === B"b100" // I/O write operation
-  val funcReadIO   = instr(6 downto 4) === B"b101" // I/O read operation
+  val funcTtoN     = instr(6 downto 4) === B"001" // Copy DTOS to DNOS
+  val funcTtoR     = instr(6 downto 4) === B"010" // Copy DTOS to return stack
+  val funcWriteMem = instr(6 downto 4) === B"011" // Write to RAM
+  val funcWriteIO  = instr(6 downto 4) === B"100" // I/O write operation
+  val funcReadIO   = instr(6 downto 4) === B"101" // I/O read operation
   val isALU        = !pc.msb && (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
   // Control signals for external memory
@@ -113,28 +108,8 @@ class J1Core(cfg : J1Config) extends Component {
   internal.extAdr       := dtosN.asUInt
   internal.extToWrite   := dnos
 
-  // Increment for data stack pointer
-  val dStackPtrInc = SInt(cfg.dataStackIdxWidth bits)
-
-  // Handle the update of the data stack
-  switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
-
-    // For a high call push the instruction (== memory access) and for a literal push the value to the data stack
-    is(M"1_---", M"0_1--") {dStackWriteEnable := True; dStackPtrInc := 1}
-
-    // Conditional jump (pop DTOS from data stack)
-    is(M"0_001") {dStackWriteEnable := False; dStackPtrInc := -1}
-
-    // ALU instruction (check for a possible push of data, ISA bug can be fixed by '| (instr(1 downto 0) === B"b01")')
-    is(M"0_011"){dStackWriteEnable := funcTtoN; dStackPtrInc := instr(1 downto 0).asSInt.resized}
-
-    // Don't change the data stack by default
-    default {dStackWriteEnable := False; dStackPtrInc := 0}
-
-  }
-
-  // Update the data stack pointer
-  dStackPtrN := (dStackPtr.asSInt + dStackPtrInc).asUInt
+  // Update the data stack
+  dStack.updateDStack(pc.msb, instr, funcTtoN)
 
   // Increment for return stack pointer
   val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
@@ -160,8 +135,8 @@ class J1Core(cfg : J1Config) extends Component {
   rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
 
   // Create the PC update logic
-  val pcNext = J1PCNext(cfg)
-  pcN := pcNext(stall     = internal.stall,
+  val j1next = J1PCNext(cfg)
+  pcN := j1next(stall     = internal.stall,
                 clrActive = clrActive,
                 pc        = pc,
                 pcPlusOne = pcPlusOne,
