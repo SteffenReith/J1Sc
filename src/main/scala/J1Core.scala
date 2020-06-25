@@ -59,13 +59,10 @@ class J1Core(cfg : J1Config) extends Component {
                               B"b10" -> J1Config.instrNOP(cfg.wordSize),                     // Stall mode
                               B"b11" -> J1Config.instrNOP(cfg.wordSize))                     // Stall overrides interrupt
 
-  // Write enable signals for data and return stack
-  val rStackWriteEnable = Bool
-
   // Top of data stack and next value
   val dtosN = Bits(cfg.wordSize bits)
 
-  // Create the Data stack
+  // Create the data stack
   val dStack     = J1DStack(cfg)
   val dStackInfo = dStack(internal.stall, dtosN)
   val dtos       = dStackInfo._1
@@ -75,16 +72,9 @@ class J1Core(cfg : J1Config) extends Component {
   // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
   val rtosN = Mux(!instr(instr.high - 3 + 1), (returnPC ## B"b0").resized, dtos)
 
-  // Return stack pointer, set to first entry (can be arbitrary) s.t. the first write takes place at index 0
-  val rStackPtrN = UInt(cfg.returnStackIdxWidth bits)
-  val rStackPtr = RegNextWhen(rStackPtrN, !internal.stall) init(0)
-
-  // Return stack with read and write port
-  val rStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.returnStackIdxWidth))
-  rStack.write(address = rStackPtrN,
-               data    = rtosN,
-               enable  = rStackWriteEnable & !internal.stall)
-  val rtos = rStack.readAsync(address = rStackPtr, readUnderWrite = writeFirst)
+  // Create the return stack
+  val rStack = J1RStack(cfg)
+  val rtos   = rStack(internal.stall, rtosN)
 
   // Create an ALU (the AluOp is taken out of the instruction)
   val alu = J1Alu(cfg)
@@ -111,28 +101,8 @@ class J1Core(cfg : J1Config) extends Component {
   // Update the data stack
   dStack.updateDStack(pc.msb, instr, funcTtoN)
 
-  // Increment for return stack pointer
-  val rStackPtrInc = SInt(cfg.returnStackIdxWidth bits)
-
   // Handle the update of the return stack
-  switch(pc.msb ## instr(instr.high downto (instr.high - 3) + 1)) {
-
-    // When we do a high call (the msb of the PC is set) do a pop of return address
-    is(M"1_---") {rStackWriteEnable := False; rStackPtrInc := -1}
-
-    // Call instruction or interrupt (push return address to stack)
-    is(M"0_010") {rStackWriteEnable := True; rStackPtrInc := 1}
-
-    // Conditional jump (maybe we have to push)
-    is(M"0_011") {rStackWriteEnable := funcTtoR; rStackPtrInc := instr(3 downto 2).asSInt.resized}
-
-    // Don't change the return stack by default
-    default {rStackWriteEnable := False; rStackPtrInc := 0}
-
-  }
-
-  // Update the return stack pointer
-  rStackPtrN := (rStackPtr.asSInt + rStackPtrInc).asUInt
+  rStack.updateRStack(pc.msb, instr, funcTtoR)
 
   // Create the PC update logic
   val j1next = J1PCNext(cfg)
