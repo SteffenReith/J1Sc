@@ -8,10 +8,29 @@
  */
 import spinal.core._
 
-case class J1PCNext(cfg : J1Config) {
+case class J1PC(cfg : J1Config) {
 
-  def apply(stall : Bool, clrActive : Bool, pc : UInt, pcPlusOne : UInt, instr : Bits, dtos : Bits, rtos : Bits) : UInt = {
+  // Program counter (note that the MSB is used to control dstack and rstack, hence make is one bit larger)
+  val pc         = Reg(UInt(cfg.adrWidth + 1 bits)) init(cfg.startAddress)
+  val pcPlusOne  = UInt(cfg.adrWidth + 1 bits)
 
+  def apply(pcN : UInt, clrActive : Bool, irq : Bool) : (UInt, Bits) = {
+
+    // Update the PC if no synchronous reset is active
+    when(!clrActive) {pc := pcN}
+    pcPlusOne := pc + 1
+
+    // Check for interrupt mode, because afterwards the current instruction has to be executed
+    val returnPC = Mux(irq, pc.asBits, pcPlusOne.asBits)
+
+    // Return the new program counter
+    (pc, returnPC)
+
+  }
+
+  def updatePC(stall : Bool, clrActive : Bool, instr : Bits, dtos : Bits, rtos : Bits) : UInt = {
+
+    // The signal for the next pc value
     val pcN = UInt(cfg.adrWidth + 1 bits)
 
     // Handle the PC (remember cfg.adrWidth - 1 is the high indicator and instr(7) is the R -> PC field)

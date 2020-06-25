@@ -41,16 +41,15 @@ class J1Core(cfg : J1Config) extends Component {
   // The stall signal is allowed to be pruned (if we have no JTAG)
   internal.stall.allowPruning()
 
-  // Synchronous reset signal
+  // Used for checking whether a reset is active
   val clrActive = ClockDomain.current.isResetActive
 
-  // Program counter (note that the MSB is used to control dstack and rstack, hence make is one bit larger)
+  // Create the programm counter (the MSB is used to control the stacks, hence make it one bit larger)
+  val pcObj     = J1PC(cfg)
   val pcN       = UInt(cfg.adrWidth + 1 bits)
-  val pc        = RegNextWhen(pcN, !clrActive) init(cfg.startAddress)
-  val pcPlusOne = pc + 1
-
-  // Check for interrupt mode, because afterwards the current instruction has to be executed
-  val returnPC = Mux(internal.irq, pc.asBits, pcPlusOne.asBits)
+  val pcInfo    = pcObj(pcN, clrActive, internal.irq)
+  val pc        = pcInfo._1
+  val returnPC  = pcInfo._2
 
   // Check status and inject nop (stall mode) or call-instruction (interrupt mode) when needed
   val stateSelect = internal.stall ## internal.irq
@@ -59,11 +58,9 @@ class J1Core(cfg : J1Config) extends Component {
                               B"b10" -> J1Config.instrNOP(cfg.wordSize),                     // Stall mode
                               B"b11" -> J1Config.instrNOP(cfg.wordSize))                     // Stall overrides interrupt
 
-  // Top of data stack and next value
-  val dtosN = Bits(cfg.wordSize bits)
-
   // Create the data stack
   val dStack     = J1DStack(cfg)
+  val dtosN      = Bits(cfg.wordSize bits)
   val dStackInfo = dStack(internal.stall, dtosN)
   val dtos       = dStackInfo._1
   val dnos       = dStackInfo._2
@@ -83,7 +80,7 @@ class J1Core(cfg : J1Config) extends Component {
   // Decode instruction and calculate next top of data stack
   dtosN := J1Decoder(cfg)(pc, instr, dtos, dnos, aluResult)
 
-  // Internal condition flags
+  // Internal control signals
   val funcTtoN     = instr(6 downto 4) === B"001" // Copy DTOS to DNOS
   val funcTtoR     = instr(6 downto 4) === B"010" // Copy DTOS to return stack
   val funcWriteMem = instr(6 downto 4) === B"011" // Write to RAM
@@ -91,7 +88,7 @@ class J1Core(cfg : J1Config) extends Component {
   val funcReadIO   = instr(6 downto 4) === B"101" // I/O read operation
   val isALU        = !pc.msb && (instr(instr.high downto (instr.high - 3) + 1) === B"b011") // ALU operation
 
-  // Control signals for external memory
+  // Control signals used for external memory
   internal.memWriteMode := !clrActive && isALU && funcWriteMem
   internal.ioWriteMode  := !clrActive && isALU && funcWriteIO
   internal.ioReadMode   := !clrActive && isALU && funcReadIO
@@ -105,14 +102,11 @@ class J1Core(cfg : J1Config) extends Component {
   rStack.updateRStack(pc.msb, instr, funcTtoR)
 
   // Create the PC update logic
-  val j1next = J1PCNext(cfg)
-  pcN := j1next(stall     = internal.stall,
-                clrActive = clrActive,
-                pc        = pc,
-                pcPlusOne = pcPlusOne,
-                instr     = instr,
-                dtos      = dtos,
-                rtos      = rtos)
+  pcN := pcObj.updatePC(stall     = internal.stall,
+                        clrActive = clrActive,
+                        instr     = instr,
+                        dtos      = dtos,
+                        rtos      = rtos)
 
   // Use next PC as address of instruction memory (do not use the MSB)
   internal.nextInstrAdr := pcN(pcN.high - 1 downto 0)
