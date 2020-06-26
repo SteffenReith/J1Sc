@@ -73,7 +73,7 @@ class J1Core(cfg : J1Config) extends Component {
   val dtos  = RegNext(dtosN) init(0)
 
   // Data stack with read and write port
-  val dStack = Mem(Bits(cfg.wordSize bits), wordCount = 1 << (cfg.dataStackIdxWidth))
+  val dStack = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.dataStackIdxWidth))
   dStack.write(enable  = dStackWrite & !internal.stall,
                address = dStackPtrN,
                data    = dtos)
