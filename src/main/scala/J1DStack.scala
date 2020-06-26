@@ -37,7 +37,7 @@ case class J1DStack(cfg : J1Config) extends J1Stack(cfg.dataStackIdxWidth) {
 
   }
 
-  def updateDStack(msb : Bool, instr : Bits, funcTtoN : Bool) : Unit = {
+  def update(msb : Bool, instr : Bits, funcTtoN : Bool) : Unit = {
 
     // Increment for data stack pointer
     val stackPtrInc = SInt(cfg.dataStackIdxWidth bits)

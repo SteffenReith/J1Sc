@@ -2,7 +2,7 @@
  * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
  *
  * Create Date:    Mon Jun 22 23:54:55 CEST 2020 
- * Module Name:    J1Stack - An abstract stack which can be extended for the data and return stack
+ * Module Name:    J1Stack - Holds member used for data- and  return stack
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */

@@ -95,11 +95,11 @@ class J1Core(cfg : J1Config) extends Component {
   internal.extAdr       := dtosN.asUInt
   internal.extToWrite   := dnos
 
-  // Update the data stack
-  dStack.updateDStack(pc.msb, instr, funcTtoN)
+  // Update the data stack internals
+  dStack.update(pc.msb, instr, funcTtoN)
 
-  // Handle the update of the return stack
-  rStack.updateRStack(pc.msb, instr, funcTtoR)
+  // Update the return stack internals
+  rStack.update(pc.msb, instr, funcTtoR)
 
   // Create the PC update logic
   pcN := pcObj.updatePC(stall     = internal.stall,
