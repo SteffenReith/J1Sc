@@ -1,7 +1,7 @@
 // The scala version needed for Spinal
 scalaVersion := "2.11.8"
 
-val spinalVersion = "1.4.1"
+val spinalVersion = "1.4.2"
 
 // Added the spinal libraries and a UART-driver
 libraryDependencies ++= Seq(

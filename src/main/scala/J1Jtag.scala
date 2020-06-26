@@ -142,7 +142,8 @@ class J1Jtag(j1Cfg   : J1Config,
             " (Width is " +
             width +
             " bits) with mode >>" +
-            mode.replaceAll("""^\s+(?m)""",""))
+            mode.replaceAll("""^\s+(?m)""","") +
+            "<<")
 
     // Create the corresponding data register (if needed)
     Reg(Bits(width bits)).allowPruning()
