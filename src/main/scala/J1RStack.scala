@@ -8,21 +8,14 @@
  */
 import spinal.core._
 
-case class J1RStack(cfg : J1Config) extends Area {
-
-  // Enable signal for writing to the stack
-  val stackWriteEnable = Bool
-
-  // Stack pointer and next signal for the data stack
-  val stackPtrN = UInt(cfg.returnStackIdxWidth bits)
-  val stackPtr  = Reg(UInt(cfg.returnStackIdxWidth bits)) init (0)
+case class J1RStack(cfg : J1Config) extends J1Stack(cfg.dataStackIdxWidth)  {
 
   def apply(stall : Bool, rtosN : Bits) : Bits = {
 
     // Change the stack pointer only when the CPU is not stalled
     when(!stall) { stackPtr := stackPtrN }
 
-    // Return stack with read and write port
+    // Return stack with write and read port
     val stackMem = Mem(Bits(cfg.wordSize bits), wordCount = (1 << cfg.returnStackIdxWidth))
     stackMem.write(address = stackPtrN,
                    data    = rtosN,

@@ -8,13 +8,13 @@
  */
 import spinal.core._
 
-class J1Stack extends Area {
+class J1Stack(idxWidth : Int) extends Area {
 
-  // The write enable signal for the stack
-  //val stackWriteEnable = Bool
+  // Enable signal for writing to the stack
+  val stackWriteEnable = Bool
 
-  // Stack pointer and next signal
-  // val stackPtrN = UInt
-  // val stackPtr  = UInt
+  // Stack pointer and next signal for the data stack
+  val stackPtrN = UInt(idxWidth bits)
+  val stackPtr  = Reg(UInt(idxWidth bits)) init (0)
 
 }
