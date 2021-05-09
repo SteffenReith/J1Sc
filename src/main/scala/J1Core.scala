@@ -44,12 +44,10 @@ class J1Core(cfg : J1Config) extends Component {
   // Used for checking whether a reset is active
   val clrActive = ClockDomain.current.isResetActive
 
-  // Create the programm counter (the MSB is used to control the stacks, hence make it one bit larger)
-  val pcObj     = J1PC(cfg)
-  val pcN       = UInt(cfg.adrWidth + 1 bits)
-  val pcInfo    = pcObj(pcN, clrActive, internal.irq)
-  val pc        = pcInfo._1
-  val returnPC  = pcInfo._2
+  // Create the program counter (the MSB is used to control the stacks, hence make it one bit larger)
+  val pcObj          = J1PC(cfg)
+  val pcN            = UInt(cfg.adrWidth + 1 bits)
+  val (pc, returnPC) = pcObj(pcN, clrActive, internal.irq)
 
   // Check status and inject nop (stall mode) or call-instruction (interrupt mode) when needed
   val stateSelect = internal.stall ## internal.irq
@@ -59,12 +57,9 @@ class J1Core(cfg : J1Config) extends Component {
                               B"b11" -> J1Config.instrNOP(cfg.wordSize))                     // Stall overrides interrupt
 
   // Create the data stack
-  val dStack     = J1DStack(cfg)
-  val dtosN      = Bits(cfg.wordSize bits)
-  val dStackInfo = dStack(internal.stall, dtosN)
-  val dtos       = dStackInfo._1
-  val dnos       = dStackInfo._2
-  val dStackPtr  = dStackInfo._3
+  val dStack                  = J1DStack(cfg)
+  val dtosN                   = Bits(cfg.wordSize bits)
+  val (dtos, dnos, dStackPtr) = dStack(internal.stall, dtosN)
 
   // Set next value for RTOS (check call / interrupt or T -> R ALU instruction)
   val rtosN = Mux(!instr(instr.high - 3 + 1), (returnPC ## B"b0").resized, dtos)
