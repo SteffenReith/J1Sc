@@ -47,7 +47,7 @@ case class J1Alu(cfg : J1Config) {
       // Memory / IO read operations
       B"1101" -> toRead,
 
-      // Misc operations (depth of dstack)
+      // Misc operations (depth of dStack)
       B"1110" -> dStackPtr.resize(cfg.wordSize bits).asBits)
 
   }
