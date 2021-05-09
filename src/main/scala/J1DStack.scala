@@ -8,19 +8,14 @@
  */
 import spinal.core._
 
+import scala.language.postfixOps
+
 case class J1DStack(cfg : J1Config) extends J1Stack(cfg.dataStackIdxWidth) {
-
-  // Enable signal for writing to the stack
-  //override val stackWriteEnable = Bool
-
-  // Stack pointer and next signal for the data stack
-  //val stackPtrN = UInt(cfg.dataStackIdxWidth bits)
-  //val stackPtr  = Reg(UInt(cfg.dataStackIdxWidth bits)) init (0)
 
   def apply(stall : Bool, dtosN : Bits) : (Bits, Bits, UInt) = {
 
     // Change the stack pointer only when the CPU is not stalled
-    when(!stall) { stackPtr := stackPtrN }
+    when(!stall) {stackPtr := stackPtrN}
 
     // Top of stack and next value
     val dtos  = RegNext(dtosN) init(0)
@@ -32,7 +27,7 @@ case class J1DStack(cfg : J1Config) extends J1Stack(cfg.dataStackIdxWidth) {
                    enable  = stackWriteEnable & !stall)
     val dnos = stackMem.readAsync(address = stackPtr, readUnderWrite = writeFirst)
 
-    // Return top and next of stack as a pair and the dstack pointer
+    // Return top and next of stack as a pair and the dStack pointer
     (dtos, dnos, stackPtr)
 
   }
