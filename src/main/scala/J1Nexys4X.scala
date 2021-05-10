@@ -16,7 +16,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
 
   val io = new Bundle {
 
-    // Asynchron reset
+    // Asynchronous reset
     val reset = in Bool
 
     // A board clock
@@ -153,16 +153,16 @@ class J1Nexys4X(j1Cfg    : J1Config,
                                     inputClock  = jtagIface.jtagClockDomain,
                                     outputClock = clkCoreCtrl.coreClockDomain)
 
-      // Register to hold synchron jtag data
-      val synchronJtagData = RegNextWhen(jtagCore.payload, jtagCore.jtagDataValid)
+      // Register to hold synchronous jtag data
+      val synchronousJtagData = RegNextWhen(jtagCore.payload, jtagCore.jtagDataValid)
 
       // Connect the jtag stall signal (clock domain crossing already done)
-      cpu.internal.stall := synchronJtagData.jtagStall
+      cpu.internal.stall := synchronousJtagData.jtagStall
 
       // Connect the jtag cpu memory signals (clock domain crossing already done)
-      cpu.jtagCondIOArea.jtagMemBus.captureMemory := synchronJtagData.jtagCaptureMemory
-      cpu.jtagCondIOArea.jtagMemBus.jtagMemAdr    := synchronJtagData.jtagCPUAdr
-      cpu.jtagCondIOArea.jtagMemBus.jtagMemWord   := synchronJtagData.jtagCPUWord
+      cpu.jtagCondIOArea.jtagMemBus.captureMemory := synchronousJtagData.jtagCaptureMemory
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemAdr    := synchronousJtagData.jtagCPUAdr
+      cpu.jtagCondIOArea.jtagMemBus.jtagMemWord   := synchronousJtagData.jtagCPUWord
 
     } else {
 
@@ -275,14 +275,14 @@ class J1Nexys4X(j1Cfg    : J1Config,
 
 object J1Nexys4X {
 
-  // Make the reset synchron and use the rising edge
+  // Make a synchronous reset and use the rising edge for the clock
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
                                             resetKind        = SYNC,
                                             resetActiveLevel = HIGH)
 
   def main(args : Array[String]) {
 
-    def elaborate = {
+    def elaborate : J1Nexys4X = {
 
       // Configuration of CPU-core
       //val j1Cfg = J1Config.blank16Jtag

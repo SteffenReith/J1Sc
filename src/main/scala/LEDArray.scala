@@ -26,7 +26,7 @@ class LEDArray(j1Cfg  : J1Config,
   val io = new Bundle {
 
     // The physical led registers
-    val leds        = out Bits(ledCfg.width bits)
+    val leds = out Bits(ledCfg.width bits)
 
   }.setName("")
 
@@ -45,21 +45,21 @@ class LEDArray(j1Cfg  : J1Config,
   if (ledCfg.lowActive) io.leds := ~ledReg else io.leds := ledReg
 
   // Implement the bus interface
-  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) = new Area {
+  def driveFrom(busCtrl : BusSlaveFactory, baseAddress : BigInt) : Area = new Area {
 
     // The register is mapped at address 0 and is of type r/w
     if (ledCfg.lowActive) {
 
       // Negate to get the register content
-      busCtrl.read(~io.leds, baseAddress + 0, 0)
+      busCtrl.read(~io.leds, baseAddress + 0, bitOffset = 0)
 
     } else {
 
       // Simply give back the register content
-      busCtrl.read(io.leds, baseAddress + 0, 0)
+      busCtrl.read(io.leds, baseAddress + 0, bitOffset = 0)
 
     }
-    busCtrl.nonStopWrite(bus.ledValue, 0) // ledState will be constantly driven by the data of the memory bus
+    busCtrl.nonStopWrite(bus.ledValue, bitOffset = 0) // ledState will be constantly driven by the data of the memory bus
     bus.writeEnable := busCtrl.isWriting(baseAddress + 0)
 
   }
