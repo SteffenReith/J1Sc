@@ -18,7 +18,7 @@ class LEDArray(j1Cfg  : J1Config,
   val bus = new Bundle {
 
     // Bus signals for the internal register
-    val writeEnable = in Bool
+    val writeEnable = in Bool()
     val ledValue    = in Bits (ledCfg.width bits)
 
   }.setName("")

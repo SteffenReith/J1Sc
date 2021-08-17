@@ -17,11 +17,11 @@ class J1Ico(j1Cfg    : J1Config,
   val io = new Bundle {
 
     // Asynchron reset
-    val reset = in Bool
+    val reset = in Bool()
 
     // A board clock
-    val boardClk       = in Bool
-    val boardClkLocked = in Bool
+    val boardClk       = in Bool()
+    val boardClkLocked = in Bool()
 
     // Asynchronous interrupts from the outside world
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
@@ -36,8 +36,8 @@ class J1Ico(j1Cfg    : J1Config,
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
 
     // I/O pins for the UART
-    val rx = in  Bool // UART input
-    val tx = out Bool // UART output
+    val rx = in  Bool() // UART input
+    val tx = out Bool() // UART output
 
   }.setName("")
 
@@ -48,16 +48,16 @@ class J1Ico(j1Cfg    : J1Config,
     val jtag = new Bundle {
 
       // JTAG data input
-      val tdi = in Bool
+      val tdi = in Bool()
 
       // JTAG data output
-      val tdo = out Bool
+      val tdo = out Bool()
 
       // Control for the JTAG TAP
-      val tms = in Bool
+      val tms = in Bool()
 
       // The JTAG clock (the signal tdi, tdo and tms are synchronous to this clock)
-      val tck = in Bool
+      val tck = in Bool()
 
     }.setName("")
 

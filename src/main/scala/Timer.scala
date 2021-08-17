@@ -16,19 +16,19 @@ class Timer(cfg : TimerConfig) extends Component {
 
   val io = new Bundle {
 
-    val loadHigh = in Bool
-    val loadLow  = in Bool
+    val loadHigh = in Bool()
+    val loadLow  = in Bool()
     val cmpHigh  = in UInt(cfg.width / 2 bits)
     val cmpLow   = in UInt(cfg.width / 2 bits)
 
     val enable            = in Bits(cfg.width / 2 bits)
-    val accessEnableWrite = in Bool
+    val accessEnableWrite = in Bool()
     val enableState       = out Bits(cfg.width / 2  bits)
 
     val highState = out UInt(cfg.width / 2 bits)
     val lowState  = out UInt(cfg.width / 2 bits)
 
-    val interrupt = out Bool
+    val interrupt = out Bool()
 
   }.setName("")
 

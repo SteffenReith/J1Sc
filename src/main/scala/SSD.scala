@@ -35,7 +35,7 @@ class SSD(j1Cfg  : J1Config,
 
     // Handle the mask for activating / deactivating a display
     val newMask       = in Bits(j1Cfg.wordSize bits)
-    val enableNewMask = in Bool
+    val enableNewMask = in Bool()
     val mask          = out Bits(j1Cfg.wordSize bits)
 
     // Handle the data to be stored for the displays
@@ -50,7 +50,7 @@ class SSD(j1Cfg  : J1Config,
 
     // The physical signals for the segments and the dot
     val segments = out (Seg7())
-    val dot      = out Bool
+    val dot      = out Bool()
 
     // Selector for multiplexing
     val selector = out Bits(ssdCfg.numOfDisplays bits)

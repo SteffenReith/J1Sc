@@ -25,7 +25,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   // Signals used for the internal bus
   val bus = new Bundle {
 
-    val enableWriteNewMask = in Bool
+    val enableWriteNewMask = in Bool()
     val enableWriteIrqVec  = in Bits (cfg.irqConfig.numOfInterrupts bits)
 
     val irqSetData = in Bits (cfg.wordSize bits)
@@ -39,7 +39,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   val internal = new Bundle {
 
     val intVec = out Bits(cfg.wordSize bits)
-    val irq    = out Bool
+    val irq    = out Bool()
 
   }.setName("")
 

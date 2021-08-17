@@ -18,8 +18,8 @@ case class J1Bus(cfg : J1Config) extends Bundle with IMasterSlave {
   def dataWidth : Int = cfg.wordSize
 
   // Data and control signals used by 'SimpleBus'
-  val enable    = Bool // Bus can be used when 'enable' is high
-  val writeMode = Bool // High to write data, low to read data
+  val enable    = Bool() // Bus can be used when 'enable' is high
+  val writeMode = Bool() // High to write data, low to read data
   val address   = UInt(adrWidth bits) // Address (byte-aligned)
   val writeData = Bits(dataWidth bits)
   val readData  = Bits(dataWidth bits)

@@ -12,13 +12,13 @@ import spinal.lib.IMasterSlave
 case class J1JtagData(j1Cfg : J1Config) extends Bundle with IMasterSlave {
 
   // The data provided by the interface is valid
-  val jtagDataValid = Bool
+  val jtagDataValid = Bool()
 
   // Indicate that the CPU has to halted
-  val jtagStall = Bool
+  val jtagStall = Bool()
 
   // Indicate that the CPU memory is managed by the jtag interface
-  val jtagCaptureMemory = Bool
+  val jtagCaptureMemory = Bool()
 
   // Hold address and data for the CPU memory
   val jtagCPUAdr  = Bits(j1Cfg.adrWidth bits)

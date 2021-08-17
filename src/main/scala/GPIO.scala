@@ -23,11 +23,11 @@ class GPIO(gpioCfg : GPIOConfig) extends Component {
   val bus = new Bundle {
 
     // Ports used for the direction register
-    val dirEnable  = in Bool
+    val dirEnable  = in Bool()
     val dirValue   = in Bits (gpioCfg.width bits)
 
     // Ports used the the data register
-    val dataEnable = in Bool
+    val dataEnable = in Bool()
     val dataValue  = in Bits (gpioCfg.width bits)
 
   }.setName("")
