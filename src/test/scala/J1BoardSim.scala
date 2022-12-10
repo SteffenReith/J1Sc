@@ -123,7 +123,7 @@ object J1BoardSim {
     val simCycles = 10000000l
 
     // Name of serial device to be used
-    val serialDeviceName = "/dev/tnt1"
+    val serialDeviceName = "tnt1"
 
     // Configuration of CPU-core
     val j1Cfg = J1Config.forth16Jtag

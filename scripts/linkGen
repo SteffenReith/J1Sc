@@ -1,0 +1,5 @@
+#!/bin/sh
+
+socat -d -d pty,raw,echo=0,link=tnt0 pty,raw,echo=0,link=tnt1
+
+
