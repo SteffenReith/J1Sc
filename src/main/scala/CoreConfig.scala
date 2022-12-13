@@ -71,7 +71,7 @@ object LEDArrayConfig {
   def pmodLEDs : LEDArrayConfig = {
 
     // Configure a bank of eight LEDs on a PMod
-    val config = LEDArrayConfig(width = 8,
+    val config = LEDArrayConfig(width     = 8,
                                 lowActive = false)
 
     // Return the configuration for a LED array on a Pmod
@@ -82,7 +82,7 @@ object LEDArrayConfig {
   def iceLEDs : LEDArrayConfig = {
 
     // Configure a bank of eight LEDs on a PMod
-    val config = LEDArrayConfig(width = 4,
+    val config = LEDArrayConfig(width     = 4,
                                 lowActive = false)
 
     // Return the configuration for a LED array on a Pmod
@@ -168,10 +168,10 @@ object SSDConfig {
   def default : SSDConfig = {
 
     // Create the default instance
-    val config = SSDConfig(mplxFrequency  = 200 Hz,
-                           numOfDisplays  = 8,
-                           invertSelector = true,
-                           invertSegments = true,
+    val config = SSDConfig(mplxFrequency        = 200 Hz,
+                           numOfDisplays        = 8,
+                           invertSelector       = true,
+                           invertSegments       = true,
                            displayDefaultActive = true)
 
     // Return the default configuration
@@ -183,10 +183,10 @@ object SSDConfig {
   def nexys4X: SSDConfig = {
 
     // Create the default instance
-    val config = SSDConfig(mplxFrequency  = 200 Hz,
-                           numOfDisplays  = 8,
-                           invertSelector = true,
-                           invertSegments = true,
+    val config = SSDConfig(mplxFrequency        = 200 Hz,
+                           numOfDisplays        = 8,
+                           invertSelector       = true,
+                           invertSegments       = true,
                            displayDefaultActive = true)
 
     // Return the configuration for a Nexys4X board
