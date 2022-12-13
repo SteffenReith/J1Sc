@@ -1,3 +1,5 @@
+import scala.sys.process.Process
+
 // The scala version needed for Spinal
 scalaVersion := "2.11.8"
 
@@ -9,8 +11,7 @@ libraryDependencies ++= Seq(
   "com.github.spinalhdl" % "spinalhdl-lib_2.11"  % spinalVersion,
   "com.github.spinalhdl" % "spinalhdl-sim_2.11"  % spinalVersion,
   compilerPlugin("com.github.spinalhdl" % "spinalhdl-idsl-plugin_2.11" % spinalVersion),
-  //"org.scream3r" % "jssc" % "2.8.0"
-  "org.scream3r" % "jssc" % "2.9.5" from ("file:///Users/streit/src/Java/jssc/target/jssc-2.9.5-SNAPSHOT-osx-aarch_64-64.jar")
+  "io.github.java-native" % "jssc" % "2.9.4"
 )
 
 fork := true
