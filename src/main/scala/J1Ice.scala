@@ -216,7 +216,7 @@ class J1Ice(j1Cfg    : J1Config,
                                             preSamplingSize   = boardCfg.uartConfig.preSamplingSize,
                                             samplingSize      = boardCfg.uartConfig.samplingSize,
                                             postSamplingSize  = boardCfg.uartConfig.postSamplingSize)
-    val uartCtrlInitConfig = UartCtrlInitConfig(baudrate   = boardCfg.uartConfig.baudrate,
+    val uartCtrlInitConfig = UartCtrlInitConfig(baudrate   = boardCfg.uartConfig.baudRate,
                                                 dataLength = boardCfg.uartConfig.dataLength,
                                                 parity     = boardCfg.uartConfig.parity,
                                                 stop       = boardCfg.uartConfig.stop)

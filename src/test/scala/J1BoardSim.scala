@@ -167,12 +167,12 @@ object J1BoardSim {
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
-      val uartBaudPeriod = (simTimeRes / boardCfg.uartConfig.baudrate.toDouble).toLong
+      val uartBaudPeriod = (simTimeRes / boardCfg.uartConfig.baudRate.toDouble).toLong
 
       // Print some information about the simulation
       println("[J1Sc] Start the simulation of a J1Sc on an IcoBoard")
       println("[J1Sc]  Board frequency is " + boardCfg.coreFrequency.getValue.toDouble + " Hz")
-      println("[J1Sc]  UART transmission rate " + boardCfg.uartConfig.baudrate.toLong + " bits/sec")
+      println("[J1Sc]  UART transmission rate " + boardCfg.uartConfig.baudRate.toLong + " bits/sec")
       println("[J1Sc]  Time resolution is " + 1.0 / simTimeRes + " sec")
       println("[J1Sc]  One clock period in ticks is " + mainClkPeriod  + " ticks")
       println("[J1Sc]  Bit time (UART) in ticks is "  + uartBaudPeriod + " ticks")

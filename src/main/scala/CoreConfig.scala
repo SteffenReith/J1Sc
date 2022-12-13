@@ -256,7 +256,7 @@ object DBPinArrayConfig {
 // Configuration of the UART
 case class J1UARTConfig (clockDividerWidth : Int,
                          dataWidthMax      : Int,
-                         baudrate          : Int,
+                         baudRate          : Int,
                          dataLength        : Int,
                          parity            : UartParityType.E,
                          stop              : UartStopType.E,
@@ -272,7 +272,7 @@ object J1UARTConfig {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
                               dataWidthMax      = 8,
-                              baudrate          = 9600,
+                              baudRate          = 9600,
                               dataLength        = 7,
                               parity            = UartParityType.NONE,
                               stop              = UartStopType.ONE,
@@ -291,7 +291,7 @@ object J1UARTConfig {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
                               dataWidthMax      = 8,
-                              baudrate          = 8 * 115200,
+                              baudRate          = 8 * 115200,
                               dataLength        = 7,
                               parity            = UartParityType.NONE,
                               stop              = UartStopType.ONE,
@@ -310,7 +310,7 @@ object J1UARTConfig {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
                               dataWidthMax      = 8,
-                              baudrate          = 115200,
+                              baudRate          = 115200,
                               dataLength        = 7,
                               parity            = UartParityType.NONE,
                               stop              = UartStopType.ONE,
