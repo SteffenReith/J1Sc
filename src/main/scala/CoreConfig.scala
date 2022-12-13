@@ -255,15 +255,15 @@ object DBPinArrayConfig {
 
 // Configuration of the UART
 case class J1UARTConfig (clockDividerWidth : Int,
-                         dataWidthMax : Int,
-                         baudrate : Int,
-                         dataLength : Int,
-                         parity : UartParityType.E,
-                         stop : UartStopType.E,
-                         preSamplingSize : Int,
-                         samplingSize : Int,
-                         postSamplingSize : Int,
-                         fifoDepth : Int)
+                         dataWidthMax      : Int,
+                         baudrate          : Int,
+                         dataLength        : Int,
+                         parity            : UartParityType.E,
+                         stop              : UartStopType.E,
+                         preSamplingSize   : Int,
+                         samplingSize      : Int,
+                         postSamplingSize  : Int,
+                         fifoDepth         : Int)
 
 object J1UARTConfig {
 
@@ -271,15 +271,15 @@ object J1UARTConfig {
   def default : J1UARTConfig = {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
-                              dataWidthMax = 8,
-                              baudrate = 38400,
-                              dataLength = 7,
-                              parity = UartParityType.NONE,
-                              stop = UartStopType.ONE,
-                              preSamplingSize = 1,
-                              samplingSize = 5,
-                              postSamplingSize = 2,
-                              fifoDepth = 8)
+                              dataWidthMax      = 8,
+                              baudrate          = 38400,
+                              dataLength        = 7,
+                              parity            = UartParityType.NONE,
+                              stop              = UartStopType.ONE,
+                              preSamplingSize   = 1,
+                              samplingSize      = 5,
+                              postSamplingSize  = 2,
+                              fifoDepth         = 8)
 
     // Return the configuration
     config
@@ -290,15 +290,15 @@ object J1UARTConfig {
   def fastUartConfig : J1UARTConfig = {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
-                              dataWidthMax = 8,
-                              baudrate = 8 * 115200,
-                              dataLength = 7,
-                              parity = UartParityType.NONE,
-                              stop = UartStopType.ONE,
-                              preSamplingSize = 1,
-                              samplingSize = 5,
-                              postSamplingSize = 2,
-                              fifoDepth = 8)
+                              dataWidthMax      = 8,
+                              baudrate          = 8 * 115200,
+                              dataLength        = 7,
+                              parity            = UartParityType.NONE,
+                              stop              = UartStopType.ONE,
+                              preSamplingSize   = 1,
+                              samplingSize      = 5,
+                              postSamplingSize  = 2,
+                              fifoDepth         = 8)
 
     // Return the fast configuration
     config
@@ -309,15 +309,15 @@ object J1UARTConfig {
   def slowUartConfig : J1UARTConfig = {
 
     val config = J1UARTConfig(clockDividerWidth = 20,
-                              dataWidthMax = 8,
-                              baudrate = 115200,
-                              dataLength = 7,
-                              parity = UartParityType.NONE,
-                              stop = UartStopType.ONE,
-                              preSamplingSize = 1,
-                              samplingSize = 5,
-                              postSamplingSize = 2,
-                              fifoDepth = 8)
+                              dataWidthMax      = 8,
+                              baudrate          = 115200,
+                              dataLength        = 7,
+                              parity            = UartParityType.NONE,
+                              stop              = UartStopType.ONE,
+                              preSamplingSize   = 1,
+                              samplingSize      = 5,
+                              postSamplingSize  = 2,
+                              fifoDepth         = 8)
 
     // Return the slow configuration
     config
