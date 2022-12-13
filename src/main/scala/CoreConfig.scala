@@ -434,7 +434,7 @@ object CoreConfig {
 
   }
 
-  // Provide a configuration for the simulation of an IcoBoard
+  // Provide a configuration for a simulation of J1Sc
   def boardSim : CoreConfig = {
 
     // Configuration values for an IcoBoard
