@@ -1,4 +1,5 @@
 import scala.sys.exit
+
 import spinal.core._
 import spinal.core.sim._
 
@@ -19,7 +20,7 @@ object UARTReceiver {
   def apply(output : SerialPort, uartPin : Bool, baudPeriod : Long) = fork {
 
     // An UART is high inactive -> wait until simulation starts
-    waitUntil(uartPin.toBoolean == true)
+    waitUntil(uartPin.toBoolean)
 
     // Give some information about the UART receiver
     println("[J1Sc] Start Receiver simulation")
@@ -28,7 +29,7 @@ object UARTReceiver {
     while (true) {
 
       // Look for the rising start bit and wait a half bit time
-      waitUntil(uartPin.toBoolean == false)
+      waitUntil(!uartPin.toBoolean)
       sleep(baudPeriod / 2)
 
       // Check if start bit is still active and wait for first data bit
@@ -130,7 +131,7 @@ object J1BoardSim {
 
     // Configuration of the used board
     val boardCfg = CoreConfig.boardSim
-
+	
     // Flag for doing a reset
     var doReset = false
 
@@ -248,7 +249,7 @@ object J1BoardSim {
       }
 
       // Check if we have an jtag interface
-      val jtagCondSim = j1Cfg.hasJtag generate {
+      j1Cfg.hasJtag generate {
 
         // Calculate the number of ticks of a jtag clock cycle
         val jtagClkPeriod = (simTimeRes / j1Cfg.jtagConfig.jtagFreq.getValue.toDouble).toLong
@@ -267,7 +268,7 @@ object J1BoardSim {
           val server = new Thread {
 
             // Specify with code has to run in this thread
-            override def run() = {
+            override def run() : Unit = {
 
               // Start the socket
               val socket = new ServerSocket(7894)
@@ -283,8 +284,8 @@ object J1BoardSim {
                 connection.setTcpNoDelay(true)
 
                 // Connect the data streams to the socket
-                outStream = connection.getOutputStream()
-                inStream  = connection.getInputStream()
+                outStream = connection.getOutputStream
+                inStream  = connection.getInputStream
 
                 // Report that we handled data
                 println("[J1Sc] New TCP connection for jtag simulation")
