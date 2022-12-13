@@ -19,6 +19,8 @@ tty0tty/module/tty0tty.mod
 tnt0
 tnt1
 
+.bsp/
+
 project/build.properties
 
 toolchain/forth/nuc.fs.orig
