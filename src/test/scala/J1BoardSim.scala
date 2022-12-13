@@ -121,7 +121,7 @@ object J1BoardSim {
     val simTimeRes = 1e9
 
     // Number of CPU cycles between some status information
-    val simCycles = 10000000l
+    val simCycles = 10000000L
 
     // Name of serial device to be used
     val serialDeviceName = "tnt1"
@@ -178,7 +178,7 @@ object J1BoardSim {
       println("[J1Sc]  Bit time (UART) in ticks is "  + uartBaudPeriod + " ticks")
 
       // Init the system and create the global system clock
-      val genClock = fork {
+      var genClock = fork {
 
         // Pretend that the clock is already locked and low
         dut.io.boardClkLocked #= true
@@ -193,7 +193,7 @@ object J1BoardSim {
         DoReset(dut.io.reset, 100, HIGH)
 
         // Init the cycle counter
-        var cycleCounter = 0l
+        var cycleCounter = 0L
 
         // Get the actual system time to init the time calculation
         var lastTime = System.nanoTime()
@@ -227,7 +227,7 @@ object J1BoardSim {
       }
 
       // Handle a reset request using the threaded API
-      val resetHandler = fork {
+      fork {
 
         // Simulate forever
         while(true) {
@@ -248,7 +248,7 @@ object J1BoardSim {
 
       }
 
-      // Check if we have an jtag interface
+      // Check if we have an JTAG interface
       j1Cfg.hasJtag generate {
 
         // Calculate the number of ticks of a jtag clock cycle
@@ -288,7 +288,7 @@ object J1BoardSim {
                 inStream  = connection.getInputStream
 
                 // Report that we handled data
-                println("[J1Sc] New TCP connection for jtag simulation")
+                println("[J1Sc] New TCP connection for JTAG simulation")
 
               }
 
@@ -300,7 +300,7 @@ object J1BoardSim {
           // Forever handle new data
           while (true) {
 
-            // Wait for some jtag clock cycles
+            // Wait for some JTAG clock cycles
             sleep(jtagClkPeriod * 200)
 
             // Check if new input data is available
@@ -309,7 +309,7 @@ object J1BoardSim {
               // Get the new data
               val buffer = inStream.read()
 
-              // Decode virtual jtag data and write is to the dut
+              // Decode virtual JTAG data and write is to the dut
               dut.jtagCondIOArea.jtag.tms #= (buffer & 1) != 0
               dut.jtagCondIOArea.jtag.tdi #= (buffer & 2) != 0
               dut.jtagCondIOArea.jtag.tck #= (buffer & 8) != 0
@@ -322,7 +322,7 @@ object J1BoardSim {
 
               }
 
-              // Wait half a jtag cycle
+              // Wait half a JTAG cycle
               sleep(jtagClkPeriod / 2)
 
             }
@@ -334,7 +334,7 @@ object J1BoardSim {
       }
 
       // Simulate the leds array
-      val leds = fork {
+      fork {
 
         // Holds the value represented by the leds array
         var ledsValue = 0l
