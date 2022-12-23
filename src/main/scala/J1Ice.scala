@@ -269,7 +269,7 @@ class J1Ice(j1Cfg    : J1Config,
 
 object J1Ice {
 
-  // Make the reset synchron and use the rising edge
+  // Make the reset synchronous and use the rising edge
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
                                             resetKind        = SYNC,
                                             resetActiveLevel = HIGH)

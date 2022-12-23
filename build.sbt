@@ -1,7 +1,7 @@
 import scala.sys.process.Process
 
 // The scala version needed for Spinal
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.12"
 
 val spinalVersion = "1.8.0b"
 
