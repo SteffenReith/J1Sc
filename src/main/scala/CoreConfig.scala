@@ -351,7 +351,7 @@ object CoreConfig {
                              pButtonConfig = DBPinArrayConfig.default,
                              uartConfig    = J1UARTConfig.default,
                              coreFrequency = FixedFrequency(80 MHz),
-                             1)
+                             ioWaitStates  = 1)
 
     // Return the default configuration
     config
@@ -370,7 +370,7 @@ object CoreConfig {
                             pButtonConfig = DBPinArrayConfig.pushButton5,
                             uartConfig    = J1UARTConfig.slowUartConfig,
                             coreFrequency = FixedFrequency(100 MHz),
-                            1)
+                            ioWaitStates  = 1)
 
     // Return the configuration
     config
@@ -389,7 +389,7 @@ object CoreConfig {
                             pButtonConfig = DBPinArrayConfig.pushButton5,
                             uartConfig    = J1UARTConfig.fastUartConfig,
                             coreFrequency = FixedFrequency(100 MHz),
-                            1)
+                            ioWaitStates  = 1)
 
     // Return the configuration
     config
@@ -408,7 +408,7 @@ object CoreConfig {
                             pButtonConfig = DBPinArrayConfig.default,
                             uartConfig    = J1UARTConfig.slowUartConfig,
                             coreFrequency = FixedFrequency(40 MHz),
-                            1)
+                            ioWaitStates = 1)
 
     // Return the configuration
     config
@@ -426,8 +426,8 @@ object CoreConfig {
                             sSwitchConfig = null,
                             pButtonConfig = DBPinArrayConfig.iceButtons,
                             uartConfig    = J1UARTConfig.slowUartConfig,
-                            coreFrequency = FixedFrequency(value = 18 MHz),
-                            1)
+                            coreFrequency = FixedFrequency(18 MHz),
+                            ioWaitStates  = 1)
 
     // Return the configuration
     config
@@ -445,8 +445,8 @@ object CoreConfig {
                             sSwitchConfig = DBPinArrayConfig.default,
                             pButtonConfig = DBPinArrayConfig.default,
                             uartConfig    = J1UARTConfig.default,
-                            coreFrequency = FixedFrequency(value = 40 MHz),
-                            1)
+                            coreFrequency = FixedFrequency(40 MHz),
+                            ioWaitStates  = 1)
 
     // Return the configuration
     config
