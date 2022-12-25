@@ -1,0 +1,5 @@
+#!/bin/sh
+
+source /usr/local/oss-cad-suite/environment
+
+
