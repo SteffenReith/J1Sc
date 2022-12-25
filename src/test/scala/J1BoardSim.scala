@@ -117,21 +117,20 @@ object J1BoardSim {
 
   def main(args: Array[String]) : Unit = {
 
+    // Configuration for simulation, CPU-core and simulated evaluation board
+    val simCfg   = J1SimConfig.default
+    val j1Cfg    = J1Config.forth16Jtag
+    val boardCfg = CoreConfig.boardSim
+
     // Time resolution of the simulation is 1ns
-    val simTimeRes = 1e9
+    val simTimeRes = simCfg.simTimeRes
 
     // Number of CPU cycles between some status information
-    val simCycles = 10000000L
+    val simCycles = simCfg.simCycles
 
     // Name of serial device to be used
-    val serialDeviceName = "tnt1"
+    val serialDeviceName = simCfg.serialDeviceName
 
-    // Configuration of CPU-core
-    val j1Cfg = J1Config.forth16Jtag
-
-    // Configuration of the used board
-    val boardCfg = CoreConfig.boardSim
-	
     // Flag for doing a reset
     var doReset = false
 
