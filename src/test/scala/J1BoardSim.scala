@@ -3,17 +3,17 @@ import scala.sys.exit
 import spinal.core._
 import spinal.core.sim._
 
+import scopt.OptionParser
 import jssc._
 
 import java.net.ServerSocket
 import java.io.{InputStream, OutputStream}
-
 import java.awt.{BorderLayout, Color, Graphics}
-
 import javax.swing.{JButton, JFrame, JPanel, WindowConstants}
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
+// Implement 8N1
 object UARTReceiver {
 
   // Create an receiver which gets data from the simulation
@@ -28,11 +28,11 @@ object UARTReceiver {
     // Simulate the Receiver forever
     while (true) {
 
-      // Look for the rising start bit and wait a half bit time
+      // Look for the falling start bit and wait a half bit time (middle of start bit)
       waitUntil(!uartPin.toBoolean)
       sleep(baudPeriod / 2)
 
-      // Check if start bit is still active and wait for first data bit
+      // Wait until the middle of the first data bit
       sleep(baudPeriod)
 
       // Hold the received byte
@@ -71,7 +71,7 @@ object UARTTransceiver {
     // Make the line inactive (high)
     uartPin #= true
 
-    // Give some information about the transiver simulation
+    // Give some information about the transceiver simulation
     println("[J1Sc] Start transceiver simulation")
 
     // Simulate the data transmission forever
@@ -118,18 +118,65 @@ object J1BoardSim {
   def main(args: Array[String]) : Unit = {
 
     // Configuration for simulation, CPU-core and simulated evaluation board
-    val simCfg   = J1SimConfig.default
-    val j1Cfg    = J1Config.forth16Jtag
+    val simCfg = J1SimConfig.default
+    val j1Cfg = J1Config.forth16Jtag
     val boardCfg = CoreConfig.boardSim
+
+    // Holds the compile name of the used serial device
+    var serialDeviceName : String = null
+
+    // Holds the flag to indicate whether a wave-file should be generated
+    var createWaveFile : Boolean = false
+
+    // Create a new scopt parser
+    val parser = new OptionParser[ArgsConfig]("J1ScSim") {
+
+      // A simple header for the help text
+      head("J1ScSim - A gate-level simulation of J1Sc", "")
+
+      // Option to enable the /dev - Prefix
+      opt[Unit]("useDevicePrefix").action { (_, c) => c.copy(useDevicePrefix = true) }.
+                                   text("Use a device prefix (default: not used)")
+
+      // Option to enable wave-file creation
+      opt[Unit]("createWaveFile").action { (_, c) => c.copy(createWaveFile = true) }.
+                                  text("Create a wave-file. WARNING: Can be huge! (default: not active)")
+
+      // Option for setting the name of the serial device
+      opt[String]("serialDeviceName").action {(s,c) => c.copy(serialDeviceName = s) }.
+                                      text("Set name of serial device (default: " + simCfg.serialDeviceName + ")")
+
+      // Option for setting the name of the serial device
+      opt[String]("serialDevicePrefix").action { (s, c) => c.copy(serialDevicePrefix = s) }.
+                                        text("Set the serial device prefix (default: " + simCfg.devicePrefix + ")")
+
+      // Help option
+      help("help").text("print this text")
+
+    }
+    parser.parse(args, ArgsConfig(useDevicePrefix    = false,
+                                  createWaveFile     = false,
+                                  serialDeviceName   = simCfg.serialDeviceName,
+                                  serialDevicePrefix = simCfg.devicePrefix)).map { cfg =>
+
+      // Check if we use the device prefix and build the device-name
+      serialDeviceName = (if (cfg.useDevicePrefix) cfg.serialDevicePrefix + "/" else "") + cfg.serialDeviceName
+
+      // Check if a waveFile should be generated
+      createWaveFile = cfg.createWaveFile
+
+    } getOrElse {
+
+      // Terminate program with error-code (wrong argument / option)
+      exit(1)
+
+    }
 
     // Time resolution of the simulation is 1ns
     val simTimeRes = simCfg.simTimeRes
 
     // Number of CPU cycles between some status information
     val simCycles = simCfg.simCycles
-
-    // Name of serial device to be used
-    val serialDeviceName = simCfg.serialDeviceName
 
     // Flag for doing a reset
     var doReset = false
@@ -159,10 +206,11 @@ object J1BoardSim {
 
     }
 
-    SimConfig.workspacePath("gen/sim")
-             .allOptimisation
-             //.withWave
-             .compile(new J1Ice(j1Cfg, boardCfg)).doSimUntilVoid { dut =>
+    // Create a simulation
+    val simJ1 = if (createWaveFile) SimConfig.withWave else SimConfig
+    simJ1.workspacePath("gen/sim")
+         .allOptimisation
+         .compile(new J1Ice(j1Cfg, boardCfg)).doSimUntilVoid { dut =>
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
@@ -240,7 +288,7 @@ object J1BoardSim {
           // Do a reset cycle for some cycles
           DoReset(dut.io.reset, 100, HIGH)
 
-          // Clear the reset flag
+          // Wait forever
           doReset = false
 
         }

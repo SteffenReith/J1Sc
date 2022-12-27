@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   "com.github.spinalhdl" % "spinalhdl-lib_2.11"  % spinalVersion,
   "com.github.spinalhdl" % "spinalhdl-sim_2.11"  % spinalVersion,
   compilerPlugin("com.github.spinalhdl" % "spinalhdl-idsl-plugin_2.11" % spinalVersion),
-  "io.github.java-native" % "jssc" % "2.9.4"
+  "io.github.java-native" % "jssc" % "2.9.4",
+  "com.github.scopt" %% "scopt" % "4.1.0"
 )
 
 fork := true
