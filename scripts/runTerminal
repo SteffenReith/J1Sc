@@ -1,9 +1,10 @@
 #!/bin/bash
 
 BAUDRATE="B9600"
+VDEVICE="tnt0"
 
 # Determine the serial device for e4thcom
-LINK=`readlink tnt0`
+LINK=`readlink $VDEVICE`
 DEVICE=`basename $LINK`
 
 # Give some debug info
@@ -17,5 +18,5 @@ echo "[info] Baudrate is $BAUDRATE"
 E4THCOMBIN=`which e4thcom`
 E4THCOMDIR=`dirname $E4THCOMBIN`
 echo "[info] Start e4thcom from $E4THCOMDIR"
-$E4THCOMBIN -b $BAUDRATE -d $DEVICE -p 'toolchain/forth:toolchain/forth' -t swapforth-j1sc
+$E4THCOMBIN -b $BAUDRATE -d $DEVICE -p 'toolchain/forth:toolchain/forth:toolchain/forth/common' -t swapforth-j1sc
 
