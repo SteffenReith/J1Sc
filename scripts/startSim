@@ -2,7 +2,11 @@
 
 echo "[info] [Simulation setup] Create local null modem devices"
 socat -d -d pty,raw,echo=0,link=tnt0 pty,raw,echo=0,link=tnt1 & 
+SOCATID=$!
 
-echo "[info] [Simulation setup] Start simulation of J1Sc (connect using eth4com)"
+echo "[info] [Simulation] Start simulation of J1Sc (connect using eth4com)"
 sbt "Test / run"
+
+echo "[info] [Simulation] Simulation terminated! (Cleaning up)"
+kill $SOCATID
 
