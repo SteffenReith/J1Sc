@@ -1,0 +1,21 @@
+#!/bin/bash
+
+BAUDRATE="B9600"
+
+# Determine the serial device for e4thcom
+LINK=`readlink tnt0`
+DEVICE=`basename $LINK`
+
+# Give some debug info
+echo "[info] Serial device $DEVICE is used to connect to the J1Sc simulation"
+echo "[info] Baudrate is $BAUDRATE"
+
+# Change directory to the forth system
+#cd toolchain/forth
+
+# Start the terminal
+E4THCOMBIN=`which e4thcom`
+E4THCOMDIR=`dirname $E4THCOMBIN`
+echo "[info] Start e4thcom from $E4THCOMDIR"
+$E4THCOMBIN -b $BAUDRATE -d $DEVICE -p 'toolchain/forth:toolchain/forth' -t swapforth-j1sc
+
