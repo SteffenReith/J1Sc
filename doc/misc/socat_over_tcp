@@ -1,0 +1,2 @@
+socat -d -d -d tcp-l:7895,reuseaddr,fork pty,raw,echo=0,link=tnt1
+socat pty,link=tnt0 tcp:127.0.0.1:7895

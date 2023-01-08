@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "[info] [Simulation setup] Create local null modem devices"
+socat -d -d pty,raw,echo=0,link=tnt0 pty,raw,echo=0,link=tnt1 & 
+
+echo "[info] [Simulation setup] Start simulation of J1Sc (connect using eth4com)"
+sbt "Test / run"
+
