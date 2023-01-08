@@ -305,7 +305,7 @@ object J1BoardSim {
         println("[J1Sc]  Jtag Cycle time in ticks is " + jtagClkPeriod + " ticks")
 
         // Build a simulation for the JTAG interface
-        val jtag = fork {
+        fork {
 
           // Input an output data for server socket
           var inStream  : InputStream  = null
@@ -417,7 +417,7 @@ object J1BoardSim {
           setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 
           // Set a useful frame size and make is visible
-          setSize(300, 100)
+          setSize(320, 120)
           setVisible(true)
 
           // Create an event handler for checking the reset button
