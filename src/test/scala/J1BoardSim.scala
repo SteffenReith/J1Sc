@@ -23,10 +23,12 @@ object UARTReceiver {
     waitUntil(uartPin.toBoolean)
 
     // Give some information about the UART receiver
-    println("[J1Sc] Start Receiver simulation")
+    println("[J1Sc] Start receiver simulation")
 
     // Simulate the Receiver forever
     while (true) {
+
+      print("Data to receive : ")
 
       // Look for the falling start bit and wait a half bit time (middle of start bit)
       waitUntil(!uartPin.toBoolean)
@@ -57,6 +59,8 @@ object UARTReceiver {
       // Write character
       output.writeByte(buffer.toByte)
 
+      println(buffer.toByte + "(received)")
+
     }
 
   }
@@ -82,6 +86,8 @@ object UARTTransceiver {
 
         // get one byte from the host (remember the return type of 'readBytes' is an array of bytes)
         val buffer = input.readBytes(1)(0)
+
+        println("To transmit : " + buffer)
 
         // Create the start bit
         uartPin #= false
@@ -178,8 +184,8 @@ object J1BoardSim {
     // Number of CPU cycles between some status information
     val simCycles = simCfg.simCycles
 
-    // Flag for doing a reset
-    var doReset = false
+    // Flag for doing a reset (set to true for initial reset)
+    var doReset = true
 
     // Open the (pseudo) serial connection
     println("[J1Sc]  Try to open the serial device " + serialDeviceName)
@@ -206,11 +212,11 @@ object J1BoardSim {
 
     }
 
-    // Create a simulation
+    // Create a simulation (first check if we want to have a simulation result)
     val simJ1 = if (createWaveFile) SimConfig.withWave else SimConfig
     simJ1.workspacePath("gen/sim")
          .allOptimisation
-         .compile(new J1Ice(j1Cfg, boardCfg)).doSimUntilVoid { dut =>
+         .compile(new J1Ico(j1Cfg, boardCfg)).doSimUntilVoid { dut =>
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
@@ -224,8 +230,14 @@ object J1BoardSim {
       println("[J1Sc]  One clock period in ticks is " + mainClkPeriod  + " ticks")
       println("[J1Sc]  Bit time (UART) in ticks is "  + uartBaudPeriod + " ticks")
 
+      // Receive data from the host OS and send it into the simulation
+      UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
+
+      // Transmit data from the simulation into the host OS
+      UARTReceiver(output = comPort, uartPin = dut.io.tx, baudPeriod = uartBaudPeriod)
+
       // Init the system and create the global system clock
-      var genClock = fork {
+      val genClock = fork {
 
         // Pretend that the clock is already locked and low
         dut.io.boardClkLocked #= true
@@ -288,14 +300,14 @@ object J1BoardSim {
           // Do a reset cycle for some cycles
           DoReset(dut.io.reset, 100, HIGH)
 
-          // Wait forever
+          // Wait for next reset event
           doReset = false
 
         }
 
       }
 
-      // Check if we have an JTAG interface
+      // Check if we have an jtag interface
       j1Cfg.hasJtag generate {
 
         // Calculate the number of ticks of a jtag clock cycle
@@ -441,7 +453,7 @@ object J1BoardSim {
           class LEDPanel extends JPanel {
 
             // Create the colors for a led in either on or off state
-            val ledOnColor = Color.green.brighter()
+            val ledOnColor  = Color.green.brighter()
             val ledOffColor = Color.green.darker()
 
             // Implement the paint method for repainting the component
@@ -501,13 +513,7 @@ object J1BoardSim {
         }
 
       }
-
-      // Transmit data from the simulation into the host OS
-      UARTReceiver(output = comPort, uartPin = dut.io.tx, baudPeriod = uartBaudPeriod)
-
-      // Receive data from the host OS and send it into the simulation
-      UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
-
+      
       // Terminate all threads and the simulation
       genClock.join()
 

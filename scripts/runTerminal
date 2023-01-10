@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BAUDRATE="B9600"
+BAUDRATE="B38400"
 VDEVICE="tnt0"
 
 # Determine the serial device for e4thcom
@@ -12,7 +12,7 @@ echo "[info] Serial device $DEVICE is used to connect to the J1Sc simulation"
 echo "[info] Baudrate is $BAUDRATE"
 
 # Change directory to the forth system
-#cd toolchain/forth
+cd toolchain/forth
 
 # Start the terminal
 E4THCOMBIN=`which e4thcom`
