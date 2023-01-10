@@ -230,14 +230,18 @@ object J1BoardSim {
       println("[J1Sc]  One clock period in ticks is " + mainClkPeriod  + " ticks")
       println("[J1Sc]  Bit time (UART) in ticks is "  + uartBaudPeriod + " ticks")
 
+
       // Receive data from the host OS and send it into the simulation
-      UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
+        UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
 
       // Transmit data from the simulation into the host OS
       UARTReceiver(output = comPort, uartPin = dut.io.tx, baudPeriod = uartBaudPeriod)
 
       // Init the system and create the global system clock
       val genClock = fork {
+
+        // Short debug info
+        println("[J1Sc] Start clock generation")
 
         // Pretend that the clock is already locked and low
         dut.io.boardClkLocked #= true
@@ -288,6 +292,9 @@ object J1BoardSim {
       // Handle a reset request using the threaded API
       fork {
 
+        // Short debug info
+        println("[J1Sc] Start reset handler")
+
         // Simulate forever
         while(true) {
 
@@ -316,8 +323,11 @@ object J1BoardSim {
         // Give some information about the number of ticks of a jtag clock cycle
         println("[J1Sc]  Jtag Cycle time in ticks is " + jtagClkPeriod + " ticks")
 
-        // Build a simulation for the JTAG interface
+        // Build a simulation for the jtag interface
         fork {
+
+          // Short debug info
+          println("[J1Sc] Start simulation of the jtag interface")
 
           // Input an output data for server socket
           var inStream  : InputStream  = null
@@ -394,6 +404,9 @@ object J1BoardSim {
 
       // Simulate the leds array
       fork {
+
+        // Short debug info
+        println("[J1Sc] Start simulation of the led panel")
 
         // Holds the value represented by the leds array
         var ledsValue = 0l
@@ -513,7 +526,7 @@ object J1BoardSim {
         }
 
       }
-      
+
       // Terminate all threads and the simulation
       genClock.join()
 
