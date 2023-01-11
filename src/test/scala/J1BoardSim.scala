@@ -130,8 +130,8 @@ object UARTTransceiver {
 
       } else {
 
-        // Sleep 10 bit times since no data is available
-        sleep(baudPeriod * 10)
+        // Sleep 1000 bit times since no data is available
+        sleep(baudPeriod * 1000)
 
       }
 
@@ -254,7 +254,7 @@ object J1BoardSim {
 
 
       // Receive data from the host OS and send it into the simulation
-        UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
+      UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
 
       // Transmit data from the simulation into the host OS
       UARTReceiver(output = comPort, uartPin = dut.io.tx, baudPeriod = uartBaudPeriod)
