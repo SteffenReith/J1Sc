@@ -251,8 +251,7 @@ object J1BoardSim {
       println("[J1Sc]  Time resolution is " + 1.0 / simTimeRes + " sec")
       println("[J1Sc]  One clock period in ticks is " + mainClkPeriod  + " ticks")
       println("[J1Sc]  Bit time (UART) in ticks is "  + uartBaudPeriod + " ticks")
-
-
+      
       // Receive data from the host OS and send it into the simulation
       UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
 
