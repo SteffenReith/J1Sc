@@ -13,11 +13,14 @@ import javax.swing.{JButton, JFrame, JPanel, WindowConstants}
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
-// Implement 8N1
+// Implement an 8N1 UART Receiver
 object UARTReceiver {
 
   // Create an receiver which gets data from the simulation
   def apply(output : SerialPort, uartPin : Bool, baudPeriod : Long) = fork {
+
+    // Wait for boot signals propagation
+    sleep(1)
 
     // An UART is high inactive -> wait until simulation starts
     waitUntil(uartPin.toBoolean)
@@ -34,32 +37,51 @@ object UARTReceiver {
       waitUntil(!uartPin.toBoolean)
       sleep(baudPeriod / 2)
 
-      // Wait until the middle of the first data bit
-      sleep(baudPeriod)
+      // Check for a low uartPin
+      if (uartPin.toBoolean) {
 
-      // Hold the received byte
-      var buffer = 0
+        // Give a debug-message
+        println("[J1Sc]  UART frame error (start bit should be low)")
 
-      // Read all 8 data bits
-      (0 to 7).foreach { bitIdx =>
+      } else {
 
-        // Check the actual data bit
-        if (uartPin.toBoolean) {
+        // Wait until the middle of the first data bit
+        sleep(baudPeriod)
 
-          // Add a 1 to the received byte
-          buffer |= 1 << bitIdx
+        // Holds the received byte
+        var buffer = 0
+
+        // Read all 8 data bits
+        (0 to 7).foreach { bitIdx =>
+
+          // Check the actual data bit
+          if (uartPin.toBoolean) {
+
+            // Add a 1 to the received byte
+            buffer |= 1 << bitIdx
+
+          }
+
+          // Wait for the next data bit
+          sleep(baudPeriod)
 
         }
 
-        // Wait for the next data bit
-        sleep(baudPeriod)
+        // Check for a frame error (stop bit should be high)
+        if (!uartPin.toBoolean) {
+
+          // Give a debug-message because of a wrong stop bit
+          println("UART frame error (stop bit)")
+
+        } else {
+
+          // Provide the output
+          output.writeByte(buffer.toByte)
+          println(buffer.toByte + "(received)")
+
+        }
 
       }
-
-      // Write character
-      output.writeByte(buffer.toByte)
-
-      println(buffer.toByte + "(received)")
 
     }
 
