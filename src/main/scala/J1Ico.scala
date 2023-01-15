@@ -141,7 +141,7 @@ class J1Ico(j1Cfg    : J1Config,
                                     inputClock  = jtagIface.jtagClockDomain,
                                     outputClock = clkCoreCtrl.coreClockDomain)
 
-      // Register to hold synchron jtag data
+      // Register to hold synchronous jtag data
       val synchronJtagData = RegNextWhen(jtagCore.payload, jtagCore.jtagDataValid)
 
       // Connect the jtag stall signal (clock domain crossing already done)
@@ -154,7 +154,7 @@ class J1Ico(j1Cfg    : J1Config,
 
     } else {
 
-      // Without JTAG deactivate the stall signal
+      // Without jtag deactivate the stall signal
       cpu.internal.stall.allowPruning()
       cpu.internal.stall := False
 
