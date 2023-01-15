@@ -16,7 +16,7 @@ class J1Ico(j1Cfg    : J1Config,
 
   val io = new Bundle {
 
-    // Asynchron reset
+    // Asynchronous reset
     val reset = in Bool()
 
     // A board clock
