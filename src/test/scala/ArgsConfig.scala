@@ -11,4 +11,5 @@
 case class ArgsConfig(useDevicePrefix    : Boolean,
                       createWaveFile     : Boolean,
                       serialDevicePrefix : String,
-                      serialDeviceName   : String)
+                      serialDeviceName   : String,
+                      simSeed            : Option[Int])

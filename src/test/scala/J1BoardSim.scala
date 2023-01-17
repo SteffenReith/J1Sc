@@ -1,4 +1,5 @@
 import scala.sys.exit
+import scala.util.Random._
 
 import spinal.core._
 import spinal.core.sim._
@@ -156,6 +157,9 @@ object J1BoardSim {
     // Holds the flag to indicate whether a wave-file should be generated
     var createWaveFile : Boolean = false
 
+    // Holds the seed used for random number generation
+    var simSeed : Option[Int] = None
+
     // Create a new scopt parser
     val parser = new OptionParser[ArgsConfig]("J1ScSim") {
 
@@ -178,6 +182,10 @@ object J1BoardSim {
       opt[String]("serialDevicePrefix").action { (s, c) => c.copy(serialDevicePrefix = s) }.
                                         text("Set the serial device prefix (default: " + simCfg.devicePrefix + ")")
 
+      // Option to set the seed used for random number generation
+      opt[Int]("simSeed").action {(s,c) => c.copy(simSeed = Some(s)) }
+                         .text("Set the seed used for for random number generation")
+
       // Help option
       help("help").text("print this text")
 
@@ -185,13 +193,17 @@ object J1BoardSim {
     parser.parse(args, ArgsConfig(useDevicePrefix    = false,
                                   createWaveFile     = false,
                                   serialDeviceName   = simCfg.serialDeviceName,
-                                  serialDevicePrefix = simCfg.devicePrefix)).map { cfg =>
+                                  serialDevicePrefix = simCfg.devicePrefix,
+                                  simSeed            = Some(nextInt))).map { cfg =>
 
       // Check if we use the device prefix and build the device-name
       serialDeviceName = (if (cfg.useDevicePrefix) cfg.serialDevicePrefix + "/" else "") + cfg.serialDeviceName
 
       // Check if a waveFile should be generated
       createWaveFile = cfg.createWaveFile
+
+      // Update the seed (if option is not set then use random seed)
+      simSeed = cfg.simSeed
 
     } getOrElse {
 
@@ -227,7 +239,7 @@ object J1BoardSim {
 
         // Unknown exception
         println("[J1Sc] Cannot open " + serialDeviceName)
-        println("[J1Sc] Have to terminate simulation!")
+        println("[J1Sc] Have to terminate the simulation!")
 
         // Terminate program
         exit(-1)
@@ -238,7 +250,8 @@ object J1BoardSim {
     val simJ1 = if (createWaveFile) SimConfig.withWave else SimConfig
     simJ1.workspacePath("gen/sim")
          .allOptimisation
-         .compile(new J1Ico(j1Cfg, boardCfg)).doSimUntilVoid { dut =>
+         .compile(new J1Ico(j1Cfg, boardCfg))
+         .doSimUntilVoid(seed = simSeed.get) { dut =>
 
       // Calculate the number of verilog ticks relative to the given time resolution
       val mainClkPeriod  = (simTimeRes / boardCfg.coreFrequency.getValue.toDouble).toLong
@@ -251,7 +264,8 @@ object J1BoardSim {
       println("[J1Sc]  Time resolution is " + 1.0 / simTimeRes + " sec")
       println("[J1Sc]  One clock period in ticks is " + mainClkPeriod  + " ticks")
       println("[J1Sc]  Bit time (UART) in ticks is "  + uartBaudPeriod + " ticks")
-      
+      println("[J1Sc]  Use " + simSeed.get + " as seed for the simulation")
+
       // Receive data from the host OS and send it into the simulation
       UARTTransceiver(input = comPort, uartPin = dut.io.rx, baudPeriod = uartBaudPeriod)
 
