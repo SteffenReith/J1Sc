@@ -5,7 +5,7 @@ socat -d -d pty,raw,echo=0,link=tnt0 pty,raw,echo=0,link=tnt1 &
 SOCATID=$!
 
 echo "[info] [Simulation] Start simulation of J1Sc (connect using eth4com)"
-sbt "Test / run"
+sbt "Test / run --simSeed 2"
 
 echo "[info] [Simulation] Simulation terminated! (Cleaning up)"
 kill -SIGINT $SOCATID
