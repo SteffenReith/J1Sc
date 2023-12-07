@@ -434,6 +434,25 @@ object CoreConfig {
 
   }
 
+  // Provide a configuration for an simple ASIC
+  def asicBoard: CoreConfig = {
+
+    // Configuration values used for the ASIC
+    val config = CoreConfig(gpioConfig    = GPIOConfig.pmod,
+                            ledBankConfig = null,
+                            pwmConfig     = null,
+                            ssdConfig     = null,
+                            sSwitchConfig = null,
+                            pButtonConfig = DBPinArrayConfig.iceButtons,
+                            uartConfig    = J1UARTConfig.slowUartConfig,
+                            coreFrequency = FixedFrequency(12 MHz),
+                            ioWaitStates  = 1)
+
+    // Return the configuration
+    config
+
+  }
+
   // Provide a configuration for a simulation of J1Sc
   def boardSim : CoreConfig = {
 

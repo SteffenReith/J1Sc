@@ -1,8 +1,8 @@
 /*
  * Author: Steffen Reith (Steffen.Reith@hs-rm.de)
  *
- * Creation Date:  Sun Nov 19 14:08:53 GMT+1 2017 
- * Module Name:    J1SoC - A small but complete system based on the J1-core
+ * Creation Date:  Do 7. Dez 12:56:59 CET 2023
+ * Module Name:    J1Asic - A small but complete system based on the J1-core
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
@@ -11,8 +11,8 @@ import spinal.lib._
 import spinal.lib.com.uart._
 import spinal.lib.io._
 
-class J1Ico(j1Cfg    : J1Config,
-            boardCfg : CoreConfig) extends Component {
+class J1Asic(j1Cfg    : J1Config,
+             boardCfg : CoreConfig) extends Component {
 
   val io = new Bundle {
 
@@ -25,12 +25,6 @@ class J1Ico(j1Cfg    : J1Config,
 
     // Asynchronous interrupts from the outside world
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
-
-    // The physical pins for the connected LEDs
-    val leds = out Bits(boardCfg.ledBankConfig.width bits)
-
-    // The physical pins for the LEDs that support PWM
-    val pwmLeds = out Bits(boardCfg.pwmConfig.numOfChannels bits)
 
     // The physical pins for pmod A
     val pmodA = master(TriStateArray(boardCfg.gpioConfig.width bits))
@@ -164,20 +158,6 @@ class J1Ico(j1Cfg    : J1Config,
     val peripheralBus     = cpu.bus.cpuBus.delayIt(boardCfg.ioWaitStates)
     val peripheralBusCtrl = J1BusSlaveFactory(peripheralBus)
 
-    // Create a LED array at base address 0x40
-    val ledArray  = new LEDArray(j1Cfg, boardCfg.ledBankConfig)
-    val ledBridge = ledArray.driveFrom(peripheralBusCtrl, baseAddress = 0x40)
-
-    // Connect the physical LED pins to the outside world
-    io.leds := ledArray.io.leds
-
-    // Create the PWMs fpr the RGB-leds at 0x50
-    val pwm = new PWM(j1Cfg, boardCfg.pwmConfig)
-    val pwmBridge = pwm.driveFrom(peripheralBusCtrl, baseAddress = 0x50)
-
-    // Connect the pwm channels physically
-    io.pwmLeds := pwm.io.pwmChannels
-
     // Create a PMOD at base address 0x60
     val pmodA       = new GPIO(boardCfg.gpioConfig)
     val pmodABridge = pmodA.driveFrom(peripheralBusCtrl, baseAddress = 0x70)
@@ -236,7 +216,7 @@ class J1Ico(j1Cfg    : J1Config,
 
 }
 
-object J1Ico {
+object J1Asic {
 
   // Make the reset synchron and use the rising edge
   val globalClockConfig = ClockDomainConfig(clockEdge        = RISING,
@@ -251,24 +231,18 @@ object J1Ico {
       val j1Cfg = J1Config.forth16Jtag
 
       // Configuration of the used board
-      val boardCfg = CoreConfig.icoBoard
+      val boardCfg = CoreConfig.asicBoard
 
       // Create a system instance
-      new J1Ico(j1Cfg, boardCfg)
+      new J1Asic(j1Cfg, boardCfg)
 
     }
 
     // Write a message
-    println("[J1Sc] Create the J1 for an IcoBoard")
-
-    // Generate VHDL
-    SpinalConfig(mergeAsyncProcess = true,
-                 genVhdlPkg = true,
-                 defaultConfigForClockDomains = globalClockConfig,
-                 targetDirectory="gen/src/vhdl").generateVhdl(elaborate).printPruned()
+    println("[J1Sc] Create the J1 for an ASIC")
 
     // Generate Verilog / Maybe mergeAsyncProcess = false helps verilator to avoid wrongly detected combinatorial loops
-    SpinalConfig(mergeAsyncProcess = true,
+    SpinalConfig(mergeAsyncProcess            = true,
                  defaultConfigForClockDomains = globalClockConfig,
                  targetDirectory="gen/src/verilog").generateVerilog(elaborate).printPruned()
 
