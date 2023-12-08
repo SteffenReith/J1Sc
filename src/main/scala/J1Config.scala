@@ -543,6 +543,50 @@ object J1Config {
 
   }
 
+  // Provide a blank configuration for a small asic implementation
+  def asic16Jtag = {
+
+    def wordSize               = 16
+    def dataStackIdxWidth      = 3
+    def returnStackIdxWidth    = 3
+    def hasJtag                = true
+    def noOfInterrupts         = 4
+    def noOfInternalInterrupts = 1
+    def irqLatency             = 3
+    def adrWidth               = 8
+    def numOfRAMs              = 2
+    def startAddress           = 0
+
+    // Default timer configuration
+    val timerConfig = TimerConfig.default
+
+    // Default jtag configuration
+    val jtagConfig = JTAGConfig.default
+
+    // IRQ controller parameters (disable all interrupts by default)
+    val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
+
+    // Generate the complete memory layout of the system (using invalid interrupt vectors)
+    def bootCode() = J1ISA16.endless() ++ List.fill((1 << adrWidth) - J1ISA16.endless().length)(B(0, wordSize bits))
+
+    // Set the final configuration values
+    val config = J1Config(wordSize            = wordSize,
+                          dataStackIdxWidth   = dataStackIdxWidth,
+                          returnStackIdxWidth = returnStackIdxWidth,
+                          hasJtag             = hasJtag,
+                          jtagConfig          = jtagConfig,
+                          timerConfig         = timerConfig,
+                          irqConfig           = irqConfig,
+                          adrWidth            = adrWidth,
+                          numOfRAMs           = numOfRAMs,
+                          startAddress        = startAddress,
+                          bootCode            = bootCode)
+
+    // Return the tiny configuration
+    config
+
+  }
+
   // Provide a debug configuration for the interrupt controller
   def debug16IRQ = {
 

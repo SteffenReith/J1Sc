@@ -228,7 +228,7 @@ object J1Asic {
     def elaborate = {
 
       // Configuration of CPU-core
-      val j1Cfg = J1Config.forth16Jtag
+      val j1Cfg = J1Config.asic16Jtag
 
       // Configuration of the used board
       val boardCfg = CoreConfig.asicBoard
