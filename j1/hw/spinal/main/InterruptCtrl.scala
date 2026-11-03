@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.core._
 import spinal.lib._
 import spinal.lib.bus.misc.BusSlaveFactory
@@ -25,7 +27,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   // Signals used for the internal bus
   val bus = new Bundle {
 
-    val enableWriteNewMask = in Bool
+    val enableWriteNewMask = in Bool()
     val enableWriteIrqVec  = in Bits (cfg.irqConfig.numOfInterrupts bits)
 
     val irqSetData = in Bits (cfg.wordSize bits)
@@ -39,7 +41,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   val internal = new Bundle {
 
     val intVec = out Bits(cfg.wordSize bits)
-    val irq    = out Bool
+    val irq    = out Bool()
 
   }.setName("")
 
@@ -66,7 +68,7 @@ class InterruptCtrl(cfg : J1Config) extends Component {
   })
 
   // Wire all interrupt vectors to an IO-port
-  (bus.irqVectors, irqVectors).zipped.foreach(_ := _.resize(cfg.wordSize))
+  bus.irqVectors.lazyZip(irqVectors).foreach(_ := _.resize(cfg.wordSize))
 
   // All interrupts are asynchronous, hence make them synchron
   val irqSync = BufferCC(io.irqReqs,

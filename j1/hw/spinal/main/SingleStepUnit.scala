@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.core._
 
 class SingleStepUnit {
@@ -13,13 +15,13 @@ class SingleStepUnit {
   val internal = new Bundle {
 
     // Enable the single step mode (registered)
-    val enableSingleStep = in Bool
+    val enableSingleStep = in Bool()
 
     // Trigger the next step for exactly one time
-    val triggerStep = in Bool
+    val triggerStep = in Bool()
 
     // Do a step (fetch the next instruction)
-    val doStep = out Bool
+    val doStep = out Bool()
 
   }.setName("")
 

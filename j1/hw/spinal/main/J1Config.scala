@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.core._
 
 import scala.io.Source
@@ -479,7 +481,7 @@ object J1Config {
     val irqConfig = IRQCtrlConfig(noOfInterrupts, noOfInternalInterrupts, irqLatency)
 
     // Relevant content of all generated memories
-    def bootCode() = J1ISA16.ioTest() ++ List.fill((1 << adrWidth) - J1ISA16.ioTest.length)(B(0, wordSize bits))
+    def bootCode() = J1ISA16.ioTest() ++ List.fill((1 << adrWidth) - J1ISA16.ioTest().length)(B(0, wordSize bits))
 
     // Set the configuration values for debugging I/O instructions
     val config = J1Config(wordSize            = wordSize,

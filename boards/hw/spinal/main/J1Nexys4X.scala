@@ -6,6 +6,9 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc.boards
+
+import j1sc._
 import spinal.core._
 import spinal.lib._
 import spinal.lib.com.uart._
@@ -17,11 +20,11 @@ class J1Nexys4X(j1Cfg    : J1Config,
   val io = new Bundle {
 
     // Asynchron reset
-    val reset = in Bool
+    val reset = in Bool()
 
     // A board clock
-    val boardClk       = in Bool
-    val boardClkLocked = in Bool
+    val boardClk       = in Bool()
+    val boardClkLocked = in Bool()
 
     // Asynchronous interrupts from the outside world
     val extInt = in Bits (j1Cfg.irqConfig.numOfInterrupts - j1Cfg.irqConfig.numOfInternalInterrupts bits)
@@ -34,7 +37,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
 
     // The physical pins for the multiplexed seven-segment display
     val segments = out (Seg7())
-    val dot      = out Bool
+    val dot      = out Bool()
     val selector = out Bits(boardCfg.ssdConfig.numOfDisplays bits)
 
     // The physical pins for pmod A
@@ -45,8 +48,8 @@ class J1Nexys4X(j1Cfg    : J1Config,
     val pButtons  = in Bits(boardCfg.pButtonConfig.numOfPins bits)
 
     // I/O pins for the UART
-    val rx = in  Bool // UART input
-    val tx = out Bool // UART output
+    val rx = in  Bool() // UART input
+    val tx = out Bool() // UART output
 
   }.setName("")
 
@@ -57,16 +60,16 @@ class J1Nexys4X(j1Cfg    : J1Config,
     val jtag = new Bundle {
 
       // JTAG data input
-      val tdi = in Bool
+      val tdi = in Bool()
 
       // JTAG data output
-      val tdo = out Bool
+      val tdo = out Bool()
 
       // Control for the JTAG TAP
-      val tms = in Bool
+      val tms = in Bool()
 
       // The JTAG clock (the signal tdi, tdo and tms are synchronous to this clock)
-      val tck = in Bool
+      val tck = in Bool()
 
     }.setName("")
 
@@ -149,7 +152,7 @@ class J1Nexys4X(j1Cfg    : J1Config,
     if (j1Cfg.hasJtag) {
 
       // Do the clock domain crossing to make the jtag data synchron
-      val jtagCore = FlowCCByToggle(input       = jtagIface.jtagArea.jtag.jtagDataFlow,
+      val jtagCore = FlowCCUnsafeByToggle(input       = jtagIface.jtagArea.jtag.jtagDataFlow,
                                     inputClock  = jtagIface.jtagClockDomain,
                                     outputClock = clkCoreCtrl.coreClockDomain)
 
@@ -280,7 +283,7 @@ object J1Nexys4X {
                                             resetKind        = SYNC,
                                             resetActiveLevel = HIGH)
 
-  def main(args : Array[String]) {
+  def main(args : Array[String]) : Unit = {
 
     def elaborate = {
 

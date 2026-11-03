@@ -1,3 +1,6 @@
+package j1sc.boards
+
+import j1sc._
 import scala.sys.exit
 import spinal.core._
 import spinal.core.sim._
@@ -120,7 +123,7 @@ object J1BoardSim {
     val simTimeRes = 1e9
 
     // Number of CPU cycles between some status information
-    val simCycles = 10000000l
+    val simCycles = 10000000L
 
     // Name of serial device to be used
     val serialDeviceName = "/dev/tnt1"
@@ -192,7 +195,7 @@ object J1BoardSim {
         DoReset(dut.io.reset, 100, HIGH)
 
         // Init the cycle counter
-        var cycleCounter = 0l
+        var cycleCounter = 0L
 
         // Get the actual system time to init the time calculation
         var lastTime = System.nanoTime()
@@ -336,7 +339,7 @@ object J1BoardSim {
       val leds = fork {
 
         // Holds the value represented by the leds array
-        var ledsValue = 0l
+        var ledsValue = 0L
 
         // Create a graphical frame using Java
         val ledsFrame = new JFrame("J1Sc Components") {

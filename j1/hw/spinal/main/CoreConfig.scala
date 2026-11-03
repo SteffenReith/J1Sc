@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.lib.com.uart._
 import spinal.core._
 

@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
@@ -60,7 +62,7 @@ class PWM(j1Cfg  : J1Config,
                 U(log2Up(pwmCfg.numOfDutyCycles) bits, default -> false))
 
   })
-  (bus.compareRegs, compareRegs).zipped.foreach(_ := _.asBits)
+  bus.compareRegs.lazyZip(compareRegs).foreach(_ := _.asBits)
 
   // Create the compare logic for all channels
   compareRegs.zipWithIndex.foreach{case (reg, i) => (io.pwmChannels(i) := (reg > pwmArea.cycle))}

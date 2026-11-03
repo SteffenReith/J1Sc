@@ -12,6 +12,8 @@
  * pain
  *
  */
+package j1sc
+
 import spinal.core._
 
 class MainMemory(cfg : J1Config) extends Component {
@@ -29,7 +31,7 @@ class MainMemory(cfg : J1Config) extends Component {
     val readData    = out Bits (cfg.wordSize bits)
 
     // Memory port (write only)
-    val writeEnable  = in Bool
+    val writeEnable  = in Bool()
     val writeDataAdr = in UInt (cfg.adrWidth bits)
     val writeData    = in Bits (cfg.wordSize bits)
 

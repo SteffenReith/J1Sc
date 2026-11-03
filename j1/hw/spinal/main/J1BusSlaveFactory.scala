@@ -8,6 +8,8 @@
  * Remark: Initial code provided by Charles Papon (charles.papon.90@gmail.com)
  *
  */
+package j1sc
+
 import spinal.core._
 import spinal.lib.bus.misc._
 
@@ -71,7 +73,7 @@ class J1BusSlaveFactory(bus : J1Bus) extends BusSlaveFactoryDelayed {
         is(address.asInstanceOf[SingleMapping].address) {
 
           // Wire the single address object to the bus
-          doMappedElements(jobs)
+          doMappedElements(jobs.toSeq)
 
         }
 
@@ -86,7 +88,7 @@ class J1BusSlaveFactory(bus : J1Bus) extends BusSlaveFactoryDelayed {
       when(address.hit(bus.address)) {
 
         // Handle the job by wiring the actual device to the bus
-        doMappedElements(jobs)
+        doMappedElements(jobs.toSeq)
 
       }
 

@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
@@ -18,7 +20,7 @@ class LEDArray(j1Cfg  : J1Config,
   val bus = new Bundle {
 
     // Bus signals for the internal register
-    val writeEnable = in Bool
+    val writeEnable = in Bool()
     val ledValue    = in Bits (ledCfg.width bits)
 
   }.setName("")

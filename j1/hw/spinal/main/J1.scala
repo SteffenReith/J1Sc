@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.core._
 import spinal.lib._
 
@@ -15,10 +17,10 @@ class J1(cfg : J1Config) extends Component {
   val internal = new Bundle {
 
     // Stall signal of CPU
-    val stall = in Bool
+    val stall = in Bool()
 
     // Interface for the interrupt system
-    val irq    = in Bool
+    val irq    = in Bool()
     val intVec = in Bits (cfg.adrWidth bits)
 
   }.setName("")
@@ -30,7 +32,7 @@ class J1(cfg : J1Config) extends Component {
     val jtagMemBus = new Bundle {
 
       // Signal from jtag for memory bus
-      val captureMemory = in Bool
+      val captureMemory = in Bool()
       val jtagMemAdr    = in Bits (cfg.adrWidth bits)
       val jtagMemWord   = in Bits (cfg.wordSize bits)
 

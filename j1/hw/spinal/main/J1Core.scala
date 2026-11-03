@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.core._
 
 class J1Core(cfg : J1Config) extends Component {
@@ -18,18 +20,18 @@ class J1Core(cfg : J1Config) extends Component {
   val internal = new Bundle {
 
     // Signals for memory and io port
-    val memWriteMode = out Bool
-    val ioWriteMode  = out Bool
-    val ioReadMode   = out Bool
+    val memWriteMode = out Bool()
+    val ioWriteMode  = out Bool()
+    val ioReadMode   = out Bool()
     val extAdr       = out UInt(cfg.wordSize bits)
     val extToWrite   = out Bits(cfg.wordSize bits)
     val toRead       = in  Bits(cfg.wordSize bits)
 
     // Signal to stall the CPU
-    val stall = in Bool
+    val stall = in Bool()
 
     // Interface for the interrupt system
-    val irq    = in Bool
+    val irq    = in Bool()
     val intVec = in Bits (cfg.adrWidth bits)
 
     // I/O port for instructions

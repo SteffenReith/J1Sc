@@ -7,6 +7,8 @@
  *
  */
 
+package j1sc
+
 import spinal.core._
 import spinal.lib._
 import spinal.lib.bus.misc.BusSlaveFactory

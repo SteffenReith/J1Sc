@@ -6,6 +6,8 @@
  * Project Name:   J1Sc - A simple J1 implementation in Scala using Spinal HDL
  *
  */
+package j1sc
+
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 
@@ -23,11 +25,11 @@ class GPIO(gpioCfg : GPIOConfig) extends Component {
   val bus = new Bundle {
 
     // Ports used for the direction register
-    val dirEnable  = in Bool
+    val dirEnable  = in Bool()
     val dirValue   = in Bits (gpioCfg.width bits)
 
     // Ports used the the data register
-    val dataEnable = in Bool
+    val dataEnable = in Bool()
     val dataValue  = in Bits (gpioCfg.width bits)
 
   }.setName("")
