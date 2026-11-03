@@ -1,5 +1,9 @@
 # Read all design files
 read_verilog src/main/verilog/arch/IceBreaker/PLL.v gen/src/verilog/J1Ice.v  src/main/verilog/arch/IceBreaker/Board_IceBreaker.v 
 
+# SpinalHDL >= 1.5 oznacza Mem z readAsync (stosy) jako ram_style = "distributed",
+# a iCE40 nie ma LUTRAM - bez tego memory_libmap konczy sie bledem.
+attrmap -remove ram_style
+
 synth_ice40 -top IceBreaker -json gen/src/verilog/J1Ice.json -blif gen/src/verilog/J1Ice.blif
 
