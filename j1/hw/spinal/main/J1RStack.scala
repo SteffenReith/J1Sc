@@ -10,7 +10,7 @@ package j1sc
 
 import spinal.core._
 
-case class J1RStack(cfg : J1Config) extends J1Stack(cfg.dataStackIdxWidth)  {
+case class J1RStack(cfg : J1Config) extends J1Stack(cfg.returnStackIdxWidth)  {
 
   def apply(stall : Bool, rtosN : Bits) : Bits = {
 
